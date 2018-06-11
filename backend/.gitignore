@@ -1,0 +1,14 @@
+# 忽略目录
+.idea/
+.vscode/
+/tmp
+__pycache__/
+
+# 忽略migrations文件
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# 忽略文件
+*.pyc
+db.sqlite3
+
