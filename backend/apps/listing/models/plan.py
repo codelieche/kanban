@@ -2,6 +2,7 @@
 from django.db import models
 
 from account.models import User
+from listing.models.base import Team
 
 STATUS_CHOICES = (
     ("draft", "草稿"),
@@ -19,11 +20,6 @@ STATUS_CODE_CHOICES = {
     "cancel": 20
 }
 
-EXECUTED_TYPE_CHOICES = (
-    ("user", "用户"),
-    ("team", "团队")
-)
-
 
 class Plan(models.Model):
     """
@@ -40,12 +36,28 @@ class Plan(models.Model):
                                    blank=True, null=True)
     is_deleted = models.BooleanField(verbose_name="删除", blank=True, default=False)
     created = models.ForeignKey(to=User, verbose_name="创建者", blank=True, null=True,
-                                on_delete=models.SET_NULL)
-    executed_type = models.CharField(verbose_name="执行者(类型)", blank=True, default="user",
-                                     choices=EXECUTED_TYPE_CHOICES)
-    executed_id = models.CharField(verbose_name="执行者(ID)", blank=True, default="user")
+                                related_name="u_created", on_delete=models.SET_NULL)
+    # 执行者类型：团队或者个人
+    teams = models.ManyToManyField(verbose_name="执行者(团队)", to=Team, blank=True)
+    users = models.ManyToManyField(verbose_name="执行者(用户)", to=User, blank=True)
 
-    is_public = models.CharField(verbose_name="公开", blank=True, default=False)
+    is_public = models.BooleanField(verbose_name="公开", blank=True, default=False)
+
+    @property
+    def members(self):
+        """Plan的所有成员"""
+        # 包括Teams中的所有成员和users
+        members = self.users.all()
+        team_members = User.objects.filter(team__in=self.teams.all())
+        # 如果想根据几个分组的id来获取用户可以用这个：
+        # users = User.objects.filter(groups__id__in=[1,2])
+        if members:
+            if team_members:
+                members = members.union(team_members)
+        return members
+
+    def is_memeber(self, user):
+        pass
 
     def __str__(self):
         return "Plan:{}".format(self.name)
