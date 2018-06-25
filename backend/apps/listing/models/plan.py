@@ -34,14 +34,15 @@ class Plan(models.Model):
                                on_delete=models.CASCADE)
     description = models.CharField(verbose_name="描述", max_length=256,
                                    blank=True, null=True)
-    is_deleted = models.BooleanField(verbose_name="删除", blank=True, default=False)
     created = models.ForeignKey(to=User, verbose_name="创建者", blank=True, null=True,
                                 related_name="u_created", on_delete=models.SET_NULL)
     # 执行者类型：团队或者个人
     teams = models.ManyToManyField(verbose_name="执行者(团队)", to=Team, blank=True)
     users = models.ManyToManyField(verbose_name="执行者(用户)", to=User, blank=True)
 
+    # 公开的话：谁都可以参加这个计划
     is_public = models.BooleanField(verbose_name="公开", blank=True, default=False)
+    is_deleted = models.BooleanField(verbose_name="删除", blank=True, default=False)
 
     @property
     def members(self):
