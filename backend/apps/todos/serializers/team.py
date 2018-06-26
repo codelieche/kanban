@@ -5,7 +5,7 @@
 from rest_framework import serializers
 
 from account.models import User
-from listing.models.base import Team
+from todos.models.base import Team
 
 
 class TeamModelSerializer(serializers.ModelSerializer):

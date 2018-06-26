@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 from django.urls import path
 
-from listing.views.team import (
+from todos.views.team import (
     TeamCreateApiView,
     TeamListApiView,
     TeamDetailApiView

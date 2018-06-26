@@ -4,8 +4,8 @@ from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
-from listing.models.plan import Plan
-from listing.serializers.plan import (
+from todos.models.plan import Plan
+from todos.serializers.plan import (
     PlanListSerializer,
     PlanModelSerializer
 )

@@ -2,7 +2,7 @@
 from django.db import models
 
 from account.models import User
-from listing.models.base import Team
+from todos.models.base import Team
 
 STATUS_CHOICES = (
     ("draft", "草稿"),

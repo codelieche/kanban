@@ -5,8 +5,8 @@ Plan相关的序列化
 from rest_framework import serializers
 
 from account.models import User
-from listing.models.base import Team
-from listing.models.plan import Plan
+from todos.models.base import Team
+from todos.models.plan import Plan
 
 
 class PlanModelSerializer(serializers.ModelSerializer):

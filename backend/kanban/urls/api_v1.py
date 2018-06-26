@@ -6,7 +6,7 @@ urlpatterns = [
     # 前缀：/api/v1/
     path('account/', include(arg=("account.urls.api", "account"), namespace="account")),
     # listing相关的api
-    path('kanban/', include(arg=("listing.urls.api", "listing"), namespace="kanban")),
+    path('kanban/', include(arg=("todos.urls.api", "todos"), namespace="kanban")),
     # Model日志相关的api
     path('modellog/', include(arg=('modellog.urls', 'modellog'), namespace='modellog')),
     # Model标签相关api
