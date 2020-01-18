@@ -12,3 +12,6 @@ __pycache__/
 *.pyc
 db.sqlite3
 
+Pipfile
+Pipfile.lock
+
