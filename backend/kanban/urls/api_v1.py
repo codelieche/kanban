@@ -8,5 +8,5 @@ urlpatterns = [
     # Model日志相关的api
     path('modellog/', include(arg=('modellog.urls', 'modellog'), namespace='modellog')),
     # Model标签相关api
-    # path('tags/', include(arg=('tags.urls.api', 'tags'), namespace='tags')),
+    path('tags/', include(arg=('tags.urls.api', 'tags'), namespace='tags')),
 ]

@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     # 自己写的app
     'account.apps.AccountConfig',
     'modellog.apps.ModellogConfig',
+    'tags.apps.TagsConfig',
 ]
 
 MIDDLEWARE = [
@@ -65,6 +66,7 @@ MIDDLEWARE = [
 
     # 自定义中间件
     # 如果是api访问用户的，就不对csrf校验
+    'utils.middlewares.csrf.ApiDisableCsrfMiddleware',
 ]
 
 ROOT_URLCONF = 'kanban.urls.main'
