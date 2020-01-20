@@ -1,5 +1,7 @@
 from django.db import models
 
+from account.models import User
+
 # Create your models here.
 
 
@@ -67,6 +69,7 @@ class ObjectTag(models.Model):
     app_label = models.CharField(verbose_name="App", max_length=40)
     model = models.CharField(verbose_name="Model", max_length=40)
     object_id = models.IntegerField(verbose_name="对象ID")
+    user = models.ForeignKey(to=User, verbose_name="添加用户", blank=True, null=True, on_delete=models.CASCADE)
     time_added = models.DateTimeField(verbose_name="添加时间", blank=True, auto_created=True, null=True)
     is_deleted = models.BooleanField(verbose_name="删除", default=False, blank=True)
 

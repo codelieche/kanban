@@ -50,6 +50,8 @@ class ObjectTagCreateApiView(APIView):
                                                                 app_label=app_label,
                                                                 model=model,
                                                                 object_id=object_id)
+
+            instance.user = request.user
             if not created and instance.is_deleted:
                 instance.is_deleted = False
                 instance.save()

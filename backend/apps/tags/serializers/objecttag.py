@@ -24,10 +24,11 @@ class ObjectTagModelSerializer(serializers.ModelSerializer):
     """
     tag = serializers.CharField(source="tagvalue.tag.tag")
     value = serializers.CharField(source="tagvalue.value")
+    user = serializers.SlugRelatedField(slug_field="username", read_only=True)
 
     class Meta:
         model = ObjectTag
-        fields = ("id", "tag", "value", "app_label", "model", "object_id", "time_added")
+        fields = ("id", "tag", "value", "app_label", "model", "object_id", "user", "time_added")
 
 
 class ObjectTagValueSerializer(serializers.ModelSerializer):
@@ -37,6 +38,7 @@ class ObjectTagValueSerializer(serializers.ModelSerializer):
     tagvalue_id = serializers.IntegerField(source="tagvalue.pk")
     tag = serializers.CharField(source="tagvalue.tag.tag")
     value = serializers.CharField(source="tagvalue.value")
+    # user = serializers.SlugRelatedField(slug_field="username", read_only=True)
 
     class Meta:
         model = ObjectTag
