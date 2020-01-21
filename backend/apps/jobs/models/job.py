@@ -22,7 +22,7 @@ class Job(models.Model):
                               help_text="图片路径", blank=True, null=True)
     users = models.ManyToManyField(verbose_name="用户", to=User)
     creator = models.ForeignKey(verbose_name="创建用户", to=User, related_name="job_set_created",
-                               blank=True, null=True, on_delete=models.SET_NULL)
+                                blank=True, null=True, on_delete=models.SET_NULL)
     description = models.TextField(verbose_name="描述", blank=True, null=True)
     status = models.CharField(verbose_name="状态", max_length=1, blank=True, default=0)
     parent = models.ForeignKey(verbose_name="父任务", to="self", blank=True, null=True, on_delete=models.CASCADE)
@@ -37,6 +37,12 @@ class Job(models.Model):
         if not self.id and self.image:
             self.file = self.resize_image(self.image)
         super().save(*args, **kwargs)
+
+    def delete(self):
+        if not self.is_deleted:
+            self.is_deleted = True
+            self.save()
+        return
 
     def resize_image(self, image_file):
         """

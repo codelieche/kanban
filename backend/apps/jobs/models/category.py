@@ -30,6 +30,12 @@ class Category(models.Model):
             self.file = self.resize_image(self.image)
         super().save(*args, **kwargs)
 
+    def delete(self):
+        if not self.is_deleted:
+            self.is_deleted = True
+            self.save()
+        return
+
     def resize_image(self, image_file):
         """
         对图片大小进行缩放

@@ -15,7 +15,7 @@ class JobModelSerializer(serializers.ModelSerializer):
     creator = serializers.SlugRelatedField(slug_field="username", required=False, read_only=True)
 
     def validate(self, attrs):
-        print(attrs)
+        # print(attrs)
         attrs["creator"] = self.context["request"].user
         return attrs
 
