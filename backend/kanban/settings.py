@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     # 自己写的app
     'account.apps.AccountConfig',
     'jobs.apps.JobsConfig',
+    'docs.apps.DocsConfig',
     'modellog.apps.ModellogConfig',
     'tags.apps.TagsConfig',
 ]

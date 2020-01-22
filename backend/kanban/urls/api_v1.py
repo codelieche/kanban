@@ -7,6 +7,8 @@ urlpatterns = [
     path('account/', include(arg=("account.urls.api", "account"), namespace="account")),
     # Jobs相关的api
     path('jobs/', include(arg=("jobs.urls.api", "jobs"), namespace="jobs")),
+    # Docs相关的api
+    path('docs/', include(arg=("docs.urls.api", "docs"), namespace="docs")),
     # Model日志相关的api
     path('modellog/', include(arg=('modellog.urls', 'modellog'), namespace='modellog')),
     # Model标签相关api
