@@ -8,4 +8,6 @@ urlpatterns = [
 
     # Docs Category Api
     path('category/', include(arg=('docs.urls.category', 'docs'), namespace='category')),
+    # Docs Article Api
+    path('article/', include(arg=('docs.urls.article', 'docs'), namespace='article')),
 ]
