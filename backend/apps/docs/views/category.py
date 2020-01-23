@@ -6,11 +6,12 @@ from rest_framework.permissions import (
     DjangoModelPermissions, DjangoModelPermissionsOrAnonReadOnly
 )
 
+from modellog.mixins import LoggingViewSetMixin
 from docs.models.category import Category
 from docs.serializers.category import CategoryModelSerializer
 
 
-class CategoryCreateApiView(generics.CreateAPIView):
+class CategoryCreateApiView(LoggingViewSetMixin, generics.CreateAPIView):
     """
     Docs Category Create Api View
     """
@@ -38,7 +39,7 @@ class CategoryListAllApiView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
 
 
-class CategoryDetailApiView(generics.RetrieveUpdateDestroyAPIView):
+class CategoryDetailApiView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyAPIView):
     """
     Docs Category Detail Api View
     """

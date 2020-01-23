@@ -9,6 +9,7 @@ from modellog.views import (
 
 
 urlpatterns = [
+    # 前缀：/api/v1/modellog/
     # 日志详情
     re_path(r'^(?P<pk>\d+)/?$', LogsEntryDetailApiView.as_view(), name='detail'),
     # 模块日志列表

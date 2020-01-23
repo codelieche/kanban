@@ -4,11 +4,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
+from modellog.mixins import LoggingViewSetMixin
 from docs.models.article import Article
 from docs.serializers.article import ArticleModelSerializer
 
 
-class ArticleCreateApiView(generics.CreateAPIView):
+class ArticleCreateApiView(LoggingViewSetMixin, generics.CreateAPIView):
     """
     Article Create Api View
     """
@@ -31,7 +32,7 @@ class ArticleListApiView(generics.ListAPIView):
     ordering = ("id", "time_updated")
 
 
-class ArticleDetailApiView(generics.RetrieveUpdateDestroyAPIView):
+class ArticleDetailApiView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyAPIView):
     """
     Article Detail Api View
     """

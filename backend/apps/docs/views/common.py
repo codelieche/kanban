@@ -4,11 +4,12 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
+from modellog.mixins import LoggingViewSetMixin
 from docs.models.common import Common
 from docs.serializers.common import CommonModelSerializer
 
 
-class CommonCreateApiView(generics.CreateAPIView):
+class CommonCreateApiView(LoggingViewSetMixin, generics.CreateAPIView):
     """
     Common Create Api View
     """
@@ -31,7 +32,7 @@ class CommonListApiView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
 
 
-class CommonDetailApiView(generics.RetrieveUpdateDestroyAPIView):
+class CommonDetailApiView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyAPIView):
     """
     Common Detail Api View
     """

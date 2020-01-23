@@ -6,11 +6,12 @@ from rest_framework.permissions import (
     DjangoModelPermissions, DjangoModelPermissionsOrAnonReadOnly
 )
 
+from modellog.mixins import LoggingViewSetMixin
 from jobs.models.category import Category
 from jobs.serializers.category import CategoryModelSerializer
 
 
-class CategoryCreateApiView(generics.CreateAPIView):
+class CategoryCreateApiView(LoggingViewSetMixin, generics.CreateAPIView):
     """
     Job Category Create Api View
     """
@@ -38,7 +39,7 @@ class CategoryListAllApiView(generics.ListAPIView):
     pagination_class = None
 
 
-class CategoryDetailApiView(generics.RetrieveUpdateDestroyAPIView):
+class CategoryDetailApiView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyAPIView):
     """
     Job Category Detail Api View
     """

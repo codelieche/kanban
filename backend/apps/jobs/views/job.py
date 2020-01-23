@@ -3,11 +3,12 @@
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
+from modellog.mixins import LoggingViewSetMixin
 from jobs.models.job import Job
 from jobs.serializers.job import JobModelSerializer
 
 
-class JobCreateApiView(generics.CreateAPIView):
+class JobCreateApiView(LoggingViewSetMixin, generics.CreateAPIView):
     """
     Job Create Api View
     """
@@ -25,7 +26,7 @@ class JobListApiView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
 
 
-class JobDetailApiView(generics.RetrieveUpdateDestroyAPIView):
+class JobDetailApiView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyAPIView):
     """
     Job Detail Api View
     """
