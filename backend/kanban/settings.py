@@ -29,7 +29,7 @@ SECRET_KEY = 'm&qi3snhc9mkwrr*o5o-iq-o)=&x-e^dve&g0+s^48*8fim1s='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "kanban.codelieche.com"]
+ALLOWED_HOSTS = ["127.0.0.1", "kanban.codelieche.com", "localhost"]
 
 
 # Application definition
@@ -211,7 +211,29 @@ REST_FRAMEWORK = {
     )
 }
 
-# 跨域访问
+# 跨域访问相关配置
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'
 CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOW_METHODS = [
+    'OPTIONS',
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+]
+
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+    'access-control-allow-headers',
+]
