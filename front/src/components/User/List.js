@@ -3,7 +3,6 @@
  */
 
 import React from "react";
-import _ from "lodash";
 import { Link } from "react-router-dom";
 
 import {
@@ -20,6 +19,8 @@ import {
 
 import Icon from "../Base/Icon";
 import fetchApi from "../Utils/fetchApi";
+// 有些浏览器不兼容URLSearchParams，所以使用自定义的URLSearchParams
+import URLSearchParams from "../Utils/UrlParam";
 
 import UserEditorModal from "./EditorModal";
 
@@ -28,22 +29,82 @@ export default class UserList extends React.Component {
     super(props);
     // 状态中dataSource是源数据【从服务器fetch过来的数据】
 
+    // 处理url中传递的数据
+    var searchParams = new URLSearchParams(this.props.location.search);
+    var page = searchParams.get("page");
+    // Page需要是整数
+    if(isNaN(page)){
+        page = 1;
+    }else{
+        page = parseInt(page, 10);
+    }
+
     this.state = {
+      // 当前页
+      currentPage: page,
       loaded: false,
       dataSource: [],
-      dataFilter: [],
       visible: false,
       currentUser: {},
+      dataCount: 0,
       // 显示删除按钮
-      showDelete: false
+      showDelete: false,
+      // 搜索关键词
+      search: searchParams.get('search'),
+      // 排序
+      ordering: searchParams.get("ordering"),
+      locationSearch: this.props.location.search,
+      // 过滤字段
+      is_active: searchParams.get("is_active"),
+      can_view: searchParams.get("can_view"),
+      is_superuser: searchParams.get("is_superuser"),
     };
   }
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData(this.state.currentPage);
   }
 
-  fetchData = () => {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if(nextProps.location.search !== prevState.locationSearch){
+      // 处理url中传递的数据
+      var searchParams = new URLSearchParams(nextProps.location.search);
+      var page = searchParams.get("page");
+      // Page需要是整数
+      if(isNaN(page)){
+          page = 1;
+      }else{
+          page = parseInt(page, 10);
+      }
+      // 返回新的状态
+      return {
+        locationSearch: nextProps.location.search,
+        currentPage: page,
+        // 搜索关键词
+        search: searchParams.get('search'),
+        // 排序
+        ordering: searchParams.get("ordering"),
+        // 过滤字段
+        is_active: searchParams.get("is_active"),
+        can_view: searchParams.get("can_view"),
+        is_superuser: searchParams.get("is_superuser"),
+      }
+
+    }else{
+      return null;
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState, snaptshot){
+    // 如果状态变更了，就需要重新获取一下数据
+    if(prevProps.location.search !== this.state.locationSearch){
+        // console.log("需要加载新的数据了", this.state.currentPage, this.state.status);
+        // 记得在search修改的时候，设置新的currentPage
+        this.fetchData(this.state.currentPage);
+    }
+  }
+
+  fetchData = (page) => {
     // 因为有个刷新按钮，防止连续点击
     // 当fetch完数据后设置loaded状态为true
     if (this.state.loaded) {
@@ -57,16 +118,46 @@ export default class UserList extends React.Component {
         return;
       }
     }
-    var url = "http://127.0.0.1:9000/api/v1/account/user/all";
+
+    // 对page进行校验
+    if(isNaN(page)){
+      page = 1;
+    }
+
+    var url = "/api/v1/account/user/list?page=" + page;
+    // 是否有search关键词
+    if(this.state.search){
+      url = `${url}&search=${this.state.search}`;
+    }
+    // 排序
+    if(this.state.ordering){
+      url = `${url}&ordering=${this.state.ordering}`;
+    }
+
+    // 过滤字段
+    var filterColums = ['is_active', 'can_view', 'is_superuser'];
+    filterColums.forEach(item => {
+      // console.log(item, this.state[item])
+      var v = this.state[item];
+      if(v){
+          url = `${url}&${item}=${v}`;
+      }else{
+          
+      }
+    });
+    // console.log(url);
+
     // 跨域访问默认是不带cookie的，这个特别注意
     fetchApi.Get(url)
       .then(responseData => {
         // 返回的json数据是数组才去修改列表相关的数据
-        if (responseData instanceof Array) {
+        let data = responseData.results;
+        if (data instanceof Array) {
           this.setState({
-            dataSource: responseData,
-            dataFilter: responseData,
-            loaded: true
+            dataSource: data,
+            loaded: true,
+            dataCount: responseData.count,
+            currentPage: page,
           });
         } else {
           this.setState({
@@ -81,47 +172,59 @@ export default class UserList extends React.Component {
           loaded: true
         });
       });
-  };
+  }
 
   onSearchHandler = value => {
     // 搜索框回车后处理函数
-    // 主要就是使用lodash的filter从源数据是dataSource中过滤出dataFilter
-    if (value) {
-      var newData = [];
-      var search = value.toLowerCase();
-      newData = _.filter(this.state.dataSource, function(item) {
-        if (item.username.toLowerCase().indexOf(search) >= 0) {
-          return true;
-        } else {
-          return false;
+    // console.log(value);
+    this.setState({
+      search: value,
+      currentPage: 1,
+    }, () => {
+      let url = "/user/list?page=1";
+
+      if(value){
+        url = `${url}&search=${value}`;
+      }
+
+      // 过滤字段
+      var filterColums = ['is_active', 'can_view', 'is_superuser'];
+      filterColums.forEach(item => {
+        // console.log(item, this.state[item])
+        var v = this.state[item];
+        if(v){
+            url = `${url}&${item}=${v}`;
         }
       });
-      this.setState({
-        dataFilter: newData
-      });
-    } else {
-      // value是空了，表示不搜索了，那么就显示出全部数据
-      this.setState(prevState => ({
-        dataFilter: prevState.dataSource
-      }));
-    }
-  };
+
+      // 排序
+      if(this.state.ordering){
+        if(url.indexOf("?") > 0){
+            url = `${url}&ordering=${this.state.ordering}`;
+        }else{
+            url = `${url}?ordering=${this.state.ordering}`;
+        }
+      }
+      // 跳转新的连接，重点是需要url中的params的数据
+      this.props.history.push(url);
+    });
+  }
 
   editorOnClick = user => {
     this.setState({
       visible: true,
       currentUser: user
     });
-  };
+  }
 
   deleteOnCancel = e => {
     // 选择取消的话，也弹出消息
     message.error("取消删除", 3);
-  };
+  }
 
   deleteOnConfirm = value => {
     // 开始删除
-    const url = `http://127.0.0.1:9000/api/v1/account/user/${value.id}`;
+    const url = `/api/v1/account/user/${value.id}`;
     // 通过delete删除用户
     fetchApi.Delete(url)
       .then(response => {
@@ -172,6 +275,63 @@ export default class UserList extends React.Component {
       return { showDelete: !prevState.showDelete };
     });
   };
+
+  handleTableChange = (pagination, filters, sorter) => {
+    // console.log(pagination, filters, sorter);
+    var currentPage = pagination.current;
+    // 为了整合根据status的过滤和根据status_code的排序
+    // 设置状态栏的key为：status_code,而dataIndex是字符status
+    // 所以在取过滤字段要用status，而排序要用status_code【特别注意】
+    var filterColums = ['is_active', 'can_view', 'is_superuser'];
+    let values = {is_active: null, can_view: null, is_superuser: null};
+    filterColums.forEach(item => {
+      var v = filters[item];
+      if(v){
+          if(v instanceof Array){
+              values[item] = v[0];
+          }else{
+              values[item] = v;
+          }
+      }else{
+          values[item] = null;
+      }
+    });
+    
+    // console.log(values);
+
+    // 构造新的连接
+    let url = `/user/list?page=${currentPage}`;
+    if(this.state.search){
+      url = `${url}&search=${this.state.search}`;
+    }
+
+    // 过滤字段
+    filterColums.forEach(item => {
+      var v = values[item];
+
+      if(v){
+          url = `${url}&${item}=${v}`;
+      }else{
+          
+      }
+    });
+
+    // 排序
+    if(sorter && sorter.columnKey){
+      if(sorter.order === "ascend"){
+          // 升序排列
+          url = `${url}&ordering=${sorter.columnKey}`;
+      }else{
+          // 降序排列
+          url = `${url}&ordering=-${sorter.columnKey}`;
+      }
+    
+    }
+
+    // 跳转新的连接
+    this.props.history.push(url);
+
+  }
 
   render() {
     // Table的列：id, username
@@ -240,18 +400,6 @@ export default class UserList extends React.Component {
         onFilter: (value, record) => record.is_active.toString() === value
       },
       {
-        title: "手机号",
-        dataIndex: "mobile",
-        key: "mobile",
-        render: value => {
-          if (value) {
-            return <div className="center">{value}</div>;
-          } else {
-            return <div className="center">---</div>;
-          }
-        }
-      },
-      {
         title: "超级用户",
         dataIndex: "is_superuser",
         key: "is_superuser",
@@ -276,6 +424,24 @@ export default class UserList extends React.Component {
         ],
         filterMultiple: false,
         onFilter: (value, record) => record.is_superuser.toString() === value
+      },
+      {
+        title: "手机号",
+        dataIndex: "mobile",
+        key: "mobile",
+        render: value => {
+          if (value) {
+            return <div className="center">{value}</div>;
+          } else {
+            return <div className="center">---</div>;
+          }
+        }
+      },
+      {
+        title: "加入时间",
+        dataIndex: "date_joined",
+        key: "date_joined",
+        sorter: (a, b) => a.id - b.id
       },
       {
         title: "Action",
@@ -401,9 +567,11 @@ export default class UserList extends React.Component {
           <div className="main-list">
             <Table
               columns={columns}
-              dataSource={this.state.dataFilter}
+              dataSource={this.state.dataSource}
               rowKey="id"
               bordered={true}
+              pagination={{current: this.state.currentPage, total: this.state.dataCount}}
+              onChange={this.handleTableChange}
             />
           </div>
           {/* 编辑用户的对话框 */}

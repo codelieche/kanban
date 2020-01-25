@@ -2,13 +2,16 @@
 """
 账号登陆登出相关api
 """
-from django.contrib.auth import authenticate, login, logout
-from django.http import JsonResponse
 from rest_framework import generics
 from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
+
+from django.contrib.auth import authenticate, login, logout
+from django.http import JsonResponse
 
 from utils.permissions import IsSuperUserOrReadOnly
 from modellog.mixins import LoggingViewSetMixin
@@ -96,10 +99,15 @@ class UserListView(generics.ListAPIView):
     """
     用户列表
     """
-    queryset = User.objects.filter(is_deleted=False)
-    serializer_class = UserSimpleInfoSerializer
-    pagination_class = None
+    queryset = User.objects.all()
+    serializer_class = UserAllListSerializer
     permission_classes = (IsAuthenticated,)
+    # filter
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ("username", "mobile")
+    filter_fields = ("is_active", "is_superuser", "is_deleted", "can_view")
+    ordering_fields = ("id", "mobile")
+    orderint = ("id",)
 
 
 class UserAllListView(generics.ListAPIView):

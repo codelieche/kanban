@@ -25,7 +25,9 @@ class UserProfile(AbstractUser):
     # 公司有时候会用到钉钉/微信发送消息，需要记录用户相关ID
     dingding = models.CharField(max_length=40, verbose_name="钉钉ID", blank=True, null=True)
     wechart = models.CharField(max_length=40, verbose_name="微信ID", blank=True, null=True)
-
+    # 能否访问本系统，默认是不可以访问本系统
+    # 注意第一个管理员用户，可以去数据库调整can_view的值为1
+    can_view = models.BooleanField(verbose_name="能访问", default=False, blank=True)
     is_deleted = models.BooleanField(verbose_name="删除", default=False, blank=True)
 
     def __repr__(self):

@@ -4,6 +4,8 @@
 """
 from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import OrderingFilter, SearchFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
@@ -13,15 +15,35 @@ from utils.permissions import IsSuperUser
 from modellog.mixins import LoggingViewSetMixin
 
 
-class GroupListView(generics.ListAPIView):
+class GroupListAllView(generics.ListAPIView):
     """
-    Group List
+    Group List All
     """
     queryset = Group.objects.all()
     serializer_class = GroupInfoSerializer
     permission_classes = (IsAuthenticated,)
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    filter_fields = ("name",)
+    search_fields = ("name",)
+    ordering_fields = ("id",)
+    ordering = ("id",)
     # 不要分页
     pagination_class = None
+
+
+class GroupListView(generics.ListAPIView):
+    """
+    Group List All
+    """
+    queryset = Group.objects.all()
+    serializer_class = GroupInfoSerializer
+    permission_classes = (IsAuthenticated,)
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    filter_fields = ("name",)
+    search_fields = ("name",)
+    ordering_fields = ("id",)
+    ordering = ("id",)
+
 
 
 class GroupCreateView(LoggingViewSetMixin, generics.CreateAPIView):
