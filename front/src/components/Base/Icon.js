@@ -3,6 +3,7 @@
  * 需要传递的属性(props):
  * 1. type: 图标的名字
  * 2. spin：是否旋转，默认是false
+ * 3. danger: 是否设置为红色
  * 
  * 由于antd4.0开始已经不再内置Icon组件，需要使用独立的包“@ant-design/icons”
  *
@@ -17,7 +18,8 @@ class Icon extends React.Component {
         super(props);
         this.state = {
             type: this.props.type,
-            spin: false,
+            spin: this.props.spin,
+            danger: this.props.danger,
         }
     }
 
@@ -29,10 +31,12 @@ class Icon extends React.Component {
     // 当rerender的时候触发
     static getDerivedStateFromProps(nextProps, prevState){
     //    console.log(nextProps, prevState);   
-       if(nextProps.type !== prevState.type || nextProps.spin !== prevState.spin){
+       if(nextProps.type !== prevState.type || 
+        nextProps.spin !== prevState.spin || nextProps.danger !== prevState.danger){
            return {
                type: nextProps.type,
-               spin: nextProps.spin
+               spin: nextProps.spin,
+               danger: nextProps.danger,
            }
        }else{
            return null;
@@ -45,11 +49,16 @@ class Icon extends React.Component {
         if(this.state.spin){
             iconClassName += " fa-spin"
         }
+        if(this.state.danger){
+            iconClassName += " danger";
+        }
 
         return (
-            <div>
-                <i className={iconClassName}>{this.props.children}</i>
-            </div>
+            <span style={{marginRight: 5, display: "inline-block"}}>
+                <i className={iconClassName}>
+                    {this.props.children}
+                </i>
+            </span>
         );
     }
 }

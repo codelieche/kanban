@@ -7,6 +7,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 import { Row, Col, Breadcrumb } from "antd";
+import ModelLogs from "../../Base/ModelLogs";
+
 import fetchApi from "../../Utils/fetchApi";
 
 export default class UserGroupDetail extends React.Component {
@@ -58,7 +60,7 @@ export default class UserGroupDetail extends React.Component {
         </Breadcrumb>
         <div className="main">
           <Row gutter={16}>
-            <Col xs={{ span: 24 }} sm={{ span: 12 }}>
+            <Col xs={{ span: 24 }} sm={{ span: 16 }}>
               <Row className="title">
                 <h4>用户组详情</h4>
               </Row>
@@ -76,6 +78,9 @@ export default class UserGroupDetail extends React.Component {
                   </dd>
                 </dl>
               </div>
+            </Col>
+            <Col xs={24} sm={8}>
+                  <ModelLogs app="auth" model='group' id={this.state.id} />
             </Col>
           </Row>
         </div>

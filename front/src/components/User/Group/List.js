@@ -274,7 +274,7 @@ export default class UserGroupList extends React.Component {
                   state: { data: text }
                 }}
               >
-                详情
+                <Icon type="link"> 详情</Icon>
               </Link>
               <span className="ant-divider" />
               <Link
@@ -283,7 +283,7 @@ export default class UserGroupList extends React.Component {
                   state: { data: text }
                 }}
               >
-                编辑
+                <Icon type="edit"> 编辑</Icon>
               </Link>
               <span className="ant-divider" />
               <Popconfirm
@@ -291,9 +291,9 @@ export default class UserGroupList extends React.Component {
                 onCancel={this.deleteOnCancel}
                 onConfirm={() => this.deleteOnConfirm(text)}
               >
-                <Button icon={<Icon type="" />} type="link">
-                  删除
-                </Button>
+                  <span>
+                    <Icon type="trash-o" danger={true}> 删除</Icon>
+                  </span>
               </Popconfirm>
             </span>
           );
