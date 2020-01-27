@@ -44,7 +44,7 @@ export default class UserGroupEditor extends React.Component {
 
   handleEditorSubmit = values => {
     // 提交编辑表单处理函数
-    console.log(values);
+    // console.log(values);
     // 通过fetch PUT 编辑Group
     const url = "/api/v1/account/group/" + this.state.id;
     fetchApi.Put(url, {}, {

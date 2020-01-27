@@ -15,6 +15,8 @@ import {
 } from "antd";
 
 import Icon from "../../Base/Icon";
+// 有些浏览器不兼容URLSearchParams，所以使用自定义的URLSearchParams
+import URLSearchParams from "../../Utils/UrlParam";
 import fetchApi from "../../Utils/fetchApi";
 
 export default class MessageList extends React.Component {
@@ -24,6 +26,16 @@ export default class MessageList extends React.Component {
     // dataFilter是根据search输入框的变化而变化的【过滤查询后的数组】
     // 在删除操作中，删除了元素后，要修改dataSource和dataFilter的值【细节】
     var type = this.props.match.params.type;
+    // 处理url中传递的数据
+    var searchParams = new URLSearchParams(this.props.location.search);
+    var page = searchParams.get("page");
+    // Page需要是整数
+    if(isNaN(page)){
+        page = 1;
+    }else{
+        page = parseInt(page, 10);
+    }
+
     this.state = {
       loaded: false,
       dataSource: [],
@@ -31,9 +43,12 @@ export default class MessageList extends React.Component {
       // 工作流总共的条数，列表下面的分页会用到这个值
       dataCount: 0,
       // 当前列表页页码
-      currentPage: 1,
+      currentPage: page,
       // 搜索关键词
-      search: "",
+      search: searchParams.get('search'),
+      // 排序
+      ordering: searchParams.get("ordering"),
+      locationSearch: this.props.location.search,
       match: this.props.match,
     };
   }
@@ -56,6 +71,7 @@ export default class MessageList extends React.Component {
     if (isNaN(page)) {
       page = 1;
     }
+
     var url;
     if (page) {
       if (this.state.search) {
@@ -105,19 +121,35 @@ export default class MessageList extends React.Component {
   };
 
   componentDidMount() {
-    this.fetchData();
+    this.fetchData(this.state.currentPage);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
+
     // 当props被修改的时候，需要触发修改type状态和，重新获取消息数据
     // console.log(nextProps, prevState);
-    if (nextProps.match !== prevState.match) {
+    if (nextProps.match !== prevState.match || nextProps.location.search !== prevState.locationSearch) {
       // 设置新的type
       var type = nextProps.match.params.type;
       // 修改完state后，再获取新的列表数据
-      
+      // 处理url中传递的数据
+      var searchParams = new URLSearchParams(nextProps.location.search);
+      var page = searchParams.get("page");
+      // Page需要是整数
+      if(isNaN(page)){
+          page = 1;
+      }else{
+          page = parseInt(page, 10);
+      }
+
       return {
-          type: type
+          type: type,
+          currentPage: page,
+          // 搜索关键词
+          search: searchParams.get('search'),
+          // 排序
+          ordering: searchParams.get("ordering"),
+          locationSearch: nextProps.location.search,
       }
     }else{
       return null;
@@ -126,8 +158,10 @@ export default class MessageList extends React.Component {
 
   componentDidUpdate(prevProps, prevState, snaptshot){
     // console.log(nextProps)
-    if(prevProps.match.params.type !== this.state.type){
-        this.fetchData();
+    if(prevProps.match.params.type !== this.state.type || 
+      prevProps.location.search !== this.state.locationSearch
+    ){
+        this.fetchData(this.state.currentPage);
     }
   } 
 
@@ -139,11 +173,11 @@ export default class MessageList extends React.Component {
       .then(response => {
         // 查看status状态码,ok(true/false)
         if (response.status === 204) {
-          message.success("删除:" + value.name + "成功", 3);
+          message.success("删除消息(ID:" + value.id + ")成功", 3);
           // 删除后刷新数据
           this.fetchData(this.state.currentPage);
         } else {
-          message.error("删除:" + value.name + "失败", 3);
+          message.error("删除消息(ID:" + value.id + ")失败", 3);
         }
       })
       .catch(err => {
@@ -158,13 +192,47 @@ export default class MessageList extends React.Component {
 
   onSearchHandler = value => {
     // 搜索框回车后处理函数
-    this.setState(
-      {
-        search: value
-      },
-      this.fetchData
-    );
+    let url = `/user/message/${this.state.type}?page=1`;
+    if(value){
+      url = `${url}&search=${value}`;
+    }
+    let paramsFields = ["unread", "ordering"];
+    paramsFields.forEach(item => {
+      let value = this.state[item];
+      if (value){
+        url = `${url}&${item}=${value}`;
+      }
+    });
+    // 跳转新的页面
+    this.props.history.push(url);
   };
+
+  handleTableChange = (pagination, filters, sorter) => {
+    // console.log(pagination, filters, sorter);
+    var currentPage = pagination.current;
+    // 为了整合根据status的过滤和根据status_code的排序
+    // 设置状态栏的key为：status_code,而dataIndex是字符status
+    // 所以在取过滤字段要用status，而排序要用status_code【特别注意】
+
+    // 构造新的连接
+    let url = `/user/message/${this.state.type}?page=${currentPage}`;
+    if(this.state.search){
+      url = `${url}&search=${this.state.search}`;
+    }
+    // 排序
+    if(sorter && sorter.columnKey){
+      if(sorter.order === "ascend"){
+          // 升序排列
+          url = `${url}&ordering=${sorter.columnKey}`;
+      }else{
+          // 降序排列
+          url = `${url}&ordering=-${sorter.columnKey}`;
+      }
+    }
+    // 跳转新的连接
+    this.props.history.push(url);
+
+  }
 
   render() {
     // Table的列：Name、Parent、Type、Description、Action
@@ -180,6 +248,7 @@ export default class MessageList extends React.Component {
                 pathname: "/user/message/" + record.id,
                 state: { data: record }
               }}
+              style={{textAlign:"left"}}
             >
               {record.unread ? <Badge status="default" color="cyan" /> : null}
               {text}
@@ -299,8 +368,9 @@ export default class MessageList extends React.Component {
               pagination={{
                 current: this.state.currentPage,
                 total: this.state.dataCount,
-                onChange: this.fetchData
+                // onChange: this.fetchData
               }}
+              onChange={this.handleTableChange}
             />
           </div>
         </div>

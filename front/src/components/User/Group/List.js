@@ -80,7 +80,7 @@ export default class UserGroupList extends React.Component {
         // 记得在search修改的时候，设置新的currentPage
         this.fetchData(this.state.currentPage);
     }
-}
+  } 
 
   fetchData = (page) => {
     // 因为有个刷新按钮，防止连续点击

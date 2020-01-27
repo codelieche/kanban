@@ -21,7 +21,12 @@ class BaseForm extends React.Component {
       //  穿梭框选中的key和目标keys
       selectedKeys: [],
       //  右边表单中Target选中的keys
-      targetKeys: data.user_set ? data.user_set : []
+      targetKeys: data.user_set ? data.user_set : [],
+
+      // 权限相关的数据：搞成跟设置user的穿梭框类似
+      transferPermisionDataSource: [],
+      selectedPermissionKeys: [],
+      targetPermissionKeys: data.permissions ? data.permissions : [],
     };
   }
 
@@ -30,6 +35,8 @@ class BaseForm extends React.Component {
   componentDidMount() {
     //  获取所有用户的列表
     this.fetchAllUserData();
+    // 获取所有权限的列表
+    this.fetchAllPermissionData();
   }
 
 
@@ -42,6 +49,8 @@ class BaseForm extends React.Component {
         // 选中的user数据
         // targetKeys: nextProps.data.user_set
         targetKeys: nextProps.data && nextProps.data.user_set ? nextProps.data.user_set : [],
+        // 选择的权限数据
+        targetPermissionKeys: nextProps.data.permissions ? nextProps.data.permissions : [],
       };
     }else{
       return null;
@@ -64,6 +73,7 @@ class BaseForm extends React.Component {
     // console.log(values);
     // console.log(this.state);
     values["user_set"] = this.state.targetKeys;
+    values["permissions"] = this.state.targetPermissionKeys;
     
     this.props.handleSubmit(values);
   };
@@ -93,6 +103,31 @@ class BaseForm extends React.Component {
     // fetch end
   }
 
+  fetchAllPermissionData() {
+    // 获取所有用户列表
+    const url = "/api/v1/account/permission/all";
+    fetchApi.Get(url)
+        .then(data => {
+            if (data instanceof Array) {
+                // 获取的数据是数组才ok
+                this.permissions = data;
+                // 生成穿梭框左边的源数据[{key: id, title: username}]
+                let transferPermissionDataSource = data.map(item => ({
+                    key: item.id,
+                    title: `${item.codename}【${item.app_model}】`
+                }));
+                // 修改状态：设置穿梭框源数据和选中的key的值
+                this.setState({
+                    transferPermissionDataSource: transferPermissionDataSource
+                });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    // fetch end
+}
+
   // 穿梭框
   handleTransferSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
     // 处理穿梭框选中item的操作
@@ -102,11 +137,25 @@ class BaseForm extends React.Component {
     });
   };
 
+  handlePermissionTransferSelectChange = (sourceSelectedKeys, targetSelectedKeys) => {
+    // 处理穿梭框选中item的操作
+    // 当鼠标点击穿梭框的内容的时候，需要修改下选中的key的列表的值
+    this.setState({
+        selectedPermissionKeys: [...sourceSelectedKeys, ...targetSelectedKeys]
+    });
+  };
+
   handleTransferChange = (nextTargetkeys, direction, moveKeys) => {
     // 处理穿梭框左右穿梭的函数
     // 把左边移动到邮编，右边移到左右的时候，主要就是改变右边的targetKeys的值
     this.setState({ targetKeys: nextTargetkeys });
   };
+
+  handlePermissionTransferChange = (nextTargetkeys, direction, moveKeys) => {
+    // 处理穿梭框左右穿梭的函数
+    // 把左边移动到邮编，右边移到左右的时候，主要就是改变右边的targetKeys的值
+    this.setState({ targetPermissionKeys: nextTargetkeys });
+};
 
   render() {
     // Button提交按钮的名字
@@ -186,7 +235,30 @@ class BaseForm extends React.Component {
                   render={item => item.title}
                 />
               </div>
+            </Form.Item>
 
+            <Form.Item
+              {...transferItemLayout}
+              name="permissions"
+            >
+              <div>
+                <Transfer
+                    listStyle={{
+                        maxWidth: 300,
+                        width: "43%",
+                        minHeight: 250,
+                        overflow: "auto"
+                    }}
+                    dataSource={this.state.transferPermissionDataSource}
+                    targetKeys={this.state.targetPermissionKeys}
+                    selectedKeys={this.state.selectedPermissionKeys}
+                    onChange={this.handlePermissionTransferChange}
+                    onSelectChange={this.handlePermissionTransferSelectChange}
+                    titles={["所有权限", "组权限"]}
+                    showSearch
+                    render={item => item.title}
+                />
+              </div>
             </Form.Item>
             <Form.Item {...tailLayout}>
               <Button

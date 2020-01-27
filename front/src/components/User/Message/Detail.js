@@ -82,7 +82,8 @@ export default class MessageDetail extends React.Component {
               </div>
               <div className="meta">
                 <span>消息类型: {this.state.detail.scope}</span>
-                <span>发布时间: {this.state.detail.time_added}</span>
+                <span>发送者: {this.state.detail.sender}</span>
+                <span>时间: {this.state.detail.time_added}</span>
               </div>
             </div>
 

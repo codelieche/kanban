@@ -62,7 +62,7 @@ class UserMessage extends React.Component {
                   count={this.state.unreadCount}
                   // className="badge"
                   // style={{ marginLeft: 20, background: "#989898" }}
-                  offset={[10, -3]}
+                  offset={[15, -5]}
                 >
                   <span>未读消息</span>
                 </Badge>

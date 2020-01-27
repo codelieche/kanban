@@ -23,9 +23,8 @@ class LoginForm extends Component {
   handleSubmit = (values) => {
     // console.log(values);
 
-    
     // POST登陆账号
-    const url = "http://127.0.0.1:9000/api/v1/account/login";
+    const url = "/api/v1/account/login";
     // 跨域默认是不传递cookie的，要传递cookies需要设置credential: include
     fetchApi.Post(url, {},
       {
@@ -44,15 +43,21 @@ class LoginForm extends Component {
         const params = new URLSearchParams(this.props.location.search);
         // 获取next的值
         let next = params.get("next");
+        // console.log(next);
+        // alert(next);
         // 如果next为null或者next为/user/login那么就跳转到首页
         if (!next || next === "/user/login") {
           next = "/";
         }
         // 跳转去首页
-        // console.log('即将跳转', next);
+        console.log('即将跳转', next);
         // this.props.history.push(next);
-        var url = window.location.origin + next;
-        window.location.href = url;
+        if (next.startsWith("http")){
+          window.location.href = next;
+        }else{
+          var url = window.location.origin + next;
+          window.location.href = url;
+        }
       } else {
         message.error("登陆失败:" + data.message, 5);
       }
