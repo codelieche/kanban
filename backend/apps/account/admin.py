@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from account.models import UserProfile, MessageScope
+from account.models import UserProfile, MessageScope, Message
 
 # Register your models here.
 
@@ -27,3 +27,4 @@ class MessageScopeAdmin(admin.ModelAdmin):
 # 注册Model到admin中
 admin.site.register(UserProfile, UserModelAdmin)
 admin.site.register(MessageScope, MessageScopeAdmin)
+admin.site.register(Message)

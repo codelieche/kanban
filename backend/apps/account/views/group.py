@@ -45,7 +45,6 @@ class GroupListView(generics.ListAPIView):
     ordering = ("id",)
 
 
-
 class GroupCreateView(LoggingViewSetMixin, generics.CreateAPIView):
     """
     Group Create

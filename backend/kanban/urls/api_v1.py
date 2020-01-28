@@ -9,6 +9,8 @@ urlpatterns = [
     path('jobs/', include(arg=("jobs.urls.api", "jobs"), namespace="jobs")),
     # Docs相关的api
     path('docs/', include(arg=("docs.urls.api", "docs"), namespace="docs")),
+    # 配置相关的api
+    path('config/', include(arg=("config.urls.api", "config"), namespace="config")),
     # Model日志相关的api
     path('modellog/', include(arg=('modellog.urls', 'modellog'), namespace='modellog')),
     # Model标签相关api
