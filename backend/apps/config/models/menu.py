@@ -24,7 +24,7 @@ class Menu(models.Model):
     )
     title = models.CharField(max_length=20, verbose_name="标题", db_index=True)
     # slug可以设置为相对地址，也可是绝对地址，推荐绝对地址
-    slug = models.CharField(max_length=20, verbose_name="网址", unique=True)
+    slug = models.CharField(max_length=128, verbose_name="网址", unique=True)
     icon = models.CharField(max_length=20, verbose_name="图标", blank=True, null=True)
     # 父级分类
     parent = models.ForeignKey(verbose_name="父级菜单", related_name="subs",
@@ -40,7 +40,9 @@ class Menu(models.Model):
     target = models.CharField(verbose_name="点击跳转方式", max_length=10,
                               choices=TARGET_CHOICES, blank=True, default="_self")
     # 是否是外部链接,有值的话就是
-    link = models.CharField(verbose_name="网址", max_length=128, blank=True, null=True)
+    is_link = models.BooleanField(verbose_name="是否是站外链接", default=False, blank=True)
+    link = models.URLField(verbose_name="站外链接", max_length=128, blank=True, null=True)
+    order = models.SmallIntegerField(verbose_name="排序", default=1, blank=True)
     is_deleted = models.BooleanField(verbose_name="是否删除", blank=True, default=False)
     time_added = models.DateTimeField(verbose_name="添加时间", blank=True, auto_now_add=True)
 
@@ -56,7 +58,8 @@ class Menu(models.Model):
         self.level = level
 
         # 对slug进行处理
-        if not self.slug.startswith(".") and not self.slug.startswith("/"):
+        self.slug = self.slug.strip()
+        if not self.slug.startswith((".", "/", "http")):
             self.slug = "/{}".format(self.slug)
 
         # 调用父方法
@@ -74,4 +77,5 @@ class Menu(models.Model):
     class Meta:
         verbose_name = "导航菜单"
         verbose_name_plural = verbose_name
+        ordering = ("level", "order")
 

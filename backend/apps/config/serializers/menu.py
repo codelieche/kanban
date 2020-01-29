@@ -9,9 +9,14 @@ class MenuModelSerializer(serializers.ModelSerializer):
     Menu Model Serializer
     """
 
+    key = serializers.CharField(read_only=True, source="slug")
+
     def validate(self, attrs):
-        if "parent" not in attrs:
-            attrs["parent"] = None
+        # if "parent" not in attrs:
+        #     attrs["parent"] = None
+        is_link = attrs.get("is_link")
+        if is_link and not attrs.get("link"):
+            raise serializers.ValidationError("请传入站外链接的地址")
         return attrs
 
     def get_fields(self):
@@ -23,8 +28,8 @@ class MenuModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Menu
         fields = (
-            "id", "title", "slug", "icon", "parent", "subs", "permission",
-            "target", "link", "is_deleted", "level"
+            "id", "title", "key", "slug", "icon", "parent", "subs", "permission",
+            "target", "is_link", "link", "is_deleted", "level", "order"
         )
         # validators = [
         #     serializers.UniqueTogetherValidator(
