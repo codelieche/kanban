@@ -50,7 +50,7 @@ class BaseForm extends React.Component {
         // targetKeys: nextProps.data.user_set
         targetKeys: nextProps.data && nextProps.data.user_set ? nextProps.data.user_set : [],
         // 选择的权限数据
-        targetPermissionKeys: nextProps.data.permissions ? nextProps.data.permissions : [],
+        targetPermissionKeys: nextProps.data && nextProps.data.permissions ? nextProps.data.permissions : [],
       };
     }else{
       return null;

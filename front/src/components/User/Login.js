@@ -42,20 +42,26 @@ class LoginForm extends Component {
         // 首先获取search参数：?next=/
         const params = new URLSearchParams(this.props.location.search);
         // 获取next的值
-        let next = params.get("next");
+        let next = params.get("next", "/");
         // console.log(next);
-        // alert(next);
         // 如果next为null或者next为/user/login那么就跳转到首页
         if (!next || next === "/user/login") {
+          // 跳转去首页
           next = "/";
         }
-        // 跳转去首页
-        console.log('即将跳转', next);
-        // this.props.history.push(next);
-        if (next.startsWith("http")){
+        // console.log('即将跳转', next);
+        
+        if (typeof next === "string" && next.startsWith("http")){
           window.location.href = next;
         }else{
-          var url = window.location.origin + next;
+          // 跳转到当前域名的首页
+          var url = window.location.origin;
+
+          if (typeof next === "string"){
+            // next是字符类型的，就加上next后就是要跳转的url
+            url = window.location.origin + next;
+          }
+          // 跳转
           window.location.href = url;
         }
       } else {
@@ -76,13 +82,13 @@ class LoginForm extends Component {
   render() {
     // const { getFieldDecorator } = this.props.form;
     return (
-      <Layout style={{ height: "100vh" }}>
-        <Row style={{ height: "100vh" }}>
+      <Layout className="container">
+        <Row className="login">
           <Col xs={{ span: 20, offset: 2 }} lg={{ span: 6, offset: 9 }}>
             <div
               className="logo"
-              style={{ textAlign: "center", marginTop: "100px", 
-              backgroundColor:"#4A90E2", padding: "30px 20px", borderRadius: "10px 10px 0 0" }}
+              // style={{ textAlign: "center", marginTop: "100px", 
+              // backgroundColor:"#4A90E2", padding: "30px 20px", borderRadius: "10px 10px 0 0" }}
             >
               <img
                 src="https://www.codelieche.com/static/images/logo.svg"
@@ -90,8 +96,9 @@ class LoginForm extends Component {
               />
             </div>
 
-            <Form onSubmit={this.handleSubmit} onFinish={this.handleSubmit} name="baseForm"
-            ref={this.formRef} className="login-form">
+            <Form ref={this.formRef}
+              onFinish={this.handleSubmit} name="baseForm"
+            className="login-form">
               <FormItem
                 name="username"
                 rules={[
@@ -123,20 +130,22 @@ class LoginForm extends Component {
                   className="login-form-button"
                   style={{ width: "100%" }}
                 >
-                  Login in
+                  登录
                 </Button>
               </FormItem>
 
-              <FormItem>
+              <FormItem 
+                // style={{marginBottom: 0}}
+              >
                 <Row>
                   <Col span={12} className="login-form-change">
                     <Link to="">
-                      change password
+                      修改密码
                     </Link>
                   </Col>
                   <Col span={12} className="login-form-forget">
                     <Link to="">
-                      forget password
+                      忘记密码
                     </Link>
                   </Col>
                 </Row>

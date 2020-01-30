@@ -11,8 +11,13 @@ const navData = [
           },
           {
             slug: "/user/list",
-            icon: "user",
+            icon: "user-o",
             title: "用户列表"
+          },
+          {
+            slug: "/user/message",
+            icon: "user-circle-o",
+            title: "用户中心"
           },
           {
             slug: "/user/message",
