@@ -13,7 +13,7 @@ import {
 } from 'react-router-dom';
 
 
-// import navData from './NavData';
+import navData from './NavData';
 
 class Nav extends React.Component {
     constructor(props) {
@@ -30,7 +30,7 @@ class Nav extends React.Component {
     componentDidMount() {
         this.fetchNavData();
         // this.setState({
-        //     navData: navData
+            // navData: navData
         // });
     }
 
@@ -41,9 +41,16 @@ class Nav extends React.Component {
         .then(data => {
             if(data instanceof Array) {
                 this.setState({navData: data});
+            }else{
+                // 填写默认的导航菜单
+                this.setState({navData: navData});
             }
         })
-        .catch(err => console.log(err));
+        .catch(err => {
+            // 填写默认的导航菜单
+            this.setState({navData: navData});
+            console.log(err);
+        });
     }
 
     topMenuOnClick(key) {

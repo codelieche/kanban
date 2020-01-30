@@ -1,7 +1,7 @@
 const navData = [
     {
         icon: "user-circle",
-        key: "user",
+        key: "/user",
         title: "用户中心",
         subs: [
           {
@@ -16,7 +16,7 @@ const navData = [
           },
           {
             slug: "/user/message",
-            icon: "list",
+            icon: "envelope-o",
             title: "消息中心"
           },
           {
@@ -33,7 +33,7 @@ const navData = [
       },
       {
         icon: "cog",
-        key: "test",
+        key: "/test",
         title: "测试页面",
         subs: [
           {
@@ -45,6 +45,28 @@ const navData = [
             slug: "/test/page",
             icon: "angle-right",
             title: "Page"
+          }
+        ]
+      },
+      {
+        icon: "link",
+        key: "/link",
+        title: "友情链接",
+        subs: [
+          {
+            slug: "http://codelieche.com",
+            icon: "angle-right",
+            title: "编程列车",
+            is_link: true,
+            link: "http://www.codelieche.com"
+          },
+          {
+            slug: "http://codelieche.com",
+            icon: "angle-right",
+            title: "codelieche",
+            is_link: true,
+            target: "_blank",
+            link: "http://codelieche.com"
           }
         ]
       }
