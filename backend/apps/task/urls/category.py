@@ -2,7 +2,7 @@
 
 from django.urls import path
 
-from jobs.views.category import (
+from task.views.category import (
     CategoryCreateApiView,
     CategoryListApiView,
     CategoryListAllApiView,
@@ -10,7 +10,7 @@ from jobs.views.category import (
 )
 
 urlpatterns = [
-    # 前缀：/api/v1/jobs/category/
+    # 前缀：/api/v1/task/category/
     path('create', CategoryCreateApiView.as_view(), name="create"),
     path('list', CategoryListApiView.as_view(), name="list"),
     path('all', CategoryListAllApiView.as_view(), name="all"),

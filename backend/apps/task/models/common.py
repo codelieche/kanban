@@ -2,7 +2,7 @@
 from django.db import models
 
 from account.models import User
-from jobs.models.job import Job
+from task.models.job import Job
 
 
 class Common(models.Model):

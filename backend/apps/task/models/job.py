@@ -9,7 +9,7 @@ from PIL import Image as PImage, ExifTags
 
 from utils.store import ImageStorage
 from account.models import User
-from jobs.models.category import Category
+from task.models.category import Category
 
 
 class Job(models.Model):

@@ -1,7 +1,7 @@
 # -*- coding:utf-8 -*-
 from rest_framework import serializers
 
-from jobs.models.common import Common
+from task.models.common import Common
 
 
 class CommonModelSerializer(serializers.ModelSerializer):

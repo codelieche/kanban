@@ -2,7 +2,7 @@
 
 from rest_framework import serializers
 
-from jobs.models.category import Category
+from task.models.category import Category
 
 
 class CategoryModelSerializer(serializers.ModelSerializer):

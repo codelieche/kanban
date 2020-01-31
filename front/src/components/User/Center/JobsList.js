@@ -28,9 +28,9 @@ export default class UserJobsList extends React.Component {
       this.setState({ showLoading: true });
     }
     // 加载用户任务信息
-    const url = "/api/v1/jobs/job/list";
+    const url = "/api/v1/task/job/list";
     // 开始获取数据
-    fetchApi.Get(url, { credentials: "include" })
+    fetchApi.Get(url)
       .then(responseData => {
         var data = responseData.results;
         if (data instanceof Array) {

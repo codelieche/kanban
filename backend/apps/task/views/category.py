@@ -7,8 +7,8 @@ from rest_framework.permissions import (
 )
 
 from modellog.mixins import LoggingViewSetMixin
-from jobs.models.category import Category
-from jobs.serializers.category import CategoryModelSerializer
+from task.models.category import Category
+from task.serializers.category import CategoryModelSerializer
 
 
 class CategoryCreateApiView(LoggingViewSetMixin, generics.CreateAPIView):

@@ -4,8 +4,8 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 
 from modellog.mixins import LoggingViewSetMixin
-from jobs.models.common import Common
-from jobs.serializers.common import CommonModelSerializer
+from task.models.common import Common
+from task.serializers.common import CommonModelSerializer
 
 
 class CommonCreateApiView(LoggingViewSetMixin, generics.CreateAPIView):

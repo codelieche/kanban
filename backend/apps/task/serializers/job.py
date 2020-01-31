@@ -2,8 +2,8 @@
 from rest_framework import serializers
 
 from account.models import User
-from jobs.models.category import Category
-from jobs.models.job import Job
+from task.models.category import Category
+from task.models.job import Job
 # from jobs.serializers.category import CategoryModelSerializer
 
 
