@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'django_filters',
     # 自己写的app
     'account.apps.AccountConfig',
-    'jobs.apps.JobsConfig',
+    'task.apps.TaskConfig',
     'docs.apps.DocsConfig',
     'config.apps.ConfigConfig',
     'modellog.apps.ModellogConfig',
@@ -189,7 +189,7 @@ AUTHENTICATION_BACKENDS = (
 # 设置session过期时间
 SESION_SAVE_EVERY_REQUEST = True
 # 设置SESSION COOKIE过期时间 1h
-SESSION_COOKIE_AGE = 60 * 60
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 60
 
 # Django Rest Framework的配置
 REST_FRAMEWORK = {

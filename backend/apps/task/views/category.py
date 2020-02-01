@@ -1,6 +1,8 @@
 # -*- coding:utf-8 -*-
 
 from rest_framework import generics
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import (
     IsAuthenticated,
     DjangoModelPermissions, DjangoModelPermissionsOrAnonReadOnly
@@ -28,6 +30,12 @@ class CategoryListApiView(generics.ListAPIView):
     serializer_class = CategoryModelSerializer
     permission_classes = (IsAuthenticated,)
 
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ("name", "parent__name", "description", "code", "parent__code")
+    filter_fields = ("parent", "level", "is_deleted")
+    ordering_fields = ("id", "is_deleted", "parent", "order")
+    ordering = ("parent", "order", "id")
+
 
 class CategoryListAllApiView(generics.ListAPIView):
     """
@@ -37,6 +45,12 @@ class CategoryListAllApiView(generics.ListAPIView):
     serializer_class = CategoryModelSerializer
     permission_classes = (IsAuthenticated,)
     pagination_class = None
+
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ("name", "parent__name", "description", "code", "parent__code")
+    filter_fields = ("parent", "level", "is_deleted")
+    ordering_fields = ("id", "is_deleted", "parent", "order")
+    ordering = ("parent", "order", "id")
 
 
 class CategoryDetailApiView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyAPIView):

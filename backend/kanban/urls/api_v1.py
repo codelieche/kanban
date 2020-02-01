@@ -5,8 +5,9 @@ from django.urls import path, include
 urlpatterns = [
     # 前缀：/api/v1/
     path('account/', include(arg=("account.urls.api", "account"), namespace="account")),
-    # Jobs相关的api
-    path('jobs/', include(arg=("jobs.urls.api", "jobs"), namespace="jobs")),
+    # Task相关的api，可以是task和kanban开头的
+    path('task/', include(arg=("task.urls.api", "task"), namespace="task")),
+    path('kanban/', include(arg=("task.urls.api", "task"), namespace="kanban")),
     # Docs相关的api
     path('docs/', include(arg=("docs.urls.api", "docs"), namespace="docs")),
     # 配置相关的api

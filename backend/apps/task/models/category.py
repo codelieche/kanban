@@ -13,12 +13,15 @@ class Category(models.Model):
     """
     Job的分类
     """
-    name = models.CharField(verbose_name="名称", max_length=40, unique=True)
+    name = models.CharField(verbose_name="名称", max_length=40, db_index=True)
     code = models.SlugField(verbose_name="代码", max_length=20, unique=True)
-    image = models.ImageField(verbose_name="图标", upload_to="jobs/category/%Y/%m", storage=ImageStorage(),
+    image = models.ImageField(verbose_name="图标", upload_to="task/category/%Y/%m", storage=ImageStorage(),
                               help_text="图片路径", blank=True, null=True)
     description = models.CharField(verbose_name="描述", max_length=1024, blank=True, null=True)
     parent = models.ForeignKey(verbose_name="父级分类", blank=True, null=True, to="self", on_delete=models.CASCADE)
+    # level级别 和 顺序 order
+    level = models.SmallIntegerField(verbose_name="级别", blank=True, default=1)
+    order = models.SmallIntegerField(verbose_name="顺序", blank=True, default=1)
     time_added = models.DateTimeField(verbose_name="添加时间", blank=True, auto_now_add=True)
     is_deleted = models.BooleanField(verbose_name="是否删除", blank=True, default=False)
 
@@ -26,6 +29,15 @@ class Category(models.Model):
         return "{}:{}".format(self.code, self.name)
 
     def save(self, *args, **kwargs):
+        # 自动计算level
+        level = 1
+        parent = self.parent
+        while parent:
+            level += 1
+            parent = parent.parent
+        # 给leve赋值
+        self.level = level
+
         if not self.id and self.image:
             self.file = self.resize_image(self.image)
         super().save(*args, **kwargs)
@@ -90,5 +102,4 @@ class Category(models.Model):
     class Meta:
         verbose_name = "Job分类"
         verbose_name_plural = verbose_name
-
 
