@@ -8,35 +8,19 @@ import {
 import {
     Breadcrumb, Input,
     Row, Col, Button, Table,
-    message,
+    message, Divider
 } from "antd";
 
+// 图标组件
 import Icon from "../../Base/Icon";
+
+// 从utils中导入相关功能函数
 import fetchApi from "../../Utils/fetchApi";
-// 有些浏览器不兼容URLSearchParams，所以使用自定义的URLSearchParams
-import URLSearchParams from "../../Utils/UrlParam";
-
-
-let parseLocationSearch = (paramsFields, locationSearch) => {
-    // 处理url中传递的数据
-    // console.log(paramsFields, locationSearch);
-    let searchParams = new URLSearchParams(locationSearch);
-    let page = searchParams.get("page");
-    // page需要是整数
-    if(isNaN(page)){
-        page = 1;
-    }else{
-        page = parseInt(page, 10);
-    }
-
-    // 通过url可以传递的参数
-    let params = {currentPage: page};
-
-    paramsFields.forEach(item => {
-        params[item] = searchParams.get(item);
-    });
-    return params;
-}
+import { getParamsFromLocationSearch } from "../../Utils/UrlParam";
+// 检查用户的权限
+import { checkUserPermissionAndUpdateState } from "../../Utils/auth";
+// 生成表单过滤选项的函数
+import { generateTableFilterOptions } from "../../Utils/table";
 
 class CategoryList extends React.Component{
     constructor(props){
@@ -45,9 +29,9 @@ class CategoryList extends React.Component{
         // 处理url中传递的数据
         let locationSearch = this.props.location.search;
         // // 通过url可以传递的参数
-        this.paramsFields = ["search", "ordering", "parent", "level", "is_deleted"]
+        this.paramsFields = ["page", "search", "ordering", "parent", "level", "is_deleted"]
         // 获取url中获取的字段信息
-        let params = parseLocationSearch(this.paramsFields, locationSearch);
+        let params = getParamsFromLocationSearch(this.paramsFields, locationSearch);
 
         // console.log(params);
 
@@ -55,19 +39,32 @@ class CategoryList extends React.Component{
             // 当前页
             // currentPage: page,
             dataSource: [],
-            dataCount: 0,
+            dataCount: 10,
             loaded: false,
             // url传递的params
             locationSearch: this.props.location.search,
             // 记得把paramsFields传入到state中
             paramsFields: this.paramsFields,
             // 通过url传递的参数
-            ...params
+            ...params,
+            // filter options
+            parentFilterOptions: [],
+            // 权限
+            userCanAddCategory: false,
         };
     }
 
     componentDidMount(){
-        this.fetchData(this.state.currentPage);
+        this.fetchData(this.state.page);
+
+        // 生成列表filter parent options
+        generateTableFilterOptions.bind(this)(
+            "parentFilterOptions", "parentFilterDataSource", "/api/v1/task/category/all?level=1",
+            "name", "id",
+        );
+
+        // 权限检查并设置state
+        checkUserPermissionAndUpdateState.bind(this)("task.add_category", "userCanAddCategory");
     }
 
     static getDerivedStateFromProps(nextProps, prevState){
@@ -76,7 +73,7 @@ class CategoryList extends React.Component{
             // console.log(nextProps.location.search);
             // 处理url中传递的数据
             let locationSearch = nextProps.location.search;
-            let params = parseLocationSearch(prevState.paramsFields, locationSearch);
+            let params = getParamsFromLocationSearch(prevState.paramsFields, locationSearch);
             // let params = {};
             // 返回新的状态
             return {
@@ -91,7 +88,7 @@ class CategoryList extends React.Component{
 
     componentDidUpdate(prevProps, prevState, snaptshot){
         if(prevState.locationSearch !== this.state.locationSearch){
-            this.fetchData(this.state.currentPage);
+            this.fetchData(this.state.page);
         }
     }
 
@@ -100,18 +97,18 @@ class CategoryList extends React.Component{
         // 当fetch完数据后设置loaded状态为true
         if (this.state.loaded) {
             this.setState({
-            loaded: false
+                loaded: false
             });
         } else {
             //正在加载，如果dataSource不是空直接返回
             // 这个时候是因为点了刷新数据，但是上次刷新的请求正在进行中，有数据就直接返回吧
             if (this.state.dataSource.length > 0) {
-            return;
+                return;
             }
         }
     
         // 对page进行校验
-        if(isNaN(page)){
+        if(isNaN(page) || ! page){
             page = 1;
         }
 
@@ -121,10 +118,12 @@ class CategoryList extends React.Component{
         this.paramsFields.forEach(item => {
             let value = this.state[item];
             // console.log(item, value);
-            if(value !== undefined){
+            if(value !== undefined && value !== null){
                 url = `${url}&${item}=${value}`;
             }
         });
+
+        // console.log(url);
 
         // 发起ajax请求
         fetchApi.Get(url)
@@ -135,7 +134,7 @@ class CategoryList extends React.Component{
                 this.setState({
                     dataSource: data,
                     loaded: true,
-                    dataCount: responseData,
+                    dataCount: responseData.count,
                     currentPage: page,
                 });
             }else{
@@ -180,7 +179,7 @@ class CategoryList extends React.Component{
 
     handleTableChange = (pagination, filters, sorter) => {
         let currentPage = pagination.current;
-        var filterColumns = ["is_active"];
+        var filterColumns = ["is_deleted", "parent"];
         let values = {};
         filterColumns.forEach(item => {
             var v = filters[item];
@@ -227,42 +226,97 @@ class CategoryList extends React.Component{
         this.props.history.push(url);
     }
 
-    columns = [
-        {
-            title: "ID",
-            dataIndex: "id",
-            key: "id",
-            sorter: (a, b) => a.id - b.id
-        },
-        {
-            title: "分类名",
-            dataIndex: "name",
-            key: "name",
-        },
-        {
-            title: "代码",
-            dataIndex: "code",
-            key: "code"
-        },
-        {
-            title: "父级分类",
-            dataIndex: "parent",
-            key: "parent",
-        },
-        {
-            title: "描述",
-            dataIndex: "description",
-            key: "description",
-        }
-    ]
-
+    
     render(){
+        // 表格的列
+        const columns = [
+            {
+                title: "ID",
+                dataIndex: "id",
+                key: "id",
+                sorter: (a, b) => a.id - b.id
+            },
+            {
+                title: "分类名",
+                dataIndex: "name",
+                key: "name",
+            },
+            {
+                title: "代码",
+                dataIndex: "code",
+                key: "code"
+            },
+            {
+                title: "父级分类",
+                dataIndex: "parent",
+                key: "parent",
+                filters: this.state["parentFilterOptions"] ? this.state.parentFilterOptions : [],
+                filterMultiple: false,
+            },
+            {
+                title: "描述",
+                dataIndex: "description",
+                key: "description",
+            },
+            {
+                title: "操作",
+                key: "action",
+                render: (text, record) => {
+                    // 看用户能否添加
+                    if(this.state.userCanAddCategory){
+                        return (
+                            <span>
+                                <Link to={`/task/category/${text.id}`}>
+                                    <Button type="link" size="small">
+                                        <Icon type="link"> 详情</Icon>
+                                    </Button>
+                                </Link>
+
+                                <Divider type="vertical" />
+
+                                <Link to={`/task/category/${text.id}/editor`}>
+                                    <Button type="link" size="small">
+                                        <Icon type="edit"> 编辑</Icon>
+                                    </Button>
+                                </Link>
+                                {/* <Divider type="vertical" /> */}
+                            </span>
+                        );
+                    }else{
+                        return (
+                            <span>
+                               <Link to={`/task/category/${text.id}`}>
+                                <Button type="link" size="small">
+                                    <Icon type="link"> 详情</Icon>
+                                </Button>
+                               </Link>
+                            </span>
+                        );
+                    }
+                }
+            }
+        ];
+
+        //  add button ELement
+        let addButtonElement;
+        if(this.state.userCanAddCategory){
+            addButtonElement = (
+                <Link to="/task/category/add">
+                    <Button
+                      style={{width: 100}}
+                      type="primary"
+                      icon={<Icon type="plus"/>}
+                    >Add</Button>
+                </Link>
+            );
+        }
+    
         return (
             <div className="content">
                 {/* 面包屑开始 */}
                 <Breadcrumb className="nav">
                     <Breadcrumb.Item>
-                        <Link to="/"> <Icon type="home">首页</Icon></Link>
+                        <Link to="/"><Icon type="home" noMarginRight={true}/>首页</Link>
                     </Breadcrumb.Item>
                     <Breadcrumb.Item>
                         <Link to="/task">任务</Link>
@@ -294,24 +348,24 @@ class CategoryList extends React.Component{
                             >
                                 刷新
                             </Button>
-                            <Button
-                                type="primary"
-                                icon={<Icon type="plus"/>}
-                                >Add</Button>
+                            {addButtonElement}
                         </Col>
                     </Row>
+                    {/* 工具栏结束 */}
 
                     {/* 分类列表 */}
                     <div className="main-list">
                         <Table
-                          columns={this.columns}
+                          columns={columns}
                           dataSource={this.state.dataSource}
                           rowKey={"id"}
                           bordered={true}
+                        //   size="small"
                           pagination={{current: this.state.currentPage, total: this.state.dataCount}}
                           onChange={this.handleTableChange}
                         />
                     </div>
+                    {/* 分类列表结束 */}
                 </div>
 
             </div>
