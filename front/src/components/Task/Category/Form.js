@@ -16,6 +16,8 @@ import {
     message
 } from "antd";
 
+import useUploadImageItem from "../../Hooks/UplaodImageItem";
+
 // 分类表单
 function CategoryForm(props){
     // 表单的ref
@@ -23,6 +25,8 @@ function CategoryForm(props){
 
     // 数据处理函数
     const [data, dataState] = useState({order: 1});
+    // 上传文件要用到的状态
+    const [fileListData, fileListDataState] = useState(null);
 
     // 相当于：componentDidMount()、componentWillUpdate()
     // 由于useEffect里面调用了dataState, 注意给其设置第二个参数[props.data, props.type, data]
@@ -35,7 +39,10 @@ function CategoryForm(props){
             // 修改表单的数据：注意次数data是老的数据，记得用props.data来修改
             if(props.data.id > 0 && props.type === "editor"){
                 // 需要修改一下表单的数据
+                // let newData = props.data;
+                // delete(newData, "image");
                 formRef.current.setFieldsValue(props.data);
+                // formRef.current.setFieldsValue(newData);
             }
         }
     }, [props.data, props.type, data, formRef, props]);
@@ -58,12 +65,17 @@ function CategoryForm(props){
     }
 
     const handleOnFinish = values => {
-        if(! props.handleSubmit){
-            message.error("没传递表单提交处理函数", 5);
-            return
-        }else{
-            props.handleSubmit(values);
-        }
+      values["image"] = fileListData;
+      // 过滤掉parent字段: 因为api中不支持传递为空的parent
+      if(!values["parent"]){
+        delete values.parent;
+      }
+      if(! props.handleSubmit){
+          message.error("没传递表单提交处理函数", 5);
+          return
+      }else{
+          props.handleSubmit(values);
+      }
     }
 
     // 渲染表单
@@ -92,10 +104,10 @@ function CategoryForm(props){
                       label="Code"
                       name="code"
                       rules={[
-                          {required: true, message: "请填写分类的code"}
+                          {required: props.type === "editor" ? false: true, message: "请填写分类的code"}
                       ]}
                     >
-                      <Input placeholder="code" />
+                      <Input placeholder="code" disabled={props.type === "editor" ? true: false}/>
                     </Form.Item>
 
                     <Form.Item
@@ -153,7 +165,8 @@ function CategoryForm(props){
                           {required: false, message: "请填写图片"}
                       ]}
                     >
-                      <Input placeholder="parent" />
+                      {/* 上传图片的组件：自定义的hooks */}
+                      {useUploadImageItem(data.image, fileListData, fileListDataState)}
                     </Form.Item>
 
                     {/* 提交按钮 */}
@@ -164,9 +177,6 @@ function CategoryForm(props){
                              {props.type === "editor" ? "编辑" : "添加"}
                          </Button>
                     </Form.Item>
-                    <div>
-                        {JSON.stringify(data)}
-                    </div>
                 </Col>
             </Row>
         </Form>

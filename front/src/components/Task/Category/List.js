@@ -110,15 +110,18 @@ class CategoryList extends React.Component{
         // 对page进行校验
         if(isNaN(page) || ! page){
             page = 1;
+        }else{
+            page = parseInt(page, 10);
         }
+
 
         // 构造url
         let url = "/api/v1/task/category/list?page=" + page;
-        // 对params中的字段做处理
+        // 对params中的字段做处理：记得去掉page
         this.paramsFields.forEach(item => {
             let value = this.state[item];
             // console.log(item, value);
-            if(value !== undefined && value !== null){
+            if(value !== undefined && value !== null && item !== "page"){
                 url = `${url}&${item}=${value}`;
             }
         });

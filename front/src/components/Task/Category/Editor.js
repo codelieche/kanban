@@ -46,25 +46,46 @@ function CategoryEditor(props){
         // console.log(values);
         // 通过fetch POST添加Category
         const url = `/api/v1/task/category/${id}`;
-        fetchApi.Put(url, {}, {
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            data: values,
+        let formData = new FormData();
+        for(var k in values){
+            let v = values[k];
+            // console.log(k, v);
+            if (k === "image"){
+                if(v instanceof Array){
+                    for(var i=0; i < v.length; i++){
+                        formData.append("image", v[i]);
+                    };
+                }
+            }else{
+                formData.append(k, v);
+            }
+        }
+        // formData.delete("code");
+        
+        // console.log(formData);
+        fetchApi.Patch(url, formData, {
+            // headers: {
+            //     "Content-Type": "multipart/form-data",
+            //     // "Accept": "application/json"
+            // },
         })
           .then(data => {
-              console.log(data);
+            //   console.log(data);
               if(data.id > 0){
                   // 当data中有id字段，就表示添加成功了，跳转去category的详情页
+                  // 显示结果：跳转去详情页
+                  message.success(`修改分类(id:${data.id})成功`, 5);
+                  props.history.push(`/task/category/${data.id}`);
 
               }else{
+                  message.warn(`修改分类(id:${data.id})失败`, 5);
                   message.error(JSON.stringify(data), 8);
               }
           })
             .catch(err => {
                 console.log(err);
-            })
+                message.error(`修改分类(id:${data.id})出错`, 5);
+            });
     }
 
     // 相当于class写法的render(){}

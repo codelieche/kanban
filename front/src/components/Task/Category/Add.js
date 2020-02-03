@@ -18,25 +18,38 @@ function CategoryAdd(props){
         // console.log(values);
         // 通过fetch POST添加Category
         const url = "/api/v1/task/category/create";
-        fetchApi.Post(url, {}, {
-            headers: {
-                "Content-Type": "application/json",
-                "Accept": "application/json"
-            },
-            data: values,
-        })
+        let formData = new FormData();
+        for(var k in values){
+            let v = values[k];
+            // console.log(k, v);
+            if (k === "image"){
+                if(v instanceof Array){
+                    for(var i=0; i < v.length; i++){
+                        formData.append("image", v[i]);
+                    };
+                }
+            }else{
+                formData.append(k, v);
+            }
+        }
+
+        fetchApi.Post(url, formData, {})
           .then(data => {
               console.log(data);
               if(data.id > 0){
                   // 当data中有id字段，就表示添加成功了，跳转去category的详情页
+                  message.success(`添加分类(id:${data.id})成功`, 5);
+                  props.history.push(`/task/category/${data.id}`);
 
               }else{
-                  message.error(JSON.stringify(data), 8);
+                message.warn(`添加分类失败`, 5);
+                message.error(JSON.stringify(data), 8);
               }
           })
             .catch(err => {
+                message.error(`添加分类出错`, 5);
                 console.log(err);
-            })
+            });
     }
 
     // 相当于class写法的render(){}

@@ -91,10 +91,14 @@ function CategoryDetail(props) {
                                 <dt>描述</dt>
                                 <dd>{data.description}</dd>
                             </dl>
-                            <dl>
-                                <dt></dt>
-                                <dd><img alt="图片" src={data.image}></img></dd>
-                            </dl>
+                            {
+                                data.image &&  
+                                <dl>
+                                    <dt></dt>
+                                    <dd><img alt="图片" src={data.image}></img></dd>
+                                </dl>
+                            }
+                           
                             <dl>
                                 <dt>添加时间</dt>
                                 <dd>{data.time_added}</dd>
