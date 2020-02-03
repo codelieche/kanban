@@ -9,19 +9,21 @@ import {
 import fetchApi from "../Utils/fetchApi";
 
 // 参数：
-// 1. checkValuesState: 操作checkValues的函数与checkValues是成对出现的
-// 2. dataSourceUrl: 表单数据的api接口
-// 3. columns: 表单的列
-// 4. 唯一列表
-// 5. 是否选择多个值
-function useCheckValuesFromTable(checkValuesState, dataSourceUrl, columns, rowKey="id", isMultiple=true){
+// -: checkValues: 选择的数据数组
+// - checkValuesState: 操作checkValues的函数与checkValues是成对出现的
+// - dataSourceUrl: 表单数据的api接口
+// - columns: 表单的列
+// - rowKey: 唯一值列的字段名
+// - isMultiple: 是否选择多个值
+// - disabledKeys: 禁用的keys列表
+function useCheckValuesFromTable(checkValues, checkValuesState, dataSourceUrl, columns, rowKey="id", isMultiple=true, disabledKeys=[]){
     // 保存api获取的数据的state
     const [url, urlState] = useState(null);
     const [dataSource, dataSourceState] = useState([]);
     const [pagination, paginationState] = useState({current: 1, total: 0});
 
     // 选择的keys
-    const [selectedRowKeys, selectedRowKeysState] = useState([]);
+    // const [selectedRowKeys, selectedRowKeysState] = useState([]);
     
     // 获取数据
     const fetchData = (url, page) => {
@@ -67,13 +69,24 @@ function useCheckValuesFromTable(checkValuesState, dataSourceUrl, columns, rowKe
     // 行选择
     const rowSelection = {
         hideDefaultSelections: true,
-        selectedRowKeys: selectedRowKeys,
+        selectedRowKeys: checkValues,
         onChange: (selectedRowKeys) => {
             // console.log(selectedRowKeys);
-            selectedRowKeysState(selectedRowKeys);
+            // checkValuesState(selectedRowKeys);
             checkValuesState(selectedRowKeys);
         },
         type: isMultiple ? "checkbox" : "radio",
+        getCheckboxProps: record => ({
+            disabled: function(){
+                for(var i=0; i < disabledKeys.length; i++){
+                    if (record[rowKey] === disabledKeys[i]){
+                        return true;
+                    }
+                }
+                return false;
+            }(),
+            name: record[rowKey],
+          }),
     }
 
     // onhandle
@@ -82,6 +95,8 @@ function useCheckValuesFromTable(checkValuesState, dataSourceUrl, columns, rowKe
         let currentPage = pagination.current;
         fetchData(dataSourceUrl, currentPage);
       }
+
+    //   console.log(checkValues);
 
     return (
         <div>
@@ -92,10 +107,11 @@ function useCheckValuesFromTable(checkValuesState, dataSourceUrl, columns, rowKe
               onChange={onChange}
               rowKey={rowKey}
               rowSelection={rowSelection}
+              bordered={true}
             >
             </Table>
         </div>
-    )
+    );
 
 }
 

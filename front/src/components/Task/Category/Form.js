@@ -13,10 +13,14 @@ import {
     Row,
     Col,
     Button,
+    Modal,
     message
 } from "antd";
 
+import Icon from "../../Base/Icon";
 import useUploadImageItem from "../../Hooks/UplaodImageItem";
+import useCheckValuesFromTable from "../../Hooks/CheckTableValues";
+
 
 // 分类表单
 function CategoryForm(props){
@@ -27,6 +31,10 @@ function CategoryForm(props){
     const [data, dataState] = useState({order: 1});
     // 上传文件要用到的状态
     const [fileListData, fileListDataState] = useState(null);
+    // 弹出框
+    const [visibleModal, visibleModalState] = useState(false);
+    // 父级分类的选择值
+    const [checkValues, checkValuesState] = useState([]);
 
     // 相当于：componentDidMount()、componentWillUpdate()
     // 由于useEffect里面调用了dataState, 注意给其设置第二个参数[props.data, props.type, data]
@@ -43,9 +51,22 @@ function CategoryForm(props){
                 // delete(newData, "image");
                 formRef.current.setFieldsValue(props.data);
                 // formRef.current.setFieldsValue(newData);
+
+                // 修改默认的选择值
+                checkValuesState([props.data.parent]);
             }
         }
     }, [props.data, props.type, data, formRef, props]);
+
+    // 当选择parent变更的时候，需要重新给表单赋值
+    useEffect(() => {
+      // console.log(checkValues);
+      if(checkValues.length > 0 && checkValues[0] !== data.parent){
+        // console.log("我需要修改表单中的parent");
+          // 修改表单的值
+          formRef.current.setFieldsValue({parent: checkValues[0]});
+      }
+    }, [checkValues, data, formRef]);
 
     const formItemLayout = {
         labelCol: {
@@ -77,6 +98,45 @@ function CategoryForm(props){
           props.handleSubmit(values);
       }
     }
+
+
+    // 表格的列
+    const categoryListColumns = [
+      {
+          title: "ID",
+          dataIndex: "id",
+          key: "id",
+          sorter: (a, b) => a.id - b.id
+      },
+      {
+          title: "分类名",
+          dataIndex: "name",
+          key: "name",
+      },
+      {
+          title: "代码",
+          dataIndex: "code",
+          key: "code",
+          // render: (text, record) => {
+          //   console.log(text, data.code)
+          //   if(text === data.code){
+          //       return "禁用"
+          //   }else{
+          //     return text
+          //   }
+          // }
+      },
+      {
+          title: "父级分类",
+          dataIndex: "parent",
+          key: "parent",
+      },
+      {
+          title: "描述",
+          dataIndex: "description",
+          key: "description",
+      }
+    ]
 
     // 渲染表单
     // 相当于class编写组件时的：render(){}
@@ -118,7 +178,10 @@ function CategoryForm(props){
                           {required: false, message: "请填写父级分类"}
                       ]}
                     >
-                      <Input placeholder="parent" />
+                      <Input placeholder="parent"
+                        onClick={() => {visibleModalState(true)}}
+                        addonAfter={<div><Icon type="search">选择</Icon></div>}
+                      />
                     </Form.Item>
 
                     <Form.Item
@@ -179,6 +242,24 @@ function CategoryForm(props){
                     </Form.Item>
                 </Col>
             </Row>
+
+            <Modal
+                title="请选择父级分类"
+                visible={visibleModal}
+                width={"70%"}
+                // onOk={this.handleOk}
+                // footer={null}
+                onOk={() => {visibleModalState(false)}}
+                onCancel={() => {visibleModalState(false)}}
+              >
+                  {useCheckValuesFromTable(
+                    checkValues, 
+                    checkValuesState, "/api/v1/task/category/list", 
+                    categoryListColumns, "code", false,
+                    [data.code] // 禁用的选项
+                    )}
+              </Modal>
+
         </Form>
     );
 }
