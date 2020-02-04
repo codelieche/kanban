@@ -35,7 +35,7 @@ function CategoryAdd(props){
 
         fetchApi.Post(url, formData, {})
           .then(data => {
-              console.log(data);
+            //   console.log(data);
               if(data.id > 0){
                   // 当data中有id字段，就表示添加成功了，跳转去category的详情页
                   message.success(`添加分类(id:${data.id})成功`, 5);

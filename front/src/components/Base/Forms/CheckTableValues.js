@@ -6,7 +6,7 @@ import {
     Table
 } from "antd";
 
-import fetchApi from "../Utils/fetchApi";
+import fetchApi from "../../Utils/fetchApi";
 
 // 参数：
 // -: checkValues: 选择的数据数组

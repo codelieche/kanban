@@ -17,10 +17,12 @@ import {
     message
 } from "antd";
 
-import Icon from "../../Base/Icon";
-import useUploadImageItem from "../../Hooks/UplaodImageItem";
-import useCheckValuesFromTable from "../../Hooks/CheckTableValues";
-
+// import Icon from "../../Base/Icon";
+import UploadImageItem from "../../Hooks/UplaodImageItem";
+import CheckValuesFromTable from "../../Hooks/CheckTableValues";
+// import TestDemo from "../../Hooks/Demo";
+// 自定义的表单控件
+import SelectAndButton from "../../Base/Forms/SelectAndButton";
 
 // 分类表单
 function CategoryForm(props){
@@ -49,8 +51,10 @@ function CategoryForm(props){
                 // 需要修改一下表单的数据
                 // let newData = props.data;
                 // delete(newData, "image");
-                formRef.current.setFieldsValue(props.data);
-                // formRef.current.setFieldsValue(newData);
+                let newData = props.data;
+                newData["parent"] = props.data["parent"];
+                // formRef.current.setFieldsValue(props.data);
+                formRef.current.setFieldsValue(newData);
 
                 // 修改默认的选择值
                 checkValuesState([props.data.parent]);
@@ -61,12 +65,25 @@ function CategoryForm(props){
     // 当选择parent变更的时候，需要重新给表单赋值
     useEffect(() => {
       // console.log(checkValues);
-      if(checkValues.length > 0 && checkValues[0] !== data.parent){
-        // console.log("我需要修改表单中的parent");
+      // if(checkValues instanceof Array && checkValues.length > 0 && checkValues[0] !== data.parent){
+      if(checkValues instanceof Array){
+          // console.log("我需要修改表单中的parent");
           // 修改表单的值
-          formRef.current.setFieldsValue({parent: checkValues[0]});
+          formRef.current.setFieldsValue({
+            parent: checkValues,
+          });
       }
-    }, [checkValues, data, formRef]);
+    }, [checkValues, formRef]);
+
+    const handleModelOk = () => {
+      // console.log("处理关闭", checkValues);
+      // console.log(formRef.current)
+      // 关闭弹出框
+      visibleModalState(false);
+      formRef.current.setFieldsValue({
+        parent: checkValues,
+      });
+    }
 
     const formItemLayout = {
         labelCol: {
@@ -88,9 +105,21 @@ function CategoryForm(props){
     const handleOnFinish = values => {
       values["image"] = fileListData;
       // 过滤掉parent字段: 因为api中不支持传递为空的parent
+      // console.log(values);
       if(!values["parent"]){
         delete values.parent;
+      }else{
+        if(values["parent"] instanceof Array){
+          if(values["parent"].length > 0){
+            values["parent"] = values["parent"][0];
+          }else{
+            // 删掉parent字段
+            delete values.parent;
+          }
+        }
       }
+      // console.log(values);
+
       if(! props.handleSubmit){
           message.error("没传递表单提交处理函数", 5);
           return
@@ -116,15 +145,7 @@ function CategoryForm(props){
       {
           title: "代码",
           dataIndex: "code",
-          key: "code",
-          // render: (text, record) => {
-          //   console.log(text, data.code)
-          //   if(text === data.code){
-          //       return "禁用"
-          //   }else{
-          //     return text
-          //   }
-          // }
+          key: "code"
       },
       {
           title: "父级分类",
@@ -178,9 +199,16 @@ function CategoryForm(props){
                           {required: false, message: "请填写父级分类"}
                       ]}
                     >
-                      <Input placeholder="parent"
+                      {/* <Input placeholder="parent"
                         onClick={() => {visibleModalState(true)}}
                         addonAfter={<div><Icon type="search">选择</Icon></div>}
+                      /> */}
+                      {/* 采用了表单自定义的控件 */}
+                      <SelectAndButton 
+                        checkValues={checkValues}
+                        checkValuesState={checkValuesState}
+                        onButtonClick={() => visibleModalState(true)}
+                        isMultiple={false}
                       />
                     </Form.Item>
 
@@ -229,7 +257,11 @@ function CategoryForm(props){
                       ]}
                     >
                       {/* 上传图片的组件：自定义的hooks */}
-                      {useUploadImageItem(data.image, fileListData, fileListDataState)}
+                      <UploadImageItem 
+                        url={data.image}
+                        fileListData={fileListData}
+                        fileListDataState={fileListDataState}
+                      />
                     </Form.Item>
 
                     {/* 提交按钮 */}
@@ -247,18 +279,22 @@ function CategoryForm(props){
                 title="请选择父级分类"
                 visible={visibleModal}
                 width={"70%"}
-                // onOk={this.handleOk}
                 // footer={null}
-                onOk={() => {visibleModalState(false)}}
+                onOk={handleModelOk}
                 onCancel={() => {visibleModalState(false)}}
               >
-                  {useCheckValuesFromTable(
-                    checkValues, 
-                    checkValuesState, "/api/v1/task/category/list", 
-                    categoryListColumns, "code", false,
-                    [data.code] // 禁用的选项
-                    )}
+                  <CheckValuesFromTable
+                    checkValues={checkValues}
+                    checkValuesState={checkValuesState} 
+                    dataSourceUrl="/api/v1/task/category/list"
+                    columns={categoryListColumns}
+                    rowKey="code"
+                    isMultiple={false}
+                    disabledKeys={[data.code]}
+                  />
               </Modal>
+
+              {/* <TestDemo value={data} /> */}
 
         </Form>
     );
