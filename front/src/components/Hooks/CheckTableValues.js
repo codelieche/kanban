@@ -16,10 +16,28 @@ import fetchApi from "../Utils/fetchApi";
 // - rowKey: 唯一值列的字段名
 // - isMultiple: 是否选择多个值
 // - disabledKeys: 禁用的keys列表
-function useCheckValuesFromTable(checkValues, checkValuesState, dataSourceUrl, columns, rowKey="id", isMultiple=true, disabledKeys=[]){
+function CheckValuesFromTable(props){
+    // checkValues, checkValuesState, dataSourceUrl, columns, rowKey="id", isMultiple=true, disabledKeys=[]
     // 保存api获取的数据的state
+    // 第1个state：数据源的url
     const [url, urlState] = useState(null);
+
+    // 相当于：componentDidMound，componentDidUpdate, componentWillUnMount
+    useEffect(() => {
+        // console.log(dataSourceUrl);
+        if(props.dataSourceUrl !== url){
+            // data["dataSourceUrl"] = dataSourceUrl;
+            // 修改状态
+            urlState(props.dataSourceUrl);
+            // 获取数据
+            fetchData(props.dataSourceUrl, 1);
+        }
+    }, [url, props.dataSourceUrl]);
+
+    // 第2个state：通过url获取到的数据
     const [dataSource, dataSourceState] = useState([]);
+
+    // 第3个state：列表的分页
     const [pagination, paginationState] = useState({current: 1, total: 0});
 
     // 选择的keys
@@ -53,39 +71,32 @@ function useCheckValuesFromTable(checkValues, checkValuesState, dataSourceUrl, c
             });
     };
 
-    // 相当于：componentDidMound，componentDidUpdate, componentWillUnMount
-    useEffect(() => {
-        // console.log(dataSourceUrl);
-        if(dataSourceUrl !== url){
-            // data["dataSourceUrl"] = dataSourceUrl;
-            // 修改状态
-            urlState(dataSourceUrl);
-            // 获取数据
-            fetchData(dataSourceUrl, 1);
-        }
-    }, [url, dataSourceUrl]);
+    
 
 
     // 行选择
     const rowSelection = {
         hideDefaultSelections: true,
-        selectedRowKeys: checkValues,
+        selectedRowKeys: props.checkValues ? props.checkValues : [],
         onChange: (selectedRowKeys) => {
             // console.log(selectedRowKeys);
             // checkValuesState(selectedRowKeys);
-            checkValuesState(selectedRowKeys);
+            props.checkValuesState(selectedRowKeys);
         },
-        type: isMultiple ? "checkbox" : "radio",
+        type: props.isMultiple ? "checkbox" : "radio",
         getCheckboxProps: record => ({
             disabled: function(){
-                for(var i=0; i < disabledKeys.length; i++){
-                    if (record[rowKey] === disabledKeys[i]){
-                        return true;
+                if(props.disabledKeys && props.disabledKeys instanceof Array){
+                    for(var i=0; i < props.disabledKeys.length; i++){
+                        if (record[props.rowKey] === props.disabledKeys[i]){
+                            return true;
+                        }
                     }
                 }
+                
                 return false;
             }(),
-            name: record[rowKey],
+            name: record[props.rowKey],
           }),
     }
 
@@ -93,7 +104,7 @@ function useCheckValuesFromTable(checkValues, checkValuesState, dataSourceUrl, c
     function onChange(pagination, filters, sorter, extra) {
         // console.log('params', pagination, filters, sorter, extra);
         let currentPage = pagination.current;
-        fetchData(dataSourceUrl, currentPage);
+        fetchData(props.dataSourceUrl, currentPage);
       }
 
     //   console.log(checkValues);
@@ -101,11 +112,11 @@ function useCheckValuesFromTable(checkValues, checkValuesState, dataSourceUrl, c
     return (
         <div>
             <Table
-              columns={columns}
+              columns={props.columns}
               dataSource={dataSource}
               pagination={pagination}
               onChange={onChange}
-              rowKey={rowKey}
+              rowKey={props.rowKey}
               rowSelection={rowSelection}
               bordered={true}
             >
@@ -115,4 +126,4 @@ function useCheckValuesFromTable(checkValues, checkValuesState, dataSourceUrl, c
 
 }
 
-export default useCheckValuesFromTable;
+export default CheckValuesFromTable;

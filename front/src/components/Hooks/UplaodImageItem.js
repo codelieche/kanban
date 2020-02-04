@@ -7,7 +7,11 @@
  * 
  *  使用示例：
  *      const [fileListData, fileListDataState] = useState([]);
- *      {useUploadImageItem(data.image, fileListData, fileListDataState)}
+ *      <UploadImageItem 
+ *         url={data.image}
+ *         fileListData={fileListData}
+ *         fileListDataState={fileListDataState}
+ *      />
  * 在上级函数中操作fileListData即可
  */
 
@@ -22,20 +26,20 @@ import {
 // 1. url: 图片的url，可为空
 // 2. fileListData: 文件列表
 // 3. fileListDataState: 操作文件列表的state函数
-function useUploadImageItem(url, fileListData, fileListDataState){
-
+function UploadImageItem(props){
+    // url, fileListData, fileListDataState
     // url状态
     const [isUploaded, isUploadedState] = useState(false);
-    const [imageUrl, imageUrlState] = useState(url);
+    const [imageUrl, imageUrlState] = useState(null);
 
     // 相当于：componentDidMount等函数
     useEffect(() => {
         // console.log(url, imageUrl);
         // console.log(url !== imageUrl, !isUploaded)
-        if(url !== imageUrl && !isUploaded){
-            imageUrlState(url);
+        if(props.url !== imageUrl && !isUploaded){
+            imageUrlState(props.url);
         }
-    }, [url, imageUrl, isUploaded]);
+    }, [props.url, imageUrl, isUploaded]);
 
     // 上传组件属性
     const uploadProps = {
@@ -44,7 +48,7 @@ function useUploadImageItem(url, fileListData, fileListDataState){
         onRemove: (file) => {
             // 把feilename字段设置为空
             console.log(file);
-            fileListDataState(prevState => {
+            props.fileListDataState(prevState => {
                 let fileList = prevState;
                 // 把当前的file从fileList中移除
                 const index = fileList.indexOf(file);
@@ -68,14 +72,14 @@ function useUploadImageItem(url, fileListData, fileListDataState){
             }
             
             // 修改文件列表的数据
-            fileListDataState([file]);
+            props.fileListDataState([file]);
 
             let uploadImageUrl = URL.createObjectURL(file);
             isUploadedState(true);
             imageUrlState(uploadImageUrl);
             return false;
         },
-        fileList: fileListData,
+        fileList: props.fileListData,
     }
     // 显示略缩图
     let imageElement;
@@ -99,4 +103,4 @@ function useUploadImageItem(url, fileListData, fileListDataState){
 
 }
 
-export default useUploadImageItem;
+export default UploadImageItem;
