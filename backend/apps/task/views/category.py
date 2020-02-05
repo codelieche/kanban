@@ -57,6 +57,6 @@ class CategoryDetailApiView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyA
     """
     Job Category Detail Api View
     """
-    queryset = Category.objects.filter(is_deleted=False)
+    queryset = Category.objects.filter()
     serializer_class = CategoryModelSerializer
     permission_classes = (IsAuthenticated, DjangoModelPermissionsOrAnonReadOnly)

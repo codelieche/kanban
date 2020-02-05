@@ -14,11 +14,12 @@ class Category(models.Model):
     Job的分类
     """
     name = models.CharField(verbose_name="名称", max_length=40, db_index=True)
-    code = models.SlugField(verbose_name="代码", max_length=20, unique=True)
+    code = models.CharField(verbose_name="代码", max_length=20, unique=True)
     image = models.ImageField(verbose_name="图标", upload_to="task/category/%Y/%m", storage=ImageStorage(),
                               help_text="图片路径", blank=True, null=True)
     description = models.CharField(verbose_name="描述", max_length=1024, blank=True, null=True)
-    parent = models.ForeignKey(verbose_name="父级分类", blank=True, null=True, to="self", on_delete=models.CASCADE)
+    parent = models.ForeignKey(verbose_name="父级分类", related_name="subs",
+                               blank=True, null=True, to="self", on_delete=models.CASCADE)
     # level级别 和 顺序 order
     level = models.SmallIntegerField(verbose_name="级别", blank=True, default=1)
     order = models.SmallIntegerField(verbose_name="顺序", blank=True, default=1)
