@@ -14,13 +14,16 @@ import {
     Col,
     Button,
     Modal,
+    Radio,
     message
 } from "antd";
 
-// import Icon from "../../Base/Icon";
-import UploadImageItem from "../../Hooks/UplaodImageItem";
-import CheckValuesFromTable from "../../Hooks/CheckTableValues";
 // import TestDemo from "../../Hooks/Demo";
+// import Icon from "../../Base/Icon";
+// 上传图片的Item
+import UploadImageItem from "../../Base/Forms/UplaodImageItem";
+// 从表单中选择值【数组】
+import CheckValuesFromTable from "../../Base/Forms/CheckTableValues";
 // 自定义的表单控件
 import SelectAndButton from "../../Base/Forms/SelectAndButton";
 
@@ -52,7 +55,12 @@ function CategoryForm(props){
                 // let newData = props.data;
                 // delete(newData, "image");
                 let newData = props.data;
-                newData["parent"] = props.data["parent"];
+                // 如果pareng的值是null，那就不要设置哦
+                if(props.data["parent"]){
+                  newData["parent"] = props.data["parent"];
+                }else{
+                  newData["parent"] = [];
+                }
                 // formRef.current.setFieldsValue(props.data);
                 formRef.current.setFieldsValue(newData);
 
@@ -106,15 +114,17 @@ function CategoryForm(props){
       values["image"] = fileListData;
       // 过滤掉parent字段: 因为api中不支持传递为空的parent
       // console.log(values);
+      // console.log(values.parent);
       if(!values["parent"]){
-        delete values.parent;
+        values["parent"] = "";
       }else{
         if(values["parent"] instanceof Array){
           if(values["parent"].length > 0){
             values["parent"] = values["parent"][0];
           }else{
             // 删掉parent字段
-            delete values.parent;
+            // delete values.parent;
+            values["parent"] = "";
           }
         }
       }
@@ -263,6 +273,16 @@ function CategoryForm(props){
                         fileListDataState={fileListDataState}
                       />
                     </Form.Item>
+
+                    <Form.Item
+                      {...formItemLayout}
+                      label="状态"
+                      name="is_deleted">
+                          <Radio.Group buttonStyle="solid">
+                            <Radio.Button value={false}>有效</Radio.Button>
+                            <Radio.Button value={true}>禁用</Radio.Button>
+                          </Radio.Group>
+                      </Form.Item>
 
                     {/* 提交按钮 */}
                     <Form.Item 

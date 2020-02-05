@@ -99,7 +99,7 @@ export default class Header extends React.Component {
         return (
             <div>
                 <Link to="/" className="logo">
-                    <img src="http://www.codelieche.com/static/images/logo.svg" alt="首页" />
+                    <img src="http://www.codelieche.com/static/images/logo-kanban.svg" alt="首页" />
                 </Link>
 
                 <ul className="nav">

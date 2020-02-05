@@ -8,7 +8,7 @@ import {
 import {
     Breadcrumb, Input,
     Row, Col, Button, Table,
-    message, Divider
+    message, Divider, Popconfirm
 } from "antd";
 
 // 图标组件
@@ -180,6 +180,44 @@ class CategoryList extends React.Component{
         });
     }
 
+    deleteOnCancel = e => {
+        // 选择取消的话，也弹出消息
+        message.error("取消删除", 3);
+    }
+
+    deleteOnConfirm = value => {
+        // 开始删除
+        const url = `/api/v1/task/category/${value.id}`;
+        // 通过delete删除用户
+        fetchApi.Delete(url)
+          .then(response => {
+            //   查看status状态码
+            if (response.status === 204) {
+              message.success(`删除分类(ID:${value.id}-${value.name}-${value.code})成功`, 3);
+              // 刷新数据
+              this.fetchData(this.state.currentPage);
+            } else if (response.status === 200) {
+              return response.json();
+            } else {
+              message.success(`删除分类(ID:${value.id}-${value.name}-${value.code})失败！`, 3);
+              return response.json();
+            }
+          })
+          .then(data => {
+            if (data) {
+              if (data.message) {
+                message.warn(data.message, 8);
+              } else {
+                message.error(JSON.stringify(data), 3);
+              }
+            }
+          })
+          .catch(err => {
+            console.log(err);
+          });
+      };
+
+
     handleTableChange = (pagination, filters, sorter) => {
         let currentPage = pagination.current;
         var filterColumns = ["is_deleted", "parent"];
@@ -262,6 +300,32 @@ class CategoryList extends React.Component{
                 key: "description",
             },
             {
+                title: "状态",
+                dataIndex: "is_deleted",
+                key: "is_deleted",
+                render: value => {
+                  if (!value) {
+                    return (
+                      <div className="status">
+                        <Icon type="check" />
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <span className="status">
+                        <Icon type="close" />
+                      </span>
+                    );
+                  }
+                },
+                filters: [
+                    { text: "有效", value: "false" },
+                    { text: "禁用", value: "true" }
+                  ],
+                  filterMultiple: false,
+                  onFilter: (value, record) => record.is_deleted.toString() === value
+            },
+            {
                 title: "操作",
                 key: "action",
                 render: (text, record) => {
@@ -282,7 +346,20 @@ class CategoryList extends React.Component{
                                         <Icon type="edit"> 编辑</Icon>
                                     </Button>
                                 </Link>
-                                {/* <Divider type="vertical" /> */}
+
+                                <Divider type="vertical" />
+                                <Popconfirm
+                                    // disabled={text.is_deleted}
+                                    title={`是否删除分类(ID:${text.id}-${text.name}-${text.code})`}
+                                    onCancel={this.deleteOnCancel}
+                                    onConfirm={() => this.deleteOnConfirm(text)}
+                                    >
+                                    <span type="link">
+                                        <Button type="link" size="small" danger disabled={text.is_deleted}>
+                                        <Icon type="trash-o"> 删除</Icon>
+                                        </Button>
+                                    </span>
+                                    </Popconfirm>
                             </span>
                         );
                     }else{

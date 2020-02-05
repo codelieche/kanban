@@ -82,6 +82,10 @@ function CategoryDetail(props) {
                                 <dd>{data.code}</dd>
                             </dl>
                             <dl>
+                                <dt>父级分类</dt>
+                                <dd>{data.parent ? data.parent : "---"}</dd>
+                            </dl>
+                            <dl>
                                 <dt>状态</dt>
                                 <dd className="status">
                                     <Icon type={data.is_deleted ? "close" : "check"} />

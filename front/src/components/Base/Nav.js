@@ -1,5 +1,16 @@
 /**
  * 这个是站点左侧导航
+ * navData是个列表，item元素格式：
+ *   {
+ *      icon: "图标",
+ *      key: "一级菜单的key",
+ *      title: "菜单的标题",
+ *      slug: "地址,一级菜单不用，二级菜单需要",
+ *      is_link: true/flase(是否是站外链接),
+ *      link: "站外链接地址",
+ *      target: "链接跳转的方式，默认是_self；_blank是在新的窗口打开页面",
+ *      subs: [item, "二级菜单的列表"], 
+ *   }
  */
 import React from 'react';
 import {
@@ -15,6 +26,7 @@ import {
 
 import navData from './NavData';
 
+// 左侧的导航组件
 class Nav extends React.Component {
     constructor(props) {
         super(props);

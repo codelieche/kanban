@@ -11,6 +11,9 @@
 # production
 /build
 
+# css文件过滤
+/src/styles/less/*.css
+
 # misc
 .DS_Store
 .env.local
