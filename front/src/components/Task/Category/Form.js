@@ -33,7 +33,7 @@ function CategoryForm(props){
     const formRef = React.createRef();
 
     // 数据处理函数
-    const [data, dataState] = useState({order: 1});
+    const [data, dataState] = useState({order: 1, is_deleted: false});
     // 上传文件要用到的状态
     const [fileListData, fileListDataState] = useState(null);
     // 弹出框
@@ -59,7 +59,7 @@ function CategoryForm(props){
                 if(props.data["parent"]){
                   newData["parent"] = props.data["parent"];
                 }else{
-                  newData["parent"] = [];
+                  newData["parent"] = "";
                 }
                 // formRef.current.setFieldsValue(props.data);
                 formRef.current.setFieldsValue(newData);
@@ -277,7 +277,11 @@ function CategoryForm(props){
                     <Form.Item
                       {...formItemLayout}
                       label="状态"
-                      name="is_deleted">
+                      name="is_deleted"
+                      rules={[
+                        {required: true, message: "请选择状态"}
+                    ]}
+                    >
                           <Radio.Group buttonStyle="solid">
                             <Radio.Button value={false}>有效</Radio.Button>
                             <Radio.Button value={true}>禁用</Radio.Button>
@@ -306,11 +310,12 @@ function CategoryForm(props){
                   <CheckValuesFromTable
                     checkValues={checkValues}
                     checkValuesState={checkValuesState} 
-                    dataSourceUrl="/api/v1/task/category/list"
+                    dataSourceUrl="/api/v1/task/category/list?level=1"
                     columns={categoryListColumns}
                     rowKey="code"
                     isMultiple={false}
                     disabledKeys={[data.code]}
+                    showSubs={true}
                   />
               </Modal>
 

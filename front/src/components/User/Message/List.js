@@ -250,7 +250,7 @@ export default class MessageList extends React.Component {
               }}
               style={{textAlign:"left"}}
             >
-              {record.unread ? <Badge status="default" color="cyan" /> : null}
+              {record.unread ? <Badge status="default" color="cyan" /> : <Badge status="default" style={{visibility: "hidden"}} />}
               {text}
             </Link>
           );
@@ -314,7 +314,7 @@ export default class MessageList extends React.Component {
                 onConfirm={() => this.deleteOnConfirm(text)}
               >
                 <span>
-                  <Icon type="trash-o" danger>删除</Icon>
+                  <Icon type="trash-o" danger> 删除</Icon>
                 </span>
 
               </Popconfirm>

@@ -16,8 +16,9 @@ import fetchApi from "../../Utils/fetchApi";
 // - rowKey: 唯一值列的字段名
 // - isMultiple: 是否选择多个值
 // - disabledKeys: 禁用的keys列表
+// - showSubs: 是否显示子列表
 function CheckValuesFromTable(props){
-    // checkValues, checkValuesState, dataSourceUrl, columns, rowKey="id", isMultiple=true, disabledKeys=[]
+    // checkValues, checkValuesState, dataSourceUrl, columns, rowKey="id", isMultiple=true, disabledKeys=[], showSubs=false
     // 保存api获取的数据的state
     // 第1个state：数据源的url
     const [url, urlState] = useState(null);
@@ -108,10 +109,34 @@ function CheckValuesFromTable(props){
       }
 
     //   console.log(checkValues);
+    // 显示展开
+    const expandable = { 
+        expandedRowRender: record => {
+            if(record.subs.length > 0){
+                return (
+                    <Table 
+                      showHeader={false}
+                      bordered={false}
+                      dataSource={record.subs} 
+                      rowKey={props.rowKey}
+                      //   columns={columns.slice(0, 6)} 
+                      size="small"
+                      rowSelection={rowSelection}
+                      columns={props.columns} 
+                      pagination={false}
+                    />
+                );
+            }else{
+                return null;
+            }
+        },
+        rowExpandable: record => record.subs.length > 0,
+    };
 
     return (
         <div>
             <Table
+              title={() => props.checkValues.length > 0 ? `当前选中的值有：${JSON.stringify(props.checkValues)}` : null}
               columns={props.columns}
               dataSource={dataSource}
               pagination={pagination}
@@ -119,6 +144,7 @@ function CheckValuesFromTable(props){
               rowKey={props.rowKey}
               rowSelection={rowSelection}
               bordered={true}
+              expandable={props.showSubs ? expandable : undefined}
             >
             </Table>
         </div>

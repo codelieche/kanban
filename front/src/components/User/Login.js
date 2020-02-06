@@ -45,13 +45,14 @@ class LoginForm extends Component {
         let next = params.get("next", "/");
         // console.log(next);
         // 如果next为null或者next为/user/login那么就跳转到首页
-        if (!next || next === "/user/login") {
+        if (!next || (typeof next === "string" && next.indexOf("/user/login") >= 0)) {
           // 跳转去首页
           next = "/";
         }
+
         // console.log('即将跳转', next);
-        
         if (typeof next === "string" && next.startsWith("http")){
+          // http开头的就直接跳转这个页面即可
           window.location.href = next;
         }else{
           // 跳转到当前域名的首页
@@ -91,7 +92,7 @@ class LoginForm extends Component {
               // backgroundColor:"#4A90E2", padding: "30px 20px", borderRadius: "10px 10px 0 0" }}
             >
               <img
-                src="https://www.codelieche.com/static/images/logo.svg"
+                src="https://www.codelieche.com/static/images/logo-kanban.svg"
                 alt="Logo"
               />
             </div>
@@ -106,7 +107,7 @@ class LoginForm extends Component {
                 ]}
               >
                   <Input
-                    prefix={<Icon type="user" style={{ fontSize: 16 }} />}
+                    prefix={<Icon type="user" />}
                     placeholder="username"
                   />
               </FormItem>
@@ -116,7 +117,7 @@ class LoginForm extends Component {
                 rules={[{ required: true, message: "请输入密码" }]}
               >
                   <Input
-                    prefix={<Icon type="lock" style={{ fontSize: 16 }} />}
+                    prefix={<Icon type="lock" />}
                     size="large"
                     type="password"
                     placeholder="password"
@@ -134,9 +135,7 @@ class LoginForm extends Component {
                 </Button>
               </FormItem>
 
-              <FormItem 
-                // style={{marginBottom: 0}}
-              >
+              <FormItem>
                 <Row>
                   <Col span={12} className="login-form-change">
                     <Link to="">

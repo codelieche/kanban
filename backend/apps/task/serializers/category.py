@@ -18,9 +18,9 @@ class CategoryModelSerializer(serializers.ModelSerializer):
             code = attrs["code"]
             if code.find("/") < 0:
                 parent = attrs["parent"]
-                while parent:
+                # 二级目录包含了一级的code，三级目录只要加上二级目录的code即可
+                if parent:
                     code = "{}/{}".format(parent.code, code)
-                    parent = parent.parent
                 attrs["code"] = code
 
         return attrs

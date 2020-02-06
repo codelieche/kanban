@@ -1,6 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import App from './apps/App';
+
+// 引入样式文件
+import './styles/main.less';
+import "./styles/font-awesome.min.css";
+
 
 ReactDOM.render(<App />, document.getElementById('root'));
 

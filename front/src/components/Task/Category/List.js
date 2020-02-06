@@ -116,6 +116,7 @@ class CategoryList extends React.Component{
 
 
         // 构造url
+        // let url = "/api/v1/task/category/list?level=1&page=" + page;
         let url = "/api/v1/task/category/list?page=" + page;
         // 对params中的字段做处理：记得去掉page
         this.paramsFields.forEach(item => {
@@ -217,7 +218,6 @@ class CategoryList extends React.Component{
           });
       };
 
-
     handleTableChange = (pagination, filters, sorter) => {
         let currentPage = pagination.current;
         var filterColumns = ["is_deleted", "parent"];
@@ -275,7 +275,12 @@ class CategoryList extends React.Component{
                 title: "ID",
                 dataIndex: "id",
                 key: "id",
-                sorter: (a, b) => a.id - b.id
+                sorter: (a, b) => a.id - b.id,
+                render:(text, record) => {
+                    return (
+                        <Link to={`/task/category/${record.id}`}>{text}</Link>
+                    );
+                }
             },
             {
                 title: "分类名",
@@ -328,11 +333,12 @@ class CategoryList extends React.Component{
             {
                 title: "操作",
                 key: "action",
+                width: 250,
                 render: (text, record) => {
                     // 看用户能否添加
                     if(this.state.userCanAddCategory){
                         return (
-                            <span>
+                            <span className="table-operation">
                                 <Link to={`/task/category/${text.id}`}>
                                     <Button type="link" size="small">
                                         <Icon type="link"> 详情</Icon>
@@ -359,7 +365,7 @@ class CategoryList extends React.Component{
                                         <Icon type="trash-o"> 删除</Icon>
                                         </Button>
                                     </span>
-                                    </Popconfirm>
+                                </Popconfirm>
                             </span>
                         );
                     }else{
@@ -390,6 +396,30 @@ class CategoryList extends React.Component{
                 </Link>
             );
         }
+
+        // 显示展开
+        const expandable = { 
+            expandedRowRender: record => {
+                if(record.subs.length > 0){
+                    return (
+                        <Table 
+                          showHeader={false}
+                          bordered={false}
+                          dataSource={record.subs} 
+                          rowKey={"id"}
+                        //   columns={columns.slice(0, 6)} 
+                        size="small"
+                          columns={columns} 
+                          pagination={false}
+                        />
+                    );
+                }else{
+                    return null;
+                }
+            },
+            rowExpandable: record => record.subs.length > 0,
+        };
+
     
         return (
             <div className="content">
@@ -433,16 +463,20 @@ class CategoryList extends React.Component{
                     </Row>
                     {/* 工具栏结束 */}
 
+
                     {/* 分类列表 */}
                     <div className="main-list">
                         <Table
+                          className="components-table-demo-nested"
                           columns={columns}
                           dataSource={this.state.dataSource}
                           rowKey={"id"}
-                          bordered={true}
+                        //   bordered={true}
                         //   size="small"
                           pagination={{current: this.state.currentPage, total: this.state.dataCount}}
                           onChange={this.handleTableChange}
+                          // 展开子表格
+                          expandable={expandable}  
                         />
                     </div>
                     {/* 分类列表结束 */}

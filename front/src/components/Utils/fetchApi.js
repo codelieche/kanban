@@ -2,7 +2,9 @@
 import axios from 'axios';
 import qs from 'qs';
 
-import env from "../config/env";
+import {message} from "antd";
+
+import env from "../../config/env";
 
 const api = axios.create({
     // baseURL: "http://127.0.0.1:9000/",
@@ -15,6 +17,7 @@ const api = axios.create({
 api.defaults.headers.common["Content-Type"] = "application/json";
 // api.defaults.headers.common["Content-Type"] = "application/x-www-form-urlencoded";
 // api.defaults.headers.common["Host"] = "www.codelieche.com";
+// 允许携带cookie
 api.defaults.withCredentials = true;
 
 // POST、PUT传递的数据处理 
@@ -39,8 +42,12 @@ api.interceptors.request.use((config) => {
 // 响应处理
 api.interceptors.response.use(
     response => {
+        // console.log(response)
+
+        if (response.config.method === "delete"){
+            return Promise.resolve(response);
+        }
         const responseData = response.data;
-        // console.log(response);
         return Promise.resolve(responseData);
     },
 
@@ -53,7 +60,7 @@ api.interceptors.response.use(
             // 超时
             console.log('网络超时，请稍后重试！')
         }else{
-            console.log(error.message);
+            // console.log(error.message);
         }
 
         if (error.response) {
@@ -61,13 +68,17 @@ api.interceptors.response.use(
             switch (error.response.status) {
                 // http status handler
                 case 401:
-                    alert("需要跳转登录页面");
+                    // this.props.history.push(next);
+                    var next = "/user/login?next=" + window.location.href;
+                    var url = window.location.origin + next;
+                    window.location.href = url;
                     break;
                 case 403:
+                    message.warn("您无权限访问相关数据", 3);
                     alert("您没有权限访问当前数据");
                     break;
                 case 404:
-                    console.log('404 Not Found');
+                    // console.log('404 Not Found');
                     break
                 case 500:
                     console.log('服务器错误！');
