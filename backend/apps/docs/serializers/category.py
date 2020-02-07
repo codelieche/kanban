@@ -16,11 +16,11 @@ class CategoryModelSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if "parent" in attrs:
             code = attrs["code"]
-            if code.find("/") < 0:
+            if code.find("-") < 0 and code.find("_") < 0:
                 parent = attrs["parent"]
                 # 二级目录包含了一级的code，三级目录只要加上二级目录的code即可
                 if parent:
-                    code = "{}/{}".format(parent.code, code)
+                    code = "{}-{}".format(parent.code, code)
                 attrs["code"] = code
 
         return attrs

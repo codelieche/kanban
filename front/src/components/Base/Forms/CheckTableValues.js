@@ -72,9 +72,6 @@ function CheckValuesFromTable(props){
             });
     };
 
-    
-
-
     // 行选择
     const rowSelection = {
         hideDefaultSelections: true,
@@ -124,6 +121,7 @@ function CheckValuesFromTable(props){
                       rowSelection={rowSelection}
                       columns={props.columns} 
                       pagination={false}
+                      expandable={props.showSubs ? expandable : undefined}
                     />
                 );
             }else{

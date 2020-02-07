@@ -8,7 +8,7 @@ import {
 import {
     Breadcrumb, Input,
     Row, Col, Button, Table,
-    message, Divider, Popconfirm
+    message, Divider, Popconfirm, Tag
 } from "antd";
 
 // 图标组件
@@ -114,7 +114,6 @@ class CategoryList extends React.Component{
             page = parseInt(page, 10);
         }
 
-
         // 构造url
         // let url = "/api/v1/task/category/list?level=1&page=" + page;
         let url = "/api/v1/task/category/list?page=" + page;
@@ -171,7 +170,8 @@ class CategoryList extends React.Component{
                 // item不是search、或者 (是search 但是有值的情况)就设置url
                 if(item !== "search" || !noSearch){
                     let value = this.state[item];
-                    if(value !== undefined){
+                    // console.log(item, value);
+                    if(value !== undefined && value !== null){
                         url = `${url}&${item}=${value}`;
                     };
                 }
@@ -298,7 +298,24 @@ class CategoryList extends React.Component{
                 key: "parent",
                 filters: this.state["parentFilterOptions"] ? this.state.parentFilterOptions : [],
                 filterMultiple: false,
+                render: (text, record) => {
+                    if(text){
+                        return <Tag color="success">{text}</Tag>;
+                    }else{
+                        return <Tag color="blue">一级分类</Tag>
+                    }
+                }
             },
+            // {
+            //     title: "级别",
+            //     dataIndex: "level",
+            //     key: "level",
+            //     render: (text, record) => {
+            //         return (
+            //         <Tag  >{`${text}级分类`}</Tag>
+            //         );
+            //     }
+            // },
             {
                 title: "描述",
                 dataIndex: "description",
@@ -411,6 +428,7 @@ class CategoryList extends React.Component{
                         size="small"
                           columns={columns} 
                           pagination={false}
+                          expandable={expandable} 
                         />
                     );
                 }else{

@@ -22,14 +22,14 @@ import JobList from "./Job/List";
 import CommontList from "./Comment/List";
 
 function TaskIndex(props) {
-  
+
         return (
             <Switch>
                 {/* 分类相关路由 */}
                 <Route exat path="/task/category/list" component={CategoryList} />
                 <Route exat={true} path="/task/category/add" component={CategoryAdd} />
                 <Route exat path="/task/category/:id/editor" component={CategoryEditor} />
-                <Route exat path="/task/category/:id" component={CategoryDetail} />
+                <Route exat={true} path="/task/category/:id" component={CategoryDetail} />
                 <Route exat 
                   path="/task/category" 
                   render={() => <Redirect to="/task/category/list" push={false} />}

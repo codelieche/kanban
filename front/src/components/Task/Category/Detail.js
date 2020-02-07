@@ -18,6 +18,8 @@ import fetchApi from "../../Utils/fetchApi";
 // 分类详情页
 function CategoryDetail(props) {
     // 申明一个叫：data的state变量
+    // 因为id可能是数字，也可能是字符，需要有个状态保存一下
+    const [id, idState] = useState(null);
     const [data, dataState] = useState({});
 
     // 获取详情数据
@@ -34,14 +36,18 @@ function CategoryDetail(props) {
     }
 
     // 相当于 componentDidMount和componentDidUpdate
+    // 特别小心，一不小心就陷入循环了
     useEffect(() => {
-        let id = props.match.params.id;
+        // console.log(props)
+        let paramID = props.match.params.id;
         // 特别注意state中的id是数值类型，props传过来的是字符型
         // 判断什么时候需要调用fetchDetailData，这个需要特别慎重
-        if(id !== String(data.id)){
+        if(paramID !== String(id)){
+            // 修改id的状态
+            idState(paramID);
             fetchDetailData(props.match.params.id);
         }
-    });
+    }, [props, id]);
 
     // 相当于class方式的render(){}
     return (
@@ -114,7 +120,8 @@ function CategoryDetail(props) {
 
                     {/* 右侧内容：start */}
                     <Col xs={{span: 24}} sm={{span: 8}}>
-                        <ModelLogs app="task" model="category" id={props.match.params.id}></ModelLogs>
+                        {/* props.match.params.id有可能是字符，所以还是传递data.id更准确 */}
+                        {data.id > 0 && <ModelLogs app="task" model="category" id={data.id}></ModelLogs>}
                     </Col>
                     {/* 右侧内容：end */}
                 </Row>
