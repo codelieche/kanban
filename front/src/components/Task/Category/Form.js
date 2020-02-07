@@ -18,8 +18,8 @@ import {
     message
 } from "antd";
 
-// import TestDemo from "../../Hooks/Demo";
-// import Icon from "../../Base/Icon";
+// 表单布局
+import { formItemLayout, formItemTailLayout } from "../../Base/Forms/Layout";
 // 上传图片的Item
 import UploadImageItem from "../../Base/Forms/UplaodImageItem";
 // 从表单中选择值【数组】
@@ -29,7 +29,7 @@ import SelectAndButton from "../../Base/Forms/SelectAndButton";
 
 // 分类表单
 function CategoryForm(props){
-    // 表单的ref
+    // 表单的ref：修改表单的值的时候会用到
     const formRef = React.createRef();
 
     // 数据处理函数
@@ -41,7 +41,7 @@ function CategoryForm(props){
     // 父级分类的选择值
     const [checkValues, checkValuesState] = useState([]);
 
-    // 相当于：componentDidMount()、componentWillUpdate()
+    // 相当于：componentDidMount()、componentWillUpdate()等函数
     // 由于useEffect里面调用了dataState, 注意给其设置第二个参数[props.data, props.type, data]
     useEffect(() => {
         // console.log(props);
@@ -93,23 +93,8 @@ function CategoryForm(props){
       });
     }
 
-    const formItemLayout = {
-        labelCol: {
-            xs: { span: 24 },
-            sm: { span: 5 },
-            md: { span: 5 }
-          },
-          wrapperCol: {
-            xs: { span: 24 },
-            sm: { span: 15 },
-            md: { span: 14 }
-          }
-    };
-
-    const formItemTailLayout = {
-        wrapperCol: { offset: 8, span: 8 },
-    }
-
+    // 表单提交处理函数
+    // 需要对values做处理，要不会报400错误
     const handleOnFinish = values => {
       values["image"] = fileListData;
       // 过滤掉parent字段: 因为api中不支持传递为空的parent
@@ -139,7 +124,7 @@ function CategoryForm(props){
     }
 
 
-    // 表格的列
+    // 表格的列，弹出的选择框需要用到：
     const categoryListColumns = [
       {
           title: "ID",
@@ -167,7 +152,7 @@ function CategoryForm(props){
           dataIndex: "description",
           key: "description",
       }
-    ]
+    ];
 
     // 渲染表单
     // 相当于class编写组件时的：render(){}
@@ -179,6 +164,7 @@ function CategoryForm(props){
         >
             <Row>
                 <Col xs={24} sm={24} md={24}>
+                  {/* 分类的名称 */}
                     <Form.Item
                       {...formItemLayout}
                       label="分类名"
@@ -190,6 +176,7 @@ function CategoryForm(props){
                       <Input placeholder="name" />
                     </Form.Item>
 
+                   {/* 分类代码：唯一值的 */}
                     <Form.Item
                       {...formItemLayout}
                       label="Code"
@@ -201,6 +188,7 @@ function CategoryForm(props){
                       <Input placeholder="code" disabled={props.type === "editor" ? true: false}/>
                     </Form.Item>
 
+                    {/* 父级分类 */}
                     <Form.Item
                       {...formItemLayout}
                       label="父级分类"
@@ -209,10 +197,6 @@ function CategoryForm(props){
                           {required: false, message: "请填写父级分类"}
                       ]}
                     >
-                      {/* <Input placeholder="parent"
-                        onClick={() => {visibleModalState(true)}}
-                        addonAfter={<div><Icon type="search">选择</Icon></div>}
-                      /> */}
                       {/* 采用了表单自定义的控件 */}
                       <SelectAndButton 
                         checkValues={checkValues}
@@ -221,7 +205,8 @@ function CategoryForm(props){
                         isMultiple={false}
                       />
                     </Form.Item>
-
+                    
+                    {/* 当前分类的序号：越小越靠前 */}
                     <Form.Item
                       {...formItemLayout}
                       label="排序"
@@ -232,7 +217,8 @@ function CategoryForm(props){
                     >
                       <InputNumber min={1} max={100} />
                     </Form.Item>
-
+                    
+                    {/* 分类描述：后续会设置成富文本编辑器 */}
                     <Form.Item
                       {...formItemLayout}
                       label="描述"
@@ -246,7 +232,8 @@ function CategoryForm(props){
                         autoSize={{minRows: 4, maxRows: 20}}
                         placeholder="description" />
                     </Form.Item>
-
+                    
+                    {/* 添加时间：仅为了编辑的时候展示 */}
                     <Form.Item
                       style={{display: props.type === "editor" ? "show" : "none"}}
                       {...formItemLayout}
@@ -258,6 +245,7 @@ function CategoryForm(props){
                       <Input value={data.time_added ? data.time_added : null} disabled/>
                     </Form.Item>
 
+                    {/* 上传图片Item */}
                     <Form.Item
                       {...formItemLayout}
                       label="图片"
@@ -273,7 +261,8 @@ function CategoryForm(props){
                         fileListDataState={fileListDataState}
                       />
                     </Form.Item>
-
+                    
+                    {/* 分类状态：是否删除 */}
                     <Form.Item
                       {...formItemLayout}
                       label="状态"
@@ -298,7 +287,8 @@ function CategoryForm(props){
                     </Form.Item>
                 </Col>
             </Row>
-
+            
+            {/* 从列表中选择parent的对话框 */}
             <Modal
                 title="请选择父级分类"
                 visible={visibleModal}
@@ -318,8 +308,6 @@ function CategoryForm(props){
                     showSubs={true}
                   />
               </Modal>
-
-              {/* <TestDemo value={data} /> */}
 
         </Form>
     );

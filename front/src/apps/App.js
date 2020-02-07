@@ -12,9 +12,7 @@ import Home from "../components/Home";
 import Login from "../components/User/Login";
 import NoMatch from "../components/Base/NoMatch";
 
-class App extends React.Component {
-  render() {
-
+function App(props) {
     return (
       <Router>
         <Switch>
@@ -41,13 +39,11 @@ class App extends React.Component {
             render={props => <Home defaultOpenKey="/test" {...props} />}
           />
 
-
           {/* 这个一定要放最后面 */}
           <Route component={NoMatch} />
         </Switch>
       </Router>
     );
-  }
 }
 
 export default App;

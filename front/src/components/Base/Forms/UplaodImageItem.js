@@ -22,7 +22,7 @@ import {
 } from "antd";
 
 // 图片上传Item
-// 参数：
+// 需要传递的属性：props：
 // 1. url: 图片的url，可为空
 // 2. fileListData: 文件列表
 // 3. fileListDataState: 操作文件列表的state函数

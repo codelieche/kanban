@@ -18,7 +18,7 @@ import fetchApi from "../../Utils/fetchApi";
 // 分类详情页
 function CategoryDetail(props) {
     // 申明一个叫：data的state变量
-    const [data, setData] = useState({});
+    const [data, dataState] = useState({});
 
     // 获取详情数据
     const fetchDetailData = (id) => {
@@ -26,7 +26,7 @@ function CategoryDetail(props) {
         fetchApi.Get(url)
           .then(data => {
               // 修改状态
-              setData(data);
+              dataState(data);
           })
             .catch(err => {
                 console.log(err)

@@ -21,13 +21,8 @@ import JobList from "./Job/List";
 // 导入Comment相关组件
 import CommontList from "./Comment/List";
 
-class TaskIndex extends React.Component{
-    constructor(props){
-        super(props);
-        this.state = {};
-    }
-
-    render(){
+function TaskIndex(props) {
+  
         return (
             <Switch>
                 {/* 分类相关路由 */}
@@ -54,8 +49,7 @@ class TaskIndex extends React.Component{
                   render={() => <Redirect to="/task/comment/list" push={false} />}
                 />
             </Switch>
-        )
-    }
+        );
 }
 
 export default TaskIndex;

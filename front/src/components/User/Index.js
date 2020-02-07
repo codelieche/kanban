@@ -28,40 +28,38 @@ import UserMessage from "./Message/Index";
 import UserCenterIndex from "./Center/Index";
 
 
-class UserIndex extends React.Component {
-  render() {
-    return (
-      <Switch>
-        {/*用户相关的路由  */}
-        {/* <Route exat path='/user/login' component={UserLogin} />  */}
-        <Route exat path="/user/list" component={UserList} />
-        <Route exat path="/user/logout" component={UserLogout} />
+function UserIndex(props) {
+  return (
+    <Switch>
+      {/*用户相关的路由  */}
+      {/* <Route exat path='/user/login' component={UserLogin} />  */}
+      <Route exat path="/user/list" component={UserList} />
+      <Route exat path="/user/logout" component={UserLogout} />
 
-        {/*分组相关的路由  */}
-        <Route exat path="/user/group/list" component={UserGroupList} />
-        <Route exat path="/user/group/add" component={UserGroupAdd} />
-        <Route exat path="/user/group/:id/editor" component={UserGroupEditor} />
-        <Route exat path="/user/group/:id" component={UserGroupDetail} />
-        
-        <Route
-          exat
-          path="/user/group"
-          render={() => <Redirect to="/user/group/list" push={false} />}
-        />
+      {/*分组相关的路由  */}
+      <Route exat path="/user/group/list" component={UserGroupList} />
+      <Route exat path="/user/group/add" component={UserGroupAdd} />
+      <Route exat path="/user/group/:id/editor" component={UserGroupEditor} />
+      <Route exat path="/user/group/:id" component={UserGroupDetail} />
+      
+      <Route
+        exat
+        path="/user/group"
+        render={() => <Redirect to="/user/group/list" push={false} />}
+      />
 
-        {/*用户消息  */}
-        <Route exat path="/user/message" component={UserMessage} />
-        
-        {/* 用户中心 */}
-        <Route exat path='/user' component={UserCenterIndex} /> 
-        <Route
-          exat={true}
-          path="/user"
-          render={() => <Redirect to="/user/list" push={false} />}
-        />
-      </Switch>
-    );
-  }
+      {/*用户消息  */}
+      <Route exat path="/user/message" component={UserMessage} />
+      
+      {/* 用户中心 */}
+      <Route exat path='/user' component={UserCenterIndex} /> 
+      <Route
+        exat={true}
+        path="/user"
+        render={() => <Redirect to="/user/list" push={false} />}
+      />
+    </Switch>
+  );
 }
 
 export default UserIndex;

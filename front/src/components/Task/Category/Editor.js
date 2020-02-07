@@ -13,22 +13,22 @@ import fetchApi from "../../Utils/fetchApi";
 import CategoryForm from "./Form";
 
 function CategoryEditor(props){
-    // 状态处理器
+    // 状态处理器: id和data
     const [id, idState] = useState(null);
     
     const [data, dataState] = useState({});
 
-    // 当id变化的时候
+    // 当id变化的时候：修改id
     useEffect(() => {
         // console.log(props.match.params.id);
         if(props.match.params.id !== id){
             idState(props.match.params.id);
-            // 获取数据
+            // 获取数据：每次得到新的id了就需要重新获取一下数据
             fetchData(props.match.params.id);
         }
     }, [props.match.params.id, id]);
 
-    // 获取数据
+    // 获取数据：会修改data的值
     const fetchData = (id) => {
         let url = `/api/v1/task/category/${id}`;
         fetchApi.Get(url)
@@ -38,10 +38,13 @@ function CategoryEditor(props){
                   dataState(data);
               }
           })
-            .catch(err => console.log(err));
+            .catch(err => {
+                console.log(err);
+                message.warn("获取详情数据失败", 5);
+            });
     }
 
-    // 处理编辑操作
+    // 处理编辑操作：注意对image的处理
     const handleEditSubmit = values => {
         // console.log(values);
         // 通过fetch POST添加Category
@@ -63,12 +66,7 @@ function CategoryEditor(props){
         // formData.delete("code");
         
         // console.log(formData);
-        fetchApi.Patch(url, formData, {
-            // headers: {
-            //     "Content-Type": "multipart/form-data",
-            //     // "Accept": "application/json"
-            // },
-        })
+        fetchApi.Patch(url, formData, {})
           .then(data => {
             //   console.log(data);
               if(data.id > 0){

@@ -94,26 +94,30 @@ class UserLoginOrInfo extends React.Component{
     }
 }
 
-export default class Header extends React.Component {
-    render() {
-        return (
-            <div>
-                <Link to="/" className="logo">
-                    <img src="http://www.codelieche.com/static/images/logo-kanban.svg" alt="首页" />
-                </Link>
+/**
+ * 头部组件
+ * @param {*} props 
+ */
+function Header(props) {
+    return (
+        <div>
+            <Link to="/" className="logo">
+                <img src="http://www.codelieche.com/static/images/logo-kanban.svg" alt="首页" />
+            </Link>
 
-                <ul className="nav">
-                    <li>
-                        <div className="link">关于我们</div>
-                    </li>
+            <ul className="nav">
+                <li>
+                    <div className="link">关于我们</div>
+                </li>
 
-                    {/* 显示登录/退出登录信息 */}
-                    <li className="user">
-                        <UserLoginOrInfo />
-                    </li>
-                </ul>
-                
-            </div>
-        );
-    }
+                {/* 显示登录/退出登录信息 */}
+                <li className="user">
+                    <UserLoginOrInfo />
+                </li>
+            </ul>
+            
+        </div>
+    );
 }
+
+export default Header;
