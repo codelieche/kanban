@@ -30,6 +30,15 @@ class Category(models.Model):
         return "{}:{}".format(self.code, self.name)
 
     def save(self, *args, **kwargs):
+        # 自动计算level
+        level = 1
+        parent = self.parent
+        while parent:
+            level += 1
+            parent = parent.parent
+        # 给leve赋值
+        self.level = level
+
         if not self.id and self.image:
             self.file = self.resize_image(self.image)
         super().save(*args, **kwargs)

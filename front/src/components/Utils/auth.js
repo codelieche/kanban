@@ -44,6 +44,25 @@ function checkUserPermissionAndUpdateState(permission, stateFieldName) {
         .catch(err => console.log(err));
 }
 
+export function checkUserPermissionAndUpdateStateHook(permission, stateFieldName, setState) {
+   
+    let url = "/api/v1/account/permission/check";
+    fetchApi.Post(url, {}, {
+        data: {permission: permission}
+    })
+      .then(data => {
+        // let updateFields = {}
+        //   if (data.result) {
+        //       updateFields[stateFieldName] = true;
+        //   }else{
+        //     updateFields[stateFieldName] = false;
+        //   };
+          // 修改状态
+          setState(prevState => {prevState[stateFieldName] = data.result; return prevState});
+      })
+        .catch(err => console.log(err));
+}
+
 export default CheckLogined;
 
 export {

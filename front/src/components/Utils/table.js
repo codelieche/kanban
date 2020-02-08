@@ -14,7 +14,8 @@
  * - textField: filter的标题
  * - valueField: filter的值
  */
-function generateTableFilterOptions(filterOptionsName, dataSourceStateField, fetchDataUrl, textField, valueField){
+// 在class组件中使用
+export function generateTableFilterOptions(filterOptionsName, dataSourceStateField, fetchDataUrl, textField, valueField){
     // 1. 先判断状态值是否存在
     let dataSource = this.state[dataSourceStateField];
     if(dataSource === undefined){
@@ -62,8 +63,51 @@ function generateTableFilterOptions(filterOptionsName, dataSourceStateField, fet
 
 }
 
-export default generateTableFilterOptions;
+// 在Hook组件中使用
+export function generateTableFilterOptionsHook(fetchDataUrl, textField, valueField, setStateFunc, dataSource=null){
+    // 1. 先判断状态值是否存在
+    if(dataSource === undefined || dataSource === null){
+        // 需要重新获取数据
+        fetchApi.Get(fetchDataUrl)
+          .then(data => {
+              let needUpdate = false;
+              if(data instanceof Array){
+                  dataSource = data;
+                  needUpdate = true;
+              }else{
+                  let results = data.results;
+                  if(results instanceof Array){
+                      dataSource = results;
+                      needUpdate = true;
+                  }
+              }
+              
+            // 修改状态
+            if(needUpdate){
+                // 迭代，调用自己
+                generateTableFilterOptionsHook(
+                    fetchDataUrl, textField, valueField, 
+                    setStateFunc, dataSource
+                );
+            }
+          })
+            .catch(err => console.log(err));
 
-export {
-    generateTableFilterOptions
+    }else{
+        // 开始处理filters
+        let filterOptions = dataSource.map(item => {
+            return {
+                text: item[textField],
+                value: item[valueField],
+            }
+        });
+        // 设置状态：过滤选项
+        setStateFunc(filterOptions);
+    }
+
+}
+
+export default {
+    generateTableFilterOptions,
+    generateTableFilterOptionsHook
 };

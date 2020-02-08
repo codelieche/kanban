@@ -238,7 +238,7 @@ class CategoryList extends React.Component{
         // 构造新的连接
         let url = `/task/category/list?page=${currentPage}`;
         if(this.state.search){
-        url = `${url}&search=${this.state.search}`;
+            url = `${url}&search=${this.state.search}`;
         }
 
         // 过滤字段
