@@ -266,10 +266,10 @@ class CategoryList extends React.Component{
         // 跳转新的连接
         this.props.history.push(url);
     }
-
     
     render(){
         // 表格的列
+        const parantColors = ["#108ee9", "blue", "geekblue", "green", "gold"];
         const columns = [
             {
                 title: "ID",
@@ -299,11 +299,11 @@ class CategoryList extends React.Component{
                 filters: this.state["parentFilterOptions"] ? this.state.parentFilterOptions : [],
                 filterMultiple: false,
                 render: (text, record) => {
-                    if(text){
-                        return <Tag color="success">{text}</Tag>;
-                    }else{
-                        return <Tag color="blue">一级分类</Tag>
-                    }
+                    return (
+                        <Tag color={ record.level <= parantColors.length ? parantColors[record.level -1] : "" }>
+                            {record.level > 1 ? text : "一级分类"}
+                        </Tag>
+                    );
                 }
             },
             // {
@@ -320,6 +320,7 @@ class CategoryList extends React.Component{
                 title: "描述",
                 dataIndex: "description",
                 key: "description",
+                ellipsis: true, // 单元格自动省略
             },
             {
                 title: "状态",
@@ -414,6 +415,24 @@ class CategoryList extends React.Component{
             );
         }
 
+        // 显示顶级按钮组件
+        let showLeveOneButton = (
+            <Button
+            //   style={{width: 100, display: this.state.level === 1 ? "none" : "show"}}
+              style={{width: 100}}
+              onClick={() => {
+                  // 注意网页刷新后，level从location.search中获取到的值是字符型的1   
+                  if(this.state.level !== 1 && this.state.level !== "1"){
+                    this.setState({level: 1}, this.onSearchHandler)
+                  }else{
+                    this.setState({level: null, search: null}, this.onSearchHandler)
+                  }
+                }}
+              type="primary"
+              icon={<Icon type="filter"/>}
+            >{ this.state.level !== 1 && this.state.level !== "1" ? "一级分类" : "全部分类" } </Button>
+        );
+
         // 显示展开
         const expandable = { 
             expandedRowRender: record => {
@@ -476,6 +495,7 @@ class CategoryList extends React.Component{
                             >
                                 刷新
                             </Button>
+                            {showLeveOneButton}
                             {addButtonElement}
                         </Col>
                     </Row>

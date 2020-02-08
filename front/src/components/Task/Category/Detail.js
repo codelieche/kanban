@@ -42,7 +42,7 @@ function CategoryDetail(props) {
         let paramID = props.match.params.id;
         // 特别注意state中的id是数值类型，props传过来的是字符型
         // 判断什么时候需要调用fetchDetailData，这个需要特别慎重
-        if(paramID !== String(id)){
+        if(paramID !== id){
             // 修改id的状态
             idState(paramID);
             fetchDetailData(props.match.params.id);

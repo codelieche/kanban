@@ -5,7 +5,7 @@
  * 2. type: editor或者add，根据这个类确定GroupForm
  * 3. handleSubbmit: 表单提交时候，需要做的事情
  */
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
     Form,
     Input,
@@ -123,36 +123,39 @@ function CategoryForm(props){
       }
     }
 
-
+    // console.log("表格渲染函数");
     // 表格的列，弹出的选择框需要用到：
-    const categoryListColumns = [
-      {
-          title: "ID",
-          dataIndex: "id",
-          key: "id",
-          sorter: (a, b) => a.id - b.id
-      },
-      {
-          title: "分类名",
-          dataIndex: "name",
-          key: "name",
-      },
-      {
-          title: "代码",
-          dataIndex: "code",
-          key: "code"
-      },
-      {
-          title: "父级分类",
-          dataIndex: "parent",
-          key: "parent",
-      },
-      {
-          title: "描述",
-          dataIndex: "description",
-          key: "description",
-      }
-    ];
+    // 提升性能
+    const categoryListColumns = useMemo(() => {
+      return [
+          {
+              title: "ID",
+              dataIndex: "id",
+              key: "id",
+              sorter: (a, b) => a.id - b.id
+          },
+          {
+              title: "分类名",
+              dataIndex: "name",
+              key: "name",
+          },
+          {
+              title: "代码",
+              dataIndex: "code",
+              key: "code"
+          },
+          {
+              title: "父级分类",
+              dataIndex: "parent",
+              key: "parent",
+          },
+          {
+              title: "描述",
+              dataIndex: "description",
+              key: "description",
+          }
+        ]
+      }, []);
 
     // 渲染表单
     // 相当于class编写组件时的：render(){}
@@ -292,7 +295,7 @@ function CategoryForm(props){
             <Modal
                 title="请选择父级分类"
                 visible={visibleModal}
-                width={"70%"}
+                width={"60%"}
                 // footer={null}
                 onOk={handleModelOk}
                 onCancel={() => {visibleModalState(false)}}

@@ -17,23 +17,27 @@ import fetchApi from "../../Utils/fetchApi";
 // - isMultiple: 是否选择多个值
 // - disabledKeys: 禁用的keys列表
 // - showSubs: 是否显示子列表
-function CheckValuesFromTable(props){
+// function CheckValuesFromTable(props){
+function CheckValuesFromTable({checkValues, checkValuesState, dataSourceUrl, columns, rowKey="id", isMultiple=true, disabledKeys=[], showSubs=false}){
     // checkValues, checkValuesState, dataSourceUrl, columns, rowKey="id", isMultiple=true, disabledKeys=[], showSubs=false
     // 保存api获取的数据的state
     // 第1个state：数据源的url
+    // console.log("CheckValuesFromTable");
     const [url, urlState] = useState(null);
 
     // 相当于：componentDidMound，componentDidUpdate, componentWillUnMount
     useEffect(() => {
         // console.log(dataSourceUrl);
-        if(props.dataSourceUrl !== url){
+        if(dataSourceUrl !== url){
             // data["dataSourceUrl"] = dataSourceUrl;
             // 修改状态
-            urlState(props.dataSourceUrl);
+            urlState(dataSourceUrl);
             // 获取数据
-            fetchData(props.dataSourceUrl, 1);
+            if(dataSourceUrl){
+                fetchData(dataSourceUrl, 1);
+            }
         }
-    }, [url, props.dataSourceUrl]);
+    }, [url, dataSourceUrl]);
 
     // 第2个state：通过url获取到的数据
     const [dataSource, dataSourceState] = useState([]);
@@ -75,18 +79,18 @@ function CheckValuesFromTable(props){
     // 行选择
     const rowSelection = {
         hideDefaultSelections: true,
-        selectedRowKeys: props.checkValues ? props.checkValues : [],
+        selectedRowKeys: checkValues ? checkValues : [],
         onChange: (selectedRowKeys) => {
             // console.log(selectedRowKeys);
             // checkValuesState(selectedRowKeys);
-            props.checkValuesState(selectedRowKeys);
+            checkValuesState(selectedRowKeys);
         },
-        type: props.isMultiple ? "checkbox" : "radio",
+        type: isMultiple ? "checkbox" : "radio",
         getCheckboxProps: record => ({
             disabled: function(){
-                if(props.disabledKeys && props.disabledKeys instanceof Array){
-                    for(var i=0; i < props.disabledKeys.length; i++){
-                        if (record[props.rowKey] === props.disabledKeys[i]){
+                if(disabledKeys && disabledKeys instanceof Array){
+                    for(var i=0; i < disabledKeys.length; i++){
+                        if (record[rowKey] === disabledKeys[i]){
                             return true;
                         }
                     }
@@ -94,7 +98,8 @@ function CheckValuesFromTable(props){
                 
                 return false;
             }(),
-            name: record[props.rowKey],
+            // 注意这里，如果rowKey是id的话，那么数字是不可以作为name的
+            name: record[rowKey] ? record[rowKey].toString() : "---",
           }),
     }
 
@@ -102,7 +107,7 @@ function CheckValuesFromTable(props){
     function onChange(pagination, filters, sorter, extra) {
         // console.log('params', pagination, filters, sorter, extra);
         let currentPage = pagination.current;
-        fetchData(props.dataSourceUrl, currentPage);
+        fetchData(dataSourceUrl, currentPage);
       }
 
     //   console.log(checkValues);
@@ -115,13 +120,13 @@ function CheckValuesFromTable(props){
                       showHeader={false}
                       bordered={false}
                       dataSource={record.subs} 
-                      rowKey={props.rowKey}
+                      rowKey={rowKey}
                       //   columns={columns.slice(0, 6)} 
                       size="small"
                       rowSelection={rowSelection}
-                      columns={props.columns} 
+                      columns={columns} 
                       pagination={false}
-                      expandable={props.showSubs ? expandable : undefined}
+                      expandable={showSubs ? expandable : undefined}
                     />
                 );
             }else{
@@ -134,15 +139,15 @@ function CheckValuesFromTable(props){
     return (
         <div>
             <Table
-              title={() => props.checkValues.length > 0 ? `当前选中的值有：${JSON.stringify(props.checkValues)}` : null}
-              columns={props.columns}
+              title={() => checkValues.length > 0 ? `当前选中的值有：${JSON.stringify(checkValues)}` : null}
+              columns={columns}
               dataSource={dataSource}
               pagination={pagination}
               onChange={onChange}
-              rowKey={props.rowKey}
+              rowKey={rowKey}
               rowSelection={rowSelection}
               bordered={true}
-              expandable={props.showSubs ? expandable : undefined}
+              expandable={showSubs ? expandable : undefined}
             >
             </Table>
         </div>
