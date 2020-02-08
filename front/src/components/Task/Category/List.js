@@ -125,7 +125,6 @@ class CategoryList extends React.Component{
                 url = `${url}&${item}=${value}`;
             }
         });
-
         // console.log(url);
 
         // 发起ajax请求
@@ -171,7 +170,7 @@ class CategoryList extends React.Component{
                 if(item !== "search" || !noSearch){
                     let value = this.state[item];
                     // console.log(item, value);
-                    if(value !== undefined && value !== null){
+                    if(value !== undefined && value !== null && item !== "page"){
                         url = `${url}&${item}=${value}`;
                     };
                 }

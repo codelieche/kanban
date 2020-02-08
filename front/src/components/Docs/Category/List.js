@@ -98,10 +98,10 @@ function CategoryList(props){
 
                 loadingState(false);
 
-                paginationDataState(prevState => {
-                    prevState["current"] = page;
-                    prevState["total"] = responseData.count;
-                    return prevState;
+                // 更新pagination对象
+                paginationDataState({
+                    current: page,
+                    total: responseData.count,
                 });
             }else{
                 loadingState(false);
@@ -145,6 +145,7 @@ function CategoryList(props){
 
     // 判断是否需要判断一下权限
     useEffect(() => {
+        // console.log("判断权限")
         if(other.userCanAddCategory === undefined){
             checkUserPermissionAndUpdateStateHook("docs.add_category", "userCanAddCategory", otherState);
         }
@@ -194,7 +195,7 @@ function CategoryList(props){
             if (response.status === 204) {
               message.success(`删除分类(ID:${value.id}-${value.name}-${value.code})成功`, 3);
               // 刷新数据
-              fetchData(paginationDataState.current);
+              fetchData(paginationData.current);
             } else if (response.status === 200) {
               return response.json();
             } else {
@@ -214,7 +215,7 @@ function CategoryList(props){
           .catch(err => {
             console.log(err);
           });
-    }, [fetchData]);
+    }, [fetchData, paginationData]);
 
     // 搜索处理函数
     const onSearchHandler = useCallback((value) => {
@@ -286,16 +287,6 @@ function CategoryList(props){
                     );
                 }
             },
-            // {
-            //     title: "级别",
-            //     dataIndex: "level",
-            //     key: "level",
-            //     render: (text, record) => {
-            //         return (
-            //         <Tag  >{`${text}级分类`}</Tag>
-            //         );
-            //     }
-            // },
             {
                 title: "描述",
                 dataIndex: "description",
@@ -410,7 +401,7 @@ function CategoryList(props){
 
     // 处理Table变更事件：点击了过滤、排序、页面等操作的时候触发
     const handleTableChange = useCallback((pagination, filters, sorter) => {
-        console.log(pagination, filters, sorter);
+        // console.log(pagination, filters, sorter);
         // 获取当前的页
         let currentPage = pagination.current;
 
@@ -467,7 +458,7 @@ function CategoryList(props){
     const addButtonElement = useMemo(() => {
         if(other.userCanAddCategory){
             return (
-                <Link to="/task/category/add">
+                <Link to="/docs/category/add">
                     <Button
                       style={{width: 100}}
                       type="primary"
@@ -485,31 +476,35 @@ function CategoryList(props){
     let showLeveOneButton = useMemo(() => {
         return (
             <Button
-            //   style={{width: 100, display: this.state.level === 1 ? "none" : "show"}}
-            style={{width: 100}}
-            onClick={() => {
+              style={{width: 100}}
+              onClick={() => {
+                  let url;
                 // 注意网页刷新后，level从location.search中获取到的值是字符型的1   
                 if(urlParams.level !== 1 && urlParams.level !== "1"){
-                    urlParamsState(prevState => {
-                        prevState.level = 1; 
-                        return prevState
-                    });
+                    // urlParamsState(prevState => {
+                    //     prevState.level = 1; 
+                    //     urlParamsState(prevState);
+                    //     return prevState
+                    // });
+                    url = "/docs/category/list?level=1";
                 }else{
-                    urlParamsState(prevState => {
-                        prevState.level = null; 
-                        prevState.search = null; 
-                        return prevState
-                    });
+                    // urlParamsState(prevState => {
+                    //     prevState.level = null; 
+                    //     prevState.search = null; 
+                    //     return prevState
+                    // });
+                    url = "/docs/category/list";
                 }
-                onSearchHandler();
+                // onSearchHandler();
+                props.history.push(url);
                 }}
-            type="primary"
-            icon={<Icon type="filter"/>}
+              type="primary"
+              icon={<Icon type="filter"/>}
             >
                 { urlParams.level !== 1 && urlParams.level !== "1" ? "一级分类" : "全部分类" } 
             </Button>
         );
-    }, [onSearchHandler, urlParams.level]);
+    }, [props.history, urlParams.level]);
    
     return (
         <div className="content">
