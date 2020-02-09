@@ -1,5 +1,7 @@
 import React from 'react';
 
+import MyEditor from "../Editor";
+
 class TestPage extends React.Component{
     constructor(props){
         super(props);
@@ -20,6 +22,8 @@ function TestPageFunc() {
     return (
         <div>
             This Is Test Page Function
+            <br />
+            <MyEditor />
         </div>
     )
 }
