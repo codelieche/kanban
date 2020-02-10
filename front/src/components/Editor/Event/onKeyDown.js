@@ -21,6 +21,7 @@ export const toggleMark = (editor, type) => {
 
 export const  onKeyDownFunc = function(event, editor){
     // console.log(event);
+    // console.log(event, editor);
     if(!event.ctrlKey){
         // 未按下ctrl键
     }else{

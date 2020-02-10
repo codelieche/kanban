@@ -4,10 +4,11 @@
 import React from "react";
 
 export function DefaultElement(props){
+    console.log(props);
     return (
-        <p {...props.attributes}>
+        <div {...props.attributes}>
             {props.children}
-        </p>
+        </div>
     );
 }
 

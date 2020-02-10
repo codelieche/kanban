@@ -13,6 +13,12 @@
 
 # css文件过滤
 /src/styles/less/*.css
+/src/styles/less/*.less
+/src/styles/main.css
+/src/styles/main.less
+
+
+
 
 # misc
 .DS_Store

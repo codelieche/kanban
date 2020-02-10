@@ -3,7 +3,7 @@
  */
 
 import React from "react";
-import { Editor } from "slate";
+import { Editor, Transforms } from "slate";
 import { useSlate } from "slate-react";
 
 import Icon from "../../Base/Icon";
@@ -41,8 +41,8 @@ export  function MarkButton({type, icon}) {
     );
 };
 
-export const ButtonTools = React.forwardRef((props, ref) => {
-
+export const ButtonTools = function(props) {
+    let editor = useSlate();
     let tools = [
         {type: "bold", text: "粗体", icon: "bold"},
         {type: "italic", text: "斜体", icon: "italic"},
@@ -56,13 +56,39 @@ export const ButtonTools = React.forwardRef((props, ref) => {
         return (
             <MarkButton type={item.type} key={index} icon={item.icon}/>
         );
-    })
+    });
+
+    const testButtonClick = (event) => {
+        // 阻止event的默认事件
+        console.log(event);
+        event.preventDefault();
+        console.log(editor);
+        // Editor.insertNode(editor, {
+        //     type: "blockquote",
+        //     children: [{text: ""}]
+        // }, {
+        //     at: editor.selection ? editor.selection.focus.path : null,
+        // });
+
+        editor.insertBreak()
+        Transforms.insertNodes(
+            editor, [{
+                type: "paragraph",
+                children: [{text: "123"}]
+            }]
+        )
+
+
+    }
 
     return (
-        <div className="tools" {...props} ref={ref}>
+        <div className="tools">
             {toolsElemtns}
+            <div className="no-active" onClick={testButtonClick}>
+                <Icon type="cog"/>
+            </div>
         </div>
     )
-});
+};
 
 export default ButtonTools;
