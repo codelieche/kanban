@@ -4,7 +4,7 @@
 import React from "react";
 
 export function DefaultElement(props){
-    console.log(props);
+    // console.log(props);
     return (
         <div {...props.attributes}>
             {props.children}

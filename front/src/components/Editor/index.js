@@ -16,6 +16,7 @@ import {
 // 插件
 import { withInsertAndDelete } from "./Plugins/Insert";
 
+// 测试
 
 export function MyEditor(props){
 
@@ -73,6 +74,8 @@ export function MyEditor(props){
                     />
                 </Slate>
             </div>
+
+            {/* 测试组件 */}
             <div onClick={testButtonClick}>
                 <Icon type="cog"/>
             </div>

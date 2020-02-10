@@ -1,6 +1,8 @@
 import React from 'react';
 
 import MyEditor from "../Editor";
+import { CodePrismDemo } from "../Editor/Element/Code";
+
 
 class TestPage extends React.Component{
     constructor(props){
@@ -24,6 +26,9 @@ function TestPageFunc() {
             This Is Test Page Function
             <br />
             <MyEditor />
+            <br />
+            {/* 测试 */}
+            <CodePrismDemo />
         </div>
     )
 }

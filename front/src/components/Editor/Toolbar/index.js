@@ -19,12 +19,12 @@ export const toggleMark = (editor, type) => {
     if (isActive) {
         Editor.removeMark(editor, "type")
     } else {
-        console.log(editor);
+        // console.log(editor);
         Editor.addMark(editor, "type", type)
     }
 }
 
-export  function MarkButton({type, icon}) {
+export  function MarkButton({type, icon, text, title}) {
     // 获取editor
     let editor = useSlate();
 
@@ -36,7 +36,8 @@ export  function MarkButton({type, icon}) {
                 toggleMark(editor, type);
             }}
         >
-            <Icon type={type} noMarginRight={true} />
+            {/* 有icon就显示icon，无icon就显示text */}
+            { icon ? <Icon type={icon} noMarginRight={true} /> : <Icon>{text}</Icon>}
         </div>
     );
 };
@@ -47,14 +48,18 @@ export const ButtonTools = function(props) {
         {type: "bold", text: "粗体", icon: "bold"},
         {type: "italic", text: "斜体", icon: "italic"},
         {type: "underline", text: "下划线", icon: "underline"},
+        {type: "strikethrough", text: "删除线", icon: "strikethrough"},
         {type: "list-ul", text: "无序列表", icon: "list-ul"},
         {type: "list-ol", text: "有序列表", icon: "list-ol"},
         {type: "link", text: "链接", icon: "link"},
+        {type: "blockquote", title: "引用", text: '“'},
+        {type: "code", text: "代码块", icon: "code"},
+        {type: "image", text: "图片", icon: "image"},
     ]
 
     let toolsElemtns = tools.map((item, index) => {
         return (
-            <MarkButton type={item.type} key={index} icon={item.icon}/>
+            <MarkButton type={item.type} key={index} icon={item.icon} text={item.text}/>
         );
     });
 
@@ -76,7 +81,7 @@ export const ButtonTools = function(props) {
                 type: "paragraph",
                 children: [{text: "123"}]
             }]
-        )
+        );
 
 
     }

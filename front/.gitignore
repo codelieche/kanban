@@ -10,6 +10,7 @@
 
 # production
 /build
+/tmp
 
 # css文件过滤
 /src/styles/less/*.css

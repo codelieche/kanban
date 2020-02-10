@@ -8,7 +8,7 @@ const MarkdownPatterns = {
     '*': 'list-item',
     '-': 'list-item-ul',
     '+': 'list-item',
-    '>': 'blockquote',
+    '>': 'quote',
     '#': 'h1',
     '##': 'h2',
     '###': 'h3',
@@ -26,9 +26,11 @@ export const withInsertAndDelete = editor => {
     } = editor;
 
     // 修改默认的insertText
-    editor.insertText = (text) => {
+    editor.insertText = async (text) => {
         const { selection } = editor;
-        console.log(selection);
+        // console.log(selection);
+        insertText(text);
+        console.log(text);
 
         if(text === ' ' && selection && Range.isCollapsed(selection)){
             // 获取锚点
@@ -41,7 +43,7 @@ export const withInsertAndDelete = editor => {
             const range = {anchor, focus: start}
             const beforeText = Editor.string(editor, range);
 
-            console.log("前面的内容是：", beforeText);
+            // console.log("前面的内容是：", beforeText);
 
             // 获取空格前面的字符匹配到的类型
             const type = MarkdownPatterns[beforeText];
@@ -55,6 +57,14 @@ export const withInsertAndDelete = editor => {
                     {match: n => Editor.isBlock(editor, n)} 
                 );
 
+                if(type === "quote"){
+                    // 包裹一下
+                    const list = { type: "blockquote", children: []}
+                    Transforms.wrapNodes(editor, list, {
+                        match: n => n.type === "quote",
+                    });
+                }
+
                 if(type === "list-item-ul"){
                     // 包裹一下
                     const list = { type: "list-ul", children: []}
@@ -67,11 +77,8 @@ export const withInsertAndDelete = editor => {
             }
         }
 
-        
-
-
         // 执行默认的insertText
-        insertText(text);
+        // insertText(text);
     }
 
     // 修改默认的deleteBackward
@@ -102,9 +109,29 @@ export const withInsertAndDelete = editor => {
                             match: n => n.type === "list-ul",
                             split: true,
                         });
+                    }else{
+                        // 引用
+                        // console.log(block);
+                        if(block.type === "quote" && block.children[0].text === ""){
+                            Transforms.unwrapNodes(editor, {
+                                match: n => n.type === "blockquote",
+                                split: true,
+                            });
+                        }
                     }
 
+                    
+
                     return;
+                }else{
+                    // 提升文档
+                    if(path.length > 1){
+                        Transforms.liftNodes(
+                            editor,
+                        );
+                    }else{
+                        
+                    }
                 }
             }
         }
