@@ -4,10 +4,10 @@
 import { Editor, Range, Point, Transforms } from "slate";
 
 
-const MarkdownPatterns = {
-    '*': 'list-item',
-    '-': 'list-item-ul',
-    '+': 'list-item',
+const markdownPatterns = {
+    // '*': 'list-item-ul',
+    // '-': 'list-item-ul',
+    // '+': 'list-item-ul',
     '>': 'quote',
     '#': 'h1',
     '##': 'h2',
@@ -15,7 +15,26 @@ const MarkdownPatterns = {
     '####': 'h4',
     '#####': 'h5',
     '######': 'h6',
-    '**': "bold"
+    '---': "hr",
+}
+
+// markdown的正则表达式
+const markdowListRegexp = {
+    "list-item-ul": /^[*\-+].?$/,
+    "list-item-ol": /^\d+\.?$/,
+}
+
+const markdownRegexpValue = {
+    // 匹配加粗
+    "bold": /\*\*(.*?)\*\*$/,
+    // 匹配代码单词
+    "code": /^`(.*?)`$/,
+    // 匹配图片
+    "image": /!\[(.*)\]\((.*?)\)$/,
+    // 匹配链接
+    "link": /\[(.*)\]\((.*?)\)$/,
+    // 匹配代码块
+    "codeblock": /^```(.*?)\s*$/
 }
 
 export const withInsertAndDelete = editor => {
@@ -32,6 +51,10 @@ export const withInsertAndDelete = editor => {
         insertText(text);
         console.log(text);
 
+        let pipei = false;
+        // let pipeiType = "";
+
+        // 对值做检验：输入空格后触发
         if(text === ' ' && selection && Range.isCollapsed(selection)){
             // 获取锚点
             const { anchor } = selection;
@@ -41,13 +64,15 @@ export const withInsertAndDelete = editor => {
             const path = block ? block[1] : [];
             const start = Editor.start(editor, path);
             const range = {anchor, focus: start}
+            // 获取到了本block前面的字符
             const beforeText = Editor.string(editor, range);
-
             // console.log("前面的内容是：", beforeText);
 
             // 获取空格前面的字符匹配到的类型
-            const type = MarkdownPatterns[beforeText];
+            // 1. 匹配确定的字符：
+            const type = markdownPatterns[beforeText];
 
+            // 匹配到确定的类型
             if (type) {
                 Transforms.select(editor, range);
                 Transforms.delete(editor);
@@ -56,7 +81,8 @@ export const withInsertAndDelete = editor => {
                     { type: type},
                     {match: n => Editor.isBlock(editor, n)} 
                 );
-
+                
+                // 是引用的话，包裹一层blockquote
                 if(type === "quote"){
                     // 包裹一下
                     const list = { type: "blockquote", children: []}
@@ -64,17 +90,114 @@ export const withInsertAndDelete = editor => {
                         match: n => n.type === "quote",
                     });
                 }
-
-                if(type === "list-item-ul"){
-                    // 包裹一下
-                    const list = { type: "list-ul", children: []}
-                    Transforms.wrapNodes(editor, list, {
-                        match: n => n.type === "list-item-ul",
-                    });
-                }
-                // 返回
+                // 返回:后续步骤无需执行了
                 return;
+            }else{
+                // 2. 匹配正则表达式ul或者ol
+                for(var key in markdowListRegexp){
+                    let reg = markdowListRegexp[key];
+
+                    // 判断是否匹配
+                    console.log(key, reg, reg.test(beforeText), beforeText);
+                    if (reg.test(beforeText)){
+                        // 设置selection
+                        Transforms.select(editor, range);
+                        Transforms.delete(editor);
+                        // 设置
+                        Transforms.setNodes(
+                            editor,
+                            { type: key},
+                            {match: n => Editor.isBlock(editor, n)} 
+                        );
+
+                        // 列表相关匹配成功
+                        // 包裹一下ul/ol
+                        if(key === "list-item-ul"){
+                            // 包裹一下
+                            const list = { type: "list-ul", children: []}
+                            Transforms.wrapNodes(editor, list, {
+                                match: n => n.type === "list-item-ul",
+                            });
+                        }
+
+                        if(key === "list-item-ol"){
+                            // 包裹一下
+                            const list = { type: "list-ol", children: []}
+                            Transforms.wrapNodes(editor, list, {
+                                match: n => n.type === "list-item-ol",
+                            });
+                        }
+                        // 返回无需执行后面的了
+                        return;
+                    }
+                    console.log("继续判断后面的类型");
+                };
+
+                // 3. 匹配是否是link,image, codeblock
+                for(let key in markdownRegexpValue){
+                    let reg = markdownRegexpValue[key];
+                    // 判断是否匹配
+                    if(reg.test(beforeText)){
+                        // 获取匹配的值
+                        let results = beforeText.match(reg);
+                        console.log(key, results);
+                        if(key === "bold"){
+                            // 插入粗体内容
+                            console.log(range);
+                            range.focus.offset = results.index;
+                            Transforms.select(editor, range);
+                            // Transforms.delete(editor);
+                            Transforms.insertFragment(
+                                editor,
+                                [
+                                    { type: "bold", children: [{text: results[1], type: "bold"}]},
+                                    { type: "paragraph", children: [{text: " ", type: "paragraph"}]}
+                                ],
+                                // {match: n => Editor.isBlock(editor, n), split: true} 
+                            );
+                        }else if(key === "link"){
+                            range.focus.offset = results.index;
+                            Transforms.select(editor, range);
+                            Transforms.delete(editor);
+                            Transforms.insertFragment(
+                                editor,
+                                 [
+                                    { type: "paragraph", children: [{text: results[1], url: results[2], type: "link"}]},
+                                    { type: "paragraph", children: [{text: " ", type: "paragraph"}]}
+                                ],
+                                {match: n => true, split: true} 
+                            );
+                        }else if(key === "image"){
+                            range.focus.offset = results.index;
+                            Transforms.select(editor, range);
+                            Transforms.delete(editor);
+                            console.log(range);
+                            Transforms.insertFragment(
+                                editor,
+                                 [
+                                    { type: "paragraph", children: [{text: results[1], url: results[2], type: "image"}]},
+                                    { type: "paragraph", children: [{text: " ", type: "paragraph"}]}
+                                ],
+                                {match: n => true, split: true} 
+                            );
+                        }else if(key === "codeblock"){
+                            // 这个是代码段
+                            
+                        }
+
+                        // 返回，无需执行后面的内容了
+                        return
+                    }
+                }
+
             }
+        }else{
+            // 输入的是非空格字符
+        }
+
+        // 判断是否匹配
+        if(pipei){
+            // 执行相关操作
         }
 
         // 执行默认的insertText
