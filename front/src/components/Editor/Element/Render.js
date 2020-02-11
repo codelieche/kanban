@@ -4,6 +4,8 @@ import React from "react";
 import CodeElement from "./Code";
 import DefaultElement from "./Default";
 import LeafElement from "./Leaf";
+// import SyntaxHighlighter from 'react-syntax-highlighter';
+// import { tomorrowNight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 // 渲染block
 export const renderElementFunc = (props) => {
@@ -39,6 +41,33 @@ export const renderElementFunc = (props) => {
             return <img {...props.attributes} alt={props.leaf.text} src={props.leaf.url}></img>
         // case "hr":
         //     return <hr />
+        case "codeblock":
+            // console.log(props);
+            return (
+                <div {...props.attributes}
+                //   style={{ userSelect: "none" }}
+                //   contentEditable={false}
+                  className="codeblock"
+                  onClick={e => {console.log(e);e.stopPropagation(); e.preventDefault();}}
+                  >
+                    {/* <SyntaxHighlighter
+                        contentEditable={false}
+                        onClick={e => {console.log(e);e.stopPropagation(); e.preventDefault();}}
+                        language={props.language}
+                        startingLineNumber={1}
+                        showLineNumbers={true}
+                        style={tomorrowNight}>
+                            {props.element.code ? props.element.code : "import os"}
+                    </SyntaxHighlighter>
+                    <input 
+                        onClick={e => {console.log(e);e.stopPropagation(); e.preventDefault();}}
+                        contentEditable={false}>
+                    </input> */}
+
+                    {props.children}
+                </div>
+               
+            );
         default:
             return <DefaultElement {...props}/>
     }

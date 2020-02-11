@@ -49,7 +49,7 @@ export const withInsertAndDelete = editor => {
         const { selection } = editor;
         // console.log(selection);
         insertText(text);
-        console.log(text);
+        // console.log(text);
 
         let pipei = false;
         // let pipeiType = "";
@@ -182,6 +182,29 @@ export const withInsertAndDelete = editor => {
                             );
                         }else if(key === "codeblock"){
                             // 这个是代码段
+                            range.focus.offset = results.index;
+                            Transforms.select(editor, range);
+                            Transforms.delete(editor);
+                            console.log(range, block);
+                            console.log(selection.focus.path);
+                            // 设置
+                            let codeStr = "import os\n\nif __name__ === '__main__':\n    print(help(os))";
+
+                            Transforms.setNodes(
+                                editor,
+                                { type: "prev", text: codeStr, isVoid: true},
+                                {match: n => Editor.isBlock(editor, n)} 
+                            );
+
+                            // 列表相关匹配成功
+                            // 包裹一下
+                            if(key === "codeblock"){
+                                // 包裹一下
+                                const list = { type: "codeblock", children: []}
+                                Transforms.wrapNodes(editor, list, {
+                                    match: n => n.type === "prev",
+                                });
+                            }
                             
                         }
 
@@ -224,7 +247,7 @@ export const withInsertAndDelete = editor => {
                 console.log(block, start);
 
                 // 判断block的类型
-                if(block.type !== 'paragraph' && Point.equals(selection.anchor, start)){
+                if(block.type !== 'prev' && block.type !== 'paragraph' && Point.equals(selection.anchor, start)){
                     Transforms.setNodes(editor, {type: "paragraph"})
 
                     if(block.type === "list-item-ul"){
@@ -242,13 +265,10 @@ export const withInsertAndDelete = editor => {
                             });
                         }
                     }
-
-                    
-
                     return;
                 }else{
                     // 提升文档
-                    if(path.length > 1){
+                    if(path.length > 1 && block.type !== "prev"){
                         Transforms.liftNodes(
                             editor,
                         );
