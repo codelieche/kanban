@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'account.apps.AccountConfig',
     'task.apps.TaskConfig',
     'docs.apps.DocsConfig',
+    'pages.apps.PagesConfig',
     'config.apps.ConfigConfig',
     'modellog.apps.ModellogConfig',
     'tags.apps.TagsConfig',
