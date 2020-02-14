@@ -58,6 +58,22 @@ class InfoDetailApiView(generics.RetrieveUpdateDestroyAPIView):
     permission_classes = (IsAuthenticated, )
 
 
+class InfoAllValueListApiView(generics.ListAPIView):
+    """
+    属性的所有值的列表
+    """
+    
+    serializer_class = InfoValueModelSerializer
+    permission_classes = (IsAuthenticated, )
+    pagination_class = None
+
+    def get_queryset(self):
+        # 先得到info的id
+        info_id = self.kwargs.get("info_id")
+        queryset = InfoValue.objects.filter(info_id=info_id)
+        return queryset
+
+
 class InfoValueCreateApiView(generics.CreateAPIView):
     """
     Info Value Create Api View

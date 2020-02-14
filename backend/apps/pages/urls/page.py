@@ -5,7 +5,8 @@ from pages.views.page import (
     PageCreateApiView,
     PageListApiView,
     PageDetailApiView,
-    PageInfoListAllApiView
+    PageInfoListAllApiView,
+    PageInfoValueApiView,
 )
 
 urlpatterns = [
@@ -14,4 +15,5 @@ urlpatterns = [
     path('list', PageListApiView.as_view(), name="list"),
     path('<int:pk>', PageDetailApiView.as_view(), name="detail"),
     path('<int:page_id>/infos', PageInfoListAllApiView.as_view(), name="infos"),
+    path('<int:page_id>/infovalues', PageInfoValueApiView.as_view(), name="infovalues"),
 ]

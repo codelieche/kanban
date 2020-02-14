@@ -39,6 +39,36 @@ class Page(models.Model):
     # 文章的内容是一系列的block
     is_active = models.BooleanField(verbose_name="有效", blank=True, default=True)
 
+    @property
+    def infovalues(self):
+        # 获取page的infovas：以info的id为key: {info_[int]: []}
+        # 性能不太好，后续优化
+        infovalues = self.infovalue_set.all()
+        results = {}
+        for infovalue in infovalues:
+            info = infovalue.info
+            info_key = "info_{}".format(info.id)
+            info_value = {
+                "infovalue_id": infovalue.id,
+                "value": infovalue.value,
+            }
+
+            if info.is_multiple:
+                if info_key not in results:
+                    results[info_key] = [info_value]
+                else:
+                    if isinstance(results[info_key], list):
+                        results[info_key].append(info_value)
+                    else:
+                        results[info_key] = [info_value]
+            else:
+                results["info_{}".format(info.id)] = {
+                    "infovalue_id": infovalue.id,
+                    "value": infovalue.value,
+                }
+        # 返回结果
+        return results
+
     def __delete__(self):
         if self.is_active:
             self.is_active = True

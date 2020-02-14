@@ -6,7 +6,8 @@ from pages.views.info import (
     InfoCategoryListApiView,
     InfoCreateApiView,
     InfoListApiView,
-    InfoDetailApiView
+    InfoDetailApiView,
+    InfoAllValueListApiView,
 )
 
 urlpatterns = [
@@ -20,4 +21,5 @@ urlpatterns = [
     path("create", InfoCreateApiView.as_view(), name="create"),
     path("list", InfoListApiView.as_view(), name="list"),
     path("<int:pk>", InfoDetailApiView.as_view(), name="detail"),
+    path("<int:info_id>/values", InfoAllValueListApiView.as_view(), name="values")
 ]

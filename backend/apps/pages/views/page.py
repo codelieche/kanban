@@ -2,9 +2,12 @@
 页面相关的视图
 """
 from rest_framework import generics
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from django.shortcuts import get_object_or_404
+from django.http.response import JsonResponse
 
 from pages.models.page import Page
 from pages.models.info import Info
@@ -58,3 +61,21 @@ class PageInfoListAllApiView(generics.ListAPIView):
         
         page_id = self.kwargs.get("page_id", 0)
         return Info.objects.filter(page_id=page_id)
+
+
+class PageInfoValueApiView(APIView):
+    """获取page的属性值"""
+
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, page_id):
+        # 获取page的id
+        # page_id = self.kwargs.get("page_id", 0)
+        # print(self, page_id)
+        page = get_object_or_404(Page, id=page_id)
+
+        infovalues = page.infovalues
+        # print(page, infovalues)
+        return JsonResponse(data=infovalues)
+
+
