@@ -78,17 +78,15 @@ class InfoValueAddApiView(APIView):
         infovalue, created = InfoValue.objects.get_or_create(info=info, value=value, is_active=True)
 
         # 这里可优化一下，减少sql的操作
-        # info不是多个的话，就需要清空以前的
+        # info不是多个的话，就需要清空以前的, tags,user类型的是可以多个的
         if not info.is_multiple:
             old_infovalues = page.infovalue_set.filter(info=info).exclude(id=infovalue.id).all()
-            # print(old_infovalues)
             # print("========== 清空旧的infovalue =========")
             for infovalue_old in old_infovalues:
                 infovalue_old.pages.remove(page)
         
         # 查看page的所有infovalue
         #print(page.infovalue_set.all())
-        print(infovalue)
         # print(infovalue.pages.all())
 
         # 给page添加到新的infovalue中

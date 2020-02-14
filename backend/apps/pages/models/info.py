@@ -73,6 +73,7 @@ class Info(models.Model):
                              on_delete=models.CASCADE)
     value_type = models.CharField(verbose_name="值类型", max_length=40, choices=VALUE_TYPE_CHOICES, 
                                   default="text", blank=True)
+    order = models.SmallIntegerField(verbose_name="排序", default=1, blank=True)
     # 只有category__element是tags类型的值，才可以有多个值，其它每个page只能设置单值
     is_multiple = models.BooleanField(verbose_name="是否有多值", default=False, blank=True)
     is_active = models.BooleanField(verbose_name="有效", default=True, blank=True)
