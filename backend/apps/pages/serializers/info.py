@@ -4,6 +4,7 @@
 from rest_framework import serializers
 
 from pages.models.info import InfoField, InfoCategory, Info, InfoValue
+from pages.models.page import Page
 
 
 class InfoCategoryModelSerializer(serializers.ModelSerializer):
@@ -51,3 +52,13 @@ class InfoValueModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = InfoValue
         fields = ("id", "info", "pages", "value", "value_type", "color", "is_active")
+
+
+class InfoValueAddSerializer(serializers.Serializer):
+    """
+    给Page添加InfoValue
+    """
+
+    page = serializers.SlugRelatedField(slug_field="id", queryset=Page.objects.all(), required=True)
+    info = serializers.SlugRelatedField(slug_field="id", queryset=Info.objects.all(), required=True)
+    
