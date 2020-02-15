@@ -43,7 +43,7 @@ class Page(models.Model):
     def infovalues(self):
         # 获取page的infovas：以info的id为key: {info_[int]: []}
         # 性能不太好，后续优化
-        infovalues = self.infovalue_set.all()
+        infovalues = self.infovalue_set.all().order_by("info", "order")
         results = {}
         for infovalue in infovalues:
             info = infovalue.info
@@ -55,16 +55,24 @@ class Page(models.Model):
 
             if info.is_multiple:
                 if info_key not in results:
-                    results[info_key] = [info_value]
+                    # results[info_key] = [info_value]
+                    results[info_key] = {
+                        "id": info.id,
+                        "name": info.name,
+                        "is_multiple": info.is_multiple,
+                        "values": [info_value]
+                    }
                 else:
-                    if isinstance(results[info_key], list):
-                        results[info_key].append(info_value)
+                    if isinstance(results[info_key].get("values"), list):
+                        results[info_key]["values"].append(info_value)
                     else:
-                        results[info_key] = [info_value]
+                        results[info_key]["values"] = [info_value]
             else:
                 results["info_{}".format(info.id)] = {
-                    "infovalue_id": infovalue.id,
-                    "value": infovalue.value,
+                        "id": info.id,
+                        "name": info.name,
+                        "is_multiple": info.is_multiple,
+                        "values": info_value
                 }
         # 返回结果
         return results

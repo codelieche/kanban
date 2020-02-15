@@ -7,12 +7,14 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from django.http.response import JsonResponse, HttpResponse
+from django.shortcuts import get_object_or_404
 
 from pages.models.info import InfoCategory, Info, InfoValue
 from pages.models.page import Page
 from pages.serializers.info import (
     InfoValueModelSerializer
 )
+from pages.serializers.page import PageModelSerializer
 
 
 class InfoValueCreateApiView(generics.CreateAPIView):
@@ -159,3 +161,19 @@ class InfoValueDetailApiView(generics.RetrieveUpdateDestroyAPIView):
         instance = super().get_object()
         instance.pages.remove(page)
         return HttpResponse(status=204)
+
+
+class InfoValueListAllPageApiView(generics.ListAPIView):
+    """获取属性值对应的所有Page列表"""
+
+    serializer_class = PageModelSerializer
+    permission_classes = (IsAuthenticated,)
+    pagination_class = None
+
+    def get_queryset(self):
+        """通过属性值获取其所有的pages"""
+        infovalue_id = self.kwargs.get("pk", 0)
+        infovalue = get_object_or_404(InfoValue, pk=infovalue_id)
+
+        pages = infovalue.pages.all()
+        return pages

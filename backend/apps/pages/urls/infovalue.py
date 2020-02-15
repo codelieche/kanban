@@ -6,7 +6,8 @@ from pages.views.infovalue import (
     # InfoValueCreateApiView,
     InfoValueAddApiView,
     InfoValueListApiView,
-    InfoValueDetailApiView
+    InfoValueDetailApiView,
+    InfoValueListAllPageApiView,
 )
 
 urlpatterns = [
@@ -18,4 +19,5 @@ urlpatterns = [
     path("list", InfoValueListApiView.as_view(), name="list"),
     path("<int:pk>/<int:page_id>", InfoValueDetailApiView.as_view(), name="delete_page_infovalue"),
     path("<int:pk>", InfoValueDetailApiView.as_view(), name="detail"),
+    path("<int:pk>/pages", InfoValueListAllPageApiView.as_view(), name="pages"),
 ]

@@ -11,7 +11,10 @@ from django.http.response import JsonResponse
 
 from pages.models.page import Page
 from pages.models.info import Info
-from pages.serializers.page import PageModelSerializer
+from pages.serializers.page import (
+    PageModelSerializer,
+    PageWithInfovaluesListSerializer
+)
 from pages.serializers.info import InfoModelSerializer
 
 
@@ -31,6 +34,22 @@ class PageListApiView(generics.ListAPIView):
     queryset = Page.objects.all()
     serializer_class = PageModelSerializer
     permission_classes = (IsAuthenticated,)
+    
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ("title", "parent__title")
+    filter_fields = ("parent", "parent_id")
+    ordering_fields = ("id", "parent_id", "parent", "order")
+    ordering = ("parent", "order")
+
+    def get_serializer_class(self):
+        request = self.request
+        if request.query_params.get("type") == "infovalues":
+            return PageWithInfovaluesListSerializer
+        else:
+            return PageModelSerializer
+
+    def list(self, request, *args, **kwargs):
+        return super().list(request, args, kwargs)
 
 
 class PageDetailApiView(generics.RetrieveUpdateDestroyAPIView):

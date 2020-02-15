@@ -60,12 +60,19 @@ class InfoDetailApiView(generics.RetrieveUpdateDestroyAPIView):
 
 class InfoAllValueListApiView(generics.ListAPIView):
     """
-    属性的所有值的列表
+    获取属性的所有值的列表
+    不带分页功能
     """
     
     serializer_class = InfoValueModelSerializer
     permission_classes = (IsAuthenticated, )
     pagination_class = None
+
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ("info__name", "value")
+    filter_fields = ("info", "value_type")
+    ordering_fields = ("id", "info", "order")
+    ordering = ("order",)
 
     def get_queryset(self):
         # 先得到info的id
