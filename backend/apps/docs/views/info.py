@@ -6,8 +6,8 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
-from pages.models.info import InfoCategory, Info, InfoValue
-from pages.serializers.info import (
+from docs.models.info import InfoCategory, Info, InfoValue
+from docs.serializers.info import (
     InfoCategoryModelSerializer,
     InfoModelSerializer,
     InfoValueModelSerializer
@@ -42,9 +42,9 @@ class InfoListApiView(generics.ListAPIView):
 
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ("name",)
-    # 注意列表页是根据page字段来分页的
-    filter_fields = ("page_id", "category")
-    ordering_fields = ("id", "page_id", "category", "order")
+    # 注意列表页是根据article字段来分页的
+    filter_fields = ("article_id", "category")
+    ordering_fields = ("id", "article_id", "category", "order")
     ordering = ("-id", )
 
 

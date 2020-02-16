@@ -2,7 +2,7 @@
 
 from django.urls import path
 
-from pages.views.info import (
+from docs.views.info import (
     InfoCategoryListApiView,
     InfoCreateApiView,
     InfoListApiView,
@@ -11,7 +11,7 @@ from pages.views.info import (
 )
 
 urlpatterns = [
-    # 前缀：/api/v1/pages/info/
+    # 前缀：/api/v1/docs/info/
     # 信息分类
     # path('category/create', InfoCategoryListApiView.as_view(), name="category_create"),
     path('category/list', InfoCategoryListApiView.as_view(), name="category.list"),

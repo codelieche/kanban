@@ -3,8 +3,8 @@
 """
 from rest_framework import serializers
 
-from pages.models.info import InfoField, InfoCategory, Info, InfoValue
-from pages.models.page import Page
+from docs.models.info import InfoField, InfoCategory, Info, InfoValue
+from docs.models.article import Article
 
 
 class InfoCategoryModelSerializer(serializers.ModelSerializer):
@@ -25,13 +25,13 @@ class InfoModelSerializer(serializers.ModelSerializer):
     """
 
     def validate(self, attrs):
-        # 如果是更新那么需要丢弃page
-        if "page" in attrs or "page_id" in attrs:
+        # 如果是更新那么需要丢弃article
+        if "article" in attrs or "article_id" in attrs:
             request = self.context["request"]
             if request.method in ["PUT", "PATCH"]:
-                # 丢弃page或者page_id
-                if "page" in attrs: attrs.pop("page")
-                if "page_id" in attrs: attrs.pop("page_id")
+                # 丢弃article或者article_id
+                if "article" in attrs: attrs.pop("article")
+                if "article_id" in attrs: attrs.pop("article_id")
         # 返回处理后的attrs
         # print(attrs)
         return attrs
@@ -50,7 +50,7 @@ class InfoModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Info
-        fields = ("id", "category", "name", "page", "value_type", "order", "is_multiple", "is_active")
+        fields = ("id", "category", "name", "article", "value_type", "order", "is_multiple", "is_active")
 
 
 class InfoValueModelSerializer(serializers.ModelSerializer):
@@ -60,14 +60,14 @@ class InfoValueModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = InfoValue
-        fields = ("id", "info", "pages", "value", "value_type", "color", "is_active")
+        fields = ("id", "info", "articles", "value", "value_type", "color", "is_active")
 
 
 class InfoValueAddSerializer(serializers.Serializer):
     """
-    给Page添加InfoValue
+    给Article添加InfoValue
     """
 
-    page = serializers.SlugRelatedField(slug_field="id", queryset=Page.objects.all(), required=True)
+    article = serializers.SlugRelatedField(slug_field="id", queryset=Article.objects.all(), required=True)
     info = serializers.SlugRelatedField(slug_field="id", queryset=Info.objects.all(), required=True)
     

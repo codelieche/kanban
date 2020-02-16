@@ -1,9 +1,9 @@
 """
-页面属性相关的Model
+文章属性相关的Model
 """
 from django.db import models
 
-from pages.models.page import Page
+from docs.models.article import Article
 
 # 属性值可能是个字符，也可能是个数值，也可能是个json对象
 VALUE_TYPE_CHOICES = (
@@ -37,7 +37,7 @@ class InfoCategory(models.Model):
         ("text", "文本"),         # 文本：默认的类型，输入字符即可
         ("number", "数值"),       # 数值：支持整数和浮点数
         ("select", "单选"),       # 单选
-        ("tags", "标签"),         # 多选：标签的类型，一个page可以有多个标签值
+        ("tags", "标签"),         # 多选：标签的类型，一个article可以有多个标签值
         ("checkbox", "复选框"),   # checkbox: 选中或者不选中
         ("date", "日期"),         # 日期有开始和一个结束
         ("user", "用户"),         # 设置: 执行用户啊等，和tag一样是可以设置多个值的
@@ -69,12 +69,12 @@ class Info(models.Model):
                                  blank=False, on_delete=models.CASCADE)
     name = models.CharField(verbose_name="属性名", max_length=40, blank=True, default="属性", db_index=True)
     # 这个属性属于哪个页面
-    page = models.ForeignKey(to=Page, verbose_name="页面", related_name="infos", 
+    article = models.ForeignKey(to=Article, verbose_name="页面", related_name="infos", 
                              on_delete=models.CASCADE)
     value_type = models.CharField(verbose_name="值类型", max_length=40, choices=VALUE_TYPE_CHOICES, 
                                   default="text", blank=True)
     order = models.SmallIntegerField(verbose_name="排序", default=1, blank=True)
-    # 只有category__element是tags类型的值，才可以有多个值，其它每个page只能设置单值
+    # 只有category__element是tags类型的值，才可以有多个值，其它每个article只能设置单值
     is_multiple = models.BooleanField(verbose_name="是否有多值", default=False, blank=True)
     is_active = models.BooleanField(verbose_name="有效", default=True, blank=True)
 
@@ -105,7 +105,7 @@ class InfoValue(models.Model):
     """属性的值"""
     info = models.ForeignKey(to=Info, verbose_name="属性", on_delete=models.CASCADE, 
                              related_name="values")
-    pages = models.ManyToManyField(to=Page, verbose_name="页面")
+    articles = models.ManyToManyField(to=Article, verbose_name="页面")
     value = models.CharField(verbose_name="值", max_length=512)
     value_type = models.CharField(verbose_name="值类型", default="text", blank=True,
                                   max_length=40, choices=VALUE_TYPE_CHOICES)

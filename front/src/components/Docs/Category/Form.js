@@ -310,6 +310,7 @@ function CategoryForm(props){
                     isMultiple={false}
                     disabledKeys={[data.code]}
                     showSubs={true}
+                    subsKey="children"
                   />
               </Modal>
 

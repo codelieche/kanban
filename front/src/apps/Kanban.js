@@ -32,6 +32,11 @@ function App(props) {
                 />
 
                 <Route
+                    path="/docs/category"
+                    render={props => <Home defaultOpenKey="/docs" {...props} />}
+                />
+
+                <Route
                     path="/docs"
                     render={props => <Home2 defaultOpenKey="/docs" {...props} />}
                 />

@@ -1,5 +1,5 @@
 """
-页面信息相关的视图函数
+文章信息相关的视图函数
 """
 from rest_framework import generics
 from rest_framework.views import APIView
@@ -9,12 +9,12 @@ from django_filters.rest_framework import DjangoFilterBackend
 from django.http.response import JsonResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 
-from pages.models.info import InfoCategory, Info, InfoValue
-from pages.models.page import Page
-from pages.serializers.info import (
+from docs.models.info import InfoCategory, Info, InfoValue
+from docs.models.article import Article
+from docs.serializers.info import (
     InfoValueModelSerializer
 )
-from pages.serializers.page import PageModelSerializer
+from docs.serializers.article import ArticleModelSerializer
 
 
 class InfoValueCreateApiView(generics.CreateAPIView):
@@ -34,19 +34,19 @@ class InfoValueAddApiView(APIView):
 
     def post(self, request):
         # 测试
-        # 先获取到page和info
-        page_id = request.data.get("page", None)
-        if not page_id:
+        # 先获取到article和info
+        article_id = request.data.get("article", None)
+        if not article_id:
             content = {
                 "status": False,
-                "message": "请传入page字段"
+                "message": "请传入article字段"
             }
             return JsonResponse(data=content, status=400)
-        page = Page.objects.filter(id=page_id).first()
-        if not page:
+        article = Article.objects.filter(id=article_id).first()
+        if not article:
             content = {
                 "status": False,
-                "message": "id为{}的Page不存在".format(page_id)
+                "message": "id为{}的Article不存在".format(article_id)
             }
             return JsonResponse(data=content, status=400)
 
@@ -82,17 +82,17 @@ class InfoValueAddApiView(APIView):
         # 这里可优化一下，减少sql的操作
         # info不是多个的话，就需要清空以前的, tags,user类型的是可以多个的
         if not info.is_multiple:
-            old_infovalues = page.infovalue_set.filter(info=info).exclude(id=infovalue.id).all()
+            old_infovalues = article.infovalue_set.filter(info=info).exclude(id=infovalue.id).all()
             # print("========== 清空旧的infovalue =========")
             for infovalue_old in old_infovalues:
-                infovalue_old.pages.remove(page)
+                infovalue_old.docs.remove(article)
         
-        # 查看page的所有infovalue
-        #print(page.infovalue_set.all())
-        # print(infovalue.pages.all())
+        # 查看article的所有infovalue
+        #print(article.infovalue_set.all())
+        # print(infovalue.docs.all())
 
-        # 给page添加到新的infovalue中
-        infovalue.pages.add(page)
+        # 给article添加到新的infovalue中
+        infovalue.articles.add(article)
         infovalue.save()
 
         serializer = InfoValueModelSerializer(infovalue)
@@ -107,12 +107,12 @@ class InfoValueAddApiView(APIView):
 
 
 class InfoValueDeleteApiView(APIView):
-    """删除Page的InfoValue"""
+    """删除文章的InfoValue"""
 
     permission_classes = (IsAuthenticated, )
 
     def delete(self, request):
-        # 删除Page的InfoValue
+        # 删除文章的InfoValue
         # url: infovalue
         return JsonResponse(status=204)
 
@@ -128,7 +128,6 @@ class InfoValueListApiView(generics.ListAPIView):
 
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ("value",)
-    # 注意列表页是根据page字段来分页的
     filter_fields = ("info", )
     ordering_fields = ("id", "info", "order")
     ordering = ("-id", )
@@ -142,38 +141,38 @@ class InfoValueDetailApiView(generics.RetrieveUpdateDestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         # 删除操作暂时不支持，移除全部
-        # 判断是否传入了page，如果传入了page就是表示把page从infovalue中移除
-        page_id = request.query_params.get("page")
-        if not page_id:
+        # 判断是否传入了article，如果传入了article就是表示把article从infovalue中移除
+        article_id = request.query_params.get("article")
+        if not article_id:
             content = {
                 "status": False,
-                "message": "请传入page字段"
+                "message": "请传入article字段"
             }
             return JsonResponse(data=content, status=400)
-        page = Page.objects.filter(id=page_id).first()
-        if not page:
+        article = Article.objects.filter(id=article_id).first()
+        if not article:
             content = {
                 "status": False,
-                "message": "id为{}的Page不存在".format(page_id)
+                "message": "id为{}的文章不存在".format(article_id)
             }
             return JsonResponse(data=content, status=400)
         
         instance = super().get_object()
-        instance.pages.remove(page)
+        instance.docs.remove(article)
         return HttpResponse(status=204)
 
 
-class InfoValueListAllPageApiView(generics.ListAPIView):
-    """获取属性值对应的所有Page列表"""
+class InfoValueListAllArticleApiView(generics.ListAPIView):
+    """获取属性值对应的所有文章列表"""
 
-    serializer_class = PageModelSerializer
+    serializer_class = ArticleModelSerializer
     permission_classes = (IsAuthenticated,)
     pagination_class = None
 
     def get_queryset(self):
-        """通过属性值获取其所有的pages"""
+        """通过属性值获取其所有的文章"""
         infovalue_id = self.kwargs.get("pk", 0)
         infovalue = get_object_or_404(InfoValue, pk=infovalue_id)
 
-        pages = infovalue.pages.all()
-        return pages
+        articles = infovalue.articles.all()
+        return articles

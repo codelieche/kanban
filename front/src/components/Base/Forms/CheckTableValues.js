@@ -18,7 +18,7 @@ import fetchApi from "../../Utils/fetchApi";
 // - disabledKeys: 禁用的keys列表
 // - showSubs: 是否显示子列表
 // function CheckValuesFromTable(props){
-function CheckValuesFromTable({checkValues, checkValuesState, dataSourceUrl, columns, rowKey="id", isMultiple=true, disabledKeys=[], showSubs=false}){
+function CheckValuesFromTable({checkValues, checkValuesState, dataSourceUrl, columns, rowKey="id", isMultiple=true, disabledKeys=[], showSubs=false, subsKey="subs"}){
     // checkValues, checkValuesState, dataSourceUrl, columns, rowKey="id", isMultiple=true, disabledKeys=[], showSubs=false
     // 保存api获取的数据的state
     // 第1个state：数据源的url
@@ -114,12 +114,12 @@ function CheckValuesFromTable({checkValues, checkValuesState, dataSourceUrl, col
     // 显示展开
     const expandable = { 
         expandedRowRender: record => {
-            if(record.subs.length > 0){
+            if(record[subsKey].length > 0){
                 return (
                     <Table 
                       showHeader={false}
                       bordered={false}
-                      dataSource={record.subs} 
+                      dataSource={record[subsKey]} 
                       rowKey={rowKey}
                       //   columns={columns.slice(0, 6)} 
                       size="small"
@@ -133,7 +133,7 @@ function CheckValuesFromTable({checkValues, checkValuesState, dataSourceUrl, col
                 return null;
             }
         },
-        rowExpandable: record => record.subs.length > 0,
+        rowExpandable: record => record[subsKey].length > 0,
     };
 
     return (
