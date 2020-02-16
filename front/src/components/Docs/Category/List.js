@@ -377,12 +377,12 @@ function CategoryList(props){
     const expandable = useMemo(() => {
         return { 
             expandedRowRender: record => {
-                if(record.subs.length > 0){
+                if(record.children.length > 0){
                     return (
                         <Table 
                         showHeader={false}
                         bordered={false}
-                        dataSource={record.subs} 
+                        dataSource={record.children} 
                         rowKey={"id"}
                         //   columns={columns.slice(0, 6)} 
                         size="small"
@@ -395,7 +395,7 @@ function CategoryList(props){
                     return null;
                 }
             },
-            rowExpandable: record => record.subs.length > 0,
+            rowExpandable: record => record.children.length > 0,
         }
     }, [columns]);
 

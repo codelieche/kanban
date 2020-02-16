@@ -18,7 +18,7 @@ class Category(models.Model):
     image = models.ImageField(verbose_name="图标", upload_to="docs/category/%Y/%m", storage=ImageStorage(),
                               help_text="图片路径", blank=True, null=True)
     description = models.CharField(verbose_name="描述", max_length=1024, blank=True, null=True)
-    parent = models.ForeignKey(verbose_name="父级分类", related_name="subs",
+    parent = models.ForeignKey(verbose_name="父级分类", related_name="children",
                                blank=True, null=True, to="self", on_delete=models.CASCADE)
     # level级别 和 顺序 order
     level = models.SmallIntegerField(verbose_name="级别", blank=True, default=1)

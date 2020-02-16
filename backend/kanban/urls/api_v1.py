@@ -10,6 +10,7 @@ urlpatterns = [
     path('kanban/', include(arg=("task.urls.api", "task"), namespace="kanban")),
     # Docs相关的api
     path('docs/', include(arg=("docs.urls.api", "docs"), namespace="docs")),
+    
     # 配置相关的api
     path('config/', include(arg=("config.urls.api", "config"), namespace="config")),
     # Model日志相关的api

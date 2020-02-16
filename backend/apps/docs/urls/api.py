@@ -5,11 +5,9 @@ from django.urls import path, include
 
 urlpatterns = [
     # 前缀：/api/v1/docs/
-
-    # Docs Category Api
+    # Articles Article Api
     path('category/', include(arg=('docs.urls.category', 'docs'), namespace='category')),
-    # Docs Article Api
     path('article/', include(arg=('docs.urls.article', 'docs'), namespace='article')),
-    # Docs Common Api
-    path('common/', include(arg=('docs.urls.common', 'docs'), namespace='common')),
+    path('info/', include(arg=('docs.urls.info', 'docs'), namespace='info')),
+    path('infovalue/', include(arg=('docs.urls.infovalue', 'docs'), namespace='infovalue')),
 ]

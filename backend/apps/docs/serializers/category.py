@@ -30,7 +30,7 @@ class CategoryModelSerializer(serializers.ModelSerializer):
         # print(self.context["request"].data, self.context["request"].method)
         if self.context["request"].method == "GET":
             # 这样就可以调用自身这个Serializer类了
-            fields['subs'] = CategoryModelSerializer(many=True, read_only=True)
+            fields['children'] = CategoryModelSerializer(many=True, read_only=True)
 
         # PUT方法，如果Image的标签为空，那么就设置Image为可读：或者用patch方法修改各字段
         if self.context["request"].method == "PUT":
