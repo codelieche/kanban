@@ -1,8 +1,16 @@
 from django.contrib import admin
 
+from pages.models.category import Category
 from pages.models.info import InfoField, InfoCategory, Info, InfoValue
 from pages.models.page import Page
 # Register your models here.
+
+
+class CategoryModelSerializer(admin.ModelAdmin):
+    """
+    Category Model Serializer
+    """
+    list_display = ("id", "name", "code", "description", "image")
 
 
 class InfoFieldModelAdmin(admin.ModelAdmin):
@@ -36,6 +44,7 @@ class InfoValueModelAdmin(admin.ModelAdmin):
 
 
 # 注册model
+admin.site.register(Category, CategoryModelSerializer)
 admin.site.register(InfoField, InfoFieldModelAdmin)
 admin.site.register(InfoCategory, InfoCategoryModelAdmin)
 admin.site.register(Info, InfoModelAdmin)

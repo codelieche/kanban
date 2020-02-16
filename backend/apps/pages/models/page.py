@@ -4,6 +4,7 @@ Page相关的Model
 from django.db import models
 
 from account.models import User
+# from pages.models.category import Category
 
 
 class Page(models.Model):
@@ -15,6 +16,9 @@ class Page(models.Model):
         ("docs", "文档"),
         ("kanban", "看板")
     )
+
+    # 文章分类：可当做是工作空间、命名空间等。
+    # category = models.ForeignKey(verbose_name="分类", to=Category, on_delete=models.CASCADE)
     
     title = models.CharField(verbose_name="标题", max_length=256, 
                               blank=True, null=True, db_index=True)
