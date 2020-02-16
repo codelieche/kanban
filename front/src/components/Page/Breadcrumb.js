@@ -22,6 +22,8 @@ import Icon from "../Base/Icon";
   */
  export function NavBreadcrumb({data}) {
 
+    // 默认只显示3条导航信息，前面一个，后面2个，中间的用...来显示，鼠标点击弹出下拉菜单
+
     if(data && data instanceof Array){
         const items = data.map((item, index) => {
             let iconElement;
