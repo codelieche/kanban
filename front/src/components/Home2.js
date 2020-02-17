@@ -27,9 +27,9 @@ function Home(props){
     let leftSiderElement;
     if(showLeftSider){
         leftSiderElement = (
-            <Layout.Sider style={{height: "100vh"}}>
+            // <Layout.Sider style={{height: "100vh"}}>
                 <LeftSider setShowLeftSider={setShowLeftSider} />
-            </Layout.Sider>
+            // </Layout.Sider>
         );
     }
 

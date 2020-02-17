@@ -2,9 +2,9 @@ import React from 'react';
 
 import MyEditor from "../Editor";
 import { CodePrismDemo } from "../Editor/Element/Code";
+import ResizeDemo from "./demo/resizeable";
 
-
-class TestPage extends React.Component{
+export class TestPage extends React.Component{
     constructor(props){
         super(props);
         this.state = {}
@@ -19,7 +19,7 @@ class TestPage extends React.Component{
     }
 }
 
-function TestPageFunc() {
+export function TestPageFunc() {
     // console.log(React)
     return (
         <div>
@@ -30,13 +30,10 @@ function TestPageFunc() {
             {/* 测试 */}
             <CodePrismDemo />
         </div>
-    )
+    );
 }
 
 
-export default TestPageFunc;
+// export default TestPageFunc;
+export default ResizeDemo;
 
-export {
-    TestPage,
-    TestPageFunc
-}
