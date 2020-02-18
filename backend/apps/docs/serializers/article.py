@@ -33,9 +33,27 @@ class ArticleModelSerializer(serializers.ModelSerializer):
         )
 
 
+class ArticleAllSerializer(serializers.ModelSerializer):
+    """
+    左侧导航获取所有文章列表
+    """
+
+    user = serializers.SlugRelatedField(slug_field="username", read_only=True)
+
+    def get_fields(self):
+        fields = super().get_fields()
+        fields["children"] = ArticleAllSerializer(many=True, read_only=True)
+        return fields
+
+    class Meta:
+        model = Article
+        fields = (
+            "id", "title", "icon", "category", "user", "order", "level", "children"
+        )
+
 class ArticleWithInfovaluesListSerializer(serializers.ModelSerializer):
     """
-    获取文章的列表，
+    获取文章的列表
     只显示ID、标题、属性
     """
 

@@ -6,8 +6,11 @@ import {Layout} from "antd";
 import { Resizable } from 'react-resizable';
 
 import Icon from "./Icon";
+import ArticlesNav from "./ArticlesNav";
 
 function LeftSider({setShowLeftSider}){
+
+    const [category, setCategory] = useState(1);
 
     let widthInit = useMemo(() => {
         // 从localStorage中获取宽度
@@ -74,7 +77,8 @@ function LeftSider({setShowLeftSider}){
                     </div> 
 
                     <div className="content">
-                        主体内容
+                        {/* 文章导航 */}
+                        <ArticlesNav category={category}/>
                         
                     </div> 
 

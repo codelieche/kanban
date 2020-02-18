@@ -13,7 +13,8 @@ from docs.models.article import Article
 from docs.models.info import Info
 from docs.serializers.article import (
     ArticleModelSerializer,
-    ArticleWithInfovaluesListSerializer
+    ArticleWithInfovaluesListSerializer,
+    ArticleAllSerializer
 )
 from docs.serializers.info import InfoModelSerializer
 
@@ -37,7 +38,7 @@ class ArticleListApiView(generics.ListAPIView):
     
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ("title", "parent__title")
-    filter_fields = ("parent", "parent_id")
+    filter_fields = ("parent", "parent_id", "category", "level")
     ordering_fields = ("id", "parent_id", "parent", "order")
     ordering = ("parent", "order")
 
@@ -47,6 +48,34 @@ class ArticleListApiView(generics.ListAPIView):
             return ArticleWithInfovaluesListSerializer
         else:
             return ArticleModelSerializer
+
+    def list(self, request, *args, **kwargs):
+        return super().list(request, args, kwargs)
+
+
+class ArticleListAllApiView(generics.ListAPIView):
+    """
+    获取所有文章列表的API
+    文章是会包含子文章的，所有只需要从level是1的文章开始即可
+    """
+    queryset = Article.objects.filter(level=1)
+    serializer_class = ArticleAllSerializer
+    permission_classes = (IsAuthenticated,)
+    
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ("title", "parent__title")
+    filter_fields = ("parent", "parent_id", "category", "level")
+    ordering_fields = ("id", "parent_id", "parent", "order")
+    ordering = ("parent", "order")
+    # 不要分页
+    pagination_class = None
+
+    def get_serializer_class(self):
+        request = self.request
+        if request.query_params.get("type") == "infovalues":
+            return ArticleWithInfovaluesListSerializer
+        else:
+            return ArticleAllSerializer
 
     def list(self, request, *args, **kwargs):
         return super().list(request, args, kwargs)
