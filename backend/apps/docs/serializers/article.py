@@ -24,6 +24,45 @@ class ArticleModelSerializer(serializers.ModelSerializer):
 
         return attrs
 
+    def get_fields(self):
+        fields = super().get_fields()
+        # 如果是获取子页面
+
+        return fields
+
+    class Meta:
+        model = Article
+        fields = (
+            "id", "title", "category", "icon", "description", "cover", 
+            "user", "parent", "infovalues",
+            "content", "order", "level"
+        )
+
+
+class ArticleDetailSerializer(serializers.ModelSerializer):
+    """
+    Article Detail Model Serializer
+    """
+
+    def validate(self, attrs):
+        # 设置user
+        user = self.context["request"].user
+        attrs["user"] = user
+
+        # 判断如果传递了parent，那么分类与parent相同
+        if "parent" in attrs:
+            parent = attrs["parent"]
+            if parent:
+                attrs["category"] = parent.category
+
+        return attrs
+
+    def get_fields(self):
+        fields = super().get_fields()
+        # 如果是获取子页面
+        fields["children"] = ArticleDetailSerializer(many=True, required=False, read_only=True)
+        return fields
+
     class Meta:
         model = Article
         fields = (

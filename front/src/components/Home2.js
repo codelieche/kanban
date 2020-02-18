@@ -12,14 +12,18 @@ import RightContent from "./Base/Right";
 
 function Home(props){
     // 是否显示左右布局
-    const [showLeftSider, setShowLeftSider] = useState(true);
+    const [showLeftSider, setShowLeftSider] = useState(false);
 
     useEffect(() => {
         // 从localStorate中获取数据
         let value = localStorage.getItem("showLeftSider");
         // console.log(value, typeof value, Boolean(value));
         // localStorage.getItem获取到的是字符串
-        if(value !== showLeftSider.toString()){
+        if(value === null){
+             // 如果不存在，那么也设为显示侧边栏
+            setShowLeftSider(true);
+            return;
+        }else if(value !== showLeftSider.toString()){
             setShowLeftSider(value === "true" ? true : false);
         }
     }, [showLeftSider]);
@@ -28,7 +32,7 @@ function Home(props){
     if(showLeftSider){
         leftSiderElement = (
             // <Layout.Sider style={{height: "100vh"}}>
-                <LeftSider setShowLeftSider={setShowLeftSider} />
+                <LeftSider showLeftSider={showLeftSider} setShowLeftSider={setShowLeftSider} />
             // </Layout.Sider>
         );
     }
@@ -40,6 +44,7 @@ function Home(props){
                 <Layout>
                     <Layout.Content>
                         <RightContent 
+                          {...props}
                           showLeftSider={showLeftSider}
                           setShowLeftSider={setShowLeftSider}
                         />

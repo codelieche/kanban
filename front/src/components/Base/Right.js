@@ -2,9 +2,11 @@
  * 左右布局右侧的内容
  */
 import React, {useState, useCallback} from "react";
+import { Switch, Route } from "react-router-dom";
 
 import Icon from "./Icon";
 import Breadcrumb from "../Page/Breadcrumb";
+import ArticlePage from "../Docs/Article/Detail";
 
 function RightContent(props){
     const [letfSiderToggleIcon, setLeftSiderToggleIcon] = useState("align-justify")
@@ -73,14 +75,19 @@ function RightContent(props){
             </div>
 
             <div className="content">
+                {/*  */}
+                <Switch>
+                    <Route
+                      path="/docs/article/:id"
+                      component={ArticlePage}
+                      location={props.location}
+                    >
+                        
+                    </Route>
+                </Switch>
                 <section>
-                    右侧内容
+                    
                 </section>
-                
-                <div className="table-center">
-                    我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容我是右侧的内容
-                </div>
-                
             </div>
             
         </div>

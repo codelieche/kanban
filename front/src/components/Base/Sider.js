@@ -8,7 +8,7 @@ import { Resizable } from 'react-resizable';
 import Icon from "./Icon";
 import ArticlesNav from "./ArticlesNav";
 
-function LeftSider({setShowLeftSider}){
+function LeftSider({showLeftSider, setShowLeftSider}){
 
     const [category, setCategory] = useState(1);
 
@@ -56,6 +56,14 @@ function LeftSider({setShowLeftSider}){
         });
     }, [setShowLeftSider]);
 
+    const articlesNavElement = useMemo(() => {
+        if(showLeftSider){
+            return <ArticlesNav category={category}/>
+        }else{
+            return null;
+        }
+    }, [category, showLeftSider])
+
     return (
         <Resizable className="box"  
           axis='x' height={0} 
@@ -78,8 +86,9 @@ function LeftSider({setShowLeftSider}){
 
                     <div className="content">
                         {/* 文章导航 */}
-                        <ArticlesNav category={category}/>
-                        
+                        {
+                            showLeftSider && articlesNavElement
+                        }
                     </div> 
 
                     <div className="footer">

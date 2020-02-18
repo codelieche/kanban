@@ -13,6 +13,7 @@ from docs.models.article import Article
 from docs.models.info import Info
 from docs.serializers.article import (
     ArticleModelSerializer,
+    ArticleDetailSerializer,
     ArticleWithInfovaluesListSerializer,
     ArticleAllSerializer
 )
@@ -88,6 +89,12 @@ class ArticleDetailApiView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Article.objects.all()
     serializer_class = ArticleModelSerializer
     permission_classes = (IsAuthenticated,)
+
+    def get_serializer_class(self):
+        if self.request.method == "GET":
+            return ArticleDetailSerializer
+        else:
+            return ArticleModelSerializer
 
 
 class ArticleInfoListAllApiView(generics.ListAPIView):

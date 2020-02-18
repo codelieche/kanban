@@ -4,6 +4,9 @@
 
 import React, {useState, useEffect, useCallback} from "react";
 import {
+    NavLink
+} from 'react-router-dom';
+import {
     message
 } from "antd";
 
@@ -28,14 +31,19 @@ export const NavItem = ({item, index}) => {
         <div key={index} className="nav">
             {/* 不同级别，不同的padding */}
             <div className="item" >
-                <div className="title" 
-                  style={{paddingLeft: 12 * item.level}}
-                  onClick={handleItemActiveToogle}
+                <NavLink to={`/docs/article/${item.id}`} 
+                    activeClassName="active"
                 >
-                    {childrenElements.length > 0 && <Icon type={active ? "caret-down" : "caret-right"} />}
-                    {item.title ? item.title : <span className="no-title">无标题</span>}
-                </div>
+                    <div className="title" 
+                    style={{paddingLeft: 12 * item.level}}
+                    onClick={handleItemActiveToogle}
+                    >
+                            {childrenElements.length > 0 && <Icon type={active ? "caret-down" : "caret-right"} />}
+                            {item.title ? item.title : <span className="no-title">无标题</span>}
+                    </div>
+                </NavLink>
 
+                {/* 显示children */}
                 {
                     childrenElements.length > 0 && (
                         <div className={active ? "children active" : "children"}>
