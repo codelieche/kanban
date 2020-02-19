@@ -6,9 +6,11 @@ import React, {useState, useMemo, useCallback, useEffect} from "react";
 import { Link } from "react-router-dom";
 
 import {
+    // Typography,
     message
 } from "antd";
 
+import EditableContent from "../../Base/EditableContent";
 import Icon from "../../Base/Icon";
 import fetchApi from "../../Utils/fetchApi";
 
@@ -72,13 +74,35 @@ export const ArticleDetail = function(props){
         <article>
             <header className="middle">
                 <div className="title">
-                    <h1>
-                        <Icon type="file-text-o"></Icon>
-                        {data.title}
-                    </h1>
+                    {/* <Icon type="file-text-o"></Icon> */}
+                    {/* <Typography.Title editable={{editing: false, onChange: (e) => console.log(e)}}> */}
+                        <h1>
+                            <div contentEditable={true} suppressContentEditableWarning>
+                                {data.title}
+                            </div>
+                        </h1>
+                    {/* </Typography.Title> */}
                 </div>
                 <div className="description">
-                    {data.description ? data.description : "无描述内容"}
+                    {/* <Typography.Paragraph 
+                    //   editable={true}
+                      editable={{onChange: (e) => console.log(e)}}
+                    //   让其可显示换行
+                      style={{whiteSpace: "pre-wrap"}}
+                      onChange={(e) => console.log(e)}>
+                        {data.description ? data.description : "无描述内容"}
+                    </Typography.Paragraph> */}
+
+                    <EditableContent 
+                      content={data.description ? data.description : "默认的描述内容"}
+                      type="text" // 类型是html或者text
+                      tagName="div"
+                      //   onChange={e => console.log(e.target.text)}
+                      //  当内容更新了之后，我们需要做点操作
+                      handleContentUpdated={data => console.log(data)}
+                    />
+
+                   
                 </div>
             </header>
             <content>
@@ -86,6 +110,14 @@ export const ArticleDetail = function(props){
             </content>
             <section>
                 文章内容
+                <hr />
+                <div contentEditable={true} 
+                        onChange={e => console.log(e)}
+                        suppressContentEditableWarning
+                        //   不显示外面的边框
+                        style={{outline: "none"}}>
+                        我是可编辑的内容哦！！！
+                    </div>
             </section>
             {
                 childrenListElement.length > 0 && (
