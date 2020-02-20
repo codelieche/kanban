@@ -5,10 +5,8 @@ import React from "react";
 
 // const [username, setUsername] = useState("匿名");
 
-export const UserinfoContext = React.createContext({
-    logined: false,
-    username: "匿名",
-    // setUsername: setUsername
-});
+export const UserinfoContext = React.createContext({});
+
+export const RightContext = React.createRef({});
 
 export default UserinfoContext;

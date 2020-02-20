@@ -2,7 +2,7 @@
  * 文章详情页
  */
 
-import React, {useState, useMemo, useCallback, useEffect} from "react";
+import React, {useState, useContext, useMemo, useCallback, useEffect} from "react";
 import { Link } from "react-router-dom";
 
 import {
@@ -12,13 +12,17 @@ import {
 
 import EditableContent from "../../Base/EditableContent";
 import Icon from "../../Base/Icon";
+import RightContext from "../../Base/Context";
 import fetchApi from "../../Utils/fetchApi";
+// 引入文章相关操作的函数
+import { patchUpdateArticle } from "./Operation";
 
 export const ArticleDetail = function(props){
-
     // 状态
     const [articleID, setArticleID] = useState(null);
     const [data, setData] = useState({});
+    // const [setNavData] = useContext(RightContext);
+    const { setNavData } = useContext(RightContext);
 
     const fetchDetailData = useCallback(id => {
         setArticleID(id);
@@ -31,6 +35,39 @@ export const ArticleDetail = function(props){
           .then(responseData => {
               if(responseData.id > 0){
                   setData(responseData);
+                  // 根据parent信息组织导航信息
+                  let navData = [
+                    {
+                        title: responseData.title,
+                        icon: responseData.icon
+                    }
+                  ];
+                  let parent = responseData.parent;
+                  while(!!parent){
+                      let navItem = {
+                          title: parent.title ? parent.title : "无标题",
+                          link: `/docs/article/${parent.id}`,
+                          icon: parent.icon
+                      }
+                      navData.unshift(navItem);
+
+                      // 重新赋值parent
+                      parent = parent.parent;
+                      
+                  }  
+                  //   记得加入当前文章
+                  navData.unshift(
+                    {
+                        title: "首页",
+                        icon: "home",
+                        link: "/"
+                    })
+                  if(typeof setNavData === "function"){
+                    // console.log("新的页面导航信息：", navData);
+                    setNavData(navData);
+                  }else{
+                      console.log("不能设置navData")
+                  }
               }else{
                   // 获取文章数据出错
                   message.warn("获取文章数据出错");
@@ -39,7 +76,7 @@ export const ArticleDetail = function(props){
             .catch(err => {
                 console.log(err);
             });
-    }, [])
+    }, [setNavData])
 
     useEffect(() => {
         if(props.match.params.id !== articleID){
@@ -74,12 +111,21 @@ export const ArticleDetail = function(props){
         <article>
             <header className="middle">
                 <div className="title">
-                    {/* <Icon type="file-text-o"></Icon> */}
                     {/* <Typography.Title editable={{editing: false, onChange: (e) => console.log(e)}}> */}
                         <h1>
-                            <div contentEditable={true} suppressContentEditableWarning>
+                            {/* <div contentEditable={true} suppressContentEditableWarning>
                                 {data.title}
-                            </div>
+                            </div> */}
+                            <Icon type="file-text-o"></Icon>
+                            <EditableContent 
+                                content={data.title ? data.title : <span>无标题</span>}
+                                contentType="text" // 类型是html或者text
+                                tagName="span"
+                                //   onChange={e => console.log(e.target.text)}
+                                //  当内容更新了之后，我们需要做点操作
+                                // style={{outline: "none", whiteSpace: "pre-wrap"}}
+                                handleContentUpdated={data => patchUpdateArticle(articleID, {title: data.text})}
+                            />
                         </h1>
                     {/* </Typography.Title> */}
                 </div>
@@ -95,40 +141,40 @@ export const ArticleDetail = function(props){
 
                     <EditableContent 
                       content={data.description ? data.description : "默认的描述内容"}
-                      type="text" // 类型是html或者text
+                      contentType="text" // 类型是html或者text
                       tagName="div"
                       //   onChange={e => console.log(e.target.text)}
                       //  当内容更新了之后，我们需要做点操作
-                      handleContentUpdated={data => console.log(data)}
+                      handleContentUpdated={data => patchUpdateArticle(articleID, {description: data.text})}
                     />
 
                    
                 </div>
             </header>
-            <content>
-
-            </content>
+            
             <section>
-                文章内容
-                <hr />
-                <div contentEditable={true} 
-                        onChange={e => console.log(e)}
-                        suppressContentEditableWarning
-                        //   不显示外面的边框
-                        style={{outline: "none"}}>
-                        我是可编辑的内容哦！！！
-                    </div>
+                <EditableContent
+                    className="content" 
+                    content={data.content ? data.content : <span>默认的文章内容</span>}
+                    contentType="text" // 类型是html或者text
+                    tagName="div"
+                    // 当内容更新了之后，我们需要做点操作
+                    handleContentUpdated={data => patchUpdateArticle(articleID, {content: data.text})}
+                />
             </section>
+
+            {/* 子文章 */}
             {
                 childrenListElement.length > 0 && (
                     <section className="children">
-                        <h2>子文章列表</h2>
+                        <h2>文章列表</h2>
                         <ul>
                             {childrenListElement}
                         </ul>
                     </section>
                 )
             }
+            {/* 文章底部内容 */}
             <footer>
 
             </footer>

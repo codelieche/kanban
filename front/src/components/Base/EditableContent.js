@@ -26,26 +26,31 @@ export const EditableContent = function(props) {
         // 处理组件内容变更后续的操作
         // 当组件鼠标移开，不获取焦点的时候，组件卸载的时候都需要执行一下
         // 当页面要跳转到其它页面的时候，也会触发 onBlur事件的
-        if(contentUpdated){
-            const element = getElement();
-            // console.log(originalEvt);
-            if(!element){
-                return;
+        try {
+            if(contentUpdated){
+                const element = getElement();
+                // console.log(originalEvt);
+                if(!element){
+                    return;
+                }
+                // 获取元素中当前的html
+                const html = element.innerHTML;
+                // console.log(element.innerText);
+                const text = element.innerText;
+    
+                if(props.handleContentUpdated && typeof props.handleContentUpdated === "function"){
+                    props.handleContentUpdated({
+                        html,
+                        text,
+                    });
+                    // 设置contentUpdated为fasle
+                    setContentUpdated(false);
+                }
             }
-            // 获取元素中当前的html
-            const html = element.innerHTML;
-            // console.log(element.innerText);
-            const text = element.innerText;
-
-            if(props.handleContentUpdated && typeof props.handleContentUpdated === "function"){
-                props.handleContentUpdated({
-                    html,
-                    text,
-                });
-                // 设置contentUpdated为fasle
-                setContentUpdated(false);
-            }
+        } catch (error) {
+            console.log(error);
         }
+        
     }, [contentUpdated, getElement, props])
 
     useEffect(() => {
@@ -53,20 +58,15 @@ export const EditableContent = function(props) {
             setElementRef(props.innerRef)
         }
         // 组件被销毁的时候要如果内容更新了就需要执行一些update的操作
-        return () => {
-            if(contentUpdated){
-                // 我被更新了哦
-                // console.log("我有更新");
-                // handleContentUpdatedFunction()
-            }
-        }
+        // return () => {
+        //     if(contentUpdated){
+        //         // 我被更新了哦
+        //         // console.log("我有更新");
+        //         // handleContentUpdatedFunction()
+        //     }
+        // }
     }, [contentUpdated, elementRef, handleContentUpdatedFunction, props.innerRef])
     
-    // const onBlurFunction = useCallback((event) => {
-    //     // 执行当前的contentUpdated函数
-    //     handleContentUpdatedFunction()
-    // }, [handleContentUpdatedFunction])
-
     const emitChange = useCallback((originalEvt) => {
         // 获取当前的元素
         const element = getElement();
@@ -112,7 +112,8 @@ export const EditableContent = function(props) {
                     ...other,
                     ref: elementRef,
                     onInput: emitChange,
-                    onBlur: props.onBlur || handleContentUpdatedFunction,
+                    onBlur: props.onBlur || emitChange,
+                    onMouseLeave: props.onMouseLeave || handleContentUpdatedFunction,
                     onKeyUp: props.onKeyUp || emitChange,
                     onKeyDown: props.onKeyDown || emitChange,
                     contentEditable: !props.disabled,
@@ -132,7 +133,8 @@ export const EditableContent = function(props) {
                     ...other,
                     ref: elementRef,
                     onInput: emitChange,
-                    onBlur: props.onBlur || handleContentUpdatedFunction,
+                    onBlur: props.onBlur || emitChange,
+                    onMouseLeave: props.onMouseLeave || handleContentUpdatedFunction,
                     onKeyUp: props.onKeyUp || emitChange,
                     onKeyDown: props.onKeyDown || emitChange,
                     contentEditable: !props.disabled,

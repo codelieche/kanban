@@ -4,11 +4,21 @@
 import React, {useState, useCallback} from "react";
 import { Switch, Route } from "react-router-dom";
 
+import RightContext from "./Context";
 import Icon from "./Icon";
 import Breadcrumb from "../Page/Breadcrumb";
 import ArticlePage from "../Docs/Article/Detail";
 
 function RightContent(props){
+    // 导航信息
+    const [navData, setNavData] = useState([
+        {
+            title: "首页",
+            icon: "home",
+            link: "/"
+        }
+    ]);
+
     const [letfSiderToggleIcon, setLeftSiderToggleIcon] = useState("align-justify")
     const toogleShowLeftSider = useCallback((e) => {
         e.preventDefault();
@@ -17,39 +27,6 @@ function RightContent(props){
             return !prevState;
         })
     }, [props]);
-
-    const navData = [
-        {
-            title: "首页",
-            icon: "home",
-            link: "/"
-        },
-        {
-            title: "任务",
-            icon: "",
-            link: "/task/category"
-        },
-        {
-            title: "文档",
-            icon: "",
-            link: "/docs"
-        },
-        {
-            title: "用户",
-            icon: "",
-            link: "/user/list"
-        },
-        {
-            title: "页面",
-            icon: "",
-            link: "/page"
-        },
-        {
-            title: "详情",
-            icon: "",
-            link: ""
-        }
-    ];
 
     const onMouseEnter = (e) => {
         // console.log(e);
@@ -61,6 +38,11 @@ function RightContent(props){
     }
 
     return (
+        <RightContext.Provider value={{
+            navData,
+            setNavData,
+        }}>
+
         <div className="right-content">
             <div className="header">
                 <div className="toogle" onClick={toogleShowLeftSider} 
@@ -80,7 +62,9 @@ function RightContent(props){
                     <Route
                       path="/docs/article/:id"
                       component={ArticlePage}
-                      location={props.location}
+                    //   setNavData={setNavData}
+                    //   location={props.location}
+                      {...props}
                     >
                         
                     </Route>
@@ -91,6 +75,8 @@ function RightContent(props){
             </div>
             
         </div>
+        </RightContext.Provider>
+
     );
 }
 export default RightContent;

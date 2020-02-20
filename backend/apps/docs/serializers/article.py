@@ -38,11 +38,26 @@ class ArticleModelSerializer(serializers.ModelSerializer):
             "content", "order", "level"
         )
 
+class ArticleParentInfoSerializer(serializers.ModelSerializer):
+    """
+    文章的父亲信息
+    """
+
+    def get_fields(self):
+        fields = super().get_fields()
+        fields["parent"] = ArticleParentInfoSerializer(read_only=True, required=False)
+        return fields
+
+    class Meta:
+        model = Article
+        fields = ("id", "title", "parent")
 
 class ArticleDetailSerializer(serializers.ModelSerializer):
     """
     Article Detail Model Serializer
     """
+
+    parent = ArticleParentInfoSerializer(read_only=True, required=False)
 
     def validate(self, attrs):
         # 设置user
