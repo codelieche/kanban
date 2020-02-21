@@ -21,7 +21,7 @@ export const ArticleDetail = function(props){
     // 状态
     const [articleID, setArticleID] = useState(null);
     const [data, setData] = useState({});
-    // const [setNavData] = useContext(RightContext);
+    // 修改全局的右侧顶部导航
     const { setNavData } = useContext(GlobalContext);
 
     const fetchDetailData = useCallback(id => {
@@ -47,7 +47,8 @@ export const ArticleDetail = function(props){
                       let navItem = {
                           title: parent.title ? parent.title : "无标题",
                           link: `/docs/article/${parent.id}`,
-                          icon: parent.icon
+                          icon: parent.icon,
+                          id: parent.id
                       }
                       navData.unshift(navItem);
 
@@ -68,6 +69,9 @@ export const ArticleDetail = function(props){
                   }else{
                       console.log("不能设置navData")
                   }
+
+                  // 修改浏览器当前标签的标题
+                  document.title = `看板--${responseData.title}`;   
               }else{
                   // 获取文章数据出错
                   message.warn("获取文章数据出错");
@@ -105,39 +109,24 @@ export const ArticleDetail = function(props){
         }
     }, [data]);
 
-    // console.log(childrenListElement);
-
     return (
         <article>
             <header className="middle">
                 <div className="title">
-                    {/* <Typography.Title editable={{editing: false, onChange: (e) => console.log(e)}}> */}
-                        <h1>
-                            {/* <div contentEditable={true} suppressContentEditableWarning>
-                                {data.title}
-                            </div> */}
-                            <Icon type="file-text-o"></Icon>
-                            <EditableContent 
-                                content={data.title ? data.title : <span>无标题</span>}
-                                contentType="text" // 类型是html或者text
-                                tagName="span"
-                                //   onChange={e => console.log(e.target.text)}
-                                //  当内容更新了之后，我们需要做点操作
-                                // style={{outline: "none", whiteSpace: "pre-wrap"}}
-                                handleContentUpdated={data => patchUpdateArticle(articleID, {title: data.text})}
-                            />
-                        </h1>
-                    {/* </Typography.Title> */}
+                    <h1>
+                        <Icon type="file-text-o"></Icon>
+                        <EditableContent 
+                            content={data.title ? data.title : <span>无标题</span>}
+                            contentType="text" // 类型是html或者text
+                            tagName="span"
+                            //   onChange={e => console.log(e.target.text)}
+                            //  当内容更新了之后，我们需要做点操作
+                            // style={{outline: "none", whiteSpace: "pre-wrap"}}
+                            handleContentUpdated={data => patchUpdateArticle(articleID, {title: data.text})}
+                        />
+                    </h1>
                 </div>
                 <div className="description">
-                    {/* <Typography.Paragraph 
-                    //   editable={true}
-                      editable={{onChange: (e) => console.log(e)}}
-                    //   让其可显示换行
-                      style={{whiteSpace: "pre-wrap"}}
-                      onChange={(e) => console.log(e)}>
-                        {data.description ? data.description : "无描述内容"}
-                    </Typography.Paragraph> */}
 
                     <EditableContent 
                       content={data.description ? data.description : "默认的描述内容"}
@@ -147,7 +136,6 @@ export const ArticleDetail = function(props){
                       //  当内容更新了之后，我们需要做点操作
                       handleContentUpdated={data => patchUpdateArticle(articleID, {description: data.text})}
                     />
-
                    
                 </div>
             </header>
@@ -174,6 +162,7 @@ export const ArticleDetail = function(props){
                     </section>
                 )
             }
+            
             {/* 文章底部内容 */}
             <footer>
 

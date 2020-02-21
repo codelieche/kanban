@@ -2,7 +2,7 @@
  * 文章导航
  */
 
-import React, {useState, useEffect, useCallback} from "react";
+import React, {useState, useMemo, useEffect, useCallback, useContext} from "react";
 import {
     NavLink
 } from 'react-router-dom';
@@ -10,16 +10,22 @@ import {
     message
 } from "antd";
 
+import { GlobalContext } from "../Base/Context";
 import Icon from "../Base/Icon";
 import fetchApi from "../Utils/fetchApi";
 
-export const NavItem = ({item, index}) => {
+export const NavItem = ({item, index, activeNavIDs}) => {
+    // 状态
     const [active, setActive] = useState(false);
+    // isActive是控制其子nav是否展开的
+    const [isActive, setIsActive] = useState(false);
 
+    // 子文章列表
     let childrenElements = item.children.map((item, index) => {
-        return <NavItem item={item} index={index} key={index} />
+        return <NavItem item={item} index={index} key={index} activeNavIDs={activeNavIDs} />
     });
 
+    // 点击的active开关
     const handleItemActiveToogle = useCallback(e => {
         // console.log(e);
         setActive(prevState => {
@@ -27,18 +33,28 @@ export const NavItem = ({item, index}) => {
         })
     }, []);
 
+    useEffect(() => {
+        let currentIsActive = activeNavIDs.indexOf(item.id) >= 0;
+        // console.log(item.id, activeNavIDs, currentIsActive);
+        if(currentIsActive !== isActive){
+            setIsActive(currentIsActive);
+        }
+    }, [activeNavIDs, isActive, item.id])
+
+
     return (
         <div key={index} className="nav">
             {/* 不同级别，不同的padding */}
             <div className="item" >
                 <NavLink to={`/docs/article/${item.id}`} 
                     activeClassName="active"
+                    // className={isActive ? "isActive" : ""}
                 >
                     <div className="title" 
                     style={{paddingLeft: 12 * item.level}}
                     onClick={handleItemActiveToogle}
                     >
-                            {childrenElements.length > 0 && <Icon type={active ? "caret-down" : "caret-right"} />}
+                            {childrenElements.length > 0 && <Icon type={(active || isActive) ? "caret-down" : "caret-right"} />}
                             {item.title ? item.title : <span className="no-title">无标题</span>}
                     </div>
                 </NavLink>
@@ -46,7 +62,7 @@ export const NavItem = ({item, index}) => {
                 {/* 显示children */}
                 {
                     childrenElements.length > 0 && (
-                        <div className={active ? "children active" : "children"}>
+                        <div className={(active || isActive) ? "children active" : "children"}>
                             {childrenElements}
                         </div>
                     )
@@ -61,6 +77,8 @@ export const NavItem = ({item, index}) => {
  */
 export const ArticlesNav= ({category}) => {
     const [currentCategory, setCurrentCategory] = useState("");
+    const { navData } = useContext(GlobalContext);
+
     const [dataSource, setDataSource] = useState([]);
 
     const fetchData = useCallback((category) => {
@@ -86,6 +104,17 @@ export const ArticlesNav= ({category}) => {
             })
     }, []);
 
+    const activeNavIDs = useMemo(() => {
+        let idsList = [];
+
+        navData.forEach(item => {
+            if(item.id && item.id > 0){
+                idsList.push(item.id);
+            }
+        })
+        return idsList;
+    }, [navData]);
+
     // 当category变更的时候需要获取一下文章列表
     useEffect(() => {
         if(category !== currentCategory){
@@ -95,37 +124,9 @@ export const ArticlesNav= ({category}) => {
     }, [currentCategory, category, fetchData]);
 
     // 渲染导航
-    // const renderNavItem = useCallback((item, index) => {
-    //     let childrenElements = item.children.map((item, index) => {
-    //         return renderNavItem(item, index);
-    //     });
-
-    //     return (
-    //         <div key={index} className="nav">
-    //             {/* 不同级别，不同的padding */}
-    //             <div className="item">
-    //                 <div className="title" style={{paddingLeft: 10 * item.level}}>
-    //                     {item.title}
-    //                 </div>
-
-    //                 {
-    //                     childrenElements.length > 0 && (
-    //                         <div className="children">
-    //                             {childrenElements}
-    //                         </div>
-    //                     )
-    //                 }
-    //             </div>
-                
-                
-    //         </div>
-    //     );
-    // }, []);
-
-    // 渲染导航
     let navElements = [];
     navElements = dataSource.map((item, index) => {
-        return <NavItem item={item} index={index} key={index} />;
+        return <NavItem item={item} index={index} key={index} activeNavIDs={activeNavIDs} />;
     });
 
     return(

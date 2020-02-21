@@ -35,7 +35,24 @@ function Home(props){
         }else if(value !== showLeftSider.toString()){
             setShowLeftSider(value === "true" ? true : false);
         }
-    }, [showLeftSider]);
+
+        // 判断是不是首页:后续继续调整
+        if(props.location.pathname === "/"){
+            // 修改浏览器当前标签的标题
+            document.title = `看板-首页`;
+            if(navData.length > 1){
+                setNavData([
+                    {
+                        title: "首页",
+                        icon: "home",
+                        link: "/"
+                    }
+                ]);
+            }
+        }else{
+            // console.log(props.location.pathname);
+        }
+    }, [navData.length, props.location.pathname, showLeftSider]);
 
     let leftSiderElement;
     if(showLeftSider){

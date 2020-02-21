@@ -2,6 +2,7 @@
  * 左右布局左侧的内容
  */
 import React, {useState, useEffect, useCallback, useMemo} from "react"
+import { Link } from "react-router-dom";
 import {Layout, Menu, Dropdown, message} from "antd";
 import { Resizable } from 'react-resizable';
 
@@ -80,6 +81,8 @@ function LeftSider({showLeftSider, setShowLeftSider}){
             return (
                 <Menu.Item key={index} onClick={e => {
                     // console.log(e);
+                    // 修改浏览器当前标签的标题
+                    document.title = `看板-分类-${item.name}`;
                     setCurrentCategory(item);
                 }}>
                     {item.name}
@@ -119,9 +122,12 @@ function LeftSider({showLeftSider, setShowLeftSider}){
                 <div className="left-sider">
                     <div className="header">
                         <div className="logo">
-                            <img alt="logo"
-                            src="https://www.codelieche.com/static/images/logo-kanban.svg">
-                            </img>
+                            <Link to="/">
+                                <img alt="logo"
+                                src="https://www.codelieche.com/static/images/logo-kanban.svg">
+                                </img>
+                            </Link>
+                            
                             <div className="toogle" onClick={toogleLeftSider}>
                                 <Icon type="angle-double-left" noMarginRight={true}></Icon>
                             </div>
