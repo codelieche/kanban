@@ -7,6 +7,8 @@ import React from "react";
 
 export const UserinfoContext = React.createContext({});
 
+export const GlobalContext = React.createContext({});
+
 export const RightContext = React.createRef({});
 
-export default UserinfoContext;
+export default GlobalContext;

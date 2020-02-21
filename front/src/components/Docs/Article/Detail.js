@@ -12,7 +12,7 @@ import {
 
 import EditableContent from "../../Base/EditableContent";
 import Icon from "../../Base/Icon";
-import RightContext from "../../Base/Context";
+import { GlobalContext } from "../../Base/Context";
 import fetchApi from "../../Utils/fetchApi";
 // 引入文章相关操作的函数
 import { patchUpdateArticle } from "./Operation";
@@ -22,7 +22,7 @@ export const ArticleDetail = function(props){
     const [articleID, setArticleID] = useState(null);
     const [data, setData] = useState({});
     // const [setNavData] = useContext(RightContext);
-    const { setNavData } = useContext(RightContext);
+    const { setNavData } = useContext(GlobalContext);
 
     const fetchDetailData = useCallback(id => {
         setArticleID(id);

@@ -1,25 +1,18 @@
 /**
  * 左右布局右侧的内容
  */
-import React, {useState, useCallback} from "react";
+import React, {useState, useCallback, useContext} from "react";
 import { Switch, Route } from "react-router-dom";
 
-import RightContext from "./Context";
+import { GlobalContext } from "./Context";
 import Icon from "./Icon";
 import Breadcrumb from "../Page/Breadcrumb";
 import ArticlePage from "../Docs/Article/Detail";
 
 function RightContent(props){
-    // 导航信息
-    const [navData, setNavData] = useState([
-        {
-            title: "首页",
-            icon: "home",
-            link: "/"
-        }
-    ]);
-
-    const [letfSiderToggleIcon, setLeftSiderToggleIcon] = useState("align-justify")
+    
+    const [letfSiderToggleIcon, setLeftSiderToggleIcon] = useState("align-justify");
+    const { navData } = useContext(GlobalContext);
     const toogleShowLeftSider = useCallback((e) => {
         e.preventDefault();
         props.setShowLeftSider(prevState => {
@@ -38,11 +31,6 @@ function RightContent(props){
     }
 
     return (
-        <RightContext.Provider value={{
-            navData,
-            setNavData,
-        }}>
-
         <div className="right-content">
             <div className="header">
                 <div className="toogle" onClick={toogleShowLeftSider} 
@@ -75,8 +63,6 @@ function RightContent(props){
             </div>
             
         </div>
-        </RightContext.Provider>
-
     );
 }
 export default RightContent;

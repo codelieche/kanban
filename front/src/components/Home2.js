@@ -8,11 +8,20 @@ import {
 } from "antd";
 
 import LeftSider from "./Base/Sider";
+import {GlobalContext} from "./Base/Context";
 import RightContent from "./Base/Right";
 
 function Home(props){
     // 是否显示左右布局
     const [showLeftSider, setShowLeftSider] = useState(false);
+    // 导航信息
+    const [navData, setNavData] = useState([
+        {
+            title: "首页",
+            icon: "home",
+            link: "/"
+        }
+    ]);
 
     useEffect(() => {
         // 从localStorate中获取数据
@@ -38,7 +47,12 @@ function Home(props){
     }
 
     return (
-        <div>
+        <GlobalContext.Provider value={
+            {
+                navData,
+                setNavData
+            }
+        }>
             <Layout className="left-right-layout">
                 {leftSiderElement}
                 <Layout>
@@ -51,7 +65,7 @@ function Home(props){
                     </Layout.Content>
                 </Layout>
             </Layout>
-        </div>
+        </GlobalContext.Provider>
     );
 }
 
