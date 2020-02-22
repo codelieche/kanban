@@ -19,6 +19,8 @@ export const NavItem = ({item, index, activeNavIDs}) => {
     const [active, setActive] = useState(false);
     // isActive是控制其子nav是否展开的
     const [isActive, setIsActive] = useState(false);
+    const { history, setRefreshNavTimes } = useContext(GlobalContext);
+
 
     // 子文章列表
     let childrenElements = item.children.map((item, index) => {
@@ -41,6 +43,42 @@ export const NavItem = ({item, index, activeNavIDs}) => {
         }
     }, [activeNavIDs, isActive, item.id])
 
+    // 添加事件
+    const handleAddClick = useCallback((e) => {
+        // 添加事件
+        console.log(item, e);
+        // 阻止冒泡
+        e.stopPropagation();
+        e.preventDefault();
+        // 添加文章
+        let url = "/api/v1/docs/article/create";
+        let data = {
+            parent: item.id,
+            category: item.category,
+        }
+        fetchApi.Post(url, {}, {
+            data: data,
+        })
+          .then(responseData => {
+              if(responseData.id > 0){
+                //   创建文章成功
+                // 刷新左侧导航
+                setRefreshNavTimes(prevState => prevState + 1);
+                
+                // 跳转新的文章页面
+                let articleUrl = `/docs/article/${responseData.id}`;
+
+                history.push(articleUrl);
+
+              }else{
+                  console.log("创建文章失败");
+              }
+          })
+            .catch(err => {
+                console.log(err);
+            })
+    }, [history, item, setRefreshNavTimes]);
+
 
     return (
         <div key={index} className="nav">
@@ -56,6 +94,9 @@ export const NavItem = ({item, index, activeNavIDs}) => {
                     >
                             {childrenElements.length > 0 && <Icon type={(active || isActive) ? "caret-down" : "caret-right"} />}
                             {item.title ? item.title : <span className="no-title">无标题</span>}
+                        <div className="add" onClick={handleAddClick}>
+                            <Icon type="plus-square-o" />
+                        </div>
                     </div>
                 </NavLink>
 
@@ -77,13 +118,22 @@ export const NavItem = ({item, index, activeNavIDs}) => {
  */
 export const ArticlesNav= ({category}) => {
     const [currentCategory, setCurrentCategory] = useState("");
-    const { navData } = useContext(GlobalContext);
+    const { navData, refreshNavTimes } = useContext(GlobalContext);
 
     const [dataSource, setDataSource] = useState([]);
+    // 刷新方式获取导航数据次数
+    const [fetchTimes, setFetchTimes] = useState(0);
 
-    const fetchData = useCallback((category) => {
+    const fetchData = useCallback((category, isReFresh) => {
         // 修改一下当前的分类
         setCurrentCategory(category);
+        // 修改fetch次数
+        if(isReFresh){
+            setFetchTimes(prevState => {
+                return prevState++;
+            });
+        }
+
         if(! category){
             // category不可为空
             return 
@@ -117,11 +167,15 @@ export const ArticlesNav= ({category}) => {
 
     // 当category变更的时候需要获取一下文章列表
     useEffect(() => {
+        console.log(fetchTimes, refreshNavTimes);
         if(category !== currentCategory){
             // 获取新的文章列表
             fetchData(category);
+        }else if(fetchTimes <= refreshNavTimes){
+            // 获取新的文章列表
+            fetchData(category, true);
         }
-    }, [currentCategory, category, fetchData]);
+    }, [currentCategory, category, fetchData, fetchTimes, refreshNavTimes]);
 
     // 渲染导航
     let navElements = [];

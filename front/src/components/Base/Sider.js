@@ -11,7 +11,6 @@ import ArticlesNav from "./ArticlesNav";
 import fetchApi from "../Utils/fetchApi";
 
 function LeftSider({showLeftSider, setShowLeftSider}){
-
     const [categories, setCategories] = useState([]);
 
     const [currentCategory, setCurrentCategory] = useState({});
@@ -32,6 +31,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
 
     // 获取分类的列表
     const fetchCategoriesData = useCallback(() => {
+        
         let url = "/api/v1/docs/category/all";
         fetchApi.Get(url)
           .then(responseData => {
@@ -51,7 +51,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
 
     useEffect(() => {
         // 获取分类数据
-        if(categories.length === 0){
+        if(categories.length === 0 ){
             fetchCategoriesData();
         }
 
@@ -107,7 +107,11 @@ function LeftSider({showLeftSider, setShowLeftSider}){
 
     const articlesNavElement = useMemo(() => {
         if(showLeftSider){
-            return <ArticlesNav category={currentCategory.id}/>
+            return (
+             <ArticlesNav 
+               category={currentCategory.id}
+            />
+            )
         }else{
             return null;
         }
@@ -156,6 +160,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
                         {
                             showLeftSider && articlesNavElement
                         }
+                        {/* 文章导航内容结束 */}
                     </div> 
 
                     <div className="footer">

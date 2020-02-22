@@ -20,7 +20,11 @@ export const patchUpdateArticle = (articleId, data, callback) => {
       .then(responseData => {
         //   console.log(responseData);
         if(responseData.id > 0){
-
+            // 如果成功了，需要执行callback
+            if(typeof callback === "function"){
+                // 执行回调函数:把新的值传给callBack
+                callback(responseData);
+            }
         }else{
             // 出错了
             console.log(responseData);

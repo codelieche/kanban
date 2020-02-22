@@ -14,6 +14,9 @@ import RightContent from "./Base/Right";
 function Home(props){
     // 是否显示左右布局
     const [showLeftSider, setShowLeftSider] = useState(false);
+    // 控制刷新导航菜单的操作: 如果需要刷新左侧导航，
+    // 设置: setRefreshNavTimes(prevState => prevState + 1);
+    const [refreshNavTimes, setRefreshNavTimes] = useState(0);
     // 导航信息
     const [navData, setNavData] = useState([
         {
@@ -57,9 +60,11 @@ function Home(props){
     let leftSiderElement;
     if(showLeftSider){
         leftSiderElement = (
-            // <Layout.Sider style={{height: "100vh"}}>
-                <LeftSider showLeftSider={showLeftSider} setShowLeftSider={setShowLeftSider} />
-            // </Layout.Sider>
+            <LeftSider 
+                showLeftSider={showLeftSider} 
+                setShowLeftSider={setShowLeftSider}
+                refreshNavTimes={refreshNavTimes}
+            />
         );
     }
 
@@ -67,7 +72,11 @@ function Home(props){
         <GlobalContext.Provider value={
             {
                 navData,
-                setNavData
+                setNavData,
+                history: props.history,
+                // 操作更新左侧导航要用到
+                refreshNavTimes,
+                setRefreshNavTimes
             }
         }>
             <Layout className="left-right-layout">

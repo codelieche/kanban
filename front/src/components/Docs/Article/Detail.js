@@ -22,7 +22,7 @@ export const ArticleDetail = function(props){
     const [articleID, setArticleID] = useState(null);
     const [data, setData] = useState({});
     // 修改全局的右侧顶部导航
-    const { setNavData } = useContext(GlobalContext);
+    const { setNavData, setRefreshNavTimes } = useContext(GlobalContext);
 
     const fetchDetailData = useCallback(id => {
         setArticleID(id);
@@ -34,7 +34,12 @@ export const ArticleDetail = function(props){
         fetchApi.Get(url, {}, {})
           .then(responseData => {
               if(responseData.id > 0){
-                  setData(responseData);
+                  try {
+                    setData(responseData);
+                  } catch (error) {
+                    console.log(error);
+                    message.warn(JSON.stringify(error));  
+                  }
                   // 根据parent信息组织导航信息
                   let navData = [
                     {
@@ -109,6 +114,11 @@ export const ArticleDetail = function(props){
         }
     }, [data]);
 
+    // 刷新导航: 刷新导航只要增加refreshNavTimes的值即可
+    const handleRefreshNav = useCallback(() => {
+        setRefreshNavTimes(prevState => prevState + 1);
+    }, [setRefreshNavTimes])
+
     return (
         <article>
             <header className="middle">
@@ -122,7 +132,7 @@ export const ArticleDetail = function(props){
                             //   onChange={e => console.log(e.target.text)}
                             //  当内容更新了之后，我们需要做点操作
                             // style={{outline: "none", whiteSpace: "pre-wrap"}}
-                            handleContentUpdated={data => patchUpdateArticle(articleID, {title: data.text})}
+                            handleContentUpdated={data => patchUpdateArticle(articleID, {title: data.text}, handleRefreshNav)}
                         />
                     </h1>
                 </div>
