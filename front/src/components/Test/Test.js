@@ -1,7 +1,7 @@
 import React from 'react';
 
-import MyEditor from "../Editor";
-import { CodePrismDemo } from "../Editor/Element/Code";
+// import MyEditor from "../Editor";
+// import { CodePrismDemo } from "../Editor/Element/Code";
 import ResizeDemo from "./demo/resizeable";
 
 export class TestPage extends React.Component{
@@ -25,10 +25,9 @@ export function TestPageFunc() {
         <div>
             This Is Test Page Function
             <br />
-            <MyEditor />
-            <br />
+            {/* <MyEditor /> */}
             {/* 测试 */}
-            <CodePrismDemo />
+            {/* <CodePrismDemo /> */}
         </div>
     );
 }

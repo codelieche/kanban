@@ -9,7 +9,7 @@ import {
     // Typography,
     message
 } from "antd";
-
+import ReactMarkdown from "react-markdown";
 import EditableContent from "../../Base/EditableContent";
 import Icon from "../../Base/Icon";
 import { GlobalContext } from "../../Base/Context";
@@ -23,6 +23,7 @@ export const ArticleDetail = function(props){
     const [data, setData] = useState({});
     // 修改全局的右侧顶部导航
     const { setNavData, setRefreshNavTimes } = useContext(GlobalContext);
+    const [markdownContent, setMarkdownContent] = useState(null);
 
     const fetchDetailData = useCallback(id => {
         if(! id){
@@ -35,6 +36,7 @@ export const ArticleDetail = function(props){
               if(responseData.id > 0){
                   setData(responseData);
                   setArticleID(id);
+                  setMarkdownContent(responseData.content);
                   // 根据parent信息组织导航信息
                   let navData = [
                     {
@@ -131,7 +133,6 @@ export const ArticleDetail = function(props){
                             tagName="h1"
                             //   onChange={e => console.log(e.target.text)}
                             //  当内容更新了之后，我们需要做点操作
-                            // style={{outline: "none", whiteSpace: "pre-wrap"}}
                             handleContentUpdated={data => patchUpdateArticle(articleID, {title: data.text}, handleRefreshNav)}
                         />
                     {/* </h1> */}
@@ -151,17 +152,28 @@ export const ArticleDetail = function(props){
                 </div>
             </header>
             
-            <section>
-                <EditableContent
-                    key={`{data.id}-content`} 
-                    className="content" 
-                    content={data.content ? data.content : <span>默认的文章内容</span>}
-                    contentType="text" // 类型是html或者text
-                    tagName="div"
-                    // 当内容更新了之后，我们需要做点操作
-                    handleContentUpdated={data => patchUpdateArticle(articleID, {content: data.text})}
-                />
-            </section>
+            {/* 文章内容 */}
+            {/* 文章编辑弹出框 */}
+            <div className="editor">
+                {/* 左侧markdown */}
+                <div className="markdown">
+                    <EditableContent
+                        key={`{data.id}-content`} 
+                        content={data.content ? data.content : <span>默认的文章内容</span>}
+                        contentType="text" // 类型是html或者text
+                        tagName="div"
+                        // 当内容更新了之后，我们需要做点操作
+                        handleContentUpdated={data => patchUpdateArticle(articleID, {content: data.text})}
+                        onChange={data => setMarkdownContent(data.target.text)}
+                    />
+                </div>
+                {/* 右侧实时渲染的html */}
+                <div className="html">
+                    <ReactMarkdown
+                      source={markdownContent ? markdownContent : data.content}
+                    />
+                </div>
+            </div>
 
             {/* 子文章 */}
             {
