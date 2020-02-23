@@ -46,7 +46,7 @@ export const NavItem = ({item, index, activeNavIDs}) => {
     // 添加事件
     const handleAddClick = useCallback((e) => {
         // 添加事件
-        console.log(item, e);
+        // console.log(item, e);
         // 阻止冒泡
         e.stopPropagation();
         e.preventDefault();
@@ -86,7 +86,7 @@ export const NavItem = ({item, index, activeNavIDs}) => {
             <div className="item" >
                 <NavLink to={`/docs/article/${item.id}`} 
                     activeClassName="active"
-                    // className={isActive ? "isActive" : ""}
+                    // className={isActive || active ? "active" : ""}
                 >
                     <div className="title" 
                     style={{paddingLeft: 12 * item.level}}
@@ -167,7 +167,7 @@ export const ArticlesNav= ({category}) => {
 
     // 当category变更的时候需要获取一下文章列表
     useEffect(() => {
-        console.log(fetchTimes, refreshNavTimes);
+        // console.log(fetchTimes, refreshNavTimes);
         if(category !== currentCategory){
             // 获取新的文章列表
             fetchData(category);

@@ -1,11 +1,12 @@
 /**
  * 左右布局左侧的内容
  */
-import React, {useState, useEffect, useCallback, useMemo} from "react"
+import React, {useState, useEffect, useCallback, useMemo, useContext} from "react"
 import { Link } from "react-router-dom";
 import {Layout, Menu, Dropdown, message} from "antd";
 import { Resizable } from 'react-resizable';
 
+import { GlobalContext } from "./Context";
 import Icon from "./Icon";
 import ArticlesNav from "./ArticlesNav";
 import fetchApi from "../Utils/fetchApi";
@@ -14,6 +15,8 @@ function LeftSider({showLeftSider, setShowLeftSider}){
     const [categories, setCategories] = useState([]);
 
     const [currentCategory, setCurrentCategory] = useState({});
+
+    const { setRefreshNavTimes, history } = useContext(GlobalContext);
 
     let widthInit = useMemo(() => {
         // 从localStorage中获取宽度
@@ -117,6 +120,39 @@ function LeftSider({showLeftSider, setShowLeftSider}){
         }
     }, [currentCategory.id, showLeftSider]);
 
+    const handlerAddNewArticle = useCallback(e => {
+        console.log(e);
+        // 阻止冒泡
+        e.stopPropagation();
+        // 添加个新的文章
+        if(currentCategory.id < 0){
+            message.warn("还未选择分类，不可创建文章", 3);
+            return;
+        }
+
+        // 发起创建文章请求
+        let url = "/api/v1/docs/article/create";
+        fetchApi.Post(url, {}, {
+            data: {category: currentCategory.id}
+        })
+          .then(responseData => {
+              if(responseData.id > 0){
+                  message.success("添加文章成功");
+                  // 刷新导航
+                  setRefreshNavTimes(prevState => prevState + 1);
+                  //  跳转创建的文章页
+                  history.push(`/docs/article/${responseData.id}`);
+
+              }else{
+                  message.warn(JSON.stringify(responseData));
+              }
+          })
+            .catch(err => {
+                console.log(err);
+            })
+        
+    }, [currentCategory.id, history, setRefreshNavTimes])
+
     return (
         <Resizable className="box"  
           axis='x' height={0} 
@@ -163,8 +199,9 @@ function LeftSider({showLeftSider, setShowLeftSider}){
                         {/* 文章导航内容结束 */}
                     </div> 
 
-                    <div className="footer">
-                        底部内容
+                    <div className="footer" onClick={handlerAddNewArticle}>
+                        <Icon type="plus"/> 
+                        新的文章
                     </div>   
                 </div>
             </Layout.Sider>

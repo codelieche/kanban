@@ -25,7 +25,6 @@ export const ArticleDetail = function(props){
     const { setNavData, setRefreshNavTimes } = useContext(GlobalContext);
 
     const fetchDetailData = useCallback(id => {
-        setArticleID(id);
         if(! id){
             return
         }
@@ -34,12 +33,8 @@ export const ArticleDetail = function(props){
         fetchApi.Get(url, {}, {})
           .then(responseData => {
               if(responseData.id > 0){
-                  try {
-                    setData(responseData);
-                  } catch (error) {
-                    console.log(error);
-                    message.warn(JSON.stringify(error));  
-                  }
+                  setData(responseData);
+                  setArticleID(id);
                   // 根据parent信息组织导航信息
                   let navData = [
                     {
@@ -88,11 +83,12 @@ export const ArticleDetail = function(props){
     }, [setNavData])
 
     useEffect(() => {
-        if(props.match.params.id !== articleID){
+        // let ac = new AbortController();
+        if(props.match.params.id !== articleID || (data.id && props.match.params.id !== data.id.toString())){
             // setArticleID(props.match.params.id);
             fetchDetailData(props.match.params.id);
         }
-    }, [props.match.params.id, fetchDetailData, articleID])
+    }, [props.match.params.id, fetchDetailData, articleID, data])
 
     // 文章底部的子文章列表
     let childrenListElement = useMemo(() => {
@@ -123,28 +119,33 @@ export const ArticleDetail = function(props){
         <article>
             <header className="middle">
                 <div className="title">
-                    <h1>
+                    <div className="icon">
                         <Icon type="file-text-o"></Icon>
-                        <EditableContent 
-                            content={data.title ? data.title : <span>无标题</span>}
+                    </div>
+                    {/* <h1> */}
+                        {/* <Icon type="file-text-o"></Icon> */}
+                        <EditableContent
+                            key={`{data.id}-title`} 
+                            content={data.title ? data.title : "无标题"}
                             contentType="text" // 类型是html或者text
-                            tagName="span"
+                            tagName="h1"
                             //   onChange={e => console.log(e.target.text)}
                             //  当内容更新了之后，我们需要做点操作
                             // style={{outline: "none", whiteSpace: "pre-wrap"}}
                             handleContentUpdated={data => patchUpdateArticle(articleID, {title: data.text}, handleRefreshNav)}
                         />
-                    </h1>
+                    {/* </h1> */}
                 </div>
                 <div className="description">
 
-                    <EditableContent 
-                      content={data.description ? data.description : "默认的描述内容"}
-                      contentType="text" // 类型是html或者text
-                      tagName="div"
-                      //   onChange={e => console.log(e.target.text)}
-                      //  当内容更新了之后，我们需要做点操作
-                      handleContentUpdated={data => patchUpdateArticle(articleID, {description: data.text})}
+                    <EditableContent
+                       key={`{data.id}-description`} 
+                       content={data.description ? data.description : "默认的描述内容"}
+                       contentType="text" // 类型是html或者text
+                       tagName="div"
+                       //   onChange={e => console.log(e.target.text)}
+                       //  当内容更新了之后，我们需要做点操作
+                       handleContentUpdated={data => patchUpdateArticle(articleID, {description: data.text})}
                     />
                    
                 </div>
@@ -152,6 +153,7 @@ export const ArticleDetail = function(props){
             
             <section>
                 <EditableContent
+                    key={`{data.id}-content`} 
                     className="content" 
                     content={data.content ? data.content : <span>默认的文章内容</span>}
                     contentType="text" // 类型是html或者text

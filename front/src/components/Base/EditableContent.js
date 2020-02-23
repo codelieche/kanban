@@ -57,15 +57,17 @@ export const EditableContent = function(props) {
         if(props.innerRef && typeof props.innerRef === "function" && props.innerRef !== elementRef){
             setElementRef(props.innerRef)
         }
+        
         // 组件被销毁的时候要如果内容更新了就需要执行一些update的操作
         // return () => {
-        //     if(contentUpdated){
-        //         // 我被更新了哦
-        //         // console.log("我有更新");
-        //         // handleContentUpdatedFunction()
-        //     }
+        //     console.log(new Date());
         // }
-    }, [contentUpdated, elementRef, handleContentUpdatedFunction, props.innerRef])
+    }, [elementRef, props.innerRef])
+    
+    // 如果[]不设置为空，每次函数变更了，它都会变更，这样就会有2次patch请求了
+    useEffect(() => {
+            return handleContentUpdatedFunction;
+    }, []);
     
     const emitChange = useCallback((originalEvt) => {
         // 获取当前的元素
@@ -112,7 +114,8 @@ export const EditableContent = function(props) {
                     ...other,
                     ref: elementRef,
                     onInput: emitChange,
-                    onBlur: props.onBlur || emitChange,
+                    // onBlur: props.onBlur || emitChange,
+                    onBlur: props.onBlur || handleContentUpdatedFunction,
                     onMouseLeave: props.onMouseLeave || handleContentUpdatedFunction,
                     onKeyUp: props.onKeyUp || emitChange,
                     onKeyDown: props.onKeyDown || emitChange,
