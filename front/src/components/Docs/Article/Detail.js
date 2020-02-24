@@ -26,8 +26,9 @@ export const ArticleDetail = function(props){
     const [data, setData] = useState({});
     // 修改全局的右侧顶部导航
     const { setNavData, setRefreshNavTimes } = useContext(GlobalContext);
-    const [markdownContent, setMarkdownContent] = useState(null);
-
+    // 是否显示描述
+    const [showDescription, setShowDescription] = useState(false);
+    // 是否显示编辑的对话框
     const [showEditorModal, setShowEditorModal] = useState(false);
 
     const fetchDetailData = useCallback(id => {
@@ -41,7 +42,6 @@ export const ArticleDetail = function(props){
               if(responseData.id > 0){
                   setData(responseData);
                   setArticleID(id);
-                  setMarkdownContent(responseData.content);
                   // 根据parent信息组织导航信息
                   let navData = [
                     {
@@ -138,11 +138,23 @@ export const ArticleDetail = function(props){
     return (
         <article>
             <header className="middle">
+
                 <div className="title">
-                    <div className="icon">
-                        <Icon type="file-text-o"></Icon>
+                    {/* 显示描述等的开关 */}
+                    <div className="toogle">
+                        <span className="button" 
+                          onClick={() => {setShowDescription(prevState => !prevState)}}
+                        >
+                            <Icon type="info-circle"/>
+                            {showDescription ? "隐藏描述" : "显示描述"}
+                        </span>
                     </div>
-                    {/* <h1> */}
+
+                    {/* 文章的标题行 */}
+                    <div className="row">
+                        <div className="icon">
+                            <Icon type="file-text-o"></Icon>
+                        </div>
                         {/* <Icon type="file-text-o"></Icon> */}
                         <EditableContent
                             key={`{data.id}-title`} 
@@ -153,33 +165,40 @@ export const ArticleDetail = function(props){
                             //  当内容更新了之后，我们需要做点操作
                             handleContentUpdated={data => patchUpdateArticle(articleID, {title: data.text}, handleRefreshNav)}
                         />
-                    {/* </h1> */}
+                    </div>
+                    
                 </div>
-                <div className="description">
 
-                    <EditableContent
-                       key={`{data.id}-description`} 
-                       content={data.description ? data.description : "默认的描述内容"}
-                       contentType="text" // 类型是html或者text
-                       tagName="div"
-                       //   onChange={e => console.log(e.target.text)}
-                       //  当内容更新了之后，我们需要做点操作
-                       handleContentUpdated={data => patchUpdateArticle(articleID, {description: data.text})}
-                    />
-                   
-                </div>
+                {
+                    // 需要显示描述，才显示描述部分
+                    showDescription && (
+                        <div className="description">
+                            <EditableContent
+                            key={`{data.id}-description`} 
+                            content={data.description ? data.description : "请填写文章描述"}
+                            contentType="text" // 类型是html或者text
+                            tagName="div"
+                            //   onChange={e => console.log(e.target.text)}
+                            //  当内容更新了之后，我们需要做点操作
+                            handleContentUpdated={data => patchUpdateArticle(articleID, {description: data.text})}
+                            />
+                        </div>
+                    )
+                }
+                
             </header>
             
             {/* 文章内容 */}
             <section>
                 <div className="content">
                     <ReactMarkdown
-                        source={markdownContent ? markdownContent : data.content}
+                        source={data.content ? data.content : "> 请编辑文章内容"}
                     />
                     <div className="editor-button">
                         <Button type="primary" 
                           size="small"
                           disabled={showEditorModal}
+                          icon={<Icon type="edit"/>}
                           onClick={handleEditorButtonClick}>编辑</Button>
                     </div>
                 </div>

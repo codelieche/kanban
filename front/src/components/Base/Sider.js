@@ -12,10 +12,11 @@ import ArticlesNav from "./ArticlesNav";
 import fetchApi from "../Utils/fetchApi";
 
 function LeftSider({showLeftSider, setShowLeftSider}){
+    // 用户所有的分类列表
     const [categories, setCategories] = useState([]);
-
+    // 选中的当前分类
     const [currentCategory, setCurrentCategory] = useState({});
-
+    // 刷新导航相关的操作
     const { setRefreshNavTimes, history } = useContext(GlobalContext);
 
     let widthInit = useMemo(() => {
@@ -28,8 +29,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
         }
 
     }, []);
-
-
+    // 左侧导航的宽度
     const [width, setWidth] = useState(widthInit);
 
     // 获取分类的列表
@@ -41,6 +41,8 @@ function LeftSider({showLeftSider, setShowLeftSider}){
               if(Array.isArray(responseData)){
                   setCategories(responseData);
                   if(responseData.length > 0){
+
+                    //   设置列表的第一个为，当前的分类
                     setCurrentCategory(responseData[0]);
                   }
               }else{

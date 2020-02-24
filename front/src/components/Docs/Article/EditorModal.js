@@ -19,21 +19,19 @@ import EditableContent from "../../Base/EditableContent";
  * @param {*}} props 
  */
 export const EditorArticleModel = function(props){
-
+    // 每次编辑都修改一下一markdown的内容，右侧渲染需要用到
     const [markdownContent, setMarkdownContent] = useState(null);
 
     const handleOk = useCallback((e) => {
-
         // 调用后续的处理操作
-        if(props.afterModalCloseHandle &&typeof props.afterModalCloseHandle === "function"){
+        if(props.afterModalCloseHandle && typeof props.afterModalCloseHandle === "function"){
             props.afterModalCloseHandle();
         }
-
     }, [props]);
 
     const handleCancle = useCallback(() => {
         // 调用后续的处理操作
-        if(props.afterModalCloseHandle &&typeof props.afterModalCloseHandle === "function"){
+        if(props.afterModalCloseHandle && typeof props.afterModalCloseHandle === "function"){
             props.afterModalCloseHandle();
         }
     }, [props]);
@@ -43,7 +41,7 @@ export const EditorArticleModel = function(props){
         if(props.markdownContent !== markdownContent){
             setMarkdownContent(props.markdownContent);
         }
-
+        
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.markdownContent])
 
@@ -64,6 +62,7 @@ export const EditorArticleModel = function(props){
                         content={props.markdownContent}
                         contentType="text" // 类型是html或者text
                         tagName="div"
+                        className="content"
                         // 当内容更新了之后，我们需要做点操作
                         handleContentUpdated={props.handleContentUpdated}
                         onChange={data => setMarkdownContent(data.target.text)}

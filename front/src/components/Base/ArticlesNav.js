@@ -21,7 +21,6 @@ export const NavItem = ({item, index, activeNavIDs}) => {
     const [isActive, setIsActive] = useState(false);
     const { history, setRefreshNavTimes } = useContext(GlobalContext);
 
-
     // 子文章列表
     let childrenElements = item.children.map((item, index) => {
         return <NavItem item={item} index={index} key={index} activeNavIDs={activeNavIDs} />
@@ -45,7 +44,6 @@ export const NavItem = ({item, index, activeNavIDs}) => {
 
     // 添加事件
     const handleAddClick = useCallback((e) => {
-        // 添加事件
         // console.log(item, e);
         // 阻止冒泡
         e.stopPropagation();
@@ -117,7 +115,7 @@ export const NavItem = ({item, index, activeNavIDs}) => {
  * @param {Number} param0 
  */
 export const ArticlesNav= ({category}) => {
-    const [currentCategory, setCurrentCategory] = useState("");
+    const [currentCategoryID, setCurrentCategoryID] = useState(null);
     const { navData, refreshNavTimes } = useContext(GlobalContext);
 
     const [dataSource, setDataSource] = useState([]);
@@ -126,7 +124,7 @@ export const ArticlesNav= ({category}) => {
 
     const fetchData = useCallback((category, isReFresh) => {
         // 修改一下当前的分类
-        setCurrentCategory(category);
+        setCurrentCategoryID(category);
         // 修改fetch次数
         if(isReFresh){
             setFetchTimes(prevState => {
@@ -168,14 +166,14 @@ export const ArticlesNav= ({category}) => {
     // 当category变更的时候需要获取一下文章列表
     useEffect(() => {
         // console.log(fetchTimes, refreshNavTimes);
-        if(category !== currentCategory){
+        if(category !== currentCategoryID){
             // 获取新的文章列表
             fetchData(category);
         }else if(fetchTimes <= refreshNavTimes){
             // 获取新的文章列表
             fetchData(category, true);
         }
-    }, [currentCategory, category, fetchData, fetchTimes, refreshNavTimes]);
+    }, [currentCategoryID, category, fetchData, fetchTimes, refreshNavTimes]);
 
     // 渲染导航
     let navElements = [];
