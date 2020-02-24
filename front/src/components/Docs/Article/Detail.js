@@ -7,7 +7,8 @@ import { Link } from "react-router-dom";
 
 import {
     // Typography,
-    message
+    Button,
+    message,
 } from "antd";
 import ReactMarkdown from "react-markdown";
 import EditableContent from "../../Base/EditableContent";
@@ -16,6 +17,8 @@ import { GlobalContext } from "../../Base/Context";
 import fetchApi from "../../Utils/fetchApi";
 // 引入文章相关操作的函数
 import { patchUpdateArticle } from "./Operation";
+import EditorArticleModel from "./EditorModal";
+
 
 export const ArticleDetail = function(props){
     // 状态
@@ -24,6 +27,8 @@ export const ArticleDetail = function(props){
     // 修改全局的右侧顶部导航
     const { setNavData, setRefreshNavTimes } = useContext(GlobalContext);
     const [markdownContent, setMarkdownContent] = useState(null);
+
+    const [showEditorModal, setShowEditorModal] = useState(false);
 
     const fetchDetailData = useCallback(id => {
         if(! id){
@@ -115,7 +120,20 @@ export const ArticleDetail = function(props){
     // 刷新导航: 刷新导航只要增加refreshNavTimes的值即可
     const handleRefreshNav = useCallback(() => {
         setRefreshNavTimes(prevState => prevState + 1);
-    }, [setRefreshNavTimes])
+    }, [setRefreshNavTimes]);
+
+    // 编辑文章按钮
+    const handleEditorButtonClick = useCallback(() => {
+        setShowEditorModal(true);
+    }, [])
+
+    // 编辑文章关闭时候的设置
+    const afterModalCloseHandle = useCallback(() => {
+        // console.log("afterModalCloseHandle");
+        setShowEditorModal(false);
+        // 刷新一下当前页面
+        fetchDetailData(articleID);
+    }, [articleID, fetchDetailData]);
 
     return (
         <article>
@@ -153,27 +171,20 @@ export const ArticleDetail = function(props){
             </header>
             
             {/* 文章内容 */}
-            {/* 文章编辑弹出框 */}
-            <div className="editor">
-                {/* 左侧markdown */}
-                <div className="markdown">
-                    <EditableContent
-                        key={`{data.id}-content`} 
-                        content={data.content ? data.content : <span>默认的文章内容</span>}
-                        contentType="text" // 类型是html或者text
-                        tagName="div"
-                        // 当内容更新了之后，我们需要做点操作
-                        handleContentUpdated={data => patchUpdateArticle(articleID, {content: data.text})}
-                        onChange={data => setMarkdownContent(data.target.text)}
-                    />
-                </div>
-                {/* 右侧实时渲染的html */}
-                <div className="html">
+            <section>
+                <div className="content">
                     <ReactMarkdown
-                      source={markdownContent ? markdownContent : data.content}
+                        source={markdownContent ? markdownContent : data.content}
                     />
+                    <div className="editor-button">
+                        <Button type="primary" 
+                          size="small"
+                          disabled={showEditorModal}
+                          onClick={handleEditorButtonClick}>编辑</Button>
+                    </div>
                 </div>
-            </div>
+            </section>
+            {/* 文章内容结束 */}
 
             {/* 子文章 */}
             {
@@ -191,6 +202,18 @@ export const ArticleDetail = function(props){
             <footer>
 
             </footer>
+
+            {/* 文章编辑的对话框 */}
+            <EditorArticleModel 
+              // 对话框是否显示
+              visable={showEditorModal} 
+              //   对话框初始的内容
+              markdownContent={data.content}
+              //   关闭对话框之后的操作
+              afterModalCloseHandle={afterModalCloseHandle}
+              //   更新文章操作
+              handleContentUpdated={(data) => patchUpdateArticle(articleID, {content: data.text})}
+            />
         </article>
     );
 }

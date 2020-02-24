@@ -67,6 +67,7 @@ export const EditableContent = function(props) {
     // 如果[]不设置为空，每次函数变更了，它都会变更，这样就会有2次patch请求了
     useEffect(() => {
             return handleContentUpdatedFunction;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     
     const emitChange = useCallback((originalEvt) => {
