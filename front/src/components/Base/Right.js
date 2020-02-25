@@ -7,6 +7,7 @@ import { Switch, Route } from "react-router-dom";
 import { GlobalContext } from "./Context";
 import Icon from "./Icon";
 import Breadcrumb from "../Page/Breadcrumb";
+import { UserLoginOrInfo } from "./User";
 import ArticlePage from "../Docs/Article/Detail";
 
 function RightContent(props){
@@ -42,6 +43,11 @@ function RightContent(props){
                 {/* 面包屑开始 */}
                     <Breadcrumb data={navData} />
                 {/* 面包屑结束 */}
+
+                {/* 用户信息 */}
+                <div className="user">
+                    <UserLoginOrInfo />
+                </div>
             </div>
 
             <div className="content">

@@ -74,7 +74,7 @@ export default class MessageDetail extends React.Component {
           </Breadcrumb.Item>
           <Breadcrumb.Item>详情</Breadcrumb.Item>
         </Breadcrumb>
-        <div className="main">
+        <div className="main message">
           <div className="article">
             <div className="header">
               <div className="article-title">
