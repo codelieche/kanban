@@ -95,7 +95,8 @@ export const ArticleDetail = function(props){
             // setArticleID(props.match.params.id);
             fetchDetailData(props.match.params.id);
         }
-    }, [props.match.params.id, fetchDetailData, articleID, data])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.match.params.id, fetchDetailData])
 
     // 文章底部的子文章列表
     let childrenListElement = useMemo(() => {

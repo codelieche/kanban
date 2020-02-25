@@ -27,7 +27,7 @@ class Menu(models.Model):
     slug = models.CharField(max_length=128, verbose_name="网址", unique=True)
     icon = models.CharField(max_length=20, verbose_name="图标", blank=True, null=True)
     # 父级分类
-    parent = models.ForeignKey(verbose_name="父级菜单", related_name="subs",
+    parent = models.ForeignKey(verbose_name="父级菜单", related_name="children",
                                blank=True, null=True, to="self", on_delete=models.CASCADE)
 
     # 根据parent自动计算level

@@ -43,8 +43,8 @@ class ListUserMenuListApiView(generics.ListAPIView):
         for item in queryset:
             # 权限判断
             # print(user, item.id, item.permission, item.subs.all())
-            subs = item.subs.all()
-            for sub in subs:
+            children = item.children.all()
+            for sub in children:
                 if sub.permission:
                     if user.has_perm(sub.permission):
                         pass
@@ -60,7 +60,7 @@ class ListUserMenuListApiView(generics.ListAPIView):
         data = result.data
         for item in data:
             subs_new = []
-            for sub in item["subs"]:
+            for sub in item["children"]:
                 # 判断权限
                 permission = sub["permission"]
                 # 如果未设置权限，或者用户有这个权限
@@ -69,7 +69,7 @@ class ListUserMenuListApiView(generics.ListAPIView):
                 # 第三层权限不判断，后续优化成while判断权限
 
             # 修改当前menu的子菜单
-            item["subs"] = subs_new
+            item["children"] = subs_new
 
             # 判断是否加入到menu_data中
             if len(subs_new) > 0:

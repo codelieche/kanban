@@ -13,6 +13,7 @@ import {UserinfoContext} from "../components/Base/Context";
 // 各个组件
 import Home from "../components/Home";
 import Home2 from "../components/Home2";
+import Home3 from "../components/Home3";
 import Login from "../components/User/Login";
 import NoMatch from "../components/Base/NoMatch";
 
@@ -48,11 +49,11 @@ function App(props) {
 
                 <Route
                     path="/user"
-                    render={props => <Home defaultOpenKey="/user" {...props} />}
+                    render={props => <Home3 defaultOpenKey="/user" {...props} />}
                 />
                 <Route
                     path="/test"
-                    render={props => <Home defaultOpenKey="/test" {...props} />}
+                    render={props => <Home3 defaultOpenKey="/test" {...props} />}
                 />
 
                 {/* 这个一定要放最后面 */}

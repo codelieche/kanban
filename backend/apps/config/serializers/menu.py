@@ -22,13 +22,13 @@ class MenuModelSerializer(serializers.ModelSerializer):
     def get_fields(self):
         fields = super().get_fields()
         # 这样就可以调用自身这个Serializer类了
-        fields['subs'] = MenuModelSerializer(many=True, read_only=True)
+        fields['children'] = MenuModelSerializer(many=True, read_only=True)
         return fields
 
     class Meta:
         model = Menu
         fields = (
-            "id", "title", "key", "slug", "icon", "parent", "subs", "permission",
+            "id", "title", "key", "slug", "icon", "parent", "children", "permission",
             "target", "is_link", "link", "is_deleted", "level", "order"
         )
         # validators = [

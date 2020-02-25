@@ -9,7 +9,7 @@
  *      is_link: true/flase(是否是站外链接),
  *      link: "站外链接地址",
  *      target: "链接跳转的方式，默认是_self；_blank是在新的窗口打开页面",
- *      subs: [item, "二级菜单的列表"], 
+ *      children: [item, "二级菜单的列表"], 
  *   }
  */
 import React from 'react';
@@ -99,7 +99,7 @@ class Nav extends React.Component {
             // 根据navData渲染导航菜单元素
             topMenuElements = this.state.navData.map((item, index) => {
                 // 生成二级菜单元素
-                var subMenuItems = item.subs.map((v, i) => {
+                var subMenuItems = item.children.map((v, i) => {
                     return (
                         <Tooltip title={v.title} placement='right' key={i}>
                             <li className="sub-menu-item">
@@ -137,7 +137,7 @@ class Nav extends React.Component {
             navLeftClass = "menu-left";
             topMenuElements = this.state.navData.map((item, index) => {
                 // 生成二级菜单menu元素
-                var subMenuItems = item.subs.map((v, i) => {
+                var subMenuItems = item.children.map((v, i) => {
                     // 判断是否是站外链接
                     // console.log(v, i);
                     if(v.is_link === true){

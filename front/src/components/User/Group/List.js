@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 
 import {
   Button,
-  Breadcrumb,
+  // Breadcrumb,
   // Icon,
   Input,
   Popconfirm,
@@ -20,6 +20,7 @@ import Icon from "../../Base/Icon";
 import fetchApi from "../../Utils/fetchApi";
 // 有些浏览器不兼容URLSearchParams，所以使用自定义的URLSearchParams
 import URLSearchParams from "../../Utils/UrlParam";
+import GlobalContext from "../../Base/Context";
 
 export default class UserGroupList extends React.Component {
   constructor(props) {
@@ -141,6 +142,8 @@ export default class UserGroupList extends React.Component {
 
   componentDidMount() {
     this.fetchData(this.state.currentPage);
+
+    
   }
 
   deleteOnConfirm = value => {
@@ -226,6 +229,11 @@ export default class UserGroupList extends React.Component {
   }
   
   render() {
+    // 修改导航
+    // const { setNavData } = React.useContext(GlobalContext);
+    // setNavData([]);
+
+
     // Table的列：Name、Parent、Type、Description、Action
     const columns = [
       {
@@ -304,13 +312,14 @@ export default class UserGroupList extends React.Component {
     return (
       <div className="content">
         {/*面包屑开始  */}
-        <Breadcrumb className="nav">
+        {/* <Breadcrumb className="nav">
           <Breadcrumb.Item>
             <Link to="/">首页</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>用户组</Breadcrumb.Item>
-        </Breadcrumb>
+        </Breadcrumb> */}
         {/*面包屑 end  */}
+        
         <div className="main">
           <div className="title">
             <h4>分组列表</h4>
