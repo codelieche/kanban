@@ -7,12 +7,6 @@ import React from "react";
 
 import { Link } from "react-router-dom";
 
-import {
-  // Row,
-  // Col,
-  Breadcrumb
-} from "antd";
-
 import fetchApi from "../../Utils/fetchApi";
 
 export default class MessageDetail extends React.Component {
@@ -65,7 +59,7 @@ export default class MessageDetail extends React.Component {
     }
     return (
       <div className="content">
-        <Breadcrumb className="nav">
+        {/* <Breadcrumb className="nav">
           <Breadcrumb.Item>
             <Link to="/">首页</Link>
           </Breadcrumb.Item>
@@ -73,12 +67,13 @@ export default class MessageDetail extends React.Component {
             <Link to="/user/message/all">消息中心</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>详情</Breadcrumb.Item>
-        </Breadcrumb>
-        <div className="main message">
-          <div className="article">
+        </Breadcrumb> */}
+
+        <div className="main">
+          <div className="message">
             <div className="header">
               <div className="article-title">
-                <h4>{this.state.detail.title}</h4>
+                <h4>{this.state.detail.title}xx</h4>
               </div>
               <div className="meta">
                 <span>消息类型: {this.state.detail.scope}</span>

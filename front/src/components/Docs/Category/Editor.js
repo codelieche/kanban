@@ -1,14 +1,12 @@
 /**
  * 分类编辑页面
  */
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useContext } from "react";
 import {
-    Breadcrumb,
     message
 } from "antd";
 
-import Icon from "../../Base/Icon";
+import { GlobalContext } from "../../Base/Context";
 import fetchApi from "../../Utils/fetchApi";
 import CategoryForm from "./Form";
 
@@ -17,6 +15,8 @@ function CategoryEditor(props){
     const [id, idState] = useState(null);
     
     const [data, dataState] = useState({});
+    // 获取context
+    const { setNavData } = useContext(GlobalContext);
 
     // 当id变化的时候：修改id
     useEffect(() => {
@@ -86,24 +86,29 @@ function CategoryEditor(props){
             });
     }
 
+    // 设置导航
+    useEffect(() => {
+        // 顶部导航面包屑的数据
+        const navData = [
+            {
+                title: "首页",
+                icon: "home",
+                link: "/"
+            },
+            {
+                title: "文档分类",
+                link: "/docs/category"
+            },
+            {
+                title: "编辑"
+            }
+        ]
+        setNavData(navData);
+    }, [setNavData])
+
     // 相当于class写法的render(){}
     return (
         <div className="content">
-            {/* 面包屑开始 */}
-            <div className="nav">
-                <Breadcrumb>
-                    <Breadcrumb.Item>
-                        <Link to="/"><Icon type="home" noMarginRight={true}>首页</Icon></Link>
-                    </Breadcrumb.Item>
-
-                    <Breadcrumb.Item>
-                        <Link to="/docs/category/list">文档分类</Link>
-                    </Breadcrumb.Item>
-
-                    <Breadcrumb.Item>详情</Breadcrumb.Item>
-                </Breadcrumb>
-            </div>
-            {/* 面包屑结束 */}
 
             {/* 主体内容开始 */}
             <div className="main">

@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 import {
   Badge,
   Button,
-  Breadcrumb,
   // Icon,
   Input,
   Popconfirm,
@@ -327,13 +326,14 @@ export default class MessageList extends React.Component {
     return (
       <div className="content">
         {/*面包屑开始  */}
-        <Breadcrumb className="nav">
+        {/* <Breadcrumb className="nav">
           <Breadcrumb.Item>
             <Link to="/">首页</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>消息中心</Breadcrumb.Item>
-        </Breadcrumb>
+        </Breadcrumb> */}
         {/*面包屑 end  */}
+        
         <div className="main">
           <div className="title">
             <h4>消息列表</h4>

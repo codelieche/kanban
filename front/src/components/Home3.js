@@ -82,7 +82,7 @@ function Home(props){
             <Layout className="left-right-layout">
                 {leftSiderElement}
                 <Layout>
-                    <Layout.Content className="container">
+                    <Layout.Content>
                         <RightContent 
                           {...props}
                           showLeftSider={showLeftSider}

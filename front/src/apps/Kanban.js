@@ -28,29 +28,20 @@ function App(props) {
                 <Route exact path="/" component={Home2} />
 
                 <Route
-                    path="/task"
-                    render={props => <Home defaultOpenKey="/task" {...props} />}
-                />
-
-                <Route
-                    path="/docs/category"
-                    render={props => <Home defaultOpenKey="/docs" {...props} />}
-                />
-
-                <Route
-                    path="/docs"
+                    path="/docs/article"
                     render={props => <Home2 defaultOpenKey="/docs" {...props} />}
                 />
 
                 <Route
-                    path="/pages"
-                    render={props => <Home2 defaultOpenKey="/pages" {...props} />}
+                    path="/docs"
+                    render={props => <Home3 defaultOpenKey="/docs" {...props} />}
                 />
 
                 <Route
                     path="/user"
                     render={props => <Home3 defaultOpenKey="/user" {...props} />}
                 />
+
                 <Route
                     path="/test"
                     render={props => <Home3 defaultOpenKey="/test" {...props} />}

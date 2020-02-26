@@ -6,7 +6,7 @@ import React from "react";
 
 import { Link } from "react-router-dom";
 
-import { Row, Col, Breadcrumb } from "antd";
+import { Row, Col } from "antd";
 import ModelLogs from "../../Base/ModelLogs";
 
 import fetchApi from "../../Utils/fetchApi";
@@ -49,7 +49,7 @@ export default class UserGroupDetail extends React.Component {
   render() {
     return (
       <div className="content">
-        <Breadcrumb className="nav">
+        {/* <Breadcrumb className="nav">
           <Breadcrumb.Item>
             <Link to="/">首页</Link>
           </Breadcrumb.Item>
@@ -57,7 +57,8 @@ export default class UserGroupDetail extends React.Component {
             <Link to="/user/group">用户组</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>详情</Breadcrumb.Item>
-        </Breadcrumb>
+        </Breadcrumb> */}
+        
         <div className="main">
           <Row gutter={16}>
             <Col xs={{ span: 24 }} sm={{ span: 16 }}>

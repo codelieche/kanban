@@ -2,18 +2,17 @@
  * 分类详情页
  * 采用Hook方式：不编写class的情况下使用state，以及其它React特性。
  */
-import React, {useState, useEffect} from "react";
-import { Link } from "react-router-dom";
+import React, {useState, useEffect, useContext} from "react";
+// import { Link } from "react-router-dom";
 import {
     Row,
     Col,
-    Breadcrumb
 } from "antd";
 
+import { GlobalContext } from "../../Base/Context";
 import Icon from "../../Base/Icon";
 import ModelLogs from "../../Base/ModelLogs";
 import fetchApi from "../../Utils/fetchApi";
-
 
 // 分类详情页
 function CategoryDetail(props) {
@@ -21,6 +20,8 @@ function CategoryDetail(props) {
     // 因为id可能是数字，也可能是字符，需要有个状态保存一下
     const [id, idState] = useState(null);
     const [data, dataState] = useState({});
+    // 获取context
+    const { setNavData } = useContext(GlobalContext);
 
     // 获取详情数据
     const fetchDetailData = (id) => {
@@ -49,11 +50,31 @@ function CategoryDetail(props) {
         }
     }, [props, id]);
 
+    // 设置导航
+    useEffect(() => {
+        // 顶部导航面包屑的数据
+        const navData = [
+            {
+                title: "首页",
+                icon: "home",
+                link: "/"
+            },
+            {
+                title: "文档分类",
+                link: "/docs/category"
+            },
+            {
+                title: "详情"
+            }
+        ]
+        setNavData(navData);
+    }, [setNavData])
+
     // 相当于class方式的render(){}
     return (
         <div className="content">
             {/* 面包屑导航开始 */}
-            <Breadcrumb className="nav">
+            {/* <Breadcrumb className="nav">
                 <Breadcrumb.Item>
                     <Link to="/"><Icon type="home" noMarginRight={true}/>首页</Link>
                 </Breadcrumb.Item>
@@ -67,7 +88,7 @@ function CategoryDetail(props) {
                 </Breadcrumb.Item>
 
                 <Breadcrumb.Item>详情</Breadcrumb.Item>
-            </Breadcrumb>
+            </Breadcrumb> */}
             {/* 面包屑导航结束 */}
 
             {/* 主体内容 */}

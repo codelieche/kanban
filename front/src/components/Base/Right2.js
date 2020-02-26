@@ -9,7 +9,9 @@ import Icon from "./Icon";
 import Breadcrumb from "../Page/Breadcrumb";
 import { UserLoginOrInfo } from "./User";
 
+import Footer from "./Footer";
 import ArticlePage from "../Docs/Article/Detail";
+import DocsIndex from "../Docs/Index";
 import UserIndex from "../User/Index";
 import TestIndex from "../Test/Index";
 
@@ -55,12 +57,19 @@ function RightContent(props){
             </div>
 
             {/* 右侧的主体内容区域 */}
-            <div className="content">
+            <div className="container">
                 {/*  */}
                 <Switch>
                     {/* 文章页 */}
                     <Route path="/docs/article/:id" 
                       component={ArticlePage} {...props} />
+
+                    {/* 文章分类页等 */}
+                    <Route
+                        path="/docs/"
+                        component={DocsIndex}
+                        location={props.location}
+                    />
 
                     {/* 用户中心页面 */}
                     <Route
@@ -78,6 +87,11 @@ function RightContent(props){
 
                 </Switch>
             </div>
+
+            {/* 右侧底部 */}
+            <Footer>
+
+            </Footer>
             
         </div>
     );

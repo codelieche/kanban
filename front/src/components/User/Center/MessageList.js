@@ -4,9 +4,6 @@
  */
 import React from "react";
 
-import // Collapse
-"antd";
-
 import { Link } from "react-router-dom";
 import fetchApi from "../../Utils/fetchApi";
 

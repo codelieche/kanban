@@ -7,7 +7,6 @@ import { Link } from "react-router-dom";
 
 import {
   Button,
-  Breadcrumb,
   Input,
   Popconfirm,
   Row,
@@ -520,12 +519,13 @@ export default class UserList extends React.Component {
     return (
       <div className="content">
         {/* 面包屑开始 */}
-        <Breadcrumb className="nav">
+        {/* <Breadcrumb className="nav">
           <Breadcrumb.Item>
             <Link to="/">首页</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>用户</Breadcrumb.Item>
-        </Breadcrumb>
+        </Breadcrumb> */}
+        
         {/*面包屑 end  */}
         <div className="main">
           <div className="title">

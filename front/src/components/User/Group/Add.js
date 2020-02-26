@@ -4,7 +4,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-import { Breadcrumb, message } from "antd";
+import { message } from "antd";
 import fetchApi from "../../Utils/fetchApi";
 
 import UserGroupForm from "./Form";
@@ -43,7 +43,7 @@ export default class ProjectAdd extends React.Component {
   render() {
     return (
       <div className="content">
-        <Breadcrumb className="nav">
+        {/* <Breadcrumb className="nav">
           <Breadcrumb.Item>
             <Link to="/">首页</Link>
           </Breadcrumb.Item>
@@ -51,7 +51,8 @@ export default class ProjectAdd extends React.Component {
             <Link to="/user/group">用户组</Link>
           </Breadcrumb.Item>
           <Breadcrumb.Item>添加</Breadcrumb.Item>
-        </Breadcrumb>
+        </Breadcrumb> */}
+        
         <div className="main">
           <div className="title">
             <h4>添加用户组</h4>

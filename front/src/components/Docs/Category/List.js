@@ -1,7 +1,7 @@
 /**
  * 分类列表页
  */
-import React, {useState, useEffect, useMemo, useCallback} from "react"
+import React, {useState, useEffect, useMemo, useCallback, useContext} from "react"
 import { Link } from "react-router-dom";
 import {
     Input, Row, Col, 
@@ -11,8 +11,8 @@ import {
 } from "antd";
 
 // 基础组件
+import { GlobalContext } from "../../Base/Context";
 import Icon from "../../Base/Icon";
-import { NavBreadcrumb } from "../../Page/Breadcrumb";
 
 // Utils相关
 import { getParamsFromLocationSearch } from "../../Utils/UrlParam";
@@ -35,6 +35,8 @@ function CategoryList(props){
     const paramsFields = useMemo(() => {
         return ["page", "search", "ordering", "parent", "level", "is_deleted"];
     }, []);
+    // 获取context
+    const { setNavData } = useContext(GlobalContext);
 
     // 状态值：
     // 列表数据、分页信息, url中的params,是否在加载数据
@@ -167,8 +169,9 @@ function CategoryList(props){
     }, [other.parentFilterOptionsLock])
 
     // 顶部导航面包屑的数据
-    const navsData = useMemo(() => {
-        return [
+    // 设置导航
+    useEffect(() => {
+        const navData = [
             {
                 title: "首页",
                 icon: "home",
@@ -182,7 +185,10 @@ function CategoryList(props){
                 title: "列表"
             }
         ]
-    }, []);
+        setNavData(navData);
+    }, [setNavData])
+
+    
 
     // 删除分类函数
     const deleteOnConfirm = useCallback((value) => {
@@ -509,7 +515,7 @@ function CategoryList(props){
     return (
         <div className="content">
             {/* 面包屑开始 */}
-            <NavBreadcrumb data={navsData}  />
+            {/* <NavBreadcrumb data={navsData}  /> */}
             {/* 面包屑结束 */}
             
             {/* 主体内容开始 */}
