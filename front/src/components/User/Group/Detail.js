@@ -3,12 +3,9 @@
  */
 
 import React from "react";
-
-import { Link } from "react-router-dom";
-
 import { Row, Col } from "antd";
-import ModelLogs from "../../Base/ModelLogs";
 
+import ModelLogs from "../../Base/ModelLogs";
 import fetchApi from "../../Utils/fetchApi";
 
 export default class UserGroupDetail extends React.Component {

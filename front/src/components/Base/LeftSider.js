@@ -1,12 +1,12 @@
 /**
  * 左右布局左侧的内容
  */
-import React, {useState, useEffect, useCallback, useMemo, useContext} from "react"
+import React, {useState, useEffect, useCallback, useMemo} from "react"
 import { Link } from "react-router-dom";
 import {Layout, message} from "antd";
 import { Resizable } from 'react-resizable';
 
-import { GlobalContext } from "./Context";
+// import { GlobalContext } from "./Context";
 import Icon from "./Icon";
 import { LeftSiderNav } from "./LeftNav";
 import fetchApi from "../Utils/fetchApi";
@@ -15,7 +15,11 @@ function LeftSider({showLeftSider, setShowLeftSider}){
     // 用户所有的分类列表
     const [categories, setCategories] = useState([]);
     // 选中的当前分类
-    const [currentCategory, setCurrentCategory] = useState({});
+    // const [currentCategory, setCurrentCategory] = useState({});
+
+    // 导航是否收缩
+    const [ collapsed, setCollapsed] = useState(false);
+
     // 刷新导航相关的操作
     // const { setRefreshNavTimes, history } = useContext(GlobalContext);
 
@@ -43,7 +47,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
                   if(responseData.length > 0){
 
                     //   设置列表的第一个为，当前的分类
-                    setCurrentCategory(responseData[0]);
+                    // setCurrentCategory(responseData[0]);
                   }
               }else{
                   message.warn("获取分类列表数据出错", 3);
@@ -91,21 +95,43 @@ function LeftSider({showLeftSider, setShowLeftSider}){
     const navElement = useMemo(() => {
         if(showLeftSider){
             return (
-             <LeftSiderNav />
+             <LeftSiderNav collapsed={collapsed} />
             );
         }else{
             return null;
         }
-    }, [showLeftSider]);
+    }, [showLeftSider, collapsed]);
 
+    // 导航收缩开关
+    const handleCollapsedToogle = useCallback(() => {
+        setCollapsed(prevState => !prevState);
+    }, [setCollapsed])
+
+    // 保存收缩信息
+    // useEffect(() => {
+    //     // 从localStorate中获取数据
+    //     let value = localStorage.getItem("leftSiderNavCollapsed");
+    //     if(value === null){
+    //         // 如果不存在，那么也设为显示侧边栏
+    //         setCollapsed(false);
+    //     }else{
+    //         setCollapsed(value === "true" ? true : false);
+    //     }
+
+    //     return () => {
+    //         // 写入localStorate中
+    //         localStorage.setItem("leftSiderNavCollapsed", collapsed);
+    //     }
+
+    // }, [])
 
     return (
         <Resizable className="box"  
           axis='x' height={0} 
           width={width} onResize={onResize}
         >
-            <Layout.Sider style={{height: "100vh"}} width={width}>
-                <div className="left-sider">
+            <Layout.Sider style={{height: "100vh"}} width={collapsed ? 64 : width}>
+                <div className={ collapsed ? "left-sider collapsed" : "left-sider"}>
                     <div className="header">
                         <div className="logo">
                             <Link to="/">
@@ -113,12 +139,16 @@ function LeftSider({showLeftSider, setShowLeftSider}){
                                 src="https://www.codelieche.com/static/images/logo-kanban.svg">
                                 </img>
                             </Link>
-                            
-                            <div className="toogle" onClick={toogleLeftSider}>
+                            {/* 是否显示左侧导航的按钮 */}
+                            <div className="toogle" onClick={toogleLeftSider} style={{display: collapsed ? "none" : ""}}>
                                 <Icon type="angle-double-left" noMarginRight={true}></Icon>
                             </div>
                             <div className="clear"></div>
                         </div>
+                        {/* 是否收缩collapsed */}
+                        {/* <div className="collapsed-toogle" onClick={handleCollapsedToogle}>
+                            <Icon type={collapsed ? "indent" : "outdent"} />
+                        </div> */}
                         <div className="clear"></div>
                        
                     </div> 
@@ -129,10 +159,12 @@ function LeftSider({showLeftSider, setShowLeftSider}){
                         {/* 导航内容结束 */}
                     </div> 
 
-                    {/* <div className="footer" onClick={handlerAddNewArticle}>
-                        <Icon type="plus"/> 
-                        展开
-                    </div>    */}
+                    {/* 底部 */}
+                    <div className="footer" onClick={handleCollapsedToogle}>
+                        <div className="collapsed-toogle">
+                            <Icon type={collapsed ? "indent" : "outdent"} />
+                        </div>
+                    </div>   
                 </div>
             </Layout.Sider>
         </Resizable>

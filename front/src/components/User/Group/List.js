@@ -20,7 +20,6 @@ import Icon from "../../Base/Icon";
 import fetchApi from "../../Utils/fetchApi";
 // 有些浏览器不兼容URLSearchParams，所以使用自定义的URLSearchParams
 import URLSearchParams from "../../Utils/UrlParam";
-import GlobalContext from "../../Base/Context";
 
 export default class UserGroupList extends React.Component {
   constructor(props) {

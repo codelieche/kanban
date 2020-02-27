@@ -2,11 +2,9 @@
  * 用户组编辑页
  */
 import React from "react";
-import { Link } from "react-router-dom";
-
 import { message } from "antd";
-import fetchApi from "../../Utils/fetchApi";
 
+import fetchApi from "../../Utils/fetchApi";
 import UserGroupForm from "./Form";
 
 export default class UserGroupEditor extends React.Component {

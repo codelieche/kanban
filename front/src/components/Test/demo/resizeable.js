@@ -9,7 +9,7 @@ function ResizeDemo(props){
 
     const onResize = (event, { element, size }) => {
         console.log(size);
-        console.log(element);
+        // console.log(element);
         setWidth(size.width);
       };
     return (

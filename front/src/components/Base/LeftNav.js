@@ -18,23 +18,24 @@
  */
 import React, {useState, useEffect, useCallback} from "react";
 import { NavLink} from "react-router-dom";
+import { Popover } from "antd";
 
 import fetchApi from "../Utils/fetchApi";
 import Icon from "./Icon";
 
 // 渲染导航
-export const NavItem = ({item, index}) => {
+export const NavItem = ({item, index, collapsed}) => {
     // 状态
-    // const [active, setActive ] = useState(false);
     const [openChildren, setOpenChildren ] = useState(false);
 
     // 子导航列表
     let childrenElements = item.children.map((item, index) => {
-        return <NavItem item={item} index={index} key={index} />
+        return <NavItem item={item} index={index} key={index} collapsed={collapsed} />
     });
 
     // 点击的active开关
     const handleItemActiveToggle = useCallback(e => {
+        e.stopPropagation();
         setOpenChildren(prevState => !prevState);
     }, []);
 
@@ -54,7 +55,71 @@ export const NavItem = ({item, index}) => {
         );
     }
 
-    // 标题
+
+    // 判断导航是否收缩:
+    if(collapsed && false){
+        // 收缩的情况
+        if(childrenElements.length > 0){
+            return (
+            <Popover 
+              title={item.title}
+              content={<div className="collapsed-nav-children">{childrenElements}</div>} 
+              placement="rightTop" className="xxxx">
+                    <div className="item">
+                        <div className="title">
+                            <Icon type={item.icon ? item.icon : "angle-right"}></Icon>
+                            {item.level <= 1 ? null : item.title}
+                        </div>
+                    </div>
+                </Popover>
+            );
+        }else{
+             // 判断是否是外链
+            if(item.is_link && item.link){
+                return (
+                    <div className="item">
+                        <a href={item.link} 
+                            target={item.target === "_blank" ? "_blank" : ""}
+                            rel="noopener noreferrer"
+                        >
+                            {/* 不同级别，不同的padding */}
+                            <div 
+                                className="title"
+                            >
+                                {/* {childrenElements.length > 0 && <Icon type={active ? "caret-down" : "caret-right"} />} */}
+                                <Icon type={item.icon ? item.icon : "angle-right"}></Icon>
+                                {item.title ? item.title : "无标题"} 
+                            </div>
+                        </a>
+                    </div>
+                )
+            }else{
+                return (
+                    <div className="item">
+                        <NavLink to={item.slug} 
+                            activeClassName="active"
+                            target={item.target === "_blank" ? "_blank" : ""}
+                        >
+                            {/* 不同级别，不同的padding */}
+                            <div 
+                                className="title"
+                            >
+                                <Icon type={item.icon ? item.icon : "angle-right"}></Icon>
+                                {item.title ? item.title : "无标题"} 
+                            </div>
+                        </NavLink>
+                    </div>
+                )
+            }
+            
+        }
+        // 导航收缩情况end
+    }else{
+        // 未收缩情况
+    }
+
+    // 未收缩的情况
+    
     let titleElement;
     if(childrenElements.length > 0){
         titleElement = (
@@ -104,13 +169,13 @@ export const NavItem = ({item, index}) => {
                 </NavLink>
             );
         }
-        
     }
 
     return (
             <div className="item" key={index}>
                 {/* 标题 */}
                 {titleElement}
+                {collapsed ? "折叠" : ""}
 
                 {/* 显示children */}
                 {
@@ -124,7 +189,6 @@ export const NavItem = ({item, index}) => {
     )
 
 }
-
 
 export const LeftSiderNav = (props) => {
     // 导航数据

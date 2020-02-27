@@ -201,14 +201,15 @@ function LeftSider({showLeftSider, setShowLeftSider}){
                         {/* 文章导航内容结束 */}
                     </div> 
 
+                    {/* 底部区域 */}
                     <div className="footer" onClick={handlerAddNewArticle}>
-                        <Icon type="plus"/> 
-                        新的文章
+                        <div className="add">
+                            <Icon type="plus"/>新的文章
+                        </div>
                     </div>   
                 </div>
             </Layout.Sider>
         </Resizable>
-
     );
 }
 export default LeftSider;

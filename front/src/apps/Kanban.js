@@ -11,7 +11,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import {UserinfoContext} from "../components/Base/Context";
 
 // 各个组件
-import Home from "../components/Home";
+// import Home from "../components/Home";
 import Home2 from "../components/Home2";
 import Home3 from "../components/Home3";
 import Login from "../components/User/Login";
