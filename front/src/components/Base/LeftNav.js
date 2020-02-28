@@ -24,7 +24,7 @@ import fetchApi from "../Utils/fetchApi";
 import Icon from "./Icon";
 
 // 渲染导航
-export const NavItem = ({item, index, collapsed}) => {
+export const NavItem = ({item, index, collapsed, defaultOpenKey}) => {
     // 状态
     const [openChildren, setOpenChildren ] = useState(false);
 
@@ -35,9 +35,21 @@ export const NavItem = ({item, index, collapsed}) => {
 
     // 点击的active开关
     const handleItemActiveToggle = useCallback(e => {
-        e.stopPropagation();
+        // e.stopPropagation();
         setOpenChildren(prevState => !prevState);
     }, []);
+
+    // 判断是否需要显示当前的children
+    useEffect(() => {
+        if(!collapsed){
+            if(defaultOpenKey === item.key){
+                setOpenChildren(true);
+            }else{
+                // 是否关闭另外一个item的children，如果不想关闭可注释下面这行
+                setOpenChildren(false);
+            }
+        }
+    }, [collapsed, defaultOpenKey, item.key])
 
     // 导航标题的左侧图标
     let iconElement;
@@ -57,14 +69,14 @@ export const NavItem = ({item, index, collapsed}) => {
 
 
     // 判断导航是否收缩:
-    if(collapsed && false){
+    if(collapsed){
         // 收缩的情况
         if(childrenElements.length > 0){
             return (
             <Popover 
               title={item.title}
               content={<div className="collapsed-nav-children">{childrenElements}</div>} 
-              placement="rightTop" className="xxxx">
+              placement="rightTop">
                     <div className="item">
                         <div className="title">
                             <Icon type={item.icon ? item.icon : "angle-right"}></Icon>
@@ -225,7 +237,7 @@ export const LeftSiderNav = (props) => {
 
     // 导航菜单
     let navElements = navData.map((item, index) => {
-        return <NavItem item={item} index={index} key={index} collapsed={collapsed} />
+        return <NavItem item={item} index={index} key={index} collapsed={collapsed} defaultOpenKey={props.defaultOpenKey} />
     })
 
     return (

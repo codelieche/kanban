@@ -64,6 +64,7 @@ function Home(props){
                 showLeftSider={showLeftSider} 
                 setShowLeftSider={setShowLeftSider}
                 refreshNavTimes={refreshNavTimes}
+                defaultOpenKey={props.defaultOpenKey}
             />
         );
     }

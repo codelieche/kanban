@@ -52,6 +52,12 @@ export const UserLoginOrInfo = (props) => {
                     </Menu.Item>
 
                     <Menu.Item>
+                        <Link to="/docs/category">
+                            <Icon type="file-text-o"> 分类列表</Icon>
+                        </Link>
+                    </Menu.Item>
+
+                    <Menu.Item>
                         <Link to="/user/message">
                             <Icon type="envelope-o"> 消息中心</Icon>
                         </Link>

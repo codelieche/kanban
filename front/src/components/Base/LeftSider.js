@@ -11,7 +11,7 @@ import Icon from "./Icon";
 import { LeftSiderNav } from "./LeftNav";
 import fetchApi from "../Utils/fetchApi";
 
-function LeftSider({showLeftSider, setShowLeftSider}){
+function LeftSider({showLeftSider, setShowLeftSider, defaultOpenKey}){
     // 用户所有的分类列表
     const [categories, setCategories] = useState([]);
     // 选中的当前分类
@@ -95,12 +95,12 @@ function LeftSider({showLeftSider, setShowLeftSider}){
     const navElement = useMemo(() => {
         if(showLeftSider){
             return (
-             <LeftSiderNav collapsed={collapsed} />
+             <LeftSiderNav collapsed={collapsed} defaultOpenKey={defaultOpenKey} />
             );
         }else{
             return null;
         }
-    }, [showLeftSider, collapsed]);
+    }, [showLeftSider, collapsed, defaultOpenKey]);
 
     // 导航收缩开关
     const handleCollapsedToogle = useCallback(() => {
