@@ -5,12 +5,15 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import (
     IsAuthenticated,
-    DjangoModelPermissions, DjangoModelPermissionsOrAnonReadOnly
+    DjangoModelPermissions, 
+    DjangoModelPermissionsOrAnonReadOnly
 )
 
 from modellog.mixins import LoggingViewSetMixin
 from docs.models.category import Category
+from docs.models.article import Article
 from docs.serializers.category import CategoryModelSerializer
+from docs.serializers.article import ArticleModelSerializer
 
 
 class CategoryCreateApiView(LoggingViewSetMixin, generics.CreateAPIView):
@@ -60,3 +63,24 @@ class CategoryDetailApiView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyA
     queryset = Category.objects.filter()
     serializer_class = CategoryModelSerializer
     permission_classes = (IsAuthenticated, DjangoModelPermissionsOrAnonReadOnly)
+
+
+class CategoryArticlesListApiView(generics.ListAPIView):
+    """
+    分类文章的列表
+    """
+
+    queryset = Article.objects.all()
+    serializer_class = ArticleModelSerializer
+    permission_classes = (IsAuthenticated,)
+
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ("title", "parent__title", "description")
+    filter_fields = ("parent", "level", "category")
+    ordering_fields = ("id", "parent", "order", "time_added", "user")
+    ordering = ("id", )
+
+    def get_queryset(self):
+        queryset = Article.objects.filter(category_id=self.kwargs["pk"])
+        return queryset
+

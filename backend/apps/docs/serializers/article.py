@@ -34,7 +34,7 @@ class ArticleModelSerializer(serializers.ModelSerializer):
         model = Article
         fields = (
             "id", "title", "category", "icon", "description", "cover", 
-            "user", "parent", "infovalues",
+            "user", "parent", "infovalues", "time_added",
             "content", "order", "level"
         )
 
@@ -51,6 +51,7 @@ class ArticleParentInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = ("id", "title", "parent")
+
 
 class ArticleDetailSerializer(serializers.ModelSerializer):
     """

@@ -80,7 +80,10 @@ function Home(props){
             }
         }>
             <Layout className="left-right-layout">
+                {/* 左侧导航 */}
                 {leftSiderElement}
+
+                {/* 右侧区域 */}
                 <Layout>
                     <Layout.Content>
                         <RightContent 

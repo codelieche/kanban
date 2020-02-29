@@ -13,6 +13,7 @@ import CategoryList from "./Category/List";
 import CategoryAdd from "./Category/Add";
 import CategoryDetail from "./Category/Detail";
 import CategoryEditor from "./Category/Editor";
+import CategoryArticlesPage from "./Category/Articles";
 
 // 导入Article相关组件:
 import ArticleList from "./Article/List";
@@ -27,6 +28,7 @@ function DocsIndex(props){
               <Route exat path="/docs/category/list" component={CategoryList} />
               <Route exat path="/docs/category/add" component={CategoryAdd} />
               <Route exat path="/docs/category/:id/editor" component={CategoryEditor} />
+              <Route exat path="/docs/category/:id/articles" component={CategoryArticlesPage} />
               <Route exat path="/docs/category/:id" component={CategoryDetail} />
               <Route exat 
                 path="/docs/category" 

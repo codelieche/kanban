@@ -190,8 +190,8 @@ export const ArticleDetail = function(props){
             </header>
             
             {/* 文章内容 */}
-            <section>
-                <div className="content">
+            <div className="content">
+                <section >
                     <ReactMarkdown
                         source={data.content ? data.content : "> 请编辑文章内容"}
                     />
@@ -202,8 +202,8 @@ export const ArticleDetail = function(props){
                           icon={<Icon type="edit"/>}
                           onClick={handleEditorButtonClick}>编辑</Button>
                     </div>
-                </div>
-            </section>
+                </section>
+            </div>
             {/* 文章内容结束 */}
 
             {/* 子文章 */}

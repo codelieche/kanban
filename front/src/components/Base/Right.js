@@ -8,6 +8,10 @@ import { GlobalContext } from "./Context";
 import Icon from "./Icon";
 import Breadcrumb from "../Page/Breadcrumb";
 import { UserLoginOrInfo } from "./User";
+
+// 底部
+import Footer from "./Footer";
+import UserCenterIndex from "../User/Center/Index";
 import ArticlePage from "../Docs/Article/Detail";
 
 function RightContent(props){
@@ -33,6 +37,7 @@ function RightContent(props){
 
     return (
         <div className="right-content">
+            {/* 右侧头部 */}
             <div className="header">
                 <div className="toogle" onClick={toogleShowLeftSider} 
                   onMouseEnter={onMouseEnter}
@@ -50,23 +55,29 @@ function RightContent(props){
                 </div>
             </div>
 
-            <div className="content">
+            {/* 右侧主体区域 */}
+            <div className="container">
                 {/*  */}
                 <Switch>
                     <Route
+                      path="/"
+                      exact={true}
+                      component={UserCenterIndex}
+                      {...props}
+                    />
+                    <Route
                       path="/docs/article/:id"
                       component={ArticlePage}
-                    //   setNavData={setNavData}
-                    //   location={props.location}
                       {...props}
                     >
                         
                     </Route>
                 </Switch>
-                <section>
-                    
-                </section>
             </div>
+
+            {/* 右侧底部 */}
+            <Footer>
+            </Footer>
             
         </div>
     );

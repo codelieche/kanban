@@ -142,6 +142,8 @@ export const ArticlesNav= ({category}) => {
           .then(data => {
               if(Array.isArray(data)){
                 setDataSource(data);
+                // 跳转到第一篇文章的详情页
+                
               }else{
                   // 获取文章数据出错
                   message.warn("获取文章列表数据出错:" + JSON.stringify(data));

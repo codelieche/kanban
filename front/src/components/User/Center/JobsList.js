@@ -76,7 +76,7 @@ export const UserJobsList = (props) => {
                   <Link to={`/docs/category/${item.id}`}>查看详情</Link>
                 </div>
                 <div className="button">
-                  <Link to={`/docs/article?category=${item.id}`}>查看文章</Link>
+                  <Link to={`/docs/category/${item.id}/articles`}>查看文章</Link>
                 </div>
               </div>
             </Card>
