@@ -13,7 +13,7 @@ import {
 import Icon from "../../Base/Icon";
 import fetchApi from "../../Utils/fetchApi";
 import { getParamsFromLocationSearch } from "../../Utils/UrlParam";
-
+import ResizeableTitle from "./Resizeable";
 
 /**
  * 分类文章的表格
@@ -33,6 +33,83 @@ export const CategoryArticlesTable = (props) => {
     const [ dataSource, setDataSource] = useState([]);
     // other是其它的一些状态，如果重要的就单独提取出来
     const [other, otherState] = useState({});
+    // 表格列
+    const [columnsArray, setColumnsArray] = useState([
+        {
+            title: "ID",
+            dataIndex: "id",
+            key: "id",
+            sorter: (a, b) => {},
+            render: (text, record) => {
+                return <Link to={`/docs/article/${text}`}>{text}</Link>;
+            },
+            ellipsis: true,
+            width: 50,
+        },
+
+        {
+            title: "标题",
+            dataIndex: "title",
+            key: "title",
+            width: 250,
+            ellipsis: true,
+        },
+        {
+            title: "父级页面",
+            dataIndex: "parent",
+            key: "parent",
+            width: 180,
+            ellipsis: true,
+            render: (text, record) => {
+                if(!!text){
+                    return (
+                        <Link to={`/docs/article/${text.id}`}>
+                            <Icon type="link" />
+                            {text.title}
+                        </Link>
+                    );
+                }else{
+                    return (
+                        <div>---</div>
+                    )
+                }
+            }
+        },
+        {
+            title: "添加者",
+            dataIndex: "user",
+            key: "user",
+            width: 100,
+            ellipsis: true,
+            sorter: () => {}
+        },
+        {
+            title: "创建时间",
+            dataIndex: "time_added",
+            key: "time_added",
+            width: 180,
+            ellipsis: true,
+            sorter: (a, b) => {}
+        },
+        {
+            title: "操作",
+            key: "action",
+            // width: 200,
+            ellipsis: true,
+            render: (text, record) => {
+                return (
+                    <div>
+                        {/* 查看详情 */}
+                        <Link to={`/docs/article/${record.id}`}>
+                            <Icon type="link" />查看详情
+                        </Link>
+                        {/* 查看属性 */}
+                        
+                    </div>
+                )
+            }
+        }
+    ])
 
     // params字段:通过url可获取到的字段信息
     const paramsFields = useMemo(() => {
@@ -241,72 +318,36 @@ export const CategoryArticlesTable = (props) => {
         
     }, [pageUrlPrefix, props.history, urlParams.search])
 
-    const columns = useMemo(() => {
-        return [
-            {
-                title: "ID",
-                dataIndex: "id",
-                key: "id",
-                sorter: (a, b) => {},
-                render: (text, record) => {
-                    return <Link to={`/docs/article/${text}`}>{text}</Link>;
-                }
-            },
+    // 处理变更尺寸
+    const handleResize = useCallback(index => (e, { size }) => {
+        setColumnsArray(prevState => {
+          const nextColumns = [...prevState];
+          nextColumns[index] = {
+            ...nextColumns[index],
+            width: size.width,
+          };
+          return nextColumns;
+        });
+      }, []);
 
-            {
-                title: "标题",
-                dataIndex: "title",
-                key: "title"
-            },
-            {
-                title: "父级页面",
-                dataIndex: "parent",
-                key: "parent",
-                render: (text, record) => {
-                    if(!!text){
-                        return (
-                            <Link to={`/docs/article/${text.id}`}>
-                                <Icon type="link" />
-                                {text.title}
-                            </Link>
-                        );
-                    }else{
-                        return (
-                            <div>---</div>
-                        )
-                    }
-                }
-            },
-            {
-                title: "添加者",
-                dataIndex: "user",
-                key: "user",
-                sorter: () => {}
-            },
-            {
-                title: "创建时间",
-                dataIndex: "time_added",
-                key: "time_added",
-                sorter: (a, b) => {}
-            },
-            {
-                title: "操作",
-                key: "action",
-                render: (text, record) => {
-                    return (
-                        <div>
-                            {/* 查看详情 */}
-                            <Link to={`/docs/article/${record.id}`}>
-                                <Icon type="link" />查看详情
-                            </Link>
-                            {/* 查看属性 */}
-                            
-                        </div>
-                    )
-                }
+    const columns = useMemo(() => {
+        // 处理变更尺寸
+        return columnsArray.map((col, index) => ({
+            ...col,
+            onHeaderCell: column => ({
+                width: column.width,
+                onResize: handleResize(index),
+            })
+        }))
+    }, [columnsArray, handleResize])
+
+    const tableComponents = useMemo(() => {
+        return {
+            header: {
+                cell: ResizeableTitle,
             }
-        ]
-    }, [])
+        }
+    }, []);
 
     return (
         <div className="articles-table">
@@ -337,6 +378,8 @@ export const CategoryArticlesTable = (props) => {
                 </Col>
             </Row>
             <Table rowKey="id"
+              components={tableComponents}
+              bordered
               columns={columns}
               dataSource={dataSource}
               pagination={{total: count, current: page}}
