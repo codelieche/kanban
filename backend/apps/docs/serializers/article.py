@@ -3,6 +3,8 @@
 """
 from rest_framework import serializers
 
+from account.models import User
+
 from docs.models.article import Article
 
 
@@ -10,6 +12,9 @@ class ArticleModelSerializer(serializers.ModelSerializer):
     """
     Article Model Serializer
     """
+
+    user = serializers.SlugRelatedField(slug_field="username", 
+                                        queryset=User.objects.all(), required=False)
 
     def validate(self, attrs):
         # 设置user
@@ -38,6 +43,7 @@ class ArticleModelSerializer(serializers.ModelSerializer):
             "content", "order", "level"
         )
 
+
 class ArticleParentInfoSerializer(serializers.ModelSerializer):
     """
     文章的父亲信息
@@ -51,6 +57,28 @@ class ArticleParentInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = ("id", "title", "parent")
+
+
+class ArticleListModelSerializer(serializers.ModelSerializer):
+    """
+    Article List Model Serializer
+    """
+
+    user = serializers.SlugRelatedField(slug_field="username", read_only=True, required=False)
+    parent = ArticleParentInfoSerializer(read_only=True, required=False)
+
+    def get_fields(self):
+        fields = super().get_fields()
+        # 如果是获取子页面
+        return fields
+
+    class Meta:
+        model = Article
+        fields = (
+            "id", "title", "category", "icon", "description", "cover", 
+            "user", "parent", "infovalues", "time_added",
+            "order", "level"
+        )
 
 
 class ArticleDetailSerializer(serializers.ModelSerializer):

@@ -14,6 +14,8 @@ import Icon from "../../Base/Icon";
 import ModelLogs from "../../Base/ModelLogs";
 import fetchApi from "../../Utils/fetchApi";
 
+import CategoryArticlesTable from "./ArticlesTable";
+
 // 分类详情页
 function CategoryDetail(props) {
     // 申明一个叫：data的state变量
@@ -30,6 +32,9 @@ function CategoryDetail(props) {
           .then(data => {
               // 修改状态
               dataState(data);
+              // 修改标题
+              document.title = `${data.name}-分类-看板`;
+
           })
             .catch(err => {
                 console.log(err)
@@ -134,8 +139,21 @@ function CategoryDetail(props) {
                                 <dt>添加时间</dt>
                                 <dd>{data.time_added}</dd>
                             </dl>
-                           
                         </div>
+
+                        <Row>
+                            <Row className="title">
+                                <h4>文章列表</h4>
+                            </Row>
+                            {/* 分类的文章列表 */}
+                            <CategoryArticlesTable 
+                                categoryID={id} 
+                                location={props.location} 
+                                history={props.history}
+                                apiUrlPrefix={ id ? `/api/v1/docs/category/${id}/articles` : null}
+                                pageUrlPrefix={`/docs/category/${id}`}
+                            />
+                        </Row>
                     </Col>
                     {/* 左侧内容：end */}
 

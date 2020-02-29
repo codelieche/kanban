@@ -227,11 +227,11 @@ function CategoryList(props){
     const onSearchHandler = useCallback((value) => {
         // 搜索框回车后处理函数
         // console.log(value);
-        let noSearch = true;
+        // let noSearch = true;
 
         let url;
         if(value){
-            noSearch = false;
+            // noSearch = false;
             url = `/docs/category/list?page=1&search=${value}`;
         }else{
             url = `/docs/category/list?page=1`;
@@ -241,7 +241,8 @@ function CategoryList(props){
         // 处理params
         paramsFields.forEach(item => {
             // item不是search、或者 (是search 但是有值的情况)就设置url
-            if(item !== "search" || !noSearch){
+            // if(item !== "search" || noSearch){
+            if(item !== "search"){
                 if(item !== "page"){
                     let value = urlParams[item];
                     // console.log(item, value);

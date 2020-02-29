@@ -4,6 +4,8 @@
 import React, { useState, useCallback, useEffect, useMemo} from "react";
 import { Link } from "react-router-dom";
 import { 
+    Row, Col,
+    Input, Button,
     Table,
     message
 } from "antd";
@@ -138,6 +140,42 @@ export const CategoryArticlesTable = (props) => {
     
     }, [paramsFields, props.location, urlParams, other, fetchData, apiUrlPrefix])
 
+    // 搜索处理函数
+    const onSearchHandler = useCallback((value) => {
+        // 搜索框回车后处理函数
+        // console.log(value);
+        // let noSearch = true;
+
+        let url;
+        if(props.pageUrlPrefix.indexOf("?") > 0){
+            url = `${props.pageUrlPrefix}&page=1`;
+        }else{
+            url = `${props.pageUrlPrefix}?page=1`;
+        }
+
+        if(value){
+            // noSearch = false;
+            url = `${url}&search=${value}`;
+        }
+        // console.log(noSearch, value)
+        
+        // 处理params
+        paramsFields.forEach(item => {
+            // item不是search、或者 (是search 但是有值的情况)就设置url
+            if(item !== "search"){
+                if(item !== "page"){
+                    let value = urlParams[item];
+                    // console.log(item, value);
+                    if(value !== undefined && value !== null){
+                        url = `${url}&${item}=${value}`;
+                    };
+                }
+            }
+        });
+        // console.log(url);
+        props.history.push(url);
+    }, [props.pageUrlPrefix, paramsFields, props.history, urlParams])
+
     // 处理Table变更事件：点击了过滤、排序、页面等操作的时候触发
     const handleTableChange = useCallback((pagination, filters, sorter) => {
         if(!pageUrlPrefix){
@@ -223,7 +261,21 @@ export const CategoryArticlesTable = (props) => {
             {
                 title: "父级页面",
                 dataIndex: "parent",
-                key: "parent"
+                key: "parent",
+                render: (text, record) => {
+                    if(!!text){
+                        return (
+                            <Link to={`/docs/article/${text.id}`}>
+                                <Icon type="link" />
+                                {text.title}
+                            </Link>
+                        );
+                    }else{
+                        return (
+                            <div>---</div>
+                        )
+                    }
+                }
             },
             {
                 title: "添加者",
@@ -258,6 +310,32 @@ export const CategoryArticlesTable = (props) => {
 
     return (
         <div className="articles-table">
+            <Row className="tools">
+                <Col sm={{span:12}} xs={{span: 24}}>
+                    <Input.Search 
+                      placeholder={ urlParams.search ? urlParams.search : "搜索文章" } 
+                      style={{width: 200}}
+                      onSearch={onSearchHandler}
+                      enterButton/>
+                </Col>
+                <Col sm={{span:12}} xs={{span: 24}} style={{textAlign: "right"}}>
+                    {/* <Input.Search 
+                      placeholder="搜索文章" 
+                      style={{width: 200}}
+                      onSearch={onSearchHandler}
+                      enterButton/> */}
+
+                        <Button
+                          type="default"
+                          style={{width: 100}}
+                          icon={<Icon type="refresh"/>}
+                          onClick={() => fetchData(page)}
+                          >
+                              刷新
+                          </Button>
+
+                </Col>
+            </Row>
             <Table rowKey="id"
               columns={columns}
               dataSource={dataSource}

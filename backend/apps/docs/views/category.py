@@ -13,7 +13,10 @@ from modellog.mixins import LoggingViewSetMixin
 from docs.models.category import Category
 from docs.models.article import Article
 from docs.serializers.category import CategoryModelSerializer
-from docs.serializers.article import ArticleModelSerializer
+from docs.serializers.article import (
+    ArticleModelSerializer,
+    ArticleListModelSerializer
+)
 
 
 class CategoryCreateApiView(LoggingViewSetMixin, generics.CreateAPIView):
@@ -71,7 +74,7 @@ class CategoryArticlesListApiView(generics.ListAPIView):
     """
 
     queryset = Article.objects.all()
-    serializer_class = ArticleModelSerializer
+    serializer_class = ArticleListModelSerializer
     permission_classes = (IsAuthenticated,)
 
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
