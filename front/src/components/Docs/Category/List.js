@@ -329,7 +329,8 @@ function CategoryList(props){
             {
                 title: "操作",
                 key: "action",
-                width: 250,
+                width: 300,
+                // ellipsis: true,
                 render: (text, record) => {
                     // 看用户能否添加
                     if(other.userCanAddCategory){
