@@ -18,8 +18,9 @@ class ArticleModelSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         # 设置user
-        user = self.context["request"].user
-        attrs["user"] = user
+        if self.context["request"].method == "POST":
+            user = self.context["request"].user
+            attrs["user"] = user
 
         # 判断如果传递了parent，那么分类与parent相同
         if "parent" in attrs:
@@ -90,8 +91,9 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         # 设置user
-        user = self.context["request"].user
-        attrs["user"] = user
+        if self.context["request"].method == "POST":
+            user = self.context["request"].user
+            attrs["user"] = user
 
         # 判断如果传递了parent，那么分类与parent相同
         if "parent" in attrs:

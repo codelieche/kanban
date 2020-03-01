@@ -10,4 +10,5 @@ urlpatterns = [
     path('article/', include(arg=('docs.urls.article', 'docs'), namespace='article')),
     path('info/', include(arg=('docs.urls.info', 'docs'), namespace='info')),
     path('infovalue/', include(arg=('docs.urls.infovalue', 'docs'), namespace='infovalue')),
+    path('image/', include(arg=('docs.urls.image', "docs"), namespace="image")),
 ]
