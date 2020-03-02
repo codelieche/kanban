@@ -3,14 +3,14 @@
  * 需要传递的属性：展示图片的url
  * - url: 显示略缩图的url
  * - fileListData: 文件列表
- * - fileListDataState: 操作文件列表状态的函数
- * 
+ * - setFileListData: 操作文件列表状态的函数
+ * - tooltip: 提示：默认是<div>请选择一张要上传的图片</div>
  *  使用示例：
- *      const [fileListData, fileListDataState] = useState([]);
+ *      const [fileListData, setFileListData] = useState([]);
  *      <UploadImageItem 
  *         url={data.image}
  *         fileListData={fileListData}
- *         fileListDataState={fileListDataState}
+ *         setFileListData={setFileListData}
  *      />
  * 在上级函数中操作fileListData即可
  */
@@ -25,9 +25,9 @@ import {
 // 需要传递的属性：props：
 // 1. url: 图片的url，可为空
 // 2. fileListData: 文件列表
-// 3. fileListDataState: 操作文件列表的state函数
+// 3. setFileListData: 操作文件列表的state函数
 function UploadImageItem(props){
-    // url, fileListData, fileListDataState
+    // url, fileListData, setFileListData
     // url状态
     const [isUploaded, isUploadedState] = useState(false);
     const [imageUrl, imageUrlState] = useState(null);
@@ -48,13 +48,13 @@ function UploadImageItem(props){
         onRemove: (file) => {
             // 把feilename字段设置为空
             console.log(file);
-            props.fileListDataState(prevState => {
+            props.setFileListData(prevState => {
                 let fileList = prevState;
                 // 把当前的file从fileList中移除
                 const index = fileList.indexOf(file);
-                if(index >= 0 && imageUrl){
-                    imageUrlState(null);
-                }
+                // if(index >= 0 && imageUrl){
+                //     imageUrlState(null);
+                // }
                 const newFileList = fileList.slice();
                 newFileList.splice(index, 1);
 
@@ -72,7 +72,7 @@ function UploadImageItem(props){
             }
             
             // 修改文件列表的数据
-            props.fileListDataState([file]);
+            props.setFileListData([file]);
 
             let uploadImageUrl = URL.createObjectURL(file);
             isUploadedState(true);
@@ -94,10 +94,13 @@ function UploadImageItem(props){
         <Upload.Dragger
           {...uploadProps}
         >
-            <p className="ant-upload-hint">
-                请选择一张图片
+            <div className="ant-upload-hint">
+                {/* 显示默认的图片，或者上传的图片 */}
                 {imageElement}
-            </p>
+                {/* 文字提示 */}
+                {props.tooltip ? props.tooltip : <div>请选择一张要上传的图片</div>}
+                
+            </div>
         </Upload.Dragger>
     );
 

@@ -35,7 +35,7 @@ function CategoryForm(props){
     // 数据处理函数
     const [data, dataState] = useState({order: 1, is_deleted: false});
     // 上传文件要用到的状态
-    const [fileListData, fileListDataState] = useState(null);
+    const [fileListData, setFileListData] = useState(null);
     // 弹出框
     const [visibleModal, visibleModalState] = useState(false);
     // 父级分类的选择值
@@ -262,7 +262,7 @@ function CategoryForm(props){
                       <UploadImageItem 
                         url={data.image}
                         fileListData={fileListData}
-                        fileListDataState={fileListDataState}
+                        setFileListData={setFileListData}
                       />
                     </Form.Item>
                     
