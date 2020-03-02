@@ -238,3 +238,10 @@ CORS_ALLOW_HEADERS = [
     'x-requested-with',
     'access-control-allow-headers',
 ]
+
+# 七牛云存储相关配置
+QINIU_ACCESS_KEY = os.environ.get("QINIU_ACCESS_KEY", None)
+QINIU_SECRET_KEY = os.environ.get("QINIU_SECRET_KEY", None)
+# bucket的名字和bucket绑定的域名
+QINIU_BUCKET = os.environ.get("QINIU_BUCKET", None)
+QINIU_BUCKET_DOMAIN = os.environ.get("QINIU_BUCKET_DOMAIN", None)

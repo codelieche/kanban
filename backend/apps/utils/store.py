@@ -9,6 +9,7 @@ import random
 # from PIL import Image
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
+import qiniu
 
 
 class ImageStorage(FileSystemStorage):
@@ -95,3 +96,32 @@ def file_upload_to(instance, filename):
 #         name_new = os.path.join(d, filename + ext)
 #         # 调用父类的方法
 #         return super()._save(name=name_new, content=content)
+
+
+def upload_file_to_qiniu(key_path, file_data):
+    """
+    上传文件到七牛
+    @params: key_path: 上传到七牛云对象存储的key
+    @params: file_data: 上传的文件数据
+    """
+    # 第1步：检查配置:所有值存在才处理上传操作
+    if not all([settings.QINIU_ACCESS_KEY, settings.QINIU_SECRET_KEY, 
+                settings.QINIU_BUCKET, settings.QINIU_BUCKET_DOMAIN]):
+        return None
+
+    # 第2步：获取token
+    # 2-1: 构建权限对象
+    q = qiniu.Auth(settings.QINIU_ACCESS_KEY, settings.QINIU_SECRET_KEY)
+    # 2-2: 生成token: 300秒有效
+    token = q.upload_token(settings.QINIU_BUCKET, None, 300)
+
+    # 第3步：上传文件到七牛
+    try:
+        # 上传的文件已经存在了，或者token过期了，都是会报错的
+        result, info = qiniu.put_data(token, key_path, file_data)
+        # 提取文件的key，请根据info/result自行处理
+        return (result, info)
+
+    except Exception as e:
+        print(e)
+        return None

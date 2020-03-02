@@ -5,10 +5,11 @@ import sys
 from io import BytesIO
 
 from django.db import models
+from django.conf import settings
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image as PImage, ExifTags
 
-from utils.store import ImageStorage
+from utils.store import ImageStorage, upload_file_to_qiniu
 from account.models import User
 
 
@@ -19,15 +20,35 @@ class Image(models.Model):
     filename = models.CharField(verbose_name="文件名", max_length=100, blank=True)
     user = models.ForeignKey(verbose_name="上传用户", blank=True, to=User,
                              on_delete=models.SET_NULL, null=True)
-    file = models.ImageField(upload_to="docs/images/%Y/%M", storage=ImageStorage(), help_text="上传图片")
+    file = models.ImageField(upload_to="docs/images/%Y/%m", storage=ImageStorage(), help_text="上传图片")
     qiniu = models.CharField(verbose_name="七牛云地址", max_length=200, blank=True, null=True)
     time_added = models.DateTimeField(verbose_name="上传事件", blank=True, auto_now_add=True)
     is_active = models.BooleanField(verbose_name="是否有效", blank=True, default=True)
 
     def save(self, *args, **kwargs):
+        # 没有id，就表示是第一次上传文件
         if not self.id and self.file:
             self.file = self.resize_image(self.file)
-        super().save(*args, **kwargs)
+            super().save(*args, **kwargs)
+
+            # 这里开始把图片上传到七牛云中
+            data = self.file.read()
+            filename_key = self.file.url
+            filename_key = filename_key.replace("/media/docs/", "docs/")
+            print(filename_key, len(data))
+            results = upload_file_to_qiniu(filename_key, data)
+            if results:
+                result, info = results
+                # 获取上传的结果
+                if result and "key" in result:
+                    print("上传成功:", result["key"])
+                    qiniu_url = "http://{}/{}".format(settings.QINIU_BUCKET_DOMAIN, filename_key)
+                    self.qiniu = qiniu_url
+                else:
+                    print("上传失败：", info)
+            return
+        else:
+            super().save(*args, **kwargs)
 
     def __str__(self):
         return self.filename
@@ -46,6 +67,8 @@ class Image(models.Model):
         """
         if image_file.file.content_type != "image/jpeg" and image_file.size < 600 * 1024:
             return image_file
+        
+        data = image_file.file.read()
 
         if image_file.file.content_type == "image/gif":
             return image_file
