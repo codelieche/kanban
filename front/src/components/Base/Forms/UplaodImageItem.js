@@ -15,7 +15,7 @@
  * 在上级函数中操作fileListData即可
  */
 
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect, useCallback} from "react";
 
 import {
     Upload, message
@@ -30,16 +30,51 @@ function UploadImageItem(props){
     // url, fileListData, setFileListData
     // url状态
     const [isUploaded, isUploadedState] = useState(false);
-    const [imageUrl, imageUrlState] = useState(null);
+    const [imageUrl, setImageUrl] = useState(null);
+
+    // 处理复制图片事件
+    const handlePasteEvent = useCallback(event => {
+        // console.log(event);
+        // 阻止冒泡
+        event.stopPropagation();
+        if(event.clipboardData || event.originalEvent){
+            // chrome有些老版本中是：event.originalEvent
+            var clipboardData = (event.clipboardData || event.originalEvent.clipboardData);
+
+            if(clipboardData.items){
+                let items = clipboardData.items;
+                for(var i = 0; i < items.length; i++){
+                    // console.log(items[i]);
+                    if(items[i].type.indexOf("image") >= 0){
+                        // 是复制的图片
+                        let imageFile = items[i].getAsFile();
+                        imageFile.uid = `parse-upload-${Math.round(Math.random() * 1000000000)}`;
+                        let imageUrl = URL.createObjectURL(imageFile);
+                        // console.log(imageFile, imageUrl);
+                        // console.log(typeof imageFile);
+                        props.setFileListData([imageFile]);
+                        setImageUrl(imageUrl);
+                    }
+                }
+            }
+        }
+    }, [props])
 
     // 相当于：componentDidMount等函数
     useEffect(() => {
         // console.log(url, imageUrl);
         // console.log(url !== imageUrl, !isUploaded)
-        if(props.url !== imageUrl && !isUploaded){
-            imageUrlState(props.url);
+        if(props.url !== imageUrl && !isUploaded && !imageUrl){
+            setImageUrl(props.url);
         }
-    }, [props.url, imageUrl, isUploaded]);
+
+        document.addEventListener("paste", handlePasteEvent);
+
+        return () => {
+            document.removeEventListener("paste", handlePasteEvent);
+        }
+        
+    }, [props.url, imageUrl, isUploaded, handlePasteEvent, props.fileListData.length]);
 
     // 上传组件属性
     const uploadProps = {
@@ -52,9 +87,10 @@ function UploadImageItem(props){
                 let fileList = prevState;
                 // 把当前的file从fileList中移除
                 const index = fileList.indexOf(file);
-                // if(index >= 0 && imageUrl){
-                //     imageUrlState(null);
-                // }
+                if(index >= 0 && imageUrl && !isUploaded){
+                    // 如果是选择了图片文件，点删除，重新设置图片链接为空会报错
+                    setImageUrl(null);
+                }
                 const newFileList = fileList.slice();
                 newFileList.splice(index, 1);
 
@@ -76,7 +112,7 @@ function UploadImageItem(props){
 
             let uploadImageUrl = URL.createObjectURL(file);
             isUploadedState(true);
-            imageUrlState(uploadImageUrl);
+            setImageUrl(uploadImageUrl);
             return false;
         },
         fileList: props.fileListData,

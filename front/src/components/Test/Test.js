@@ -37,7 +37,7 @@ export function TestPageFunc() {
             {/* <CodePrismDemo /> */}
 
             <p>上传图片</p>
-            <div style={{padding: 10, margin: 10, height: 150, border: "1px solid #f5f5f5"}}>
+            <div style={{padding: 10, margin: 10, minHeight: 150, border: "1px solid #f5f5f5"}}>
                 <UplaodImageItem 
                   url=""
                   fileListData={fileListData}
