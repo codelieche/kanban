@@ -18,6 +18,7 @@ import fetchApi from "../../Utils/fetchApi";
 // 引入文章相关操作的函数
 import { patchUpdateArticle } from "./Operation";
 import EditorArticleModel from "./EditorModal";
+import CodeBlock from "./CodeBlock";
 
 
 export const ArticleDetail = function(props){
@@ -193,6 +194,7 @@ export const ArticleDetail = function(props){
             <div className="content">
                 <section >
                     <ReactMarkdown
+                        renderers={{ code: CodeBlock }}
                         source={data.content ? data.content : "> 请编辑文章内容"}
                     />
                     <div className="editor-button">
