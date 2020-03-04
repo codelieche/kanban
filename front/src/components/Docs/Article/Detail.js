@@ -20,7 +20,6 @@ import { patchUpdateArticle } from "./Operation";
 import EditorArticleModel from "./EditorModal";
 import CodeBlock from "./CodeBlock";
 
-
 export const ArticleDetail = function(props){
     // 状态
     const [articleID, setArticleID] = useState(null);
@@ -134,7 +133,10 @@ export const ArticleDetail = function(props){
         // console.log("afterModalCloseHandle");
         setShowEditorModal(false);
         // 刷新一下当前页面
-        fetchDetailData(articleID);
+        setTimeout(() => {
+            fetchDetailData(articleID);
+        }, 300);
+
     }, [articleID, fetchDetailData]);
 
     return (
@@ -234,7 +236,7 @@ export const ArticleDetail = function(props){
               //   关闭对话框之后的操作
               afterModalCloseHandle={afterModalCloseHandle}
               //   更新文章操作
-              handleContentUpdated={(data) => patchUpdateArticle(articleID, {content: data.text})}
+              handleContentUpdated={(data) => patchUpdateArticle(articleID, {content: data})}
             />
         </article>
     );
