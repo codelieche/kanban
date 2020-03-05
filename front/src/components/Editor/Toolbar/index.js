@@ -2,22 +2,44 @@
  * 富文本编辑器按钮
  */
 
-import React, { useCallback } from "react";
+import React, { useCallback, useState, useEffect } from "react";
+
+import {
+    Row,
+    Col
+} from "antd";
 
 import Icon from "../../Base/Icon";
 
 
-export  function MarkButton({type, icon, text, title, editor}) {
+export  function MarkButton({type, icon, text, title, editor, historySize, setHistorySize}) {
 
     // 获取editor
     const handleButtonOnClick = useCallback(event => {
+        
         event.preventDefault();
         // console.log("鼠标按下了：", type, icon);
+        let newHistorySize = editor.historySize();
+        setHistorySize(newHistorySize);
+
+        if(["undo", "redo"].indexOf(type) >= 0){
+            switch(type){
+                case "undo":
+                    editor.undo();
+                    return
+                case "redo":
+                    editor.redo();
+                    return
+                default:
+                    return false;
+            }
+        }
 
         // 获取selections
         let selections = editor.getSelections();
 
         let selectionsResults = selections.map((item, index) => {
+            let result;
             switch(type){
                 case "link":
                     return `[${item}]()`;
@@ -29,6 +51,14 @@ export  function MarkButton({type, icon, text, title, editor}) {
                     return `**${item}**`;
                 case "strikethrough":
                     return `~~${item}~~`;
+                case "list-ul":
+                    result = item.replace("\n", "\n- ")
+                    result = "\n- " + result;
+                    return result
+                case "list-ol":
+                    result = item.replace("\n", "\n1. ")
+                    result = "\n1. " + result;
+                    return result
                 case "code":
                     return "`" + item + "`";  
                 case "blockquote":
@@ -40,7 +70,7 @@ export  function MarkButton({type, icon, text, title, editor}) {
         // 替换结果
         editor.replaceSelections(selectionsResults);
 
-    }, [editor, type])
+    }, [editor, setHistorySize, type])
 
     return (
         <div className={ false ? "active" : "no-active"}
@@ -53,7 +83,20 @@ export  function MarkButton({type, icon, text, title, editor}) {
 };
 
 export const ButtonTools = function(props) {
+    // 历史记录
+    const [historySize, setHistorySize] = useState({undo: 0, redo: 0});
+
+    useEffect(() => {
+        if(props.editor){
+            let newHistory = props.editor.historySize()
+            setHistorySize(newHistory);
+        }
+    },[props.editor])
+    
+
     let tools = [
+        {type: "undo", text: "撤销", icon: "undo"},
+        {type: "redo", text: "重做", icon: "repeat"},
         {type: "bold", text: "粗体", icon: "bold"},
         {type: "italic", text: "斜体", icon: "italic"},
         // {type: "underline", text: "下划线", icon: "underline"},
@@ -64,12 +107,15 @@ export const ButtonTools = function(props) {
         {type: "blockquote", title: "引用", icon: 'code'},
         // {type: "code", text: "代码块", icon: "code"},
         {type: "image", text: "图片", icon: "image"},
+        
     ]
 
     let toolsElemtns = tools.map((item, index) => {
         return (
             <MarkButton type={item.type} key={index} 
               icon={item.icon} text={item.text}
+              historySize={historySize}
+              setHistorySize={setHistorySize}
               editor={props.editor}/>
         );
     });
@@ -100,10 +146,26 @@ export const ButtonTools = function(props) {
 
     return (
         <div className="tools">
-            {toolsElemtns}
-            <div className="no-active" onClick={testButtonClick}>
-                <Icon type="cog"/>
-            </div>
+            <Row style={{width: "100%"}}>
+                <Col xs={{span:24}} sm={{span:16}} style={{textAlign: "left", float: "left"}}>
+                    {toolsElemtns}
+
+                </Col>
+                <Col xs={{span: 24}} sm={{span: 8}} style={{float: "right"}}>
+                    <div className="no-active" onClick={() => props.setDisplay(prevState => {return {markdown: true, html: !prevState.html}})}>
+                        {/* eye eye-slash */}
+                        <Icon type={(props.display && props.display.html) ? "eye-slash" : "eye"}/>
+                    </div>
+
+                    <div className={(!props.display.markdown && props.display.html) ? "active" : "no-active"} onClick={() => props.setDisplay(prevState => {return {markdown: !prevState.markdown, html: true}})}>
+                        <Icon type="desktop"/>
+                    </div>
+
+                    <div className="no-active" onClick={testButtonClick}>
+                        <Icon type="cog"/>
+                    </div>
+                </Col>
+            </Row>
         </div>
     )
 };

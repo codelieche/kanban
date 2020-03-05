@@ -16,6 +16,8 @@ export function MyEditor(props){
     const [value, setValue] = useState(null);
     // 编辑器实例
     const [editor, setEditor] = useState(null)
+    // 显示模式
+    const [display, setDisplay] = useState({markdown: true, html: true})
 
     const handleChange = useCallback((editor, data, value) => {
         // console.log(editor, data, value);
@@ -46,13 +48,13 @@ export function MyEditor(props){
             {/* 头部的按钮 */}
             <div>
                 {/* 按钮 */}
-                <ButtonTools editor={editor} />
+                <ButtonTools editor={editor} display={display} setDisplay={setDisplay} />
             </div>
 
             <div className="content">
                 {/* 左侧的内容 */}
-                <div className="markdown">
-                    <div style={{position: "relative", height: "100%"}}>
+                <div className="markdown" style={{display: display.markdown ? "block" : "none"}}>
+                    <div style={{position: "relative", height: "100%", display: display.markdown ? "block" : "none"}}>
                         <CodeMirror
                             //  把editor实例传给上级
                             editorDidMount={ editor => {setEditor(editor)}}
@@ -71,7 +73,7 @@ export function MyEditor(props){
                 </div>
                 
                 {/* 右侧的内容 */}
-                <div className="html">
+                <div className="html"  style={{display: display.html ? "block" : "none"}}>
                     <ReactMarkdown
                       source={value ? value : "请输入文章内容"}
                       renderers={{ code: CodeBlock }}
