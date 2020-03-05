@@ -1,67 +1,29 @@
 /**
- * Slate默认的段落是paragraph.
- * {
- *     type: "paragraph",
- *     children: [{text: "段落中的一段文本"}]
- * }
+ * Markdown渲染code块
  */
-//  为code节点定义一个React组件的渲染器
-import React, { useEffect } from "react";
+import React from "react";
 
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { tomorrowNight } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 
+// https://github.com/conorhastings/react-syntax-highlighter/tree/master/dist/esm/styles
 
-export function CodeElement(props){
+// import { okaidia } from 'react-syntax-highlighter/dist/esm/styles/prism'; // Good
+// import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism'; // 黄色底纹
+// import { atomDark } from 'react-syntax-highlighter/dist/esm/styles/prism'; // Very Good
+// import { xonokai } from 'react-syntax-highlighter/dist/esm/styles/prism'; 
+
+import atomDark from "./AtomDark";
+
+// ReactMarkdown渲染code node
+export const CodeBlock = ({value, language}) => {
+    // console.log(value, language);
     return (
-        <pre {...props.attributtes}>
-            <code>{props.children}</code>
-        </pre>
-    );
+        <SyntaxHighlighter language={language} 
+            style={ atomDark }
+        >
+            {value}
+        </SyntaxHighlighter>
+    )
 }
 
-export function CodePrismDemo(props){
-
-    useEffect( () => {
-
-    })
-    const code = `
-    cost a = 900;
-    console.log(a);
-    a ++;
-    console.log(a);
-    alert(a);
-    `.trim();
-
-    const code2 = `
-    import os
-
-    if __name__ == "__main__":
-        print(help(os))
-    `.trim();
-
-    return (
-        <div>
-            <div>
-                <SyntaxHighlighter language="js" 
-                    startingLineNumber={1}
-                    showLineNumbers={true}
-                    style={tomorrowNight}>
-                        {code}
-                    </SyntaxHighlighter>
-                </div>
-            <hr />
-                <div>
-                    <SyntaxHighlighter language="python" 
-                    startingLineNumber={1}
-                    showLineNumbers={true}
-                    style={tomorrowNight}>
-                        {code2}
-                    </SyntaxHighlighter>
-                </div>
-        </div>
-        
-    );
-}
-
-export default CodeElement;
+export default CodeBlock;

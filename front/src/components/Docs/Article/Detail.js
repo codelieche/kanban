@@ -18,7 +18,7 @@ import fetchApi from "../../Utils/fetchApi";
 // 引入文章相关操作的函数
 import { patchUpdateArticle } from "./Operation";
 import EditorArticleModel from "./EditorModal";
-import CodeBlock from "./CodeBlock";
+import CodeBlock from "../../Editor/Element/Code";
 
 export const ArticleDetail = function(props){
     // 状态

@@ -1,5 +1,9 @@
 /**
  * 文章的编辑器左侧
+ * 如果要插入内容，或者更新内容
+ * let doc = editor.getDoc();
+ * let cursor = doc.getCursor();
+ * doc.replaceRange("新插入的内容", cursor)
  */
 import React, {useState, useCallback, useEffect } from "react";
 import { Controlled as CodeMirror} from "react-codemirror2";
@@ -26,6 +30,8 @@ export const Editor = (props) => {
     }, [props])
 
     const handleOnBeforeChange = useCallback((editor, data, value) => {
+        // data是一个对象，输入了啥字符啊，cursor的from和to啊
+        // console.log(editor);
         setValue(value);
     }, [])
 
@@ -39,6 +45,8 @@ export const Editor = (props) => {
     return (
         <div style={{position: "relative", height: "100%"}}>
             <CodeMirror
+              //  把editor实例传给上级
+              editorDidMount={ editor => {window.editor = editor}}
               autoCursor={true}
               options={{
                 mode: 'markdown',

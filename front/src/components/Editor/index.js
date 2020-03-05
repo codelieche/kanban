@@ -1,83 +1,82 @@
 /**
  * 富文本编辑器
  */
-import React, { useState, useMemo, useCallback} from "react";
-import { createEditor } from "slate";
-import { Slate, Editable, withReact} from "slate-react";
-import { withHistory } from 'slate-history';
+import React, { useState, useCallback, useEffect} from "react";
+import { Controlled as CodeMirror} from "react-codemirror2";
+import ReactMarkdown from "react-markdown";
+// import Icon from "../Base/Icon";
 
-import Icon from "../Base/Icon";
+import CodeBlock from "./Element/Code";
 import { ButtonTools }from "./Toolbar/index";
-import onKeyDownFunc from "./Event/onKeyDown";
-import {
-    renderElementFunc,
-    renderLeafElementFunc
-} from "./Element/Render";
-// 插件
-import { withInsertAndDelete } from "./Plugins/Insert";
 
-// 测试
+require('codemirror/mode/markdown/markdown');
 
 export function MyEditor(props){
+    // 状态
+    const [value, setValue] = useState(null);
+    // 编辑器实例
+    const [editor, setEditor] = useState(null)
 
-    // 编辑器对象
-    const editor = useMemo(() => {
-        return withReact(
-            withInsertAndDelete(
-                // CMD + Z; CMD + Shift + Z: 撤销/取消撤销
-                withHistory(
-                    createEditor()
-                )
-            )
-            
-        );
-    }, []);
-
-    // 创建个状态
-    const [value, setValue] = useState([
-        {
-            type: "paragraph",
-            children: [{text: ""}]
+    const handleChange = useCallback((editor, data, value) => {
+        // console.log(editor, data, value);
+        // setValue(value)
+        if(props.onChange && typeof props.onChange === "function"){
+            props.onChange(value);
         }
-    ]);
+       
+    }, [props])
 
-    // 处理编辑器值变更事件
-    const handleEditorOnChange = useCallback((value) => {
-        // 调试输出
-        // console.log(value);
-        // 修改状态值
+    const handleOnBeforeChange = useCallback((editor, data, value) => {
+        // data是一个对象，输入了啥字符啊，cursor的from和to啊
+        // console.log(editor);
         setValue(value);
-    }, []);
+    }, [])
 
-    const testButtonClick = useCallback(() => {
-        console.log(editor);
-        console.log(editor.selection);
-    }, [editor])
+    useEffect(() => {
+        // console.log(props);
+        if(props.content !== value){
+            setValue(props.content);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.content])
+
 
     return (
         <div className="editor">
+            {/* 头部的按钮 */}
             <div>
-                <Slate editor={editor} value={value} onChange={handleEditorOnChange}>
-                    {/* 按钮 */}
-                    <ButtonTools />
-                    {/* <Toobar /> */}
-
-                    <Editable className="content"
-                      placeholder="请输入内容"
-                      //   渲染元素
-                      renderElement={renderElementFunc}
-                      // 渲染叶子节点
-                      renderLeaf={renderLeafElementFunc}
-                      autoFocus={true}
-                      spellCheck={false}
-                      onKeyDown={useCallback(event => onKeyDownFunc(event, editor), [editor])}
-                    />
-                </Slate>
+                {/* 按钮 */}
+                <ButtonTools editor={editor} />
             </div>
 
-            {/* 测试组件 */}
-            <div onClick={testButtonClick}>
-                <Icon type="cog"/>
+            <div className="content">
+                {/* 左侧的内容 */}
+                <div className="markdown">
+                    <div style={{position: "relative", height: "100%"}}>
+                        <CodeMirror
+                            //  把editor实例传给上级
+                            editorDidMount={ editor => {setEditor(editor)}}
+                            autoCursor={true}
+                            options={{
+                                mode: 'markdown',
+                                theme: 'eclipse',
+                                // theme: 'yonce',
+                                lineNumbers: true
+                            }}
+                            value={value}
+                            onBeforeChange={handleOnBeforeChange}
+                            onChange={handleChange}
+                        />
+                    </div>
+                </div>
+                
+                {/* 右侧的内容 */}
+                <div className="html">
+                    <ReactMarkdown
+                      source={value ? value : "请输入文章内容"}
+                      renderers={{ code: CodeBlock }}
+                    />
+                </div>
             </div>
         </div>
     );

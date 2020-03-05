@@ -2,39 +2,49 @@
  * 富文本编辑器按钮
  */
 
-import React from "react";
-import { Editor, Transforms } from "slate";
-import { useSlate } from "slate-react";
+import React, { useCallback } from "react";
 
 import Icon from "../../Base/Icon";
 
-export function isMarkActive(editor, type){
-    const marks = Editor.marks(editor);
-    return marks ? marks["type"] === type : false
-}
 
-export const toggleMark = (editor, type) => {
-    const isActive = isMarkActive(editor, type)
+export  function MarkButton({type, icon, text, title, editor}) {
 
-    if (isActive) {
-        Editor.removeMark(editor, "type")
-    } else {
-        // console.log(editor);
-        Editor.addMark(editor, "type", type)
-    }
-}
-
-export  function MarkButton({type, icon, text, title}) {
     // 获取editor
-    let editor = useSlate();
+    const handleButtonOnClick = useCallback(event => {
+        event.preventDefault();
+        // console.log("鼠标按下了：", type, icon);
+
+        // 获取selections
+        let selections = editor.getSelections();
+
+        let selectionsResults = selections.map((item, index) => {
+            switch(type){
+                case "link":
+                    return `[${item}]()`;
+                case "image":
+                    return `![${item}]()`;
+                case "italic":
+                    return `*${item}*`;
+                case "bold":
+                    return `**${item}**`;
+                case "strikethrough":
+                    return `~~${item}~~`;
+                case "code":
+                    return "`" + item + "`";  
+                case "blockquote":
+                    return "\n```\n" + item + "\n```\n";
+                default:
+                    return item;
+            }
+        });
+        // 替换结果
+        editor.replaceSelections(selectionsResults);
+
+    }, [editor, type])
 
     return (
-        <div className={isMarkActive(editor, type) ? "active" : "no-active"}
-            onClick={event => {
-                event.preventDefault();
-                // console.log("鼠标按下了：", type, icon);
-                toggleMark(editor, type);
-            }}
+        <div className={ false ? "active" : "no-active"}
+            onClick={handleButtonOnClick}
         >
             {/* 有icon就显示icon，无icon就显示text */}
             { icon ? <Icon type={icon} noMarginRight={true} /> : <Icon>{text}</Icon>}
@@ -43,23 +53,24 @@ export  function MarkButton({type, icon, text, title}) {
 };
 
 export const ButtonTools = function(props) {
-    let editor = useSlate();
     let tools = [
         {type: "bold", text: "粗体", icon: "bold"},
         {type: "italic", text: "斜体", icon: "italic"},
-        {type: "underline", text: "下划线", icon: "underline"},
+        // {type: "underline", text: "下划线", icon: "underline"},
         {type: "strikethrough", text: "删除线", icon: "strikethrough"},
         {type: "list-ul", text: "无序列表", icon: "list-ul"},
         {type: "list-ol", text: "有序列表", icon: "list-ol"},
         {type: "link", text: "链接", icon: "link"},
-        {type: "blockquote", title: "引用", text: '“'},
-        {type: "code", text: "代码块", icon: "code"},
+        {type: "blockquote", title: "引用", icon: 'code'},
+        // {type: "code", text: "代码块", icon: "code"},
         {type: "image", text: "图片", icon: "image"},
     ]
 
     let toolsElemtns = tools.map((item, index) => {
         return (
-            <MarkButton type={item.type} key={index} icon={item.icon} text={item.text}/>
+            <MarkButton type={item.type} key={index} 
+              icon={item.icon} text={item.text}
+              editor={props.editor}/>
         );
     });
 
@@ -67,23 +78,24 @@ export const ButtonTools = function(props) {
         // 阻止event的默认事件
         console.log(event);
         event.preventDefault();
-        console.log(editor);
-        // Editor.insertNode(editor, {
-        //     type: "blockquote",
-        //     children: [{text: ""}]
-        // }, {
-        //     at: editor.selection ? editor.selection.focus.path : null,
-        // });
 
-        editor.insertBreak()
-        Transforms.insertNodes(
-            editor, [{
-                type: "paragraph",
-                children: [{text: "123"}]
-            }]
-        );
+        console.log(props.editor);
 
-
+        // 想编辑器中插入个图片
+        let doc = props.editor.getDoc();
+        let cursor = doc.getCursor();
+        // let pos = {
+        //     line: cursor.line(),
+        //     ch: cursor.ch
+        // }
+        console.log(doc, cursor);
+        // 插入图片
+        // doc.replaceRange("![]()", cursor);
+        // doc.replaceRange("![]()", cursor);
+        doc.replaceSelection("![]()");
+        // 如果是替换多个，可使用
+        // doc.replaceSelections(["v1", "v2", "v3"]);
+        window.editor = props.editor;
     }
 
     return (
