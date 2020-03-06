@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { Button } from "antd";
 
 // import MyEditor from "../Editor";
 // import { CodePrismDemo } from "../Editor/Element/Code";
 import ResizeDemo from "./demo/resizeable";
 import UplaodImageItem from  "../Base/Forms/UplaodImageItem"
-import UpladImageTabs from "../Page/UploadImage";
+import { UploadImageTabsModal, UploadImageTabs } from "../Page/UploadImage";
+
 
 export class TestPage extends React.Component{
     constructor(props){
@@ -23,6 +25,7 @@ export class TestPage extends React.Component{
 
 export function TestPageFunc() {
     // console.log(React)
+    const [modalVisible, setModalVisible] = useState(false)
 
     const [fileListData, setFileListData] = useState([]);
 
@@ -46,7 +49,19 @@ export function TestPageFunc() {
                 />
             </div>
 
-            <UpladImageTabs />
+            <UploadImageTabs />
+
+            <hr/>
+            {/* 点击按钮上传图片测试 */}
+            <Button onClick={() => {setModalVisible(prevState => !prevState)}}>
+                上传图片
+            </Button>
+
+            <UploadImageTabsModal 
+              visible={modalVisible} 
+              handleAfterClose={() => setModalVisible(false)}
+              afterUploadHandle={(imageUrl) => {console.log("上传了图片：", imageUrl); setModalVisible(false)}}
+            />
             
         </div>
     );

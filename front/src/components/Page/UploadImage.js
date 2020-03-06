@@ -12,7 +12,8 @@ import {
     Tabs,
     Input,
     Button,
-    message
+    message,
+    Modal
 } from "antd";
 
 import fetchApi from "../Utils/fetchApi";
@@ -53,6 +54,11 @@ export const UploadImageTabs = (props) => {
         setImageUrl(e.target.value);
     }, []);
 
+    const checkImageUrlPattern = useMemo(() => {
+        // 检查图片是否以这些结尾
+        return /\.(png)|(jpg)|(gif)|(jpeg)$/;
+    }, []);
+
     // 处理上传图片操作
     const handleUploadImage = useCallback(() => {
         // 检查是否有图片数据
@@ -71,19 +77,33 @@ export const UploadImageTabs = (props) => {
         fetchApi.Post(url, formData, {})
           .then(responseData => {
               console.log(responseData);
+              // 执行得到图片链接后的：后续的操作
+              if(responseData.qiniu){
+                  if(props.afterUploadHandle){
+                    props.afterUploadHandle(responseData.qiniu);
+                  }else{
+                    console.log("未传递：afterUploadHandle");
+                  }
+              }else if(responseData.file){
+                if(props.afterUploadHandle){
+                  props.afterUploadHandle(responseData.file);
+                }else{
+                  console.log("未传递：afterUploadHandle");
+                }
+            }else{
+                message.warn("上传图片的返回结果file和qiniu字段为空");
+            }
           })
             .catch(err => {
                 console.log(err);
             })
-    }, [fileListData])
+    }, [fileListData, props])
 
-    const checkImageUrlPattern = useMemo(() => {
-        // 检查图片是否以这些结尾
-        return /\.(png)|(jpg)|(gif)|(jpeg)$/;
-    }, []);
+    
 
     const handleSubmit = useCallback((e) => {
-        console.log(e);
+        // console.log(e);
+        e.stopPropagation();
 
         if( activeTabKey === "uploadImage" ){
             // 情况1：上传图片文件
@@ -98,7 +118,12 @@ export const UploadImageTabs = (props) => {
             // 情况2：选择的输入图片
             if(!!imageUrl){
                 if(checkImageUrlPattern.test(imageUrl)){
-
+                    // 执行得到图片链接后的：后续的操作
+                    if(props.afterUploadHandle){
+                        props.afterUploadHandle(imageUrl);
+                    }else{
+                        console.log("未传递：afterUploadHandle");
+                    }
                 }else{
                     message.warn("图片的地址需要以jpg/jpeg/png/gif结尾");
                 }
@@ -108,7 +133,7 @@ export const UploadImageTabs = (props) => {
             }
         }
 
-    }, [activeTabKey, checkImageUrlPattern, fileListData.length, handleUploadImage, imageUrl])
+    }, [activeTabKey, checkImageUrlPattern, fileListData.length, handleUploadImage, imageUrl, props])
 
     
 
@@ -166,6 +191,30 @@ export const UploadImageTabs = (props) => {
             </div>
         </div>
     );
+}
+
+export const UploadImageTabsModal = (props) => {
+    const {visible, ...restProps} = props;
+
+    const handleOnCloseOrOk = useCallback((e) => {
+        console.log(e);
+        if(props.handleAfterClose){
+            props.handleAfterClose()
+        }
+    }, [props])
+    return (
+        <Modal 
+          wrapClassName="upload-image-modal"
+          visible={props.visible} 
+          onOk={handleOnCloseOrOk}
+          onCancel={handleOnCloseOrOk}
+          // 关闭的时候销毁里面的内容，就不会看到上次上传的图片了
+          destroyOnClose={true}
+          footer={null}  // 不显示底部按钮
+        >
+            <UploadImageTabs {...restProps} />
+        </Modal>
+    )
 }
 
 export default UploadImageTabs;

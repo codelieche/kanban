@@ -10,14 +10,21 @@ import {
 } from "antd";
 
 import Icon from "../../Base/Icon";
+import { UploadImageTabsModal } from "../../Page/UploadImage";
 
 
-export  function MarkButton({type, icon, text, title, editor, historySize, setHistorySize}) {
+export  function MarkButton({type, icon, text, title, editor, historySize, setHistorySize, setModalVisible}) {
 
     // 获取editor
     const handleButtonOnClick = useCallback(event => {
         
         event.preventDefault();
+
+        if(type === "image"){
+            setModalVisible(true);
+            return;
+        }
+
         // console.log("鼠标按下了：", type, icon);
         let newHistorySize = editor.historySize();
         setHistorySize(newHistorySize);
@@ -61,6 +68,8 @@ export  function MarkButton({type, icon, text, title, editor, historySize, setHi
                     return result
                 case "code":
                     return "`" + item + "`";  
+                case "quote":
+                    return "\n> " + item;
                 case "blockquote":
                     return "\n```\n" + item + "\n```\n";
                 default:
@@ -70,7 +79,7 @@ export  function MarkButton({type, icon, text, title, editor, historySize, setHi
         // 替换结果
         editor.replaceSelections(selectionsResults);
 
-    }, [editor, setHistorySize, type])
+    }, [editor, setHistorySize, setModalVisible, type])
 
     return (
         <div className={ false ? "active" : "no-active"}
@@ -85,6 +94,8 @@ export  function MarkButton({type, icon, text, title, editor, historySize, setHi
 export const ButtonTools = function(props) {
     // 历史记录
     const [historySize, setHistorySize] = useState({undo: 0, redo: 0});
+    // 显示图片
+    const [modalVisible, setModalVisible] = useState(false)
 
     useEffect(() => {
         if(props.editor){
@@ -104,8 +115,8 @@ export const ButtonTools = function(props) {
         {type: "list-ul", text: "无序列表", icon: "list-ul"},
         {type: "list-ol", text: "有序列表", icon: "list-ol"},
         {type: "link", text: "链接", icon: "link"},
-        {type: "blockquote", title: "引用", icon: 'code'},
-        // {type: "code", text: "代码块", icon: "code"},
+        {type: "quote", text: "引用", icon: "quote-left"},
+        {type: "blockquote", title: "代码块", icon: 'code'},
         {type: "image", text: "图片", icon: "image"},
         
     ]
@@ -116,6 +127,7 @@ export const ButtonTools = function(props) {
               icon={item.icon} text={item.text}
               historySize={historySize}
               setHistorySize={setHistorySize}
+              setModalVisible={setModalVisible}
               editor={props.editor}/>
         );
     });
@@ -144,14 +156,29 @@ export const ButtonTools = function(props) {
         window.editor = props.editor;
     }
 
+    const afterUploadImageHandle = useCallback((imageUrl) => {
+        // 上传图片链接
+        console.log("上传了图片：", imageUrl);
+        // 获取selections
+        let selections = props.editor.getSelections();
+
+        let selectionsResults = selections.map((item, index) => {
+                return `![${item}](${imageUrl})`;
+        });
+        // 替换结果
+        props.editor.replaceSelections(selectionsResults);
+        // 关闭对话框
+        setModalVisible(false);
+
+    }, [props.editor])
+
     return (
         <div className="tools">
             <Row style={{width: "100%"}}>
-                <Col xs={{span:24}} sm={{span:16}} style={{textAlign: "left", float: "left"}}>
+                <Col xs={{span:24}} sm={{span:16}} className="left">
                     {toolsElemtns}
-
                 </Col>
-                <Col xs={{span: 24}} sm={{span: 8}} style={{float: "right"}}>
+                <Col xs={{span: 24}} sm={{span: 8}} className="right">
                     <div className="no-active" onClick={() => props.setDisplay(prevState => {return {markdown: true, html: !prevState.html}})}>
                         {/* eye eye-slash */}
                         <Icon type={(props.display && props.display.html) ? "eye-slash" : "eye"}/>
@@ -166,6 +193,13 @@ export const ButtonTools = function(props) {
                     </div>
                 </Col>
             </Row>
+
+            {/* 上传图片的对话框 */}
+            <UploadImageTabsModal 
+              visible={modalVisible} 
+              handleAfterClose={() => setModalVisible(false)}
+              afterUploadHandle={afterUploadImageHandle}
+            />
         </div>
     )
 };

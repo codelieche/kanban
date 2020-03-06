@@ -104,7 +104,18 @@ class Image(models.Model):
         if w > 1600:
             scale = 1600.0 / w
         image_resize = image_tmp.resize((int(w * scale), int(h * scale)))
-        image_resize.save(output_io_stream, format='JPEG', quality=80)
+        try:
+            image_resize.save(output_io_stream, format='JPEG', quality=80)
+        except OSError as e:
+            if str(e).find("RGBA") > 0:
+                # cannot write mode RGBA as JPEG
+                image_resize = image_resize.convert('RGB')
+                image_resize.save(output_io_stream, format='JPEG', quality=80)
+            else:
+                print(e)
+                # 返回原来的图片吧
+                return image_file
+
         output_io_stream.seek(0)
         image = InMemoryUploadedFile(
             output_io_stream,
