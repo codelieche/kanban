@@ -1,9 +1,14 @@
 from django.contrib import admin
 
-from docs.models.category import Category
+from docs.models.category import Category, CategoryUser
 from docs.models.info import InfoField, InfoCategory, Info, InfoValue
 from docs.models.article import Article
 # Register your models here.
+
+
+class CategoryUserModelAdmin(admin.ModelAdmin):
+    """Category User Model Serializer"""
+    list_display = ("id", "category", "user", "permission")
 
 
 class CategoryModelSerializer(admin.ModelAdmin):
@@ -44,6 +49,7 @@ class InfoValueModelAdmin(admin.ModelAdmin):
 
 
 # 注册model
+admin.site.register(CategoryUser, CategoryUserModelAdmin)
 admin.site.register(Category, CategoryModelSerializer)
 admin.site.register(InfoField, InfoFieldModelAdmin)
 admin.site.register(InfoCategory, InfoCategoryModelAdmin)

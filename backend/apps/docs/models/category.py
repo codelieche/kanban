@@ -6,7 +6,28 @@ from django.db import models
 from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image as PImage, ExifTags
 
+from account.models import User
 from utils.store import ImageStorage
+
+
+class CategoryUser(models.Model):
+    """
+    分类的用户
+    """
+    PERMISSION_CHOICES = (
+        ("R", "只读"),
+        ("RW", "读写"),
+        ("ALL", "全部")
+    )
+    category = models.ForeignKey(verbose_name="分类", to="Category", on_delete=models.CASCADE)
+    user = models.ForeignKey(verbose_name="用户", to=User, on_delete=models.CASCADE)
+    permission = models.CharField(verbose_name="权限", max_length=10,
+                                  choices=PERMISSION_CHOICES, default="R", blank=True)
+
+    class Meta:
+        unique_together = ("category", "user")  # 联合唯一索引
+        verbose_name = "分组用户"
+        verbose_name_plural = verbose_name
 
 
 class Category(models.Model):
@@ -20,6 +41,8 @@ class Category(models.Model):
     description = models.CharField(verbose_name="描述", max_length=1024, blank=True, null=True)
     parent = models.ForeignKey(verbose_name="父级分类", related_name="children",
                                blank=True, null=True, to="self", on_delete=models.CASCADE)
+    users = models.ManyToManyField(verbose_name="用户", to=User, 
+                                   through=CategoryUser, through_fields=("category", "user"))
     # level级别 和 顺序 order
     level = models.SmallIntegerField(verbose_name="级别", blank=True, default=1)
     order = models.SmallIntegerField(verbose_name="顺序", blank=True, default=1)
@@ -48,6 +71,10 @@ class Category(models.Model):
             self.is_deleted = True
             self.save()
         return
+
+    @property
+    def users_permisson(self):
+        return self.categoryuser_set.all()
 
     def resize_image(self, image_file):
         """

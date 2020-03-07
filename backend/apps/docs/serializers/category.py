@@ -2,7 +2,21 @@
 
 from rest_framework import serializers
 
-from docs.models.category import Category
+from account.models import User
+from docs.models.category import Category, CategoryUser
+
+
+class CategoryUserModelSerializer(serializers.ModelSerializer):
+    """
+    分类用户多对多关系
+    """
+    category = serializers.SlugRelatedField(slug_field="code", queryset=Category.objects.all(),
+                                           required=True)
+    user = serializers.SlugRelatedField(slug_field="username", queryset=User.objects.all())
+
+    class Meta:
+        model = CategoryUser
+        fields = ("id", "category", "user", "permission")
 
 
 class CategoryModelSerializer(serializers.ModelSerializer):
@@ -12,6 +26,9 @@ class CategoryModelSerializer(serializers.ModelSerializer):
 
     parent = serializers.SlugRelatedField(slug_field="code", queryset=Category.objects.all(), 
                                           required=False, allow_null=True)
+    users = serializers.SlugRelatedField(many=True, slug_field="username", queryset=User.objects.all(),
+                                        required=False)
+    users_permisson = CategoryUserModelSerializer(required=False, many=True, read_only=True)
 
     def validate(self, attrs):
         if "parent" in attrs:
@@ -41,4 +58,5 @@ class CategoryModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ("id", "name", "code", "image", "description", "parent", "level", "order", "time_added", "is_deleted")
+        fields = ("id", "name", "code", "image", "description", "parent", "users", "users_permisson",
+                  "level", "order", "time_added", "is_deleted")
