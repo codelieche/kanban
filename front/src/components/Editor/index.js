@@ -62,7 +62,6 @@ export function MyEditor(props){
                             options={{
                                 mode: 'markdown',
                                 theme: 'eclipse',
-                                // theme: 'yonce',
                                 lineNumbers: true
                             }}
                             value={value}

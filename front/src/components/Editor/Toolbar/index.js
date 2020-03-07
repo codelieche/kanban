@@ -72,6 +72,12 @@ export  function MarkButton({type, icon, text, title, editor, historySize, setHi
                     return "\n> " + item;
                 case "blockquote":
                     return "\n```\n" + item + "\n```\n";
+                case "table":
+                    let tableStr = ` | Title1   | Title2 | Title3 | Title4 |
+| ---- | --- | --- | --- |
+| 1    | - | - | - |
+| 2    | - | - | - |\n`;
+                    return "\n\n" + tableStr;
                 default:
                     return item;
             }
@@ -117,6 +123,7 @@ export const ButtonTools = function(props) {
         {type: "link", text: "链接", icon: "link"},
         {type: "quote", text: "引用", icon: "quote-left"},
         {type: "blockquote", title: "代码块", icon: 'code'},
+        {type: "table", title: "表格", icon: 'table'},
         {type: "image", text: "图片", icon: "image"},
         
     ]

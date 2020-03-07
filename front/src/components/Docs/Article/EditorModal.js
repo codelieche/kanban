@@ -192,11 +192,12 @@ export const MyEditorModel = function(props){
     return (
         <Modal
           visible={props.visable}
-          width="80%"
+          width="90%"
           wrapClassName="editor-modal"
           onCancel={handleCancle}
           onOk={handleOk}
           footer={null}
+          destroyOnClose={!!props.content} // 如果内容不是是空，就关闭的时候销毁。防止在空页面，content为上一篇的内容
         >
              {/* 文章编辑弹出框 */}
              <MyEditor 
