@@ -19,6 +19,7 @@ import fetchApi from "../../Utils/fetchApi";
 import { patchUpdateArticle } from "./Operation";
 import EditorArticleModel from "./EditorModal";
 import CodeBlock from "../../Editor/Element/Code";
+import LoadingPage from "../../Page/Loading";
 
 export const ArticleDetail = function(props){
     // 状态
@@ -30,6 +31,8 @@ export const ArticleDetail = function(props){
     const [showDescription, setShowDescription] = useState(false);
     // 是否显示编辑的对话框
     const [showEditorModal, setShowEditorModal] = useState(false);
+    // 判断是否加载完毕了
+    const [loaded, setLoaded] = useState(false);
 
     const fetchDetailData = useCallback(id => {
         if(! id){
@@ -39,6 +42,7 @@ export const ArticleDetail = function(props){
         let url = `/api/v1/docs/article/${id}`;
         fetchApi.Get(url, {}, {})
           .then(responseData => {
+             setLoaded(true);
               if(responseData.id > 0){
                   setData(responseData);
                   setArticleID(id);
@@ -85,6 +89,7 @@ export const ArticleDetail = function(props){
               }
           })
             .catch(err => {
+                setLoaded(true);
                 console.log(err);
             });
     }, [setNavData])
@@ -138,6 +143,11 @@ export const ArticleDetail = function(props){
         }, 300);
 
     }, [articleID, fetchDetailData]);
+
+    // 判断是否加载完毕
+    if(!loaded){
+        return <LoadingPage size="large"/>
+    }
 
     return (
         <article>

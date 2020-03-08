@@ -2,17 +2,20 @@
  * 分类详情页
  * 采用Hook方式：不编写class的情况下使用state，以及其它React特性。
  */
-import React, {useState, useEffect, useContext} from "react";
+import React, {useState, useEffect, useContext, useMemo} from "react";
 // import { Link } from "react-router-dom";
 import {
     Row,
     Col,
+    Tag,
+    Divider
 } from "antd";
 
 import { GlobalContext } from "../../Base/Context";
 import Icon from "../../Base/Icon";
 import ModelLogs from "../../Base/ModelLogs";
 import fetchApi from "../../Utils/fetchApi";
+import LoadingPage from "../../Page/Loading";
 
 import CategoryArticlesTable from "./ArticlesTable";
 
@@ -22,6 +25,7 @@ function CategoryDetail(props) {
     // 因为id可能是数字，也可能是字符，需要有个状态保存一下
     const [id, idState] = useState(null);
     const [data, dataState] = useState({});
+    const [loaded, setLoaded] = useState(false);
     // 获取context
     const { setNavData } = useContext(GlobalContext);
 
@@ -32,11 +36,13 @@ function CategoryDetail(props) {
           .then(data => {
               // 修改状态
               dataState(data);
+              setLoaded(true);
               // 修改标题
               document.title = `${data.name}-分类-看板`;
 
           })
             .catch(err => {
+                setLoaded(true);
                 console.log(err)
             });
     }
@@ -75,26 +81,33 @@ function CategoryDetail(props) {
         setNavData(navData);
     }, [setNavData])
 
+    // 用户权限
+    const userPermissionElements = useMemo(() => {
+        if(data.users_permisson && data.users_permisson.length > 0){
+            return data.users_permisson.map((item, index) => {
+                // console.log(item, index);
+                return (
+                    <Tag key={item.id} color="blue">
+                        {item.user}
+                        <Divider type="vertical" />
+                        {item.permission}
+                    </Tag>
+                );
+            });
+             
+        }else{
+            return <span>无用户</span>;
+        }
+    }, [data.users_permisson])
+    
+    // 判断是否加载完了
+    if(!loaded){
+        return <LoadingPage size="large"/>;
+    }
+
     // 相当于class方式的render(){}
     return (
         <div className="content">
-            {/* 面包屑导航开始 */}
-            {/* <Breadcrumb className="nav">
-                <Breadcrumb.Item>
-                    <Link to="/"><Icon type="home" noMarginRight={true}/>首页</Link>
-                </Breadcrumb.Item>
-
-                <Breadcrumb.Item>
-                    <Link to="/docs/">文档</Link>
-                </Breadcrumb.Item>
-
-                <Breadcrumb.Item>
-                    <Link to="/docs/category">分类</Link>
-                </Breadcrumb.Item>
-
-                <Breadcrumb.Item>详情</Breadcrumb.Item>
-            </Breadcrumb> */}
-            {/* 面包屑导航结束 */}
 
             {/* 主体内容 */}
             <div className="main">
@@ -127,6 +140,10 @@ function CategoryDetail(props) {
                                 <dt>描述</dt>
                                 <dd>{data.description}</dd>
                             </dl>
+                            <dl>
+                                <dt>用户</dt>
+                                <dd>{userPermissionElements}</dd>
+                            </dl>
                             {
                                 data.image &&  
                                 <dl>
@@ -139,6 +156,7 @@ function CategoryDetail(props) {
                                 <dt>添加时间</dt>
                                 <dd>{data.time_added}</dd>
                             </dl>
+                           
                         </div>
 
                         <Row>
