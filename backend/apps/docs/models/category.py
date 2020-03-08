@@ -49,6 +49,41 @@ class Category(models.Model):
     time_added = models.DateTimeField(verbose_name="添加时间", blank=True, auto_now_add=True)
     is_deleted = models.BooleanField(verbose_name="是否删除", blank=True, default=False)
 
+    def check_user_permission(self, user, permission="read"):
+        """
+        判断用户是否有分类的Read/Write/Delete权限
+        """
+        # 如果用户是超级用户就赋予全部的权限
+        if user.is_superuser:
+            return True
+        
+        # 校验需要检查的权限是否合理
+        permission = permission.lower()
+        # 全部的权限：后续可优化鉴权的方式
+        all = ("read", "write", "delete", "all", "add_user", "delete_user", "update_user")
+        if permission not in all:
+            return False
+        
+        # 获取到CategoryUser对象
+        category_user = CategoryUser.objects.filter(category=self, user=user).first()
+
+        if not category_user:
+            return False
+        
+        # 开始判断
+        permission_dict = {
+            "R": ["read"],
+            "RW": ("read", "write"),
+            "ALL": all
+        }
+        
+        if (category_user.permission in permission_dict) \
+             and (permission in permission_dict[category_user.permission]):
+             return True
+        else:
+            return False
+
+
     def __str__(self):
         return "{}:{}".format(self.code, self.name)
 

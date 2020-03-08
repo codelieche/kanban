@@ -6,6 +6,17 @@ from account.models import User
 from docs.models.category import Category, CategoryUser
 
 
+class CategoryUserAddSerializer(serializers.Serializer):
+    """
+    给分类添加用户时使用
+    """
+
+    category = serializers.SlugRelatedField(slug_field="code", queryset=Category.objects.all(), 
+                                            required=True)
+    user = serializers.SlugRelatedField(many=True, slug_field="username", queryset=User.objects.all())
+    permission = serializers.CharField(default="R", required=False)
+
+
 class CategoryUserModelSerializer(serializers.ModelSerializer):
     """
     分类用户多对多关系
@@ -13,6 +24,19 @@ class CategoryUserModelSerializer(serializers.ModelSerializer):
     category = serializers.SlugRelatedField(slug_field="code", queryset=Category.objects.all(),
                                            required=True)
     user = serializers.SlugRelatedField(slug_field="username", queryset=User.objects.all())
+
+    def create(self, validated_data):
+        # 1. 获取到请求的用户
+        user = self.context["request"].user
+        category = validated_data["category"]
+
+        # 2. 判断用户是否有增加用户的权限
+        result = instance.check_user_permission(user, "add_user")
+        if not result:
+            return serializers.ValidationError("无权限")
+
+        # 3. 执行默认的创建操作
+        return super().create(self, validated_data)
 
     class Meta:
         model = CategoryUser
