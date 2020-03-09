@@ -98,6 +98,7 @@ export const ArticleDetail = function(props){
         // let ac = new AbortController();
         if(props.match.params.id !== articleID || (data.id && props.match.params.id !== data.id.toString())){
             // setArticleID(props.match.params.id);
+            // setData({});  // 把文章内容置空
             fetchDetailData(props.match.params.id);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -10,7 +10,6 @@ class CategoryUserAddSerializer(serializers.Serializer):
     """
     给分类添加用户时使用
     """
-
     category = serializers.SlugRelatedField(slug_field="code", queryset=Category.objects.all(), 
                                             required=True)
     user = serializers.SlugRelatedField(many=True, slug_field="username", queryset=User.objects.all())
@@ -50,8 +49,12 @@ class CategoryModelSerializer(serializers.ModelSerializer):
 
     parent = serializers.SlugRelatedField(slug_field="code", queryset=Category.objects.all(), 
                                           required=False, allow_null=True)
+    # 分组用户
     users = serializers.SlugRelatedField(many=True, slug_field="username", queryset=User.objects.all(),
                                         required=False)
+    # 所有者
+    owner = serializers.SlugRelatedField(slug_field="username", queryset=User.objects.all(),
+                                         required=False)
     users_permisson = CategoryUserModelSerializer(required=False, many=True, read_only=True)
 
     def validate(self, attrs):
@@ -63,8 +66,29 @@ class CategoryModelSerializer(serializers.ModelSerializer):
                 if parent:
                     code = "{}-{}".format(parent.code, code)
                 attrs["code"] = code
-
+        
+        # 处理owner：superuser可以指定owner
+        user = self.context["request"].user
+        if user.is_superuser:
+            if "owner" not in attrs or (not attrs["owner"]):
+                attrs["owner"] = user
+        else:
+            # 不是超级用户，创建的分类，所有者只能是自己
+            attrs["owner"] = user
         return attrs
+
+    def create(self, validated_data):
+        # 1. 调用父类的创建方法
+        instance = super().create(validated_data)
+
+        # 2. 给当前用户添加所有权限
+        category_user, created = CategoryUser.objects.get_or_create(category=instance, user=instance.owner)
+        if category_user.permission != "ALL":
+            category_user.permission = "ALL"
+            category_user.save()
+        
+        # 3. 返回实例
+        return instance
     
     def get_fields(self):
         fields = super().get_fields()
@@ -82,5 +106,6 @@ class CategoryModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Category
-        fields = ("id", "name", "code", "image", "description", "parent", "users", "users_permisson",
+        fields = ("id", "name", "code", "image", "description", "parent",
+                   "owner", "users", "users_permisson",
                   "level", "order", "time_added", "is_deleted")

@@ -8,6 +8,7 @@ from rest_framework.permissions import (
     DjangoModelPermissions, 
     DjangoModelPermissionsOrAnonReadOnly
 )
+from django.shortcuts import get_object_or_404
 
 from modellog.mixins import LoggingViewSetMixin
 from docs.models.category import Category
@@ -38,8 +39,8 @@ class CategoryListApiView(generics.ListAPIView):
 
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ("name", "parent__name", "description", "code", "parent__code")
-    filter_fields = ("parent", "level", "is_deleted")
-    ordering_fields = ("id", "is_deleted", "parent", "order")
+    filter_fields = ("parent", "level", "is_deleted", "owner")
+    ordering_fields = ("id", "is_deleted", "parent", "order", "owner")
     ordering = ("parent", "order", "id")
 
 
@@ -54,8 +55,8 @@ class CategoryListAllApiView(generics.ListAPIView):
 
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ("name", "parent__name", "description", "code", "parent__code")
-    filter_fields = ("parent", "level", "is_deleted")
-    ordering_fields = ("id", "is_deleted", "parent", "order")
+    filter_fields = ("parent", "level", "is_deleted", "owner")
+    ordering_fields = ("id", "is_deleted", "parent", "order", "owner")
     ordering = ("parent", "order", "id")
 
 
@@ -66,6 +67,14 @@ class CategoryDetailApiView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyA
     queryset = Category.objects.filter()
     serializer_class = CategoryModelSerializer
     permission_classes = (IsAuthenticated, DjangoModelPermissionsOrAnonReadOnly)
+
+    def get_object(self):
+        # 先获取到pk 或者 是 code
+        # 因为获取项目详情api中：detail使用的是pk，detail2中使用的是code，所以需要做下面这个处理
+        filter_kwargs = {}
+        for key_ in self.kwargs:
+            filter_kwargs[key_] = self.kwargs[key_]
+        return get_object_or_404(Category, **filter_kwargs)
 
 
 class CategoryArticlesListApiView(generics.ListAPIView):

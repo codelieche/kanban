@@ -84,7 +84,7 @@ function CategoryDetail(props) {
     // 用户权限
     const userPermissionElements = useMemo(() => {
         if(data.users_permisson && data.users_permisson.length > 0){
-            return data.users_permisson.map((item, index) => {
+            let tagsElements = data.users_permisson.map((item, index) => {
                 // console.log(item, index);
                 return (
                     <Tag key={item.id} color="blue">
@@ -94,6 +94,12 @@ function CategoryDetail(props) {
                     </Tag>
                 );
             });
+            // 标签用div包裹起来
+            return (
+                <div style={{margin: "3px 0"}}>
+                    {tagsElements}
+                </div>
+            )
              
         }else{
             return <span>无用户</span>;
@@ -137,12 +143,16 @@ function CategoryDetail(props) {
                                 </dd>
                             </dl>
                             <dl>
-                                <dt>描述</dt>
-                                <dd>{data.description}</dd>
+                                <dt>所有者</dt>
+                                <dd>{data.owner}</dd>
                             </dl>
                             <dl>
                                 <dt>用户</dt>
                                 <dd>{userPermissionElements}</dd>
+                            </dl>
+                            <dl>
+                                <dt>描述</dt>
+                                <dd>{data.description}</dd>
                             </dl>
                             {
                                 data.image &&  

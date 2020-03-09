@@ -41,6 +41,9 @@ class Category(models.Model):
     description = models.CharField(verbose_name="描述", max_length=1024, blank=True, null=True)
     parent = models.ForeignKey(verbose_name="父级分类", related_name="children",
                                blank=True, null=True, to="self", on_delete=models.CASCADE)
+    # 默认情况下：创建者就是当前分类的所有者，后续可以转交给他人，owner拥有所有的权限
+    owner = models.ForeignKey(to=User, verbose_name="所有者", related_name="owner_category_set",
+                              blank=True, null=True, on_delete=models.SET_NULL)
     users = models.ManyToManyField(verbose_name="用户", to=User, 
                                    through=CategoryUser, through_fields=("category", "user"))
     # level级别 和 顺序 order
@@ -55,6 +58,9 @@ class Category(models.Model):
         """
         # 如果用户是超级用户就赋予全部的权限
         if user.is_superuser:
+            return True
+        # 分类的所有者也拥有所有权限
+        elif self.owner == user:
             return True
         
         # 校验需要检查的权限是否合理
@@ -133,13 +139,13 @@ class Category(models.Model):
                 for orientation in ExifTags.TAGS.keys():
                     if ExifTags.TAGS[orientation] == "Orientation":
                         break
-
-                if exif[orientation] == 3:
-                    image_tmp = image_tmp.rotate(180, expand=True)
-                elif exif[orientation] == 6:
-                    image_tmp = image_tmp.rotate(270, expand=True)
-                elif exif[orientation] == 8:
-                    image_tmp = image_tmp.rotate(90, expand=True)
+                if orientation in exif:
+                    if exif[orientation] == 3:
+                        image_tmp = image_tmp.rotate(180, expand=True)
+                    elif exif[orientation] == 6:
+                        image_tmp = image_tmp.rotate(270, expand=True)
+                    elif exif[orientation] == 8:
+                        image_tmp = image_tmp.rotate(90, expand=True)
         except Exception as e:
             print(e)
 
