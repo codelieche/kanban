@@ -127,7 +127,6 @@ class Image(models.Model):
         )
         return image
 
-
     class Meta:
         verbose_name = "图片"
         verbose_name_plural = verbose_name

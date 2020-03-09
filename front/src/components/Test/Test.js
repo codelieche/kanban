@@ -4,7 +4,7 @@ import { Button } from "antd";
 // import MyEditor from "../Editor";
 // import { CodePrismDemo } from "../Editor/Element/Code";
 import ResizeDemo from "./demo/resizeable";
-import UplaodImageItem from  "../Base/Forms/UplaodImageItem"
+import UplaodImageItem from  "../Page/UplaodImageItem"
 import { UploadImageTabsModal, UploadImageTabs } from "../Page/UploadImage";
 
 

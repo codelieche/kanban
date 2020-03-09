@@ -23,6 +23,15 @@ class CategoryUser(models.Model):
     user = models.ForeignKey(verbose_name="用户", to=User, on_delete=models.CASCADE)
     permission = models.CharField(verbose_name="权限", max_length=10,
                                   choices=PERMISSION_CHOICES, default="R", blank=True)
+    time_added = models.DateTimeField(verbose_name="添加时间", blank=True, auto_now_add=True)
+    is_active = models.BooleanField(verbose_name="有效", blank=True, default=True)
+
+    def delete(self):
+        # 不做物理删除，只标记删除
+        # 注意：如果修改Category传递了users，是会对CategoryUser做物理删除的，后续可优化
+        if self.is_active:
+            self.is_active = False
+            self.save()
 
     class Meta:
         unique_together = ("category", "user")  # 联合唯一索引
@@ -73,7 +82,8 @@ class Category(models.Model):
         # 获取到CategoryUser对象
         category_user = CategoryUser.objects.filter(category=self, user=user).first()
 
-        if not category_user:
+        # 如果不存在，或者用户不是激活的，则无权限
+        if not category_user or (not category_user.is_active):
             return False
         
         # 开始判断
@@ -115,7 +125,8 @@ class Category(models.Model):
 
     @property
     def users_permisson(self):
-        return self.categoryuser_set.all()
+        # 不返回全部，只返回有效的用户
+        return self.categoryuser_set.filter(is_active=True)
 
     def resize_image(self, image_file):
         """

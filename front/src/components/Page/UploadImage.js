@@ -17,7 +17,7 @@ import {
 } from "antd";
 
 import fetchApi from "../Utils/fetchApi";
-import UplaodImageItem from "../Base/Forms/UplaodImageItem";
+import UploadImageItem from "./UplaodImageItem"
 
 
 /**
@@ -154,7 +154,7 @@ export const UploadImageTabs = (props) => {
             <Tabs defaultActiveKey={activeTabKey} onChange={onTabChange}>
                 <Tabs.TabPane tab="上传图片" key="uploadImage">
                     <div className="upload">
-                        <UplaodImageItem
+                        <UploadImageItem
                             url=""
                             fileListData={fileListData}
                             setFileListData={setFileListData}

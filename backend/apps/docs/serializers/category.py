@@ -39,7 +39,7 @@ class CategoryUserModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = CategoryUser
-        fields = ("id", "category", "user", "permission")
+        fields = ("id", "category", "user", "permission", "time_added", "is_active")
 
 
 class CategoryModelSerializer(serializers.ModelSerializer):
@@ -55,6 +55,7 @@ class CategoryModelSerializer(serializers.ModelSerializer):
     # 所有者
     owner = serializers.SlugRelatedField(slug_field="username", queryset=User.objects.all(),
                                          required=False)
+    # users是会返回分组中的所有用户，但是users_permission只包含is_active是True的用户
     users_permisson = CategoryUserModelSerializer(required=False, many=True, read_only=True)
 
     def validate(self, attrs):

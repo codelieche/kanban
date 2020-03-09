@@ -54,10 +54,15 @@ class CategoryUserAddApiView(generics.CreateAPIView):
         results = []
         for u in users:
             instance, created = CategoryUser.objects.get_or_create(category=category, user=u)
-            print(instance, created)
+            # print(instance, created)
             if instance.permission == "R" and instance.permission != permission:
                 instance.permission = permission
                 instance.save()
+            # 判断是否是删除的
+            if not instance.is_active:
+                instance.is_active = True
+                instance.save()
+
             results.append(instance)
 
         # 5. 返回结果
@@ -101,7 +106,8 @@ class CategoryUserDeleteApiView(generics.DestroyAPIView):
         
         # 4. 执行删除用户操作
         # 4-1: 获取用户、删除用户
-        CategoryUser.objects.filter(category=category, user__username__in=users_username).delete()
+        for instance in CategoryUser.objects.filter(category=category, user__username__in=users_username).all():
+            instance.delete()
 
         # 5. 返回结果
         return Response(status=204)
@@ -162,4 +168,3 @@ class CategoryUserDetailApiView(generics.RetrieveDestroyAPIView):
 
         # 3. 执行默认的删除操作
         return super().destroy(self, *args, **kwargs)
-

@@ -298,6 +298,7 @@ function CategoryList(props){
                 title: "所有者",
                 dataIndex: "owner",
                 key: "owner",
+                width: 100,
                 sorter: () => {},
             },
             {

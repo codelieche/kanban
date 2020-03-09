@@ -21,7 +21,7 @@ import {
 // 表单布局
 import { formItemLayout, formItemTailLayout } from "../../Base/Forms/Layout";
 // 上传图片的Item
-import UploadImageItem from "../../Base/Forms/UplaodImageItem";
+import UploadImageItem from "../../Page/UplaodImageItem";
 // 从表单中选择值【数组】
 import CheckValuesFromTable from "../../Base/Forms/CheckTableValues";
 // 自定义的表单控件

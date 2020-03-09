@@ -87,7 +87,7 @@ function CategoryDetail(props) {
             let tagsElements = data.users_permisson.map((item, index) => {
                 // console.log(item, index);
                 return (
-                    <Tag key={item.id} color="blue">
+                    <Tag key={item.id} color={ item.is_active ? "blue" : ""}>
                         {item.user}
                         <Divider type="vertical" />
                         {item.permission}
