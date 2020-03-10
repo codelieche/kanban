@@ -67,7 +67,6 @@ export const NavItem = ({item, index, collapsed, defaultOpenKey}) => {
         );
     }
 
-
     // 判断导航是否收缩:
     if(collapsed){
         // 收缩的情况
@@ -131,7 +130,6 @@ export const NavItem = ({item, index, collapsed, defaultOpenKey}) => {
     }
 
     // 未收缩的情况
-    
     let titleElement;
     if(childrenElements.length > 0){
         titleElement = (

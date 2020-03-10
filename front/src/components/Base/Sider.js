@@ -12,13 +12,21 @@ import Icon from "./Icon";
 import ArticlesNav from "./ArticlesNav";
 import fetchApi from "../Utils/fetchApi";
 
+// 显示文章相关的左侧Sider
 function LeftSider({showLeftSider, setShowLeftSider}){
     // 用户所有的分类列表
     const [categories, setCategories] = useState([]);
-    // 选中的当前分类
+
+    // 选中的当前分类：这个的作用于是用于左侧导航的
+    // 遵循一点：通过修改全局的分类ID，然后再触发修改currentCategory
     const [currentCategory, setCurrentCategory] = useState({});
+
     // 刷新导航相关的操作
-    const { setRefreshNavTimes, history } = useContext(GlobalContext);
+    const { 
+        setRefreshNavTimes, history, 
+        currentArticleCategoryID,   // 是设置了全局的上下文的
+        setCurrentArticleCategoryID // 在article详情页会用到
+    } = useContext(GlobalContext);
 
     let widthInit = useMemo(() => {
         // 从localStorage中获取宽度
@@ -30,6 +38,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
         }
 
     }, []);
+
     // 左侧导航的宽度
     const [width, setWidth] = useState(widthInit);
 
@@ -41,11 +50,6 @@ function LeftSider({showLeftSider, setShowLeftSider}){
           .then(responseData => {
               if(Array.isArray(responseData)){
                   setCategories(responseData);
-                  if(responseData.length > 0){
-
-                    //   设置列表的第一个为，当前的分类
-                    setCurrentCategory(responseData[0]);
-                  }
               }else{
                   message.warn("获取分类列表数据出错", 3);
               }
@@ -64,6 +68,37 @@ function LeftSider({showLeftSider, setShowLeftSider}){
         // 组件要卸载的时候，储存一下宽度
         return () => {localStorage.setItem("leftSiderWidth", width);}
     }, [categories.length, fetchCategoriesData, width])
+
+    // 重新设置当前分类: 
+    // 获取到分类列表了、或者修改了全局分类的id了，都会触发
+    useEffect(() => {
+        // console.log(currentArticleCategoryID, categories);
+        if(!!currentArticleCategoryID && currentArticleCategoryID > 0){
+            // console.log("设置了分类ID:", currentArticleCategoryID, categories);
+            // 需要重新设置一下当前的分类了
+            if(!currentCategory.id  || currentCategory.id !== currentArticleCategoryID){
+                for(var i=0; i< categories.length; i++){
+                    // console.log(categories[i]);
+                    if(categories[i].id === currentArticleCategoryID){
+                        // setCurrentCategory(categories[i]);
+                        // 先修改当前文章的分类ID: 还要记得设置当前的分类
+                        setCurrentArticleCategoryID(categories[i].id);
+                        setCurrentCategory(categories[i])
+                        break;
+                    }
+                }
+            }else{
+                // console.log("未进入循环")
+            }
+        }else{
+            // console.log("还没分类ID");
+            // 如果有分类就设置第一个
+            if(categories.length > 0){
+                //   设置列表的第一个为，当前的分类
+                setCurrentCategory(categories[0]);
+            }
+        }
+    }, [categories, currentArticleCategoryID, currentCategory.id, setCurrentArticleCategoryID])
 
     const onResize = useCallback((event, { element, size }) => {
         // console.log(size.width);
@@ -89,7 +124,9 @@ function LeftSider({showLeftSider, setShowLeftSider}){
                     // console.log(e);
                     // 修改浏览器当前标签的标题
                     document.title = `看板-分类-${item.name}`;
-                    setCurrentCategory(item);
+                    // setCurrentCategory(item);
+                    // 遵循修改全局的分类id，再去触发修改当前分类对象
+                    setCurrentArticleCategoryID(item.id);
                 }}>
                     {item.name}
                 </Menu.Item>
@@ -101,7 +138,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
                 {menuItems}
             </Menu>
         );
-    }, [categories]);
+    }, [categories, setCurrentArticleCategoryID]);
 
     const toogleLeftSider = useCallback((e) => {
         e.preventDefault();

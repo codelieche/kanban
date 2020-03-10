@@ -26,7 +26,10 @@ export const ArticleDetail = function(props){
     const [articleID, setArticleID] = useState(null);
     const [data, setData] = useState({});
     // 修改全局的右侧顶部导航
-    const { setNavData, setRefreshNavTimes } = useContext(GlobalContext);
+    const { 
+        setNavData, setRefreshNavTimes, 
+        currentArticleCategoryID, setCurrentArticleCategoryID // 全局的文章分类ID
+    } = useContext(GlobalContext);
     // 是否显示描述
     const [showDescription, setShowDescription] = useState(false);
     // 是否显示编辑的对话框
@@ -46,6 +49,10 @@ export const ArticleDetail = function(props){
               if(responseData.id > 0){
                   setData(responseData);
                   setArticleID(id);
+                  if( Number.isInteger(responseData.category) && currentArticleCategoryID !== responseData.category ){
+                    // 修改全局的分类id
+                    setCurrentArticleCategoryID(responseData.category);
+                  }
                   // 根据parent信息组织导航信息
                   let navData = [
                     {
@@ -92,7 +99,7 @@ export const ArticleDetail = function(props){
                 setLoaded(true);
                 console.log(err);
             });
-    }, [setNavData])
+    }, [currentArticleCategoryID, setCurrentArticleCategoryID, setNavData])
 
     useEffect(() => {
         // let ac = new AbortController();

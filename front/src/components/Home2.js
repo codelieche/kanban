@@ -8,12 +8,16 @@ import {
 } from "antd";
 
 import LeftSider from "./Base/Sider";
-import {GlobalContext} from "./Base/Context";
+import { GlobalContext } from "./Base/Context";
 import RightContent from "./Base/Right";
 
 function Home(props){
     // 是否显示左右布局
     const [showLeftSider, setShowLeftSider] = useState(false);
+
+    // 全局文章的分类id：左侧分类下拉列表点击、或者文章详情页的category变更了，就会修改当currentArticleCategoryID
+    const [ currentArticleCategoryID, setCurrentArticleCategoryID ] = useState(null);
+
     // 控制刷新导航菜单的操作: 如果需要刷新左侧导航，
     // 设置: setRefreshNavTimes(prevState => prevState + 1);
     const [refreshNavTimes, setRefreshNavTimes] = useState(0);
@@ -76,7 +80,9 @@ function Home(props){
                 history: props.history,
                 // 操作更新左侧导航要用到
                 refreshNavTimes,
-                setRefreshNavTimes
+                setRefreshNavTimes,
+                currentArticleCategoryID,   // 文章详情页 和 文章相关的左侧Sider.js会用到
+                setCurrentArticleCategoryID // 文章详情页会用到
             }
         }>
             <Layout className="left-right-layout">
