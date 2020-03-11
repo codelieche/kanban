@@ -21,11 +21,6 @@ function App(props) {
           <Route exact path="/" component={Home} />
 
           <Route
-            path="/task"
-            render={props => <Home defaultOpenKey="/task" {...props} />}
-          />
-
-          <Route
             path="/docs"
             render={props => <Home defaultOpenKey="/docs" {...props} />}
           />

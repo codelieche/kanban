@@ -1,24 +1,19 @@
 /**
- * 左右布局左侧的内容
+ * 非文章相关的左侧
+ * 左右布局左侧的内容:
  */
 import React, {useState, useEffect, useCallback, useMemo} from "react"
 import { Link } from "react-router-dom";
-import {Layout, message} from "antd";
+import { Layout} from "antd";
 import { Resizable } from 'react-resizable';
 
 // import { GlobalContext } from "./Context";
 import Icon from "./Icon";
 import { LeftSiderNav } from "./LeftNav";
-import fetchApi from "../Utils/fetchApi";
 
 function LeftSider({showLeftSider, setShowLeftSider, defaultOpenKey}){
-    // 用户所有的分类列表
-    const [categories, setCategories] = useState([]);
-    // 选中的当前分类
-    // const [currentCategory, setCurrentCategory] = useState({});
-
     // 导航是否收缩
-    const [ collapsed, setCollapsed] = useState(false);
+    const [ collapsed, setCollapsed] = useState(null);
 
     // 刷新导航相关的操作
     // const { setRefreshNavTimes, history } = useContext(GlobalContext);
@@ -26,47 +21,23 @@ function LeftSider({showLeftSider, setShowLeftSider, defaultOpenKey}){
     let widthInit = useMemo(() => {
         // 从localStorage中获取宽度
         let widthValue = localStorage.getItem("leftSiderWidth");
-        if(Number.isNaN(widthValue)){
-            return 200;
-        }else{
-            return parseInt(widthValue, 10);
-        }
 
+        let result = parseInt(widthValue);
+        // console.log(widthValue, isNaN(widthValue), typeof widthValue, result);
+        if(result){
+            return (result >= 156 && result <= 460) ? result : 200;
+        }else{
+            return 200;
+        }
     }, []);
+
     // 左侧导航的宽度
     const [width, setWidth] = useState(widthInit);
 
-    // 获取分类的列表
-    const fetchCategoriesData = useCallback(() => {
-        
-        let url = "/api/v1/docs/category/all";
-        fetchApi.Get(url)
-          .then(responseData => {
-              if(Array.isArray(responseData)){
-                  setCategories(responseData);
-                  if(responseData.length > 0){
-
-                    //   设置列表的第一个为，当前的分类
-                    // setCurrentCategory(responseData[0]);
-                  }
-              }else{
-                  message.warn("获取分类列表数据出错", 3);
-              }
-          })
-            .catch(err => {
-                console.log(err);
-            })
-    }, [setCategories])
-
     useEffect(() => {
-        // 获取分类数据
-        if(categories.length === 0 ){
-            fetchCategoriesData();
-        }
-
         // 组件要卸载的时候，储存一下宽度
         return () => {localStorage.setItem("leftSiderWidth", width);}
-    }, [categories.length, fetchCategoriesData, width])
+    }, [width])
 
     const onResize = useCallback((event, { element, size }) => {
         // console.log(size.width);
@@ -78,12 +49,13 @@ function LeftSider({showLeftSider, setShowLeftSider, defaultOpenKey}){
         
         if(size.width <= 460){
             setWidth(size.width);
-            // localStorage.setItem("leftSiderWidth", size.width);
+            // 组件要卸载的时候才保存，如果每次保存会影响性能
         }else{
             setWidth(460);
         }
       }, [setWidth]);
-
+    
+    // 显示左侧导航开关
     const toogleLeftSider = useCallback((e) => {
         e.preventDefault();
         setShowLeftSider(prevState => {
@@ -108,22 +80,24 @@ function LeftSider({showLeftSider, setShowLeftSider, defaultOpenKey}){
     }, [setCollapsed])
 
     // 保存收缩信息
-    // useEffect(() => {
-    //     // 从localStorate中获取数据
-    //     let value = localStorage.getItem("leftSiderNavCollapsed");
-    //     if(value === null){
-    //         // 如果不存在，那么也设为显示侧边栏
-    //         setCollapsed(false);
-    //     }else{
-    //         setCollapsed(value === "true" ? true : false);
-    //     }
-
-    //     return () => {
-    //         // 写入localStorate中
-    //         localStorage.setItem("leftSiderNavCollapsed", collapsed);
-    //     }
-
-    // }, [])
+    useEffect(() => {
+        // 从localStorate中获取数据
+        // console.log(collapsed);
+        if(collapsed === null){
+            let value = localStorage.getItem("leftSiderNavCollapsed");
+            if(value === null){
+                // 如果不存在，那么也设为显示侧边栏
+                setCollapsed(false);
+            }else{
+                setCollapsed(value === "true" ? true : false);
+            }
+        }
+        localStorage.setItem("leftSiderNavCollapsed", collapsed);
+        return () => {
+            // 写入localStorate中
+            localStorage.setItem("leftSiderNavCollapsed", collapsed);
+        }
+    }, [collapsed])
 
     return (
         <Resizable className="box"  

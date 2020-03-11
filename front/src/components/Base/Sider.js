@@ -1,4 +1,5 @@
 /**
+ * 文章页时候的左侧
  * 左右布局左侧的内容
  * 获取文章的分类
  */
@@ -31,12 +32,14 @@ function LeftSider({showLeftSider, setShowLeftSider}){
     let widthInit = useMemo(() => {
         // 从localStorage中获取宽度
         let widthValue = localStorage.getItem("leftSiderWidth");
-        if(Number.isNaN(widthValue)){
-            return 200;
-        }else{
-            return parseInt(widthValue, 10);
-        }
 
+        let result = parseInt(widthValue);
+        // console.log(widthValue, isNaN(widthValue), typeof widthValue, result);
+        if(result){
+            return (result >= 156 && result <= 460) ? result : 200;
+        }else{
+            return 200;
+        }
     }, []);
 
     // 左侧导航的宽度

@@ -1,155 +1,102 @@
 /**
- * App的首页
+ * 布局方式三的主页
  */
-import React from "react";
+import React, { useState, useEffect } from "react";
 
-import { Layout } from "antd";
+import {
+    Layout
+} from "antd";
 
-import { Switch, Route } from "react-router-dom";
+import LeftSider from "./Base/LeftSider";
+import {GlobalContext} from "./Base/Context";
+import RightContent from "./Base/Right2";
 
-import Header from "./Base/Header";
-import Nav from "./Base/Nav";
-import Footer from "./Base/Footer";
+function Home(props){
+    // 是否显示左右布局
+    const [showLeftSider, setShowLeftSider] = useState(false);
+    // 控制刷新导航菜单的操作: 如果需要刷新左侧导航，
+    // 设置: setRefreshNavTimes(prevState => prevState + 1);
+    const [refreshNavTimes, setRefreshNavTimes] = useState(0);
+    // 导航信息
+    const [navData, setNavData] = useState([
+        {
+            title: "首页",
+            icon: "home",
+            link: "/"
+        }
+    ]);
 
-// 任务相关的首页
-import TaskIndex from "./Task/Index";
-// 文档相关的首页
-import DocsIndex from "./Docs/Index";
+    useEffect(() => {
+        // 从localStorate中获取数据
+        let value = localStorage.getItem("showLeftSider");
+        // console.log(value, typeof value, Boolean(value));
+        // localStorage.getItem获取到的是字符串
+        if(value === null){
+             // 如果不存在，那么也设为显示侧边栏
+            setShowLeftSider(true);
+            return;
+        }else if(value !== showLeftSider.toString()){
+            setShowLeftSider(value === "true" ? true : false);
+        }
 
-import TestIndex from "./Test/Index";
-import UserIndex from "./User/Index";
+        // 判断是不是首页:后续继续调整
+        if(props.location.pathname === "/"){
+            // 修改浏览器当前标签的标题
+            document.title = `看板-首页`;
+            if(navData.length > 1){
+                setNavData([
+                    {
+                        title: "首页",
+                        icon: "home",
+                        link: "/"
+                    }
+                ]);
+            }
+        }else{
+            // console.log(props.location.pathname);
+        }
+    }, [navData.length, props.location.pathname, showLeftSider]);
 
-import UserCenterIndex from "./User/Center/Index";
-
-// 检查登陆的方法
-import CheckLogined from "./Utils/auth";
-
-// antd的布局
-const { Sider, Content } = Layout;
-
-export default class Home extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      // 侧边栏是否折叠
-      callapsed: false,
-      // 最后一次检查是否登陆的时间
-      laskCheckTime: new Date(),
-    };
-  }
-
-  componentDidMount() {
-    // console.log(this.props);
-    // console.log(this.state);
-
-    // 组件将要mount前先检查下用户是否登陆了
-    if (this.props.history.action === "PUSH") {
-      // 不需要检查是否登陆
-    } else {
-      CheckLogined(this.props);
-    }
-  }
-
-  // componentWillReceiveProps(nextProps) {}
-
-  checkLoginOperation = () => {
-    var now = new Date();
-    var sub = 0;
-    sub = now.getTime - this.state.laskCheckTime.getTime();
-    // 六分钟之内不检查是否登陆
-    if (sub > 1000 * 600) {
-      this.setState({ laskCheckTime: now });
-      CheckLogined(this.props);
-    } else {
-      // console.log("不需要检查登陆", sub);
-    }
-  };
-
-  toggle = () => {
-    // Nav收缩开关
-    this.setState(prevState => {
-      return {
-        collapsed: !prevState.collapsed,
-        defaultOpenKey: this.props.defaultOpenKey
-          ? this.props.defaultOpenKey
-          : null
-      };
-    });
-  };
-
-  onCollapse = collapsed => {
-    // 侧边栏Sider的onCollapse事件
-    this.setState({ collapsed });
-  };
-
-  render() {
-    var navTogleIcon = this.state.collapsed ? "indent" : "outdent";
-    return (
-      <Layout style={{ height: "100vh", overflow: "auto" }}>
-      {/* <Layout> */}
-        <Layout.Header className="header">
-          <Header />
-        </Layout.Header>
-        <Layout>
-          <Sider
-            trigger={null}
-            collapsible
-            collapsed={this.state.collapsed}
-            onCollapse={this.onCollapse}
-            className="sider"
-            collapsedWidth={65}
-            breakpoint="sm"
-          >
-            <div onClick={this.toggle.bind(this)} className="sider-toggle">
-              {/* <Icon type={this.state.collapsed ? "menu-unfold" : "menu-fold"} /> */}
-              <i className={`fa fa-${navTogleIcon}`}></i>
-            </div>
-            <Nav
-              collapsed={this.state.collapsed}
-              defaultOpenKey={this.props.defaultOpenKey}
-              pathname={this.props.location.pathname}
+    let leftSiderElement;
+    if(showLeftSider){
+        leftSiderElement = (
+            <LeftSider 
+                showLeftSider={showLeftSider} 
+                setShowLeftSider={setShowLeftSider}
+                refreshNavTimes={refreshNavTimes}
+                defaultOpenKey={props.defaultOpenKey}
             />
-          </Sider>
-          
-          <Layout style={{ maxHeight: "100vh", overflow: "auto" }}>
-          {/* <Layout> */}
-            <Content className="container" style={{overflow: "auto"}}> 
-              <Switch>
-                {this.checkLoginOperation()}
+        );
+    }
 
-                <Route
-                  path="/task"
-                  component={TaskIndex}
-                  location={this.props.location}
-                />
-
-                <Route
-                  path="/docs"
-                  component={DocsIndex}
-                  location={this.props.location}
-                />
-
-                <Route
-                  path="/test"
-                  component={TestIndex}
-                  location={this.props.location}
-                />
-                
-                <Route
-                  path="/user"
-                  component={UserIndex}
-                  location={this.props.location}
-                />
-                <Route exat path="/" component={UserCenterIndex} />
-              </Switch>
-              
-            </Content>
-            <Layout.Footer>
-              <Footer />
-            </Layout.Footer>
-          </Layout>
-        </Layout>
-      </Layout>
+    return (
+        <GlobalContext.Provider value={
+            {
+                navData,
+                setNavData,
+                history: props.history,
+                // 操作更新左侧导航要用到
+                refreshNavTimes,
+                setRefreshNavTimes
+            }
+        }>
+            <Layout className="left-right-layout">
+                {leftSiderElement}
+                <Layout>
+                    <Layout.Content>
+                        <RightContent 
+                          {...props}
+                          showLeftSider={showLeftSider}
+                          setShowLeftSider={setShowLeftSider}
+                        />
+                    </Layout.Content>
+                    {/* <Layout.Footer>
+                        底部内容
+                    </Layout.Footer> */}
+                </Layout>
+            </Layout>
+        </GlobalContext.Provider>
     );
-  }
 }
+
+export default Home;
