@@ -1,5 +1,6 @@
 /**
- * 左右布局右侧的内容
+ * 左右布局右侧的内容：
+ * 文章页的右侧
  */
 import React, {useState, useCallback, useContext} from "react";
 import { Switch, Route } from "react-router-dom";
@@ -54,6 +55,7 @@ function RightContent(props){
                     <UserLoginOrInfo />
                 </div>
             </div>
+            {/* 右侧头部结束 */}
 
             {/* 右侧主体区域 */}
             <div className="container">

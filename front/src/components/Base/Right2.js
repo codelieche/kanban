@@ -1,5 +1,6 @@
 /**
- * 左右布局右侧的内容
+ * 左右布局右侧的内容：
+ * 【非】文章页的右侧
  */
 import React, {useState, useCallback, useContext} from "react";
 import { Switch, Route } from "react-router-dom";

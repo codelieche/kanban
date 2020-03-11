@@ -1,0 +1,82 @@
+@charset "UTF-8";
+/* 网站头部样式 */
+.ant-layout-header.header, .nav-header {
+    background: #333744;
+    height: 50px;
+    line-height: 50px;
+    padding-left: 10px;
+
+    .logo {
+        display: inline-block;
+        img {
+            width: 140px;
+            height: 35px;
+        }
+    }
+
+    ul.nav {
+        display: block;
+        float: right;
+        color: #F8F8F8;
+        font-size: 13px;
+        li {
+            display: inline-block;
+            padding: 0 8px;
+            text-align: center;
+            min-width: 80px;
+            a, .link {
+                display: inline-block;
+                color: #F8F8F8;
+                text-decoration: none;
+                cursor: pointer;
+            }
+            &:hover {
+                background-color: #4A5064;
+            }
+        }
+    }
+
+    .user {
+        float: right;
+        margin-left: 20px;
+        color: #F8F8F8;
+    }
+} 
+
+// 网站右侧的头部样式
+.right-content .header{
+    // padding: 10px 15px;
+    background-color: #eee;
+    height: 42px;
+    position: relative;
+
+    .toogle{
+        padding-top: 5px;
+        padding-left: 15px;
+        display: inline-block;
+        // line-height: 40px;
+        font-size: 20px;
+        width: 40px;
+        text-align: center;
+        cursor: pointer;
+        color: #888;
+    }
+
+    // 导航条
+    .nav {
+        padding: 10px 15px;
+        display: inline-block;
+        // padding: 3px;
+        font-size: 14px;
+    }
+
+    &::after{
+        content: " ";
+        clear: both;
+    }
+    .user{
+        position: absolute;
+        right: 15px;
+        top: 5px;
+    }
+}

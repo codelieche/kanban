@@ -1,0 +1,300 @@
+// 左右布局时候的左侧样式
+
+// 左侧的文章列表
+// .categories-list{
+//     background-color: #fff;
+
+//     li {
+//         &:hover{
+//             background-color: #eee;
+//         }
+//     }
+
+//     li + li{
+//         border-top: 1px solid #f9f9f9;
+//     }
+// }
+
+// 左右布局
+.ant-layout.ant-layout-has-sider.left-right-layout{
+    background-color: #fff;
+
+    .ant-layout-sider{
+        // background-color: rgb(247, 246, 243);
+        // background-color: #F7F6F3;
+        background-color: @left-sider-background;
+        // background-color: #333744;
+        color: @left-sider-color;
+    }
+    
+    .left-sider {
+        display: flex;
+        display: -webkit-flex;
+        flex-direction: column;
+        // transition: box-shadow 300ms ease-in 0s;
+        transition: left 0.6s ease;
+        -webkit-transition: left 0.6s ease;
+        height: 100%;
+
+        .header{
+            // height: 50px;
+            // padding: 10px 15px;
+            flex-grow: 0;
+            flex-shrink: 0;
+            // padding-bottom: 8px;
+            box-shadow: rgba(55, 53, 47, 0.09) 0px 1px 0px;
+            // border-bottom: 1px solid @border-bottom-line-color;
+            // border-bottom: 1px solid #f9f9f9;
+            // border-bottom: 1px solid rgba(231, 231, 231, 0.29);
+            transition: box-shadow 300ms ease 0s;
+            position: relative;
+
+            // logo开始
+            .logo{
+                // background-color: #333744;
+                // background-color: #4A90E2;
+                background-color: @left-sider-header-log-background;
+                padding: 5px 10px;
+                color: @left-sider-header-log-color;
+                // height: 32px;
+                img {
+                    //  float: left;
+                    // width: 80%;
+                    max-width: 100%;
+                    height: 32px;
+                }
+
+                // 显示、隐藏左侧导航
+                &:hover{
+                    .toogle{
+                      visibility: visible;
+                    }
+                }
+
+                .toogle{  // 隐藏左侧的开关
+                    position: absolute;
+                    right: 0;
+                    top: 0;
+                    float: right;
+                    text-align: center;
+                    width: 40px;
+                    font-size: 30px;
+                    line-height: 40px;
+                    cursor: pointer;
+                    visibility: hidden;
+                    z-index: 2;
+                }
+            }
+            // logo结束
+
+            // namespace开始
+            .namespace { // 工作空间、分类列表
+                padding: 10px 20px;
+                // color: #666;
+                // color: #f8f8f8;
+                color: @left-sider-namespace-color;
+                background-color: @left-sider-namespace-background;
+
+                .current{
+                    display: inline-block;
+                    margin-left: 5px;
+                    font-weight: bold;
+                    margin-right: 5px;
+                }
+            }
+            // namespace结束
+
+            // 收缩开关：放在底部，或者logo的下面
+            .collapsed-toogle{
+                text-align: center;
+                line-height: 32px;
+                font-size: 16px;
+                background-color: @letf-sider-nav-item-hover-color;
+                cursor: pointer;
+            }
+        }
+        
+        .content{ // 左侧导航的内容
+            flex: 1;
+            text-overflow: auto;
+            // padding-top: 14px;
+            padding-bottom: 20px;
+            overflow: hidden auto;
+            margin-right: 0px;
+            margin-bottom: 0;
+
+            .articles, .nav-list { // 文章的导航，或者是功能的导航
+                // padding-left: 10px;
+                .item { // 功能菜单item
+                    line-height: 35px;
+                    font-size: 14px;
+                    // height: 35px;
+                    -webkit-user-select: none;
+                    cursor: pointer;
+                    position: relative;
+
+                    .title{ // 功能菜单的标题
+                        // max-width: 100%;
+                        overflow: hidden;
+                        text-overflow: ellipsis; // 标题太长的时候截断
+                        white-space: nowrap;
+                        // 左侧导航的延时
+                        // color: #444;
+                        color: #595959;
+                        font-weight: 500; // 标题加粗显示
+                        .no-title{
+                            display: inline-block;
+                            // color: #999;
+                        }
+
+                        &:hover{ // 鼠标放上来的时候，让底纹醒目一下
+                            // background-color: #eee;
+                            background-color: @letf-sider-nav-item-hover-color;
+
+                            .add { // 文章标题：右侧有个add，鼠标放上来的时候应该显示它
+                                visibility: visible;
+                            }
+                        }
+                    }
+
+                    .add { // 文章导航右侧的添加子文章，默认不显示，鼠标放上来的时候显示
+                        visibility: hidden;
+                        font-size: 16px;
+                        &:hover{
+                            font-size: 20px;
+                        }
+                    }
+
+                    .add, .right {  // 当有children的菜单，它的右侧会有个标识
+                        position: absolute;
+                        right: 0px;
+                        top: 0px;
+                        // visibility: hidden;
+                        padding: 0 5px;
+                        i {
+                            padding: 5px;
+                        }
+                    }
+
+                    .right {  // 右侧标识的大小：功能菜单导航，有子菜单的会有个right
+                        font-size: 10px;
+                    }
+
+                    a {  // 导航菜单的a链接
+                        // color: #666;
+                        // color: #f8f8f8;
+                        color: @left-sider-nav-a-color;
+                        &.active{
+                            .title{
+                                // color: #f8f8f8;
+                                color: @left-sider-nav-active-color;
+                                // background-color: #00c1de;
+                                background-color: @left-sider-nav-active-background;
+                            }
+                        }
+                    }
+                }
+
+                // 每一级缩进10px：代码里面控制padding-left x level
+                .children {
+                    // padding-left: 15px;
+                    // border-top: 1px solid rgb(175, 130, 130);
+                    display: none;  // 最开始子菜单是不显示的，当是 .children.active的时候才显示
+                    &.active {
+                        display: block;
+                    }
+                }
+            }
+        }
+
+        .footer{  // 左侧的底部：导航菜单下面
+            // height: 50px;
+            padding: 10px 15px;
+            cursor: pointer;
+            display: block;
+            flex: 0 0 auto;
+            margin-top: auto;
+            border-top: 1px solid rgba(55, 53, 47, 0.12);
+            
+            &:hover{
+                // background-color: rgba(55, 53, 47, 0.09);
+                background-color: @letf-sider-nav-item-hover-color;
+                .add i {
+                    font-size: 18px;
+                }
+            }
+
+            // 收缩开关：点击控制左侧导航是否收缩
+            .collapsed-toogle{
+                text-align: center;
+                font-size: 16px;
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+// 左侧折叠导航样式start
+.left-sider.collapsed{  // 左侧菜单是收缩状态的时候的样式
+    .header {
+        .log{
+            img {
+                height: 50px;
+                // width: 64px;
+            }
+        }
+    }
+
+    .content{
+        .nav-list{
+            .item{
+                text-align: center;
+            }
+        }
+    }
+}
+
+.collapsed-nav-children{
+    .item{
+        &:hover{
+            background-color: @letf-sider-nav-item-hover-color;
+        }
+    }
+
+    .item + .item{
+        border-top: 1px dashed #eee;
+    }
+    
+    a {
+        display: block;
+        padding: 5px 10px;
+        line-height: 24px;
+        color: #565656;
+        .title {
+            line-height: 24px;
+        }
+    }
+}
+// 左侧折叠导航样式end
+
+// 变更尺寸样式
+.react-resizable {
+    position: relative;
+    background-clip: padding-box;
+}
+
+.react-resizable-handle{
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    bottom: 0;
+    right: -5px;
+    cursor: col-resize;
+    z-index: 1;
+}
+
+.react-resizable-handle-se{
+    bottom: 0;
+    right: 0;
+    cursor: se-resize;
+}

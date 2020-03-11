@@ -168,8 +168,9 @@ function CategoryDetail(props) {
                             </dl>
                            
                         </div>
-
-                        <Row>
+                        
+                        {/* 文章列表部分 */}
+                        <div>
                             <Row className="title">
                                 <h4>文章列表</h4>
                             </Row>
@@ -181,7 +182,9 @@ function CategoryDetail(props) {
                                 apiUrlPrefix={ id ? `/api/v1/docs/category/${id}/articles` : null}
                                 pageUrlPrefix={`/docs/category/${id}`}
                             />
-                        </Row>
+                        </div>
+                        {/* 文章列表部分：end */}
+
                     </Col>
                     {/* 左侧内容：end */}
 
