@@ -1,0 +1,135 @@
+@charset "UTF8";
+/* 右侧container样式 */
+.container {
+  background: #fff;
+  // text-align: left;
+  font-size: 14px;
+  // line-height: 1.3;
+  .content {
+    background: #ffffff;
+
+    .nav {
+      // 面包屑导航样式
+      padding: 10px 20px;
+      background: #eee;
+      // font-size: 12px;
+      i {
+        margin-right: 5px;
+        font-size: 13px;
+      }
+    }
+
+    // 面包屑下面的main主体内容
+    .main {
+      padding: 10px 20px;
+      // 主内容标题
+      .title {
+        // border-bottom: 1px solid #DDD;
+        margin-bottom: 10px;
+        h4 {
+          border-left: 2px solid #88b7e0;
+          padding-left: 10px;
+          margin-top: 8px;
+          margin-bottom: 6px;
+          color: #444;
+        }
+      }
+
+      // 工具栏样式
+      .tools {
+        padding-top: 5px;
+        margin-bottom: 10px;
+        button {
+          margin-right: 10px;
+        }
+      }
+    }
+  }
+}
+
+// 主体内容中的信息展示属性样式：详情页用的居多
+.container .info-property {
+  // 详情页 属性信息样式
+  margin: 0 auto 20px;
+  padding: 10px 20px 5px 20px;
+  // padding-right: 10px;
+  // border: 1px solid #e6e6e6;
+
+  border: 1px solid #d4d6d8;
+  box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin-right: 10px;
+  dl:last-child {
+    border-bottom: none;
+  }
+  dl {
+    font-size: 14px;
+    line-height: 32px;
+    // border-bottom: 2px dotted #cecece;
+    border-bottom: 1px dashed #e6e6e6;
+    // color: #333;
+    display: flex;
+    padding: 0;
+    margin: 0;
+    dd {
+      margin-bottom: 0;
+    }
+    dt,
+    dd {
+      // 有时候信息太长，要设置下自动换行
+      display: inline-block;
+      word-wrap: break-word;
+      word-break: break-all;
+      img {
+        max-width: 100%;
+        // height: 250px;
+      }
+    }
+    dt {
+      width: 140px;
+      // font-size: 15px;
+      color: #666;
+      vertical-align: top;
+    }
+    dd {
+      flex: 1;
+      list-style: none;
+      // 状态
+      &.status {
+        display: inline-block;
+        // text-align: center;
+        width: 100%;
+        i {
+          font-size: 16px;
+          &.anticon-check-square, &.fa-check {
+            color: green;
+          }
+
+          &.anticon-close-square, &.fa-close {
+            color: #f04134;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 无内容的样式
+.no-content {
+  text-align: center;
+  padding: 50px 20px;
+  font-size: 13px;
+  line-height: 24px;
+  // font-weight: 300;
+  // color: #9B9B9B;
+  color: #999;
+  background-color: #fff;
+  box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.1);
+  &.border {
+    border: 1px solid #d4d6d8;
+    border-radius: 8px;
+  }
+  button {
+    margin: 0 10px;
+  }
+}

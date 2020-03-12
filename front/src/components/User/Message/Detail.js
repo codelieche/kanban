@@ -72,8 +72,8 @@ export default class MessageDetail extends React.Component {
         <div className="main">
           <div className="message">
             <div className="header">
-              <div className="article-title">
-                <h4>{this.state.detail.title}xx</h4>
+              <div className="title">
+                <h2>{this.state.detail.title}</h2>
               </div>
               <div className="meta">
                 <span>消息类型: {this.state.detail.scope}</span>

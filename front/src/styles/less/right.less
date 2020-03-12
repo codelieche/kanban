@@ -1,0 +1,58 @@
+// 右侧相关布局样式
+
+// 左右布局
+.ant-layout.left-right-layout{
+    .ant-layout{
+        background: #fff;
+    }
+
+    // 右侧区域内容：重点设置flex上下布局：container占满
+    .right-content {
+        height: 100vh;
+        display: flex;
+        display: -webkit-flex;
+        flex-direction: column;
+        overflow-y: auto;
+
+        // 右侧主体内容
+        & > .container{
+            flex: 1;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+
+            article{
+                // 各层级设置flex，让文章主体内容占更多的空间
+                flex: 1;
+
+                // 让文章的.content部分占剩余的全部区域
+                // display: flex;
+                // flex-direction: column;
+
+                // .content{
+                //     flex: 1;
+                // }
+            }
+
+            section{
+                padding-left: calc((100% - 780px) /2);
+                padding-right: calc((100% - 780px) /2);
+                padding-bottom: 0px;
+            }
+        }
+
+        .table-center{
+            padding: 20px 15px;
+            position: relative;
+            min-width: 100%;
+            // padding-bottom: 0px;
+            padding-left: calc((100% - 780px) /2);
+            padding-right: calc((100% - 780px) /2);
+            overflow-x: auto;
+            min-height: 100px;
+            background-color: #EEE;
+            white-space: nowrap;
+        }
+    }
+}
+

@@ -1,0 +1,253 @@
+@charset 'UTF8';
+
+// 首页弹出消息样式
+.message {
+    .meta {
+        font-size: 12px;
+        color: #999;
+        padding-bottom: 3px;
+        .meta-item{
+            display: inline-block;
+            margin-right: 5px;
+        }
+    }
+    // 消息内容样式
+    .content {
+        padding-top: 10px;
+        font-size: 13px;
+        color: #9B9B9B;
+        border-top: 1px dashed #d4d6d8;
+    }
+}
+
+// 消息 文章样式
+.right-content .message {
+    margin: 10px 0;
+    padding: 10px 20px;
+    border: 1px solid #E1E6EB;
+    
+    .header {
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #E1E6EB;
+        // padding-bottom: 10px;
+
+        h2 {
+            font-size: 20px;
+            line-height: 26px;
+            margin: 21px 0 5px 0;
+            // font-weight: 400;
+            line-height: 1.1;
+            // font-size: 18px;
+            color: #555;
+        }
+
+        .meta {
+            font-size: 13px;
+            line-height: 22px;
+            color: #999;
+            span + span {
+                display: inline-block;
+                margin-left: 15px;
+            }
+        }
+    }
+
+    .body {
+        padding: 20px 10px;
+        min-height: 320px;
+        font-size: 14px;
+        line-height: 24px;
+    }
+}
+
+// 右侧文章的样式
+.right-content article{
+    font-size: 14px;
+    .middle {
+        padding-left: calc((100% - 780px) /2);
+        padding-right: calc((100% - 780px) /2);
+        padding-bottom: 0px;
+    }
+
+    // 每个section都需设置padding
+    section {
+        padding-left: calc((100% - 780px) /2);
+        padding-right: calc((100% - 780px) /2);
+        padding-bottom: 0px;
+    }
+
+    // h1 div p span出现编辑时
+    [contenteditable=true] {
+        // background-color: #eee;
+        outline: none;
+        white-space: prewrap;
+        padding: 3px 5px;
+    }
+
+    header {
+        margin-bottom: 1em;
+        .title {
+            margin-left: 10px;
+            // padding: 4px 12px;
+            margin-bottom: 0.25em;
+            line-height: 1.5em;
+            // border-bottom: 1px solid #d1d1d1;
+            // border-bottom: 1px solid rgba(55, 55, 50, 0.10);
+            border-bottom: 1px solid @border-bottom-line-color;
+
+            &:hover{
+                .toogle{
+                    visibility: visible;
+                }
+            }
+
+            .toogle{
+                padding: 5px 15px 2px 15px;
+                visibility: hidden;
+                // color: #989898;
+                color: rgba(55, 53, 47, 0.5);
+                font-size: 12px;
+                .button{
+                    display: inline-block;
+                    padding: 2px 5px;
+                    background-color: rgba(238,238,238, 0.4);
+                    cursor: pointer;
+                    border-radius: 3px;
+                    &:hover{
+                        background-color: rgba(218,218,218, 0.8);
+                    }
+                }
+            }
+
+            .row{
+                padding: 4px 12px;
+                display: flex;
+                font-size: 2.2em;
+                color: #555555;
+                font-weight: bold;
+                padding-bottom: 5px;
+            }
+
+            icon {
+                width: 100px;
+                // display: block;
+            }
+
+            h1 {
+                flex: 1;
+                // display: inline-block;
+                // width: 100%;
+                font-size: 28px;
+                margin-bottom: 2px;
+                padding-bottom: 10px;
+                // border-bottom: 1px solid #d1d1d1;
+
+                // span {
+                //     display: block;
+                // }
+            }
+
+            div.ant-typography{
+                // display: inline-block;
+                border: 1px solid #fff;
+
+                textarea {
+                    // display: block;
+                    // width: 100%;
+                    border: 1px solid #fff;
+                }
+
+                .ant-input {
+                    border: 1px solid #fff;
+                }
+            }
+        }
+        
+        .description{
+            margin-left: 10px;
+            padding: 10px 15px;
+            line-height: 1.5em;
+            margin-top: 0.5em;
+            color: #777;
+            font-size: 14px;
+            // border-left: 4px solid #989898;
+            border-left: 5px solid #d9d9d9;
+            padding: 10px 20px;
+        }
+    }
+    // header结束
+
+    // 文章内容开始
+    .content {
+        position: relative;
+        // border-top: 1px solid #999;
+        margin-bottom: 15px;
+        margin-top: 20px;
+        padding: 5px;
+        overflow-x: auto;
+        width: 100%;
+        min-height: 100px;
+
+        .editor-button{
+            visibility: hidden;
+            position: absolute;
+            right: 20px;
+            top: 10px;
+        }
+
+        &:hover{
+            .editor-button{
+                visibility: visible;
+            }
+        }
+
+
+    }
+    // 文章内容结束
+
+    // 编辑器
+    .editor {
+        display: block;
+        // padding: 10px 20px;
+        .App {
+            padding: 2px 0px;
+        }
+    }
+
+    // 子文章列表
+    .children {
+        margin: 10px;
+        // border-top: 1px solid #999;
+        h2 {
+            padding: 5px 10px;
+            // border-bottom: 1px solid #999;
+            // border-bottom: 1px solid rgba(55, 55, 50, 0.10);
+            border-bottom: 1px solid @border-bottom-line-color;
+
+        }
+        ul {
+            padding-bottom: 45px;
+            li {
+                &:hover{
+                    background-color: #EEE;
+                }
+                a {
+                    padding: 3px 5px;
+                    display: block;
+                    font-size: 14px;
+                    color: #666;
+                    cursor: pointer;
+                    line-height: 24px;
+                    .no-title{
+                        color: #999;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.large{
+    height: 1000px;
+}
