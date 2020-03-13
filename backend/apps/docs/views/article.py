@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 from django.http.response import JsonResponse
 
 from docs.models.article import Article
+from docs.models.discussion import Discussion
 from docs.models.info import Info
 from docs.serializers.article import (
     ArticleModelSerializer,
@@ -17,6 +18,7 @@ from docs.serializers.article import (
     ArticleWithInfovaluesListSerializer,
     ArticleAllSerializer
 )
+from docs.serializers.discussion import DiscussionModelSerializer
 from docs.serializers.info import InfoModelSerializer
 
 
@@ -133,4 +135,23 @@ class ArticleInfoValueApiView(APIView):
         # print(article, infovalues)
         return JsonResponse(data=infovalues)
 
+
+class ArticleDiscussionListApiView(generics.ListAPIView):
+    """
+    讨论列表api
+    """
+    # queryset = Discussion.objects.all()
+    serializer_class = DiscussionModelSerializer
+    permission_classes = (IsAuthenticated,)
+
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ("content", "article__title", "user__username")
+    filter_fields = ("user", "article", "category", "is_deleted")
+    ordering_fields = ("id", "article", "user", "time_added", "time_updated", "is_deleted")
+    ordering = ("-id",)
+
+    def get_queryset(self):
+        # 获取当前文章的评论
+        queryset = Discussion.objects.filter(**self.kwargs)
+        return queryset
 

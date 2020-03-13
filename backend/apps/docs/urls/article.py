@@ -7,7 +7,8 @@ from docs.views.article import (
     ArticleListAllApiView,
     ArticleDetailApiView,
     ArticleInfoListAllApiView,
-    ArticleInfoValueApiView
+    ArticleInfoValueApiView,
+    ArticleDiscussionListApiView
 )
 
 urlpatterns = [
@@ -16,6 +17,7 @@ urlpatterns = [
     path('list', ArticleListApiView.as_view(), name="list"),
     path('all', ArticleListAllApiView.as_view(), name="all"),
     path('<int:pk>', ArticleDetailApiView.as_view(), name="detail"),
+    path('<int:article_id>/discussions', ArticleDiscussionListApiView.as_view(), name="discussion_list"),
     path('<int:article_id>/infos', ArticleInfoListAllApiView.as_view(), name="infos"),
     path('<int:article_id>/infovalues', ArticleInfoValueApiView.as_view(), name="infovalues"),
 ]

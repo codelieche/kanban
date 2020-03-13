@@ -35,9 +35,20 @@ class DiscussionModelSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data=validated_data)
         return instance
 
+    def get_fields(self):
+        # 调用父类方法
+        fields = super().get_fields()
+        
+        # 修改parent
+        if self.context["request"].method == "GET":
+            fields["parent"] = DiscussionModelSerializer(required=False, read_only=True)
+
+        # 返回字段
+        return fields
+
     class Meta:
         model = Discussion
         fields = (
             "id", "category", "article", "content", "parent",
             "user", "time_added", "time_updated", "is_deleted"
-            )
+        )

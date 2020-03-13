@@ -20,6 +20,8 @@ import { patchUpdateArticle } from "./Operation";
 import EditorArticleModel from "./EditorModal";
 import CodeBlock from "../../Editor/Element/Code";
 import LoadingPage from "../../Page/Loading";
+// 文章评论
+import ArticleDiscussions from "./Discussions";
 
 export const ArticleDetail = function(props){
     // 状态
@@ -224,6 +226,10 @@ export const ArticleDetail = function(props){
                           icon={<Icon type="edit"/>}
                           onClick={handleEditorButtonClick}>编辑</Button>
                     </div>
+                </section>
+
+                <section>
+                    <ArticleDiscussions id={1} />
                 </section>
             </div>
             {/* 文章内容结束 */}
