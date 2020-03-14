@@ -228,8 +228,12 @@ export const ArticleDetail = function(props){
                     </div>
                 </section>
 
+                {/* 文章评论 */}
                 <section>
-                    <ArticleDiscussions id={1} />
+                    <div className="title">
+                        <h2>评论</h2>
+                    </div>
+                    <ArticleDiscussions id={articleID} />
                 </section>
             </div>
             {/* 文章内容结束 */}

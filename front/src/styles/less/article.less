@@ -1,0 +1,76 @@
+// 文章相关的样式
+
+article {
+    section {
+        .title {
+            border-bottom: 1px solid @border-bottom-line-color;
+        }
+    }
+    .discussions {
+        .add {
+            margin-top: 15px;
+            margin-bottom: 15px;
+            background-color: #f9f9f9;
+            border: 1px solid @border-bottom-line-color;
+            border-radius: 5px;
+            textarea {
+                margin-bottom: 5px;
+            }
+            .buttons {
+                padding: 5px 10px;
+                margin-top: 5px;
+            }
+
+        }
+
+        // background-color: #eee;
+        .list > .ant-comment {
+            margin: 10px 0;
+            // border: 1px solid @border-bottom-line-color;
+            box-shadow: 0 2px 4px 0 rgba(7,17,27,.2);
+            border-radius: 5px;
+            position: relative;
+            min-height: 32px;
+            margin-bottom: 16px;
+            transition: .3s all linear;
+    
+            &:hover{
+                box-shadow: 0 8px 16px 0 rgba(7,17,27,.3);
+            }
+        }
+        .ant-comment {
+            padding: 5px;
+            padding-left: 10px;
+            border: 1px solid @border-bottom-line-color;
+            // background-color: #f9f9f9;
+            margin-bottom: 10px;
+
+            .comment {
+                // display: none;
+                // visibility: hidden;
+                margin-bottom: 10px;
+            }
+
+            &:hover{
+                & > .ant-comment-nested >.comment {
+                    display: block;
+                    visibility: visible;
+                }
+            }
+            
+        }
+
+        // 更多
+        .more {
+            text-align: center;
+            background-color: #eee;
+            padding: 4px 15px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #999;
+        }
+
+        
+    }
+    
+}
