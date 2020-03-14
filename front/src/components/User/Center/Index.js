@@ -32,7 +32,7 @@ export const UserCenterIndex = (props) => {
   return (
     <Row className="content">
       {/*左边部分  */}
-      <Col xs={{ span: 24 }} sm={{ span: 24 }} lg={{span: 16}} className="main">
+      <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{span: 16}} lg={{span: 18}} className="main">
         <div className="title">
           <h4>工作区列表</h4>
         </div>
@@ -43,7 +43,7 @@ export const UserCenterIndex = (props) => {
       </Col>
 
       {/*右边部分  */}
-      <Col xs={{ span: 24 }} sm={{span: 24}} lg={{ span: 8 }} className="sidebar">
+      <Col xs={{ span: 24 }} sm={{span: 24}} md={{span: 16}} lg={{ span: 6}} className="sidebar">
         <MessageList />
       </Col>
     </Row>

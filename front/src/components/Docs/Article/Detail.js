@@ -32,8 +32,9 @@ export const ArticleDetail = function(props){
         setNavData, setRefreshNavTimes, 
         currentArticleCategoryID, setCurrentArticleCategoryID // 全局的文章分类ID
     } = useContext(GlobalContext);
-    // 是否显示描述
+    // 是否显示描述、显示讨论
     const [showDescription, setShowDescription] = useState(false);
+    const [showDiscussion, setShowDiscussion] = useState(false);
     // 是否显示编辑的对话框
     const [showEditorModal, setShowEditorModal] = useState(false);
     // 判断是否加载完毕了
@@ -172,6 +173,13 @@ export const ArticleDetail = function(props){
                             <Icon type="info-circle"/>
                             {showDescription ? "隐藏描述" : "显示描述"}
                         </span>
+
+                        <span className="button" 
+                          onClick={() => {setShowDiscussion(prevState => !prevState)}}
+                        >
+                            <Icon type="commenting"/>
+                            {showDiscussion ? "隐藏讨论" : "显示讨论"}
+                        </span>
                     </div>
 
                     {/* 文章的标题行 */}
@@ -229,12 +237,15 @@ export const ArticleDetail = function(props){
                 </section>
 
                 {/* 文章评论 */}
-                <section>
-                    <div className="title">
-                        <h2>评论</h2>
-                    </div>
-                    <ArticleDiscussions id={articleID} />
-                </section>
+                {showDiscussion && (
+                    <section>
+                        <div className="title">
+                            <h2>评论</h2>
+                        </div>
+                        <ArticleDiscussions id={articleID} />
+                    </section>
+                )}
+                
             </div>
             {/* 文章内容结束 */}
 

@@ -6,6 +6,7 @@ import React, { useState, useCallback, useEffect, useMemo} from "react";
 import {
     Comment, Avatar, Input, Radio, Button, message
 } from "antd";
+import moment from "moment";
 
 import Icon from "../../Base/Icon";
 import fetchApi from "../../Utils/fetchApi";
@@ -62,6 +63,7 @@ const DiscussionItem = ({data, children, afterFetchPostHandle}) => {
             <Avatar style={{ backgroundColor: '#87d068' }} icon={<Icon type="user" noMarginRight={true} />} alt={data.user} />
           }
           content={data.content}
+          datetime={moment(data.time_added, "YYYY-MM-DD HH:mm:ss").fromNow()}
           >
               <div className="comment">
                     <Input.Search 

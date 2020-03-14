@@ -119,7 +119,7 @@ function CategoryDetail(props) {
             <div className="main">
                 <Row gutter={16}>
                     {/* 左侧内容：start */}
-                    <Col xs={{span: 24}} sm={{span: 16}}>
+                    <Col xs={{span: 24}} sm={{span: 16}} lg={{span: 18}}>
                         <Row className="title">
                             <h4>文档分类详情</h4>
                         </Row>
@@ -189,7 +189,7 @@ function CategoryDetail(props) {
                     {/* 左侧内容：end */}
 
                     {/* 右侧内容：start */}
-                    <Col xs={{span: 24}} sm={{span: 8}}>
+                    <Col xs={{span: 24}} sm={{span: 8}} lg={{span: 6}}>
                         {/* props.match.params.id有可能是字符，所以还是传递data.id更准确 */}
                         {data.id > 0 && <ModelLogs app="docs" model="category" id={data.id}></ModelLogs>}
                     </Col>
