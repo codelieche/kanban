@@ -139,27 +139,44 @@ export const ButtonTools = function(props) {
         );
     });
 
+    // 监听复制事件
+    const handlePasteEvent = useCallback((event) => {
+        // console.log(event);
+        // 阻止冒泡
+        event.stopPropagation();
+        if( !modalVisible && (event.clipboardData || event.originalEvent) ){
+            // chrome有些老版本中是：event.originalEvent
+            var clipboardData = (event.clipboardData || event.originalEvent.clipboardData);
+
+            if(clipboardData.items){
+                let items = clipboardData.items;
+                for(var i = 0; i < items.length; i++){
+                    // console.log(items[i]);
+                    if(items[i].type.indexOf("image") >= 0){
+                        // 检测到有图片文件，如果图片modal没弹出来，就弹出来吧
+                        // console.log(items[i]);
+                        setModalVisible(true);
+                        // 用户再一次点击一下复制就可以复制图片了。
+                        // 有空后续可再优化一下
+                    }
+                }
+            }
+        }
+
+    }, [modalVisible])
+
+    useEffect(() => {
+        document.addEventListener("paste", handlePasteEvent);
+        // 移除
+        return () => {
+            document.removeEventListener("paste", handlePasteEvent);
+        }
+    }, [handlePasteEvent])
+
     const testButtonClick = (event) => {
         // 阻止event的默认事件
         console.log(event);
         event.preventDefault();
-
-        console.log(props.editor);
-
-        // 想编辑器中插入个图片
-        let doc = props.editor.getDoc();
-        let cursor = doc.getCursor();
-        // let pos = {
-        //     line: cursor.line(),
-        //     ch: cursor.ch
-        // }
-        console.log(doc, cursor);
-        // 插入图片
-        // doc.replaceRange("![]()", cursor);
-        // doc.replaceRange("![]()", cursor);
-        doc.replaceSelection("![]()");
-        // 如果是替换多个，可使用
-        // doc.replaceSelections(["v1", "v2", "v3"]);
         window.editor = props.editor;
     }
 
