@@ -7,7 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
-from django.http.response import JsonResponse
+from django.http.response import JsonResponse, HttpResponseForbidden
 
 from docs.models.article import Article
 from docs.models.discussion import Discussion
@@ -97,6 +97,46 @@ class ArticleDetailApiView(generics.RetrieveUpdateDestroyAPIView):
             return ArticleDetailSerializer
         else:
             return ArticleModelSerializer
+
+    def retrieve(self, request, *args, **kwargs):
+        # 文章详情
+
+        # 1. 获取到文章的分类、请求用户
+        instance = super().get_object()
+        user = request.user
+
+        # 2. 检查用户是否有读的权限
+        if not instance.check_user_permission(user, "read"):
+            return HttpResponseForbidden()
+        
+        # 3. 调用父类的方法
+        return super().retrieve(request, *args, **kwargs)
+
+    def update(self, request, *args, **kwargs):
+        """更新文章"""
+        # 1. 获取到文章的分类、请求用户
+        instance = super().get_object()
+        user = request.user
+
+        # 2. 检查用户是否有相关的权限
+        if not instance.check_user_permission(user, "update"):
+            return HttpResponseForbidden()
+        
+        # 3. 调用父类的方法
+        return super().delete(request, *args, **kwargs)
+
+    def delete(self, request, *args, **kwargs):
+        """删除文章"""
+        # 1. 获取到文章的分类、请求用户
+        instance = super().get_object()
+        user = request.user
+
+        # 2. 检查用户是否有相关的权限
+        if not instance.check_user_permission(user, "delete"):
+            return HttpResponseForbidden()
+        
+        # 3. 调用父类的方法
+        return super().delete(request, *args, **kwargs)
 
 
 class ArticleInfoListAllApiView(generics.ListAPIView):

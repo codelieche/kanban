@@ -82,6 +82,15 @@ class Article(models.Model):
                 }
         # 返回结果
         return results
+    
+    def check_user_permission(self, user,  permission="read"):
+        """
+        检查用户的权限
+        """
+        # 1. 获取文章的分类
+        category = self.category
+        # 2. 判断用户是否有分类的权限
+        return category.check_user_permission(user, permission)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         # 计算level

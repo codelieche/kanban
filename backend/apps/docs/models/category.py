@@ -75,7 +75,7 @@ class Category(models.Model):
         # 校验需要检查的权限是否合理
         permission = permission.lower()
         # 全部的权限：后续可优化鉴权的方式
-        all = ("read", "write", "delete", "all", "add_user", "delete_user", "update_user")
+        all = ("read", "write", "update", "delete", "all", "add_user", "delete_user", "update_user")
         if permission not in all:
             return False
         
@@ -88,9 +88,9 @@ class Category(models.Model):
         
         # 开始判断
         permission_dict = {
-            "R": ["read"],
-            "RW": ("read", "write"),
-            "ALL": all
+            "R": ["read"],  # 只读权限
+            "RW": ("read", "write", "update", "delete"),  # 可写权限
+            "ALL": all  # 全部权限
         }
         
         if (category_user.permission in permission_dict) \

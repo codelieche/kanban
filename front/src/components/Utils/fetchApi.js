@@ -2,7 +2,7 @@
 import axios from 'axios';
 import qs from 'qs';
 
-import {message} from "antd";
+// import {message} from "antd";
 
 import env from "../../config/env";
 
@@ -74,8 +74,8 @@ api.interceptors.response.use(
                     window.location.href = url;
                     break;
                 case 403:
-                    message.warn("您无权限访问相关数据", 3);
-                    alert("您没有权限访问当前数据");
+                    // message.warn("您无权限访问相关数据", 3);
+                    // alert("您没有权限访问当前数据");
                     break;
                 case 404:
                     // console.log('404 Not Found');

@@ -6,8 +6,8 @@ import React, {useState, useContext, useMemo, useCallback, useEffect} from "reac
 import { Link } from "react-router-dom";
 
 import {
-    // Typography,
     Button,
+    Result,
     message,
 } from "antd";
 import ReactMarkdown from "react-markdown";
@@ -39,6 +39,8 @@ export const ArticleDetail = function(props){
     const [showEditorModal, setShowEditorModal] = useState(false);
     // 判断是否加载完毕了
     const [loaded, setLoaded] = useState(false);
+    // 是否需要渲染错误页
+    const [rendeErrorPage, setRendeErrorPage] = useState(0);
 
     const fetchDetailData = useCallback(id => {
         if(! id){
@@ -101,6 +103,11 @@ export const ArticleDetail = function(props){
             .catch(err => {
                 setLoaded(true);
                 console.log(err);
+                // 判断错误是不是：404或者403
+                if(err.status === 403 || err.status === 404){
+                    setData({})
+                    setRendeErrorPage(err.status);
+                }
             });
     }, [currentArticleCategoryID, setCurrentArticleCategoryID, setNavData])
 
@@ -158,6 +165,34 @@ export const ArticleDetail = function(props){
     // 判断是否加载完毕
     if(!loaded){
         return <LoadingPage size="large"/>
+    }
+
+    // 判断是不是渲染错误页：404或者403
+    if( !data.id && rendeErrorPage > 0){
+        // 需要渲染错误页面
+        if(rendeErrorPage === 403){
+            return (
+                <Result status="403" title="403"
+                    subTitle={`Sorry，您暂时无权限访问本页面:${props.history.location.pathname}`}
+                    extra={(
+                        <Button type="primary">
+                            <Link to="/">返回首页</Link>
+                        </Button>
+                    )}
+                />
+            )
+        }else if(rendeErrorPage === 404){
+            return (
+                <Result status="404" title="404"
+                    subTitle={`Sorry，您访问的页面不存在:${props.history.location.pathname}`}
+                    extra={(
+                        <Button type="primary">
+                            <Link to="/">返回首页</Link>
+                        </Button>
+                    )}
+                />
+            )
+        }
     }
 
     return (
