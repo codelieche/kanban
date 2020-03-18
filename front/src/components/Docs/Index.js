@@ -21,6 +21,8 @@ import ArticleList from "./Article/List";
 // 导入Comment相关组件:
 import CommontList from "./Comment/List";
 
+import DiscussionList from "./Discussion/List";
+
 function DocsIndex(props){
       return (
           <Switch>
@@ -47,6 +49,12 @@ function DocsIndex(props){
               <Route exat 
                 path="/docs/comment" 
                 render={() => <Redirect to="/docs/comment/list" push={false} />}
+              />
+
+              <Route exat path="/docs/discussion/list" component={DiscussionList} />
+              <Route exat 
+                path="/docs/discussion" 
+                render={() => <Redirect to="/docs/discussion/list" push={false} />}
               />
           </Switch>
       );
