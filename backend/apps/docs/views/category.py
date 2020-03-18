@@ -43,6 +43,21 @@ class CategoryListApiView(generics.ListAPIView):
     ordering_fields = ("id", "is_deleted", "parent", "order", "owner")
     ordering = ("parent", "order", "id")
 
+    def get_queryset(self):
+        """获取用户的所有分类"""
+        # 1. 获取到当前用户
+        user = self.request.user
+
+        if user.is_superuser:
+            # 超级用户是可以看到所有的分类
+            return Category.objects.all()
+
+        # 2. 获取到用户的分类
+        queryset = user.category_set.all()
+
+        # 3. 返回queryset
+        return queryset
+
 
 class CategoryListAllApiView(generics.ListAPIView):
     """
@@ -58,6 +73,17 @@ class CategoryListAllApiView(generics.ListAPIView):
     filter_fields = ("parent", "level", "is_deleted", "owner")
     ordering_fields = ("id", "is_deleted", "parent", "order", "owner")
     ordering = ("parent", "order", "id")
+
+    def get_queryset(self):
+        """获取用户的所有分类"""
+        # 1. 获取到当前用户
+        user = self.request.user
+
+        # 2. 获取到用户的分类
+        queryset = user.category_set.all()
+
+        # 3. 返回queryset
+        return queryset
 
 
 class CategoryDetailApiView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyAPIView):

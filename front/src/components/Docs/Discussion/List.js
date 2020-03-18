@@ -117,7 +117,6 @@ export const DiscussionListPage = (props) => {
                   columns={columns} 
                   filterColumns={filterColumns}  // filter会用到
                   paramsFields={paramsFields}  // url传递的参数
-                  params
                   location={props.location}
                   history={props.history}
                   apiUrlPrefix="/api/v1/docs/discussion/list"

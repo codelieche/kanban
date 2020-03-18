@@ -289,7 +289,7 @@ export const BaseTable = (props) => {
     }, []);
 
     return (
-        <div className="articles-table">
+        <div className="base-table">
             <Row className="tools">
                 <Col sm={{span:12}} xs={{span: 24}}>
                     <Input.Search 
