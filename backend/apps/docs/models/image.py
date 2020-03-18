@@ -35,18 +35,21 @@ class Image(models.Model):
             data = self.file.read()
             filename_key = self.file.url
             filename_key = filename_key.replace("/media/docs/", "docs/")
-            print(filename_key, len(data))
-            results = upload_file_to_qiniu(filename_key, data)
-            if results:
-                result, info = results
-                # 获取上传的结果
-                if result and "key" in result:
-                    print("上传成功:", result["key"])
-                    qiniu_url = "http://{}/{}".format(settings.QINIU_BUCKET_DOMAIN, filename_key)
-                    self.qiniu = qiniu_url
-                else:
-                    print("上传失败：", info)
-            return
+            # print(filename_key, len(data))
+            try:
+                results = upload_file_to_qiniu(filename_key, data)
+                if results:
+                    result, info = results
+                    # 获取上传的结果
+                    if result and "key" in result:
+                        # print("上传成功:", result["key"])
+                        qiniu_url = "http://{}/{}".format(settings.QINIU_BUCKET_DOMAIN, filename_key)
+                        self.qiniu = qiniu_url
+                        self.save()
+                    else:
+                        print("上传失败：", info)
+            except Exception as e:
+                print("上传图片到qiniu失败：", str(e))
         else:
             super().save(*args, **kwargs)
 

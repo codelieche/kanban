@@ -105,9 +105,9 @@ class Article(models.Model):
         return super().save(force_insert=force_insert, force_update=force_update, 
                            using=using, update_fields=update_fields)
 
-    def __delete__(self):
+    def delete(self):
         if self.is_active:
-            self.is_active = True
+            self.is_active = False
             self.save()
 
     class Meta:

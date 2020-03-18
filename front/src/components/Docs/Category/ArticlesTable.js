@@ -104,7 +104,6 @@ export const CategoryArticlesTable = (props) => {
                             <Icon type="link" />查看详情
                         </Link>
                         {/* 查看属性 */}
-                        
                     </div>
                 )
             }

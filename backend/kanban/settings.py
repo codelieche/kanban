@@ -240,6 +240,7 @@ CORS_ALLOW_HEADERS = [
 ]
 
 # 七牛云存储相关配置
+QINIU_UPLOAD_TOOGLE = os.environ.get("QINIU_UPLOAD_TOOGLE", None)  # 上传开关
 QINIU_ACCESS_KEY = os.environ.get("QINIU_ACCESS_KEY", None)
 QINIU_SECRET_KEY = os.environ.get("QINIU_SECRET_KEY", None)
 # bucket的名字和bucket绑定的域名

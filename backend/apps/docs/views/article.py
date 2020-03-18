@@ -61,7 +61,7 @@ class ArticleListAllApiView(generics.ListAPIView):
     获取所有文章列表的API
     文章是会包含子文章的，所有只需要从level是1的文章开始即可
     """
-    queryset = Article.objects.filter(level=1)
+    queryset = Article.objects.filter(level=1, is_active=True)
     serializer_class = ArticleAllSerializer
     permission_classes = (IsAuthenticated,)
     
@@ -123,7 +123,7 @@ class ArticleDetailApiView(generics.RetrieveUpdateDestroyAPIView):
             return HttpResponseForbidden()
         
         # 3. 调用父类的方法
-        return super().delete(request, *args, **kwargs)
+        return super().update(request, *args, **kwargs)
 
     def delete(self, request, *args, **kwargs):
         """删除文章"""

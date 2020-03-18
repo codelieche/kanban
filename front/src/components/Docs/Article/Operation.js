@@ -35,13 +35,16 @@ export const patchUpdateArticle = (articleId, data, callback) => {
       })
         .catch(err => {
             console.log(err);
-            if(err.status === 403){
-                message.error("您无权限", 5);
-            }else if(err.status === 404){
-                message.error("404错误", 5);
-            }else{
-                message.error(`出现错误：${err.status}`, 5);
+            if(err && err.status){
+                if(err.status === 403){
+                    message.error("您无权限", 5);
+                }else if(err.status === 404){
+                    message.error("404错误", 5);
+                }else{
+                    message.error(`出现错误：${err.status}`, 5);
+                }
             }
+            
         });
     // 发起请求结束
 }

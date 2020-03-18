@@ -104,7 +104,7 @@ export const ArticleDetail = function(props){
                 setLoaded(true);
                 console.log(err);
                 // 判断错误是不是：404或者403
-                if(err.status === 403 || err.status === 404){
+                if(err && err.status && (err.status === 403 || err.status === 404)){
                     setData({})
                     setRendeErrorPage(err.status);
                 }

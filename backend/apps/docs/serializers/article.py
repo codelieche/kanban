@@ -41,7 +41,7 @@ class ArticleModelSerializer(serializers.ModelSerializer):
         fields = (
             "id", "title", "category", "icon", "description", "cover", 
             "user", "parent", "infovalues", "time_added",
-            "content", "order", "level"
+            "content", "order", "level", "is_active"
         )
 
 
@@ -114,7 +114,7 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
         fields = (
             "id", "title", "category", "icon", "description", "cover", 
             "user", "parent", "infovalues",
-            "content", "order", "level"
+            "content", "order", "level", "is_active"
         )
 
 

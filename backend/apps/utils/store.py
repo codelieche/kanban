@@ -108,6 +108,10 @@ def upload_file_to_qiniu(key_path, file_data):
     if not all([settings.QINIU_ACCESS_KEY, settings.QINIU_SECRET_KEY, 
                 settings.QINIU_BUCKET, settings.QINIU_BUCKET_DOMAIN]):
         return None
+    
+    # 判断是否需要上传
+    if not settings.QINIU_UPLOAD_TOOGLE:
+        return None
 
     # 第2步：获取token
     # 2-1: 构建权限对象
