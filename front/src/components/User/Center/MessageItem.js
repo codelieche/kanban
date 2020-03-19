@@ -75,6 +75,7 @@ export const MessageItem = (props) => {
             message: data.title,
             description: renderDescription(),
             duration: 4,
+            top: 45
         };
 
         notification.open(args);

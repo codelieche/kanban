@@ -46,9 +46,14 @@
 // 网站右侧的头部样式
 .right-content > .header{
     // padding: 10px 15px;
-    background-color: #eee;
+    // background-color: #eee;
+    background-color: #fff;
     height: 42px;
     position: relative;
+    // box-shadow: 0 1px 2px 0 rgba(0,0,0,.1);
+    // border-bottom: 1px solid rgba(0,0,0,.2);
+    border-bottom: 1px solid rgba(55, 55, 50, 0.20);
+    // border-bottom: 1px solid #333744;
 
     .toogle{
         padding-top: 5px;
@@ -76,7 +81,13 @@
     }
     .user{
         position: absolute;
-        right: 15px;
-        top: 5px;
+        right: 25px;
+        top: 0;
+        line-height: 35px;
+        padding: 5px 10px;
+        // font-weight: 500;
+        &:hover{
+            color: #000;
+        }
     }
 }

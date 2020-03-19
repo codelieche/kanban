@@ -2,7 +2,10 @@
  * 用户相关的组件
  */
 import React, {useState, useEffect, useCallback} from "react";
-import { Menu, Dropdown, Avatar } from "antd";
+import { 
+    Menu, Dropdown, 
+    // Avatar 
+} from "antd";
 import { Link } from "react-router-dom";
 import Icon from "./Icon";
 import fetchApi from "../Utils/fetchApi";
@@ -11,6 +14,7 @@ export const UserLoginOrInfo = (props) => {
 
     const [ isLogined, setIsLogined ] = useState(false);
     const [ userInfo, setUserInfo] = useState({});
+    const [checked, setChecked] = useState(false);
 
     useEffect(() => {
         // 检查登录
@@ -24,6 +28,8 @@ export const UserLoginOrInfo = (props) => {
         fetchApi.Get(url)
           .then(data => {
             // console.log(data);
+            setChecked(true);
+
             if(data.logined){
                 setIsLogined(true);
                 setUserInfo({
@@ -36,11 +42,18 @@ export const UserLoginOrInfo = (props) => {
                 });
             }
           })
-            .catch(err => console.log(err))
+            .catch(err => {
+                console.log(err);
+                setChecked(true);
+            })
     }, [setIsLogined, setUserInfo])
 
     // 如果用户是登录的，就显示用户名字
     // 如果是未登录的状态，就显示登录/注册按钮
+    if(!checked){
+        return null;
+    }else{
+        // 检查之后才渲染
         if (isLogined){
             // 下拉菜单
             const menu = (
@@ -73,7 +86,11 @@ export const UserLoginOrInfo = (props) => {
 
             return (
                 <Dropdown overlay={menu}>
-                        <Avatar style={{backgroundColor: "#4A90E2"}}>{userInfo.username}</Avatar>
+                    <div>
+                        {/* <Avatar style={{backgroundColor: "#4A90E2"}}>{userInfo.username}</Avatar> */}
+                        <Icon type="user-o"></Icon>
+                        Hi ~ {userInfo.username}
+                    </div>
                 </Dropdown>
             );
         }else{
@@ -84,6 +101,7 @@ export const UserLoginOrInfo = (props) => {
                     </Link>
             );
         }
+    }
 }
 
 export default UserLoginOrInfo;
