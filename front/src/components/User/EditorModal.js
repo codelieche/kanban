@@ -55,7 +55,7 @@ export default class EditUserModal extends Component {
 
   handleEditorSubmit = values => {
     // 提交编辑
-    var url = `http://127.0.0.1:9000/api/v1/account/user/${this.state.data.id}`;
+    var url = `/api/v1/account/user/${this.state.data.id}`;
     // PUT/PATCH修改用户信息
     fetchApi.Put(url, {}, 
       {

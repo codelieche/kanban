@@ -1,10 +1,11 @@
 /**
  * 文章编辑的对话框
  */
-import React, { useState, useEffect, useCallback} from "react";
+import React, { useState, useEffect, useCallback, useMemo} from "react";
 
 import {
     Modal,
+    Alert
 } from "antd";
 import MyEditor from "../../Editor";
 
@@ -22,6 +23,28 @@ export const MyEditorModel = function(props) {
     const [markdownContent, setMarkdownContent] = useState(null);
     // 判断是否更新了
     const [isUpdated, setIsUpdated] = useState(false);
+    // 检查上次是否有未提交成功的内容
+    const [lastContent, setLastContent] = useState(null);
+
+    useEffect(() => {
+        if(props.visable){
+            let key = `article_${props.articleID}_content`;
+            let value = localStorage.getItem(key);
+            if(!!value){
+                try {
+                    setLastContent(JSON.parse(value));
+                    
+                } catch (error) {
+                    console.log(error);
+                    setLastContent(null);
+                }
+            }else{
+                setLastContent(null);
+            }
+        }
+        setMarkdownContent(props.markdownContent);
+
+    }, [props.articleID, props.markdownContent, props.visable])
 
     // 修改文章内容
     const patchUpdateContent = useCallback(() => {
@@ -80,6 +103,43 @@ export const MyEditorModel = function(props) {
         }
     }, [isUpdated]);
 
+    let alertElement = useMemo(() => {
+
+        if(lastContent && lastContent.content && props.visable){
+            let message = (
+                <div onDoubleClick={e => {
+                    // console.log(e);
+                    e.stopPropagation();
+                    // console.log(lastContent.content);
+                    setMarkdownContent(lastContent.content);
+                    if(lastContent.key){
+                        localStorage.removeItem(lastContent.key);
+                    }
+                    setLastContent(null);
+                }}>
+                    {`${lastContent.time}:更新未提交成功，双击切换成未提交的内容`}
+                </div>
+            )
+            return (
+                <Alert 
+                    className="alert"
+                    message={message}
+                    type="warning"
+                    closable
+                    closeText="忽略"
+                    onClose={e => {
+                        e.stopPropagation();
+                        if(lastContent.key){
+                            localStorage.removeItem(lastContent.key);
+                        }
+                    }}
+                />
+            )
+        }else{
+            return null
+        }
+    }, [lastContent, props.visable])
+
     return (
         <Modal
           visible={props.visable}
@@ -91,10 +151,14 @@ export const MyEditorModel = function(props) {
           destroyOnClose={!!props.content} // 如果内容不是是空，就关闭的时候销毁。防止在空页面，content为上一篇的内容
         >
              {/* 文章编辑弹出框 */}
-             <MyEditor 
-               content={props.markdownContent}
-               onChange={value => setMarkdownContent(value)} // 当内容更新了之后，我们修改markdownContent
-             />
+             <div>
+                 {alertElement}
+                <MyEditor 
+                  content={markdownContent}
+                  onChange={value => setMarkdownContent(value)} // 当内容更新了之后，我们修改markdownContent
+                />
+             </div>
+
         </Modal>
     );
 }

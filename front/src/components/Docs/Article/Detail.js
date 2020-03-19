@@ -303,6 +303,7 @@ export const ArticleDetail = function(props){
 
             {/* 文章编辑的对话框 */}
             <EditorArticleModel 
+              articleID={articleID}  // 文章id，会检查是否有未提交的
               // 对话框是否显示
               visable={showEditorModal} 
               //   对话框初始的内容

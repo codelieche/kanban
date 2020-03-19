@@ -2,6 +2,7 @@
  * 文章相关的操作
  */
 import fetchApi from "../../Utils/fetchApi";
+import moment from "moment";
 
 import {
     message
@@ -16,6 +17,7 @@ export const patchUpdateArticle = (articleId, data, callback) => {
 
     // 1. 生成文章的url
     let url = `/api/v1/docs/article/${articleId}`;
+
     // 2. 发起请求
     fetchApi.Patch(url, {}, {
         data,
@@ -35,6 +37,17 @@ export const patchUpdateArticle = (articleId, data, callback) => {
       })
         .catch(err => {
             console.log(err);
+            // 更新出错:判断是否需要保存文章内容
+            if(data && data.content){
+                // 更新文章内容出错，我们把这个内容保存到localStorage中
+                let key = `article_${articleId}_content`
+                let articleData = {
+                    content: data.content,
+                    time: moment().format("YYYY-MM-DD hh:mm:ss"),
+                    key
+                }
+                localStorage.setItem(key, JSON.stringify(articleData));
+            }
             if(err && err.status){
                 if(err.status === 403){
                     message.error("您无权限", 5);
