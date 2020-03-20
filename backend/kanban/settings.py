@@ -47,7 +47,6 @@ INSTALLED_APPS = [
     'django_filters',
     # 自己写的app
     'account.apps.AccountConfig',
-    'task.apps.TaskConfig',
     'docs.apps.DocsConfig',
     'config.apps.ConfigConfig',
     'modellog.apps.ModellogConfig',
