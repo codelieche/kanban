@@ -11,6 +11,8 @@ import {
     message,
 } from "antd";
 import ReactMarkdown from "react-markdown";
+// import htmlParser from 'react-markdown/plugins/html-parser'
+
 import EditableContent from "../../Base/EditableContent";
 import Icon from "../../Base/Icon";
 import { GlobalContext } from "../../Base/Context";
@@ -195,6 +197,11 @@ export const ArticleDetail = function(props){
         }
     }
 
+    // const parseHtml = htmlParser({
+    //     isValidNode: node => node.type !== 'script',
+    //     processingInstructions: [/* ... */]
+    // })
+
     return (
         <article>
             <header className="middle">
@@ -261,6 +268,8 @@ export const ArticleDetail = function(props){
                     <ReactMarkdown
                         renderers={{ code: CodeBlock }}
                         source={data.content ? data.content : "> 请编辑文章内容"}
+                        // escapeHtml={false}
+                        // astPlugins={[htmlParser()]}
                     />
                     <div className="editor-button">
                         <Button type="primary" 
