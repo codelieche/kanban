@@ -14,10 +14,12 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from django.conf.urls.static import static
 from django.conf import settings
 from rest_framework.documentation import include_docs_urls
+
+from kanban.views.index import index_page
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,7 +27,11 @@ urlpatterns = [
     path('api/v1/', include(arg=("kanban.urls.api_v1", "kanban"), namespace="api")),
 
     # Djago Rest Framework自动api 文档，正式环境会取消
-    path('docs/', include_docs_urls(title="Kanban API文档"))
+    path('docs/', include_docs_urls(title="Kanban API文档")),
+
+    # 排除media、static、api、admin四个开头的，其它页面调用react的页面
+    re_path(r'^(?!media|api|static|admin)[a-z]?', index_page),
+
 
     # 加入media路由配置，生产环境不会用这个来获取静态文件
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
