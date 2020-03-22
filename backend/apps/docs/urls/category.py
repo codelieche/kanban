@@ -7,7 +7,8 @@ from docs.views.category import (
     CategoryListApiView,
     CategoryListAllApiView,
     CategoryDetailApiView,
-    CategoryArticlesListApiView
+    CategoryArticlesListApiView,
+    CategoryUserPermissionApiView
 )
 
 urlpatterns = [
@@ -17,5 +18,6 @@ urlpatterns = [
     path('all', CategoryListAllApiView.as_view(), name="all"),
     path('<int:pk>', CategoryDetailApiView.as_view(), name="detail"),
     path('<int:pk>/articles', CategoryArticlesListApiView.as_view(), name="articles"),
+    path('<int:pk>/permissions', CategoryUserPermissionApiView.as_view(), name="permissions"),
     path('<str:code>', CategoryDetailApiView.as_view(lookup_field="code"), name="detail2"),
 ]

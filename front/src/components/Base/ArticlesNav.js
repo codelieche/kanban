@@ -14,7 +14,7 @@ import { GlobalContext } from "../Base/Context";
 import Icon from "../Base/Icon";
 import fetchApi from "../Utils/fetchApi";
 
-export const NavItem = ({item, index, activeNavIDs}) => {
+export const NavItem = ({item, index, activeNavIDs, canWrite}) => {
     // 状态
     const [active, setActive] = useState(false);
     // isActive是控制其子nav是否展开的
@@ -23,7 +23,7 @@ export const NavItem = ({item, index, activeNavIDs}) => {
 
     // 子文章列表
     let childrenElements = item.children.map((item, index) => {
-        return <NavItem item={item} index={index} key={index} activeNavIDs={activeNavIDs} />
+        return <NavItem item={item} index={index} key={index} activeNavIDs={activeNavIDs} canWrite={canWrite} />
     });
 
     // 点击的active开关
@@ -92,9 +92,14 @@ export const NavItem = ({item, index, activeNavIDs}) => {
                     >
                             {childrenElements.length > 0 && <Icon type={(active || isActive) ? "caret-down" : "caret-right"} />}
                             {item.title ? item.title : <span className="no-title">无标题</span>}
-                        <div className="add" onClick={handleAddClick}>
-                            <Icon type="plus-square-o" />
-                        </div>
+
+                        {/* 有写入权限的时候才显示add */}
+                        {canWrite && (
+                            <div className="add" onClick={handleAddClick}>
+                                <Icon type="plus-square-o" />
+                            </div>
+                        )}
+                        
                     </div>
                 </NavLink>
 
@@ -116,11 +121,18 @@ export const NavItem = ({item, index, activeNavIDs}) => {
  */
 export const ArticlesNav= ({category}) => {
     const [currentCategoryID, setCurrentCategoryID] = useState(null);
-    const { navData, refreshNavTimes } = useContext(GlobalContext);
+    const { 
+        navData, refreshNavTimes, 
+        currentArticleCategoryID, // 当前的分类ID
+        categoryPermissions, setCategoryPermissions  // 文章分类的权限
+    } = useContext(GlobalContext);
 
     const [dataSource, setDataSource] = useState([]);
     // 刷新方式获取导航数据次数
     const [fetchTimes, setFetchTimes] = useState(0);
+
+    // 是否有写入分类文章的权限
+    const [canWrite, setCanWrite] = useState(false);
 
     const fetchData = useCallback((category, isReFresh) => {
         // 修改一下当前的分类
@@ -177,10 +189,40 @@ export const ArticlesNav= ({category}) => {
         }
     }, [currentCategoryID, category, fetchData, fetchTimes, refreshNavTimes]);
 
+    // 获取当前用户对分类的操作权限：read,write,delete等
+    const fetchCategooryPermissions = useCallback( categoryID => {
+        let url = `/api/v1/docs/category/${categoryID}/permissions`;
+        fetchApi.Get(url, {}, {})
+          .then(responseData => {
+            if(Array.isArray(responseData)){
+                setCategoryPermissions(responseData);
+            }
+          })
+            .catch(err => {
+                console.log(err);
+            })
+    }, [setCategoryPermissions])
+
+    // 监控当前分类是否变化
+    useEffect(() => {
+        if(currentArticleCategoryID > 0){
+            fetchCategooryPermissions(currentArticleCategoryID);
+        }
+    }, [currentArticleCategoryID, fetchCategooryPermissions])
+
+    // 监控能否编辑
+    useEffect(() => {
+        if(categoryPermissions.indexOf("write") >= 0){
+            setCanWrite(true);
+        }else{
+            setCanWrite(false);
+        }
+    }, [categoryPermissions])
+
     // 渲染导航
     let navElements = [];
     navElements = dataSource.map((item, index) => {
-        return <NavItem item={item} index={index} key={index} activeNavIDs={activeNavIDs} />;
+        return <NavItem item={item} index={index} key={index} activeNavIDs={activeNavIDs} canWrite={canWrite} />;
     });
 
     return(

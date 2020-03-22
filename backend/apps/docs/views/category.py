@@ -1,6 +1,8 @@
 # -*- coding:utf-8 -*-
 
 from rest_framework import generics
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.permissions import (
@@ -122,3 +124,17 @@ class CategoryArticlesListApiView(generics.ListAPIView):
         queryset = Article.objects.filter(category_id=self.kwargs["pk"])
         return queryset
 
+
+class CategoryUserPermissionApiView(APIView):
+    """
+    获取当前用户分类的权限
+    """
+
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, pk):
+        category = get_object_or_404(Category, pk=pk)
+        # 获取当前用户，拥有这个分类的权限列表
+        permissions = category.get_user_permissions(request.user)
+
+        return Response(data=permissions, content_type="application/json")

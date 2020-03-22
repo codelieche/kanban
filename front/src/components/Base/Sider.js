@@ -26,8 +26,9 @@ function LeftSider({showLeftSider, setShowLeftSider}){
     const { 
         setRefreshNavTimes, history, 
         currentArticleCategoryID,   // 是设置了全局的上下文的
-        setCurrentArticleCategoryID // 在article详情页会用到
+        setCurrentArticleCategoryID, // 在article详情页会用到
     } = useContext(GlobalContext);
+
 
     let widthInit = useMemo(() => {
         // 从localStorage中获取宽度

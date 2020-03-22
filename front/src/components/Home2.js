@@ -1,5 +1,6 @@
 /**
- * 布局方式二的主页
+ * 主页：布局方式二
+ * 左侧为文章导航列表，右侧为文章内容
  */
 import React, { useState, useEffect } from "react";
 
@@ -17,6 +18,8 @@ function Home(props){
 
     // 全局文章的分类id：左侧分类下拉列表点击、或者文章详情页的category变更了，就会修改当currentArticleCategoryID
     const [ currentArticleCategoryID, setCurrentArticleCategoryID ] = useState(null);
+    // 获取当前分类的权限
+    const [categoryPermissions, setCategoryPermissions] = useState([]);
 
     // 控制刷新导航菜单的操作: 如果需要刷新左侧导航，
     // 设置: setRefreshNavTimes(prevState => prevState + 1);
@@ -81,8 +84,11 @@ function Home(props){
                 // 操作更新左侧导航要用到
                 refreshNavTimes,
                 setRefreshNavTimes,
-                currentArticleCategoryID,   // 文章详情页 和 文章相关的左侧Sider.js会用到
-                setCurrentArticleCategoryID // 文章详情页会用到
+                currentArticleCategoryID,    // 文章详情页 和 文章相关的左侧Sider.js会用到
+                setCurrentArticleCategoryID, // 文章详情页会用到
+                // 左侧切换了分类，或者文章跳转，变更了currentArticleCategoryID都会重新检查权限
+                categoryPermissions,         // 文章详情页 和 ArticleNav中会用到
+                setCategoryPermissions,      // 文章详情页 和 ArticleNav中会用到
             }
         }>
             <Layout className="left-right-layout">

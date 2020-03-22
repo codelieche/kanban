@@ -61,6 +61,38 @@ class Category(models.Model):
     time_added = models.DateTimeField(verbose_name="添加时间", blank=True, auto_now_add=True)
     is_deleted = models.BooleanField(verbose_name="是否删除", blank=True, default=False)
 
+    def get_user_permissions(self, user):
+        """
+        获取用户所具有的权限
+        """
+        # 1. 权限dict
+        all = ("read", "write", "update", "delete", "all", "add_user", "delete_user", "update_user")
+
+        permissions_dict = {
+            "R": ["read"],  # 只读权限
+            "RW": ("read", "write", "update", "delete"),  # 可写权限
+            "ALL": all  # 全部权限
+        }
+
+        # 2. 判断用户是不是超级用户，或者当前分类的所有者
+        if user.is_superuser or self.owner == user:
+            return permissions_dict["ALL"]
+
+        # 3. 获取普通用户的权限
+        # 获取到CategoryUser对象
+        category_user = CategoryUser.objects.filter(category=self, user=user).first()
+
+        # 如果不存在，或者用户不是激活的，则无权限
+        if not category_user or (not category_user.is_active):
+            return []
+
+        # 根据m2m关系获取权限
+        if category_user.permission in permissions_dict:
+            # 用户的权限
+            return permissions_dict[category_user.permission]
+        else:
+            return []
+
     def check_user_permission(self, user, permission="read"):
         """
         判断用户是否有分类的Read/Write/Delete权限

@@ -1,5 +1,6 @@
 /**
- * 布局方式三的主页
+ * 主页：布局方式一
+ * 左侧为功能菜单，右侧是非文章内容
  */
 import React, { useState, useEffect } from "react";
 

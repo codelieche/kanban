@@ -32,7 +32,8 @@ export const ArticleDetail = function(props){
     // 修改全局的右侧顶部导航
     const { 
         setNavData, setRefreshNavTimes, 
-        currentArticleCategoryID, setCurrentArticleCategoryID // 全局的文章分类ID
+        currentArticleCategoryID, setCurrentArticleCategoryID,  // 全局的文章分类ID
+        categoryPermissions, setCategoryPermissions
     } = useContext(GlobalContext);
     // 是否显示描述、显示讨论
     const [showDescription, setShowDescription] = useState(false);
@@ -43,6 +44,9 @@ export const ArticleDetail = function(props){
     const [loaded, setLoaded] = useState(false);
     // 是否需要渲染错误页
     const [rendeErrorPage, setRendeErrorPage] = useState(0);
+    // 获取当前分类的权限
+    // const [categoryPermissions, setCategoryPermissions] = useState([]);
+    const [canEditor, setCanEditor] = useState(false);
 
     const fetchDetailData = useCallback(id => {
         if(! id){
@@ -164,6 +168,36 @@ export const ArticleDetail = function(props){
 
     }, [articleID, fetchDetailData]);
 
+    // 获取当前用户对分类的操作权限：read,write,delete等
+    const fetchCategooryPermissions = useCallback( categoryID => {
+        let url = `/api/v1/docs/category/${categoryID}/permissions`;
+        fetchApi.Get(url, {}, {})
+          .then(responseData => {
+            if(Array.isArray(responseData)){
+                setCategoryPermissions(responseData);
+            }
+          })
+            .catch(err => {
+                console.log(err);
+            })
+    }, [setCategoryPermissions])
+
+    // 监控当前分类是否变化
+    useEffect(() => {
+        if(currentArticleCategoryID > 0){
+            fetchCategooryPermissions(currentArticleCategoryID);
+        }
+    }, [currentArticleCategoryID, fetchCategooryPermissions])
+
+    // 监控能否编辑
+    useEffect(() => {
+        if(categoryPermissions.indexOf("write") >= 0){
+            setCanEditor(true);
+        }else{
+            setCanEditor(false);
+        }
+    }, [categoryPermissions])
+
     // 判断是否加载完毕
     if(!loaded){
         return <LoadingPage size="large"/>
@@ -230,15 +264,20 @@ export const ArticleDetail = function(props){
                             <Icon type="file-text-o"></Icon>
                         </div>
                         {/* <Icon type="file-text-o"></Icon> */}
-                        <EditableContent
-                            key={`{data.id}-title`} 
-                            content={data.title ? data.title : "无标题"}
-                            contentType="text" // 类型是html或者text
-                            tagName="h1"
-                            //   onChange={e => console.log(e.target.text)}
-                            //  当内容更新了之后，我们需要做点操作
-                            handleContentUpdated={data => patchUpdateArticle(articleID, {title: data.text}, handleRefreshNav)}
-                        />
+                        {canEditor ? (
+                            <EditableContent
+                                key={`{data.id}-title`} 
+                                content={data.title ? data.title : "无标题"}
+                                contentType="text" // 类型是html或者text
+                                tagName="h1"
+                                //   onChange={e => console.log(e.target.text)}
+                                //  当内容更新了之后，我们需要做点操作
+                                handleContentUpdated={data => patchUpdateArticle(articleID, {title: data.text}, handleRefreshNav)}
+                            />
+                        ) : (
+                        <h1>{data.title ? data.title : "无标题"}</h1>
+                        )}
+                        
                     </div>
                     
                 </div>
@@ -247,15 +286,19 @@ export const ArticleDetail = function(props){
                     // 需要显示描述，才显示描述部分
                     showDescription && (
                         <div className="description">
-                            <EditableContent
-                            key={`{data.id}-description`} 
-                            content={data.description ? data.description : "请填写文章描述"}
-                            contentType="text" // 类型是html或者text
-                            tagName="div"
-                            //   onChange={e => console.log(e.target.text)}
-                            //  当内容更新了之后，我们需要做点操作
-                            handleContentUpdated={data => patchUpdateArticle(articleID, {description: data.text})}
-                            />
+                            {canEditor ? (
+                                <EditableContent
+                                    key={`{data.id}-description`} 
+                                    content={data.description ? data.description : "请填写文章描述"}
+                                    contentType="text" // 类型是html或者text
+                                    tagName="div"
+                                    //   onChange={e => console.log(e.target.text)}
+                                    //  当内容更新了之后，我们需要做点操作
+                                    handleContentUpdated={data => patchUpdateArticle(articleID, {description: data.text})}
+                                />
+                            ): (
+                                <div>{data.description ? data.description : "请填写文章描述"}</div>
+                            )}
                         </div>
                     )
                 }
@@ -271,13 +314,17 @@ export const ArticleDetail = function(props){
                         // escapeHtml={false}
                         // astPlugins={[htmlParser()]}
                     />
+                    {/* 有编辑权限，就显示编辑按钮 */}
+                    {canEditor ? (
                     <div className="editor-button">
                         <Button type="primary" 
-                          size="small"
-                          disabled={showEditorModal}
-                          icon={<Icon type="edit"/>}
-                          onClick={handleEditorButtonClick}>编辑</Button>
+                        size="small"
+                        disabled={showEditorModal}
+                        icon={<Icon type="edit"/>}
+                        onClick={handleEditorButtonClick}>编辑</Button>
                     </div>
+                    ): null}
+                   
                 </section>
 
                 {/* 文章评论 */}
@@ -311,17 +358,20 @@ export const ArticleDetail = function(props){
             </footer>
 
             {/* 文章编辑的对话框 */}
-            <EditorArticleModel 
-              articleID={articleID}  // 文章id，会检查是否有未提交的
-              // 对话框是否显示
-              visable={showEditorModal} 
-              //   对话框初始的内容
-              markdownContent={data.content}
-              //   关闭对话框之后的操作
-              afterModalCloseHandle={afterModalCloseHandle}
-              //   更新文章操作
-              handleContentUpdated={(data) => patchUpdateArticle(articleID, {content: data})}
-            />
+            {canEditor && (
+                <EditorArticleModel 
+                    articleID={articleID}  // 文章id，会检查是否有未提交的
+                    // 对话框是否显示
+                    visable={showEditorModal} 
+                    //   对话框初始的内容
+                    markdownContent={data.content}
+                    //   关闭对话框之后的操作
+                    afterModalCloseHandle={afterModalCloseHandle}
+                    //   更新文章操作
+                    handleContentUpdated={(data) => patchUpdateArticle(articleID, {content: data})}
+                />
+            )}
+            
         </article>
     );
 }
