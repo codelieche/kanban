@@ -16,7 +16,7 @@ echo $SCRIPT_DIR
 
 # 第3步：复制代码文件到source
 # 执行上面的步骤的时候，是需要回到当前目录的
-(cd $SCRIPT_DIR; tar -czf source.tar.gz ../kanban ../apps ../static ../templates ../manage.py ../Pipfile*) \
+(cd $SCRIPT_DIR; tar -czf source.tar.gz ../kanban ../apps ../static ../templates ../manage.py ../Pipfile* ../uwsgi.ini) \
     || (echo "+(date %"%F %T"): 打包source.tar.gz出错！！！"; exit 1)
 
 # 第4步：构建镜像
@@ -37,12 +37,13 @@ docker images | grep $NAME
 
 # 第5步：创建测试容器
 # 5-1: 启动容器
-# docker run -itd --name kanban-t1 kanban:v1
-# docker run -itd --name kanban-t1 $NAME:$TAG
+# docker run -itd --name kanban-t1 -p 8080:8080 kanban:v1
+# docker run -itd --name kanban-t1 -p 8080:8080 $NAME:$TAG
+# 进入容器
+# docker exec -it kanban-t1 /bin/sh
 
 # 5-2：创建个测试容器，并进入
-# docker run -it --rm --name kanban-v1 kanban:v1 /bin/sh
-
+# docker run -it --rm --name kanban-v1 -p 8080:8080 kanban:v1 /bin/sh
 
 
 echo "$(date +"%F %T"): 结束！" 

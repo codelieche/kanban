@@ -27,7 +27,7 @@ urlpatterns = [
     path('api/v1/', include(arg=("kanban.urls.api_v1", "kanban"), namespace="api")),
 
     # Djago Rest Framework自动api 文档，正式环境会取消
-    path('docs/', include_docs_urls(title="Kanban API文档")),
+    path('api/docs/', include_docs_urls(title="Kanban API文档")),
 
     # 排除media、static、api、admin四个开头的，其它页面调用react的页面
     re_path(r'^(?!media|api|static|admin)[a-z]?', index_page),

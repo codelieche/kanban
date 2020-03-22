@@ -14,11 +14,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
+
+from kanban.views.index import index_page
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # api v1 url
     path('api/v1/', include(arg=("kanban.urls.api_v1", "kanban"), namespace="api")),
+
+    # 排除media、static、api、admin四个开头的，其它页面调用react的页面
+    re_path(r'^(?!media|api|static|admin)[a-z]?', index_page),
 ]
 

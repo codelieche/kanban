@@ -2,8 +2,9 @@ FROM python:3.8-alpine
 
 WORKDIR /data/www/
 
+# 安装mysqlclient,pillow,uwsgi需要这些依赖
 RUN apk add --no-cache --virtual .fetch-deps musl-dev gcc mysql-dev curl vim \
-        && apk add --no-cache jpeg-dev zlib-dev
+        && apk add --no-cache jpeg-dev zlib-dev linux-headers
         # && apk del --no-network .fetch-deps
 
 COPY ./requirements.txt ./
