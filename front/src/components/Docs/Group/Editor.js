@@ -30,7 +30,7 @@ function CategoryEditor(props){
 
     // 获取数据：会修改data的值
     const fetchData = (id) => {
-        let url = `/api/v1/docs/category/${id}`;
+        let url = `/api/v1/docs/group/${id}`;
         fetchApi.Get(url)
           .then(data => {
               if(data.id > 0){
@@ -48,7 +48,7 @@ function CategoryEditor(props){
     const handleEditSubmit = values => {
         // console.log(values);
         // 通过fetch POST添加Category
-        const url = `/api/v1/docs/category/${id}`;
+        const url = `/api/v1/docs/group/${id}`;
         let formData = new FormData();
         for(var k in values){
             let v = values[k];
@@ -73,7 +73,7 @@ function CategoryEditor(props){
                   // 当data中有id字段，就表示添加成功了，跳转去category的详情页
                   // 显示结果：跳转去详情页
                   message.success(`修改分组(id:${data.id})成功`, 5);
-                  props.history.push(`/docs/category/${data.id}`);
+                  props.history.push(`/docs/group/${data.id}`);
 
               }else{
                   message.warn(`修改分组(id:${data.id})失败`, 5);
@@ -97,7 +97,7 @@ function CategoryEditor(props){
             },
             {
                 title: "文档分组",
-                link: "/docs/category"
+                link: "/docs/group"
             },
             {
                 title: "编辑"

@@ -31,7 +31,7 @@ function CategoryDetail(props) {
 
     // 获取详情数据
     const fetchDetailData = (id) => {
-        const url = `/api/v1/docs/category/${id}`;
+        const url = `/api/v1/docs/group/${id}`;
         fetchApi.Get(url)
           .then(data => {
               // 修改状态
@@ -72,7 +72,7 @@ function CategoryDetail(props) {
             },
             {
                 title: "文档分组",
-                link: "/docs/category"
+                link: "/docs/group"
             },
             {
                 title: "详情"
@@ -276,8 +276,8 @@ function CategoryDetail(props) {
                                 location={props.location} 
                                 history={props.history}
                                 
-                                apiUrlPrefix={ id ? `/api/v1/docs/category/${id}/articles` : null}
-                                pageUrlPrefix={`/docs/category/${id}`}
+                                apiUrlPrefix={ id ? `/api/v1/docs/group/${id}/articles` : null}
+                                pageUrlPrefix={`/docs/group/${id}`}
                             />
                         </div>
                         {/* 文章列表部分：end */}
@@ -288,7 +288,7 @@ function CategoryDetail(props) {
                     {/* 右侧内容：start */}
                     <Col xs={{span: 24}} sm={{span: 8}} lg={{span: 6}}>
                         {/* props.match.params.id有可能是字符，所以还是传递data.id更准确 */}
-                        {data.id > 0 && <ModelLogs app="docs" model="category" id={data.id}></ModelLogs>}
+                        {data.id > 0 && <ModelLogs app="docs" model="group" id={data.id}></ModelLogs>}
                     </Col>
                     {/* 右侧内容：end */}
                 </Row>

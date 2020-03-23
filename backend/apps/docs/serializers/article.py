@@ -26,7 +26,7 @@ class ArticleModelSerializer(serializers.ModelSerializer):
         if "parent" in attrs:
             parent = attrs["parent"]
             if parent:
-                attrs["category"] = parent.category
+                attrs["group"] = parent.group
 
         return attrs
 
@@ -39,7 +39,7 @@ class ArticleModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = (
-            "id", "title", "category", "icon", "description", "cover", 
+            "id", "title", "group", "icon", "description", "cover", 
             "user", "parent", "infovalues", "time_added",
             "content", "order", "level", "is_active"
         )
@@ -76,7 +76,7 @@ class ArticleListModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = (
-            "id", "title", "category", "icon", "description", "cover", 
+            "id", "title", "group", "icon", "description", "cover", 
             "user", "parent", "infovalues", "time_added",
             "order", "level"
         )
@@ -99,7 +99,7 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
         if "parent" in attrs:
             parent = attrs["parent"]
             if parent:
-                attrs["category"] = parent.category
+                attrs["group"] = parent.group
 
         return attrs
 
@@ -112,7 +112,7 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = (
-            "id", "title", "category", "icon", "description", "cover", 
+            "id", "title", "group", "icon", "description", "cover", 
             "user", "parent", "infovalues",
             "content", "order", "level", "is_active"
         )
@@ -133,7 +133,7 @@ class ArticleAllSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = (
-            "id", "title", "icon", "category", "user", "order", "level", "children"
+            "id", "title", "icon", "group", "user", "order", "level", "children"
         )
 
 class ArticleWithInfovaluesListSerializer(serializers.ModelSerializer):

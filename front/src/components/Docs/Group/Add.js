@@ -20,7 +20,7 @@ function CategoryAdd(props){
     const handleAddSubmit = values => {
         // console.log(values);
         // 通过fetch POST添加Category
-        const url = "/api/v1/docs/category/create";
+        const url = "/api/v1/docs/group/create";
         let formData = new FormData();
         for(var k in values){
             let v = values[k];
@@ -42,7 +42,7 @@ function CategoryAdd(props){
               if(data.id > 0){
                   // 当data中有id字段，就表示添加成功了，跳转去category的详情页
                   message.success(`添加分组(id:${data.id})成功`, 5);
-                  props.history.push(`/docs/category/${data.id}`);
+                  props.history.push(`/docs/group/${data.id}`);
 
               }else{
                 message.warn(`添加分组失败`, 5);
@@ -66,7 +66,7 @@ function CategoryAdd(props){
             },
             {
                 title: "文档分组",
-                link: "/docs/category"
+                link: "/docs/group"
             },
             {
                 title: "添加"

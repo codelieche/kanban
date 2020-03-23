@@ -304,7 +304,7 @@ function CategoryForm(props){
                   <CheckValuesFromTable
                     checkValues={checkValues}
                     checkValuesState={checkValuesState} 
-                    dataSourceUrl="/api/v1/docs/category/list?level=1"
+                    dataSourceUrl="/api/v1/docs/group/list?level=1"
                     columns={categoryListColumns}
                     rowKey="code"
                     isMultiple={false}

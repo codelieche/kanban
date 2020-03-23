@@ -49,7 +49,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
     // 获取分类的列表
     const fetchCategoriesData = useCallback(() => {
         
-        let url = "/api/v1/docs/category/all";
+        let url = "/api/v1/docs/group/all";
         fetchApi.Get(url)
           .then(responseData => {
               if(Array.isArray(responseData)){

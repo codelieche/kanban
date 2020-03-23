@@ -10,16 +10,16 @@ from account.models import User
 from utils.store import ImageStorage
 
 
-class CategoryUser(models.Model):
+class GroupUser(models.Model):
     """
-    分类的用户
+    分组的用户
     """
     PERMISSION_CHOICES = (
         ("R", "只读"),
         ("RW", "读写"),
         ("ALL", "全部")
     )
-    category = models.ForeignKey(verbose_name="分类", to="Category", on_delete=models.CASCADE)
+    group = models.ForeignKey(verbose_name="分组", to="Group", on_delete=models.CASCADE)
     user = models.ForeignKey(verbose_name="用户", to=User, on_delete=models.CASCADE)
     permission = models.CharField(verbose_name="权限", max_length=10,
                                   choices=PERMISSION_CHOICES, default="R", blank=True)
@@ -34,27 +34,27 @@ class CategoryUser(models.Model):
             self.save()
 
     class Meta:
-        unique_together = ("category", "user")  # 联合唯一索引
+        unique_together = ("group", "user")  # 联合唯一索引
         verbose_name = "分组用户"
         verbose_name_plural = verbose_name
 
 
-class Category(models.Model):
+class Group(models.Model):
     """
-    文档的分类
+    文档的分组
     """
     name = models.CharField(verbose_name="名称", max_length=40, db_index=True)
     code = models.SlugField(verbose_name="代码", max_length=128, unique=True)
-    image = models.ImageField(verbose_name="图标", upload_to="docs/category/%Y/%m", storage=ImageStorage(),
+    image = models.ImageField(verbose_name="图标", upload_to="docs/group/%Y/%m", storage=ImageStorage(),
                               help_text="图片路径", blank=True, null=True)
     description = models.CharField(verbose_name="描述", max_length=1024, blank=True, null=True)
-    parent = models.ForeignKey(verbose_name="父级分类", related_name="children",
+    parent = models.ForeignKey(verbose_name="父级分组", related_name="children",
                                blank=True, null=True, to="self", on_delete=models.CASCADE)
-    # 默认情况下：创建者就是当前分类的所有者，后续可以转交给他人，owner拥有所有的权限
-    owner = models.ForeignKey(to=User, verbose_name="所有者", related_name="owner_category_set",
+    # 默认情况下：创建者就是当前分组的所有者，后续可以转交给他人，owner拥有所有的权限
+    owner = models.ForeignKey(to=User, verbose_name="所有者", related_name="owner_group_set",
                               blank=True, null=True, on_delete=models.SET_NULL)
     users = models.ManyToManyField(verbose_name="用户", to=User, 
-                                   through=CategoryUser, through_fields=("category", "user"))
+                                   through=GroupUser, through_fields=("group", "user"))
     # level级别 和 顺序 order
     level = models.SmallIntegerField(verbose_name="级别", blank=True, default=1)
     order = models.SmallIntegerField(verbose_name="顺序", blank=True, default=1)
@@ -74,33 +74,33 @@ class Category(models.Model):
             "ALL": all  # 全部权限
         }
 
-        # 2. 判断用户是不是超级用户，或者当前分类的所有者
+        # 2. 判断用户是不是超级用户，或者当前分组的所有者
         if user.is_superuser or self.owner == user:
             return permissions_dict["ALL"]
 
         # 3. 获取普通用户的权限
         # 获取到CategoryUser对象
-        category_user = CategoryUser.objects.filter(category=self, user=user).first()
+        group_user = CategoryUser.objects.filter(group=self, user=user).first()
 
         # 如果不存在，或者用户不是激活的，则无权限
-        if not category_user or (not category_user.is_active):
+        if not group_user or (not group_user.is_active):
             return []
 
         # 根据m2m关系获取权限
-        if category_user.permission in permissions_dict:
+        if group_user.permission in permissions_dict:
             # 用户的权限
-            return permissions_dict[category_user.permission]
+            return permissions_dict[group_user.permission]
         else:
             return []
 
     def check_user_permission(self, user, permission="read"):
         """
-        判断用户是否有分类的Read/Write/Delete权限
+        判断用户是否有分组的Read/Write/Delete权限
         """
         # 如果用户是超级用户就赋予全部的权限
         if user.is_superuser:
             return True
-        # 分类的所有者也拥有所有权限
+        # 分组的所有者也拥有所有权限
         elif self.owner == user:
             return True
         
@@ -112,10 +112,10 @@ class Category(models.Model):
             return False
         
         # 获取到CategoryUser对象
-        category_user = CategoryUser.objects.filter(category=self, user=user).first()
+        group_user = CategoryUser.objects.filter(group=self, user=user).first()
 
         # 如果不存在，或者用户不是激活的，则无权限
-        if not category_user or (not category_user.is_active):
+        if not group_user or (not group_user.is_active):
             return False
         
         # 开始判断
@@ -125,8 +125,8 @@ class Category(models.Model):
             "ALL": all  # 全部权限
         }
         
-        if (category_user.permission in permission_dict) \
-             and (permission in permission_dict[category_user.permission]):
+        if (group_user.permission in permission_dict) \
+             and (permission in permission_dict[group_user.permission]):
              return True
         else:
             return False
@@ -158,7 +158,7 @@ class Category(models.Model):
     @property
     def users_permisson(self):
         # 不返回全部，只返回有效的用户
-        return self.categoryuser_set.filter(is_active=True)
+        return self.groupuser_set.filter(is_active=True)
 
     def resize_image(self, image_file):
         """
@@ -212,7 +212,7 @@ class Category(models.Model):
         return image
 
     class Meta:
-        verbose_name = "文档分类"
+        verbose_name = "文档分组"
         verbose_name_plural = verbose_name
 
 

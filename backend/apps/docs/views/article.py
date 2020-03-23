@@ -41,7 +41,7 @@ class ArticleListApiView(generics.ListAPIView):
     
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ("title", "parent__title")
-    filter_fields = ("parent", "parent_id", "category", "level")
+    filter_fields = ("parent", "parent_id", "group", "level")
     ordering_fields = ("id", "parent_id", "parent", "order")
     ordering = ("parent", "order")
 
@@ -67,7 +67,7 @@ class ArticleListAllApiView(generics.ListAPIView):
     
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ("title", "parent__title")
-    filter_fields = ("parent", "parent_id", "category", "level")
+    filter_fields = ("parent", "parent_id", "group", "level")
     ordering_fields = ("id", "parent_id", "parent", "order")
     ordering = ("parent", "order")
     # 不要分页
@@ -148,9 +148,9 @@ class ArticleInfoListAllApiView(generics.ListAPIView):
     pagination_class = None
 
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    filter_fields = ("category", "category__element", "is_active")
-    search_fields = ("name", "category__name")
-    ordering_fields = ("id", "category", "order", "is_active")
+    filter_fields = ("group", "group__element", "is_active")
+    search_fields = ("name", "group__name")
+    ordering_fields = ("id", "group", "order", "is_active")
     ordering = ("order", "id")
 
     def get_queryset(self):
@@ -186,7 +186,7 @@ class ArticleDiscussionListApiView(generics.ListAPIView):
 
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ("content", "article__title", "user__username")
-    filter_fields = ("user", "article", "category", "is_deleted")
+    filter_fields = ("user", "article", "group", "is_deleted")
     ordering_fields = ("id", "article", "user", "time_added", "time_updated", "is_deleted")
     ordering = ("-id",)
 

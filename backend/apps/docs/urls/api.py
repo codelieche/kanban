@@ -6,8 +6,8 @@ from django.urls import path, include
 urlpatterns = [
     # 前缀：/api/v1/docs/
     # Articles Article Api
-    path('category/', include(arg=('docs.urls.category', 'docs'), namespace='category')),
-    path('categoryuser/', include(arg=('docs.urls.category_user', 'docs'), namespace='category_user')),
+    path('group/', include(arg=('docs.urls.group', 'docs'), namespace='group')),
+    path('groupuser/', include(arg=('docs.urls.group_user', 'docs'), namespace='group_user')),
     path('article/', include(arg=('docs.urls.article', 'docs'), namespace='article')),
     path('discussion/', include(arg=('docs.urls.discussion', 'docs'), namespace='discussion')),
     path('info/', include(arg=('docs.urls.info', 'docs'), namespace='info')),

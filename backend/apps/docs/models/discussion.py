@@ -21,7 +21,7 @@ class Discussion(models.Model):
         ("feedback", "反馈")
     )
 
-    category = models.CharField(verbose_name="分类", default="discussion", 
+    group = models.CharField(verbose_name="分类", default="discussion", 
                                 blank=True, max_length=20)
     article = models.ForeignKey(verbose_name="文章", to=Article, blank=True, on_delete=models.CASCADE)
     content = models.CharField(verbose_name="内容", max_length=1024)

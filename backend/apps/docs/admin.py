@@ -1,19 +1,19 @@
 from django.contrib import admin
 
-from docs.models.category import Category, CategoryUser
+from docs.models.group import Group, GroupUser
 from docs.models.info import InfoField, InfoCategory, Info, InfoValue
 from docs.models.article import Article
 # Register your models here.
 
 
-class CategoryUserModelAdmin(admin.ModelAdmin):
-    """Category User Model Serializer"""
-    list_display = ("id", "category", "user", "permission")
+class GroupUserModelAdmin(admin.ModelAdmin):
+    """Group User Model Serializer"""
+    list_display = ("id", "group", "user", "permission")
 
 
-class CategoryModelSerializer(admin.ModelAdmin):
+class GroupModelSerializer(admin.ModelAdmin):
     """
-    Category Model Serializer
+    Group Model Serializer
     """
     list_display = ("id", "name", "code", "description", "image")
 
@@ -28,7 +28,7 @@ class InfoFieldModelAdmin(admin.ModelAdmin):
 
 class InfoCategoryModelAdmin(admin.ModelAdmin):
     """
-    Info Category Model Admin
+    Info Group Model Admin
     """
     list_display = ("id", "name", "icon", "element", "order", "is_active")
 
@@ -49,8 +49,8 @@ class InfoValueModelAdmin(admin.ModelAdmin):
 
 
 # 注册model
-admin.site.register(CategoryUser, CategoryUserModelAdmin)
-admin.site.register(Category, CategoryModelSerializer)
+admin.site.register(GroupUser, GroupUserModelAdmin)
+admin.site.register(Group, GroupModelSerializer)
 admin.site.register(InfoField, InfoFieldModelAdmin)
 admin.site.register(InfoCategory, InfoCategoryModelAdmin)
 admin.site.register(Info, InfoModelAdmin)

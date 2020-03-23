@@ -73,7 +73,7 @@ function GroupList(props){
         }
 
         // 构造url
-        let url = `/api/v1/docs/category/list?page=${page}`;
+        let url = `/api/v1/docs/group/list?page=${page}`;
         // 对params中的字段做处理：记得去掉page
         // 引入如果调用状态中的urlParams，获取到的可能不是最新值，所以这里从url中解析值
         let locationSearch = props.location.search;
@@ -159,7 +159,7 @@ function GroupList(props){
         if(!other.parentFilterOptionsLock){
             // console.log("执行 generateTableFilterOptionsHook");
             generateTableFilterOptionsHook(
-                "/api/v1/docs/category/all?level=1", "name", "id", parentFilterOptionsState, null,
+                "/api/v1/docs/group/all?level=1", "name", "id", parentFilterOptionsState, null,
             );
             otherState(prevState => {
                 prevState.parentFilterOptionsLock = true;
@@ -193,7 +193,7 @@ function GroupList(props){
     // 删除分组函数
     const deleteOnConfirm = useCallback((value) => {
         // 开始删除
-        const url = `/api/v1/docs/category/${value.id}`;
+        const url = `/api/v1/docs/group/${value.id}`;
         // 通过delete删除用户
         fetchApi.Delete(url)
           .then(response => {

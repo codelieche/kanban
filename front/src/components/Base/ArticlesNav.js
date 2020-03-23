@@ -148,7 +148,7 @@ export const ArticlesNav= ({group}) => {
             // category不可为空
             return 
         }
-        let url = `/api/v1/docs/article/all?category=${group}`;
+        let url = `/api/v1/docs/article/all?group=${group}`;
         // 获取当前分类的所有文章
         fetchApi.Get(url, {}, {})
           .then(data => {
@@ -191,7 +191,7 @@ export const ArticlesNav= ({group}) => {
 
     // 获取当前用户对分组的操作权限：read,write,delete等
     const fetchGroupPermissions = useCallback( categoryID => {
-        let url = `/api/v1/docs/category/${categoryID}/permissions`;
+        let url = `/api/v1/docs/group/${categoryID}/permissions`;
         fetchApi.Get(url, {}, {})
           .then(responseData => {
             if(Array.isArray(responseData)){

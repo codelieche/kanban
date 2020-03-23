@@ -4,7 +4,7 @@ Article相关的Model
 from django.db import models
 
 from account.models import User
-from docs.models.category import Category
+from docs.models.group import Group
 
 
 class Article(models.Model):
@@ -18,7 +18,7 @@ class Article(models.Model):
     )
 
     # 文章分类：可当做是工作空间、命名空间等。
-    category = models.ForeignKey(verbose_name="分类", to=Category, on_delete=models.CASCADE)
+    group = models.ForeignKey(verbose_name="分类", to=Group, on_delete=models.CASCADE)
     
     title = models.CharField(verbose_name="标题", max_length=256, 
                               blank=True, null=True, db_index=True)
@@ -88,9 +88,9 @@ class Article(models.Model):
         检查用户的权限
         """
         # 1. 获取文章的分类
-        category = self.category
+        group = self.group
         # 2. 判断用户是否有分类的权限
-        return category.check_user_permission(user, permission)
+        return group.check_user_permission(user, permission)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         # 计算level

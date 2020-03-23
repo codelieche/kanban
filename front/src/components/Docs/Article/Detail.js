@@ -170,7 +170,7 @@ export const ArticleDetail = function(props){
 
     // 获取当前用户对分组的操作权限：read,write,delete等
     const fetchGroupPermissions = useCallback( categoryID => {
-        let url = `/api/v1/docs/category/${categoryID}/permissions`;
+        let url = `/api/v1/docs/group/${categoryID}/permissions`;
         fetchApi.Get(url, {}, {})
           .then(responseData => {
             if(Array.isArray(responseData)){
@@ -188,6 +188,13 @@ export const ArticleDetail = function(props){
             fetchGroupPermissions(currentArticleGroupID);
         }
     }, [currentArticleGroupID, fetchGroupPermissions])
+
+    useEffect(() => {
+        // 页面刷新不获取权限，所以加入了这个
+        if(data && data.group > 0 && data.group !== currentArticleGroupID){
+            fetchGroupPermissions(data.group);
+        }
+    },[currentArticleGroupID, data, fetchGroupPermissions])
 
     // 监控能否编辑
     useEffect(() => {

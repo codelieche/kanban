@@ -13,30 +13,30 @@ from rest_framework.permissions import (
 from django.shortcuts import get_object_or_404
 
 from modellog.mixins import LoggingViewSetMixin
-from docs.models.category import Category
+from docs.models.group import Group
 from docs.models.article import Article
-from docs.serializers.category import CategoryModelSerializer
+from docs.serializers.group import GroupModelSerializer
 from docs.serializers.article import (
     ArticleModelSerializer,
     ArticleListModelSerializer
 )
 
 
-class CategoryCreateApiView(LoggingViewSetMixin, generics.CreateAPIView):
+class GroupCreateApiView(LoggingViewSetMixin, generics.CreateAPIView):
     """
-    Docs Category Create Api View
+    Docs Group Create Api View
     """
-    queryset = Category.objects.all()
-    serializer_class = CategoryModelSerializer
+    queryset = Group.objects.all()
+    serializer_class = GroupModelSerializer
     permission_classes = (DjangoModelPermissions,)
 
 
-class CategoryListApiView(generics.ListAPIView):
+class GroupListApiView(generics.ListAPIView):
     """
-    Docs Category List Api View
+    Docs Group List Api View
     """
-    queryset = Category.objects.all()
-    serializer_class = CategoryModelSerializer
+    queryset = Group.objects.all()
+    serializer_class = GroupModelSerializer
     permission_classes = (IsAuthenticated,)
 
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
@@ -52,21 +52,21 @@ class CategoryListApiView(generics.ListAPIView):
 
         if user.is_superuser:
             # 超级用户是可以看到所有的分类
-            return Category.objects.all()
+            return Group.objects.all()
 
         # 2. 获取到用户的分类
-        queryset = user.category_set.all()
+        queryset = user.group_set.all()
 
         # 3. 返回queryset
         return queryset
 
 
-class CategoryListAllApiView(generics.ListAPIView):
+class GroupListAllApiView(generics.ListAPIView):
     """
-    Docs Category List All Api View
+    Docs Group List All Api View
     """
-    queryset = Category.objects.all()
-    serializer_class = CategoryModelSerializer
+    queryset = Group.objects.all()
+    serializer_class = GroupModelSerializer
     pagination_class = None
     permission_classes = (IsAuthenticated,)
 
@@ -82,18 +82,18 @@ class CategoryListAllApiView(generics.ListAPIView):
         user = self.request.user
 
         # 2. 获取到用户的分类
-        queryset = user.category_set.all()
+        queryset = user.group_set.all()
 
         # 3. 返回queryset
         return queryset
 
 
-class CategoryDetailApiView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyAPIView):
+class GroupDetailApiView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyAPIView):
     """
-    Docs Category Detail Api View
+    Docs Group Detail Api View
     """
-    queryset = Category.objects.filter()
-    serializer_class = CategoryModelSerializer
+    queryset = Group.objects.filter()
+    serializer_class = GroupModelSerializer
     permission_classes = (IsAuthenticated, DjangoModelPermissionsOrAnonReadOnly)
 
     def get_object(self):
@@ -102,10 +102,10 @@ class CategoryDetailApiView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyA
         filter_kwargs = {}
         for key_ in self.kwargs:
             filter_kwargs[key_] = self.kwargs[key_]
-        return get_object_or_404(Category, **filter_kwargs)
+        return get_object_or_404(Group, **filter_kwargs)
 
 
-class CategoryArticlesListApiView(generics.ListAPIView):
+class GroupArticlesListApiView(generics.ListAPIView):
     """
     分类文章的列表
     """
@@ -116,16 +116,16 @@ class CategoryArticlesListApiView(generics.ListAPIView):
 
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ("title", "parent__title", "description")
-    filter_fields = ("parent", "level", "category")
+    filter_fields = ("parent", "level", "group")
     ordering_fields = ("id", "parent", "order", "time_added", "user")
     ordering = ("id", )
 
     def get_queryset(self):
-        queryset = Article.objects.filter(category_id=self.kwargs["pk"])
+        queryset = Article.objects.filter(group_id=self.kwargs["pk"])
         return queryset
 
 
-class CategoryUserPermissionApiView(APIView):
+class GroupUserPermissionApiView(APIView):
     """
     获取当前用户分类的权限
     """
@@ -133,8 +133,8 @@ class CategoryUserPermissionApiView(APIView):
     permission_classes = (IsAuthenticated,)
 
     def get(self, request, pk):
-        category = get_object_or_404(Category, pk=pk)
+        group = get_object_or_404(Group, pk=pk)
         # 获取当前用户，拥有这个分类的权限列表
-        permissions = category.get_user_permissions(request.user)
+        permissions = group.get_user_permissions(request.user)
 
         return Response(data=permissions, content_type="application/json")

@@ -20,7 +20,7 @@ export const UserJobsList = (props) => {
       setShowLoading(true);
     }
     // 加载用户任务信息
-    const url = "/api/v1/docs/category/list";
+    const url = "/api/v1/docs/group/list";
     // 开始获取数据
     fetchApi.Get(url)
       .then(responseData => {
@@ -62,7 +62,7 @@ export const UserJobsList = (props) => {
                 <div className="row">
                   <span className="config">名称:</span>
                   <span className="value">
-                    <Link to={`/docs/category/${item.id}`}>{item.name}</Link>
+                    <Link to={`/docs/group/${item.id}`}>{item.name}</Link>
                   </span>
                 </div>
                 <div className="row">
@@ -73,10 +73,10 @@ export const UserJobsList = (props) => {
               <div className="buttons">
                 {/* <div className="button" /> */}
                 <div className="button">
-                  <Link to={`/docs/category/${item.id}`}>查看详情</Link>
+                  <Link to={`/docs/group/${item.id}`}>查看详情</Link>
                 </div>
                 <div className="button">
-                  <Link to={`/docs/category/${item.id}/articles`}>查看文章</Link>
+                  <Link to={`/docs/group/${item.id}/articles`}>查看文章</Link>
                 </div>
               </div>
             </Card>

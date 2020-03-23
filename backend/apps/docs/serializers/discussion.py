@@ -49,6 +49,6 @@ class DiscussionModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Discussion
         fields = (
-            "id", "category", "article", "content", "parent",
+            "id", "group", "article", "content", "parent",
             "user", "time_added", "time_updated", "is_deleted"
         )

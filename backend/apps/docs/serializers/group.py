@@ -3,31 +3,31 @@
 from rest_framework import serializers
 
 from account.models import User
-from docs.models.category import Category, CategoryUser
+from docs.models.group import Group, GroupUser
 
 
-class CategoryUserAddSerializer(serializers.Serializer):
+class GroupUserAddSerializer(serializers.Serializer):
     """
     给分类添加用户时使用
     """
-    category = serializers.SlugRelatedField(slug_field="code", queryset=Category.objects.all(), 
+    group = serializers.SlugRelatedField(slug_field="code", queryset=Group.objects.all(), 
                                             required=True)
     user = serializers.SlugRelatedField(many=True, slug_field="username", queryset=User.objects.all())
     permission = serializers.CharField(default="R", required=False)
 
 
-class CategoryUserModelSerializer(serializers.ModelSerializer):
+class GroupUserModelSerializer(serializers.ModelSerializer):
     """
     分类用户多对多关系
     """
-    category = serializers.SlugRelatedField(slug_field="code", queryset=Category.objects.all(),
+    group = serializers.SlugRelatedField(slug_field="code", queryset=Group.objects.all(),
                                            required=True)
     user = serializers.SlugRelatedField(slug_field="username", queryset=User.objects.all())
 
     def create(self, validated_data):
         # 1. 获取到请求的用户
         user = self.context["request"].user
-        category = validated_data["category"]
+        group = validated_data["group"]
 
         # 2. 判断用户是否有增加用户的权限
         result = instance.check_user_permission(user, "add_user")
@@ -38,16 +38,16 @@ class CategoryUserModelSerializer(serializers.ModelSerializer):
         return super().create(self, validated_data)
 
     class Meta:
-        model = CategoryUser
-        fields = ("id", "category", "user", "permission", "time_added", "is_active")
+        model = GroupUser
+        fields = ("id", "group", "user", "permission", "time_added", "is_active")
 
 
-class CategoryModelSerializer(serializers.ModelSerializer):
+class GroupModelSerializer(serializers.ModelSerializer):
     """
-    Docs Category Model Serializer
+    Docs Group Model Serializer
     """
 
-    parent = serializers.SlugRelatedField(slug_field="code", queryset=Category.objects.all(), 
+    parent = serializers.SlugRelatedField(slug_field="code", queryset=Group.objects.all(), 
                                           required=False, allow_null=True)
     # 分组用户
     users = serializers.SlugRelatedField(many=True, slug_field="username", queryset=User.objects.all(),
@@ -56,7 +56,7 @@ class CategoryModelSerializer(serializers.ModelSerializer):
     owner = serializers.SlugRelatedField(slug_field="username", queryset=User.objects.all(),
                                          required=False)
     # users是会返回分组中的所有用户，但是users_permission只包含is_active是True的用户
-    users_permisson = CategoryUserModelSerializer(required=False, many=True, read_only=True)
+    users_permisson = GroupUserModelSerializer(required=False, many=True, read_only=True)
 
     def validate(self, attrs):
         if "parent" in attrs:
@@ -83,10 +83,10 @@ class CategoryModelSerializer(serializers.ModelSerializer):
         instance = super().create(validated_data)
 
         # 2. 给当前用户添加所有权限
-        category_user, created = CategoryUser.objects.get_or_create(category=instance, user=instance.owner)
-        if category_user.permission != "ALL":
-            category_user.permission = "ALL"
-            category_user.save()
+        group_user, created = GroupUser.objects.get_or_create(group=instance, user=instance.owner)
+        if group_user.permission != "ALL":
+            group_user.permission = "ALL"
+            group_user.save()
         
         # 3. 返回实例
         return instance
@@ -96,7 +96,7 @@ class CategoryModelSerializer(serializers.ModelSerializer):
         # print(self.context["request"].data, self.context["request"].method)
         if self.context["request"].method == "GET":
             # 这样就可以调用自身这个Serializer类了
-            fields['children'] = CategoryModelSerializer(many=True, read_only=True)
+            fields['children'] = GroupModelSerializer(many=True, read_only=True)
 
         # PUT方法，如果Image的标签为空，那么就设置Image为可读：或者用patch方法修改各字段
         if self.context["request"].method == "PUT":
@@ -106,7 +106,7 @@ class CategoryModelSerializer(serializers.ModelSerializer):
         return fields
 
     class Meta:
-        model = Category
+        model = Group
         fields = ("id", "name", "code", "image", "description", "parent",
                    "owner", "users", "users_permisson",
                   "level", "order", "time_added", "is_deleted")
