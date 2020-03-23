@@ -1,5 +1,5 @@
 /**
- * 分类添加页面
+ * 分组添加页面
  */
 import React, { useEffect, useContext } from "react";
 import {
@@ -41,16 +41,16 @@ function CategoryAdd(props){
             //   console.log(data);
               if(data.id > 0){
                   // 当data中有id字段，就表示添加成功了，跳转去category的详情页
-                  message.success(`添加分类(id:${data.id})成功`, 5);
+                  message.success(`添加分组(id:${data.id})成功`, 5);
                   props.history.push(`/docs/category/${data.id}`);
 
               }else{
-                message.warn(`添加分类失败`, 5);
+                message.warn(`添加分组失败`, 5);
                 message.error(JSON.stringify(data), 8);
               }
           })
             .catch(err => {
-                message.error(`添加分类出错`, 5);
+                message.error(`添加分组出错`, 5);
                 console.log(err);
             });
     }
@@ -65,7 +65,7 @@ function CategoryAdd(props){
                 link: "/"
             },
             {
-                title: "文档分类",
+                title: "文档分组",
                 link: "/docs/category"
             },
             {
@@ -82,7 +82,7 @@ function CategoryAdd(props){
             {/* 主体内容开始 */}
             <div className="main">
                 <div className="title">
-                    <h4>添加分类</h4>
+                    <h4>添加分组</h4>
                 </div>
                 <CategoryForm 
                   data={{}} type={"add"}

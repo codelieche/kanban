@@ -1,5 +1,5 @@
 /**
- * 分类 表单Form
+ * 分组 表单Form
  * 需要传递的属性(props):
  * 1. data: 编辑页会传递过来object对象
  * 2. type: editor或者add，根据这个类确定GroupForm
@@ -27,7 +27,7 @@ import CheckValuesFromTable from "../../Base/Forms/CheckTableValues";
 // 自定义的表单控件
 import SelectAndButton from "../../Base/Forms/SelectAndButton";
 
-// 分类表单
+// 分组表单
 function CategoryForm(props){
     // 表单的ref：修改表单的值的时候会用到
     const formRef = React.createRef();
@@ -38,7 +38,7 @@ function CategoryForm(props){
     const [fileListData, setFileListData] = useState([]);
     // 弹出框
     const [visibleModal, visibleModalState] = useState(false);
-    // 父级分类的选择值
+    // 父级分组的选择值
     const [checkValues, checkValuesState] = useState([]);
 
     // 相当于：componentDidMount()、componentWillUpdate()等函数
@@ -136,7 +136,7 @@ function CategoryForm(props){
               sorter: (a, b) => a.id - b.id
           },
           {
-              title: "分类名",
+              title: "分组名",
               dataIndex: "name",
               key: "name",
           },
@@ -146,7 +146,7 @@ function CategoryForm(props){
               key: "code"
           },
           {
-              title: "父级分类",
+              title: "父级分组",
               dataIndex: "parent",
               key: "parent",
           },
@@ -168,37 +168,37 @@ function CategoryForm(props){
         >
             <Row>
                 <Col xs={24} sm={24} md={24}>
-                  {/* 分类的名称 */}
+                  {/* 分组的名称 */}
                     <Form.Item
                       {...formItemLayout}
-                      label="分类名"
+                      label="分组名"
                       name="name"
                       rules={[
-                          {required: true, message: "请填写分类名"}
+                          {required: true, message: "请填写分组名"}
                       ]}
                     >
                       <Input placeholder="name" />
                     </Form.Item>
 
-                   {/* 分类代码：唯一值的 */}
+                   {/* 分组代码：唯一值的 */}
                     <Form.Item
                       {...formItemLayout}
                       label="Code"
                       name="code"
                       rules={[
-                          {required: props.type === "editor" ? false: true, message: "请填写分类的code"}
+                          {required: props.type === "editor" ? false: true, message: "请填写分组的code"}
                       ]}
                     >
                       <Input placeholder="code" disabled={props.type === "editor" ? true: false}/>
                     </Form.Item>
 
-                    {/* 父级分类 */}
+                    {/* 父级分组 */}
                     <Form.Item
                       {...formItemLayout}
-                      label="父级分类"
+                      label="父级分组"
                       name="parent"
                       rules={[
-                          {required: false, message: "请填写父级分类"}
+                          {required: false, message: "请填写父级分组"}
                       ]}
                     >
                       {/* 采用了表单自定义的控件 */}
@@ -210,25 +210,25 @@ function CategoryForm(props){
                       />
                     </Form.Item>
                     
-                    {/* 当前分类的序号：越小越靠前 */}
+                    {/* 当前分组的序号：越小越靠前 */}
                     <Form.Item
                       {...formItemLayout}
                       label="排序"
                       name="order"
                       rules={[
-                          {required: true, message: "请填写分类的排序"}
+                          {required: true, message: "请填写分组的排序"}
                       ]}
                     >
                       <InputNumber min={1} max={100} />
                     </Form.Item>
                     
-                    {/* 分类描述：后续会设置成富文本编辑器 */}
+                    {/* 分组描述：后续会设置成富文本编辑器 */}
                     <Form.Item
                       {...formItemLayout}
                       label="描述"
                       name="description"
                       rules={[
-                          {required: true, message: "请描述一下当前分类"}
+                          {required: true, message: "请描述一下当前分组"}
                       ]}
                     >
                       <Input.TextArea 
@@ -243,7 +243,7 @@ function CategoryForm(props){
                       {...formItemLayout}
                       label="添加时间"
                       rules={[
-                          {required: true, message: "请描述一下当前分类"}
+                          {required: true, message: "请描述一下当前分组"}
                       ]}
                     >
                       <Input value={data.time_added ? data.time_added : null} disabled/>
@@ -266,7 +266,7 @@ function CategoryForm(props){
                       />
                     </Form.Item>
                     
-                    {/* 分类状态：是否删除 */}
+                    {/* 分组状态：是否删除 */}
                     <Form.Item
                       {...formItemLayout}
                       label="状态"
@@ -294,7 +294,7 @@ function CategoryForm(props){
             
             {/* 从列表中选择parent的对话框 */}
             <Modal
-                title="请选择父级分类"
+                title="请选择父级分组"
                 visible={visibleModal}
                 width={"60%"}
                 // footer={null}

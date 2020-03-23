@@ -1,5 +1,5 @@
 /**
- * 分类详情页
+ * 分组详情页
  * 采用Hook方式：不编写class的情况下使用state，以及其它React特性。
  */
 import React, {useState, useEffect, useContext, useMemo} from "react";
@@ -19,7 +19,7 @@ import LoadingPage from "../../Page/Loading";
 
 import BaseTable from "../../Page/BaseTable";
 
-// 分类详情页
+// 分组详情页
 function CategoryDetail(props) {
     // 申明一个叫：data的state变量
     // 因为id可能是数字，也可能是字符，需要有个状态保存一下
@@ -38,7 +38,7 @@ function CategoryDetail(props) {
               dataState(data);
               setLoaded(true);
               // 修改标题
-              document.title = `${data.name}-分类-看板`;
+              document.title = `${data.name}-分组-看板`;
 
           })
             .catch(err => {
@@ -71,7 +71,7 @@ function CategoryDetail(props) {
                 link: "/"
             },
             {
-                title: "文档分类",
+                title: "文档分组",
                 link: "/docs/category"
             },
             {
@@ -106,12 +106,12 @@ function CategoryDetail(props) {
         }
     }, [data.users_permisson])
 
-    // 分类文章相关的表格
+    // 分组文章相关的表格
     // params字段:通过url可获取到的字段信息
     const paramsFields = useMemo(() => {
         return ["page", "search", "ordering", "parent", "level", "is_deleted"];
         
-    // 为了让当切换了另外一个分类的时候，触发表格的更新
+    // 为了让当切换了另外一个分组的时候，触发表格的更新
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.match.params.id]);
 
@@ -214,7 +214,7 @@ function CategoryDetail(props) {
                     {/* 左侧内容：start */}
                     <Col xs={{span: 24}} sm={{span: 16}} lg={{span: 18}}>
                         <Row className="title">
-                            <h4>文档分类详情</h4>
+                            <h4>文档分组详情</h4>
                         </Row>
                         <div className="info-property">
                             <dl>
@@ -226,7 +226,7 @@ function CategoryDetail(props) {
                                 <dd>{data.code}</dd>
                             </dl>
                             <dl>
-                                <dt>父级分类</dt>
+                                <dt>父级分组</dt>
                                 <dd>{data.parent ? data.parent : "---"}</dd>
                             </dl>
                             <dl>
@@ -267,7 +267,7 @@ function CategoryDetail(props) {
                             <Row className="title">
                                 <h4>文章列表</h4>
                             </Row>
-                            {/* 分类的文章列表 */}
+                            {/* 分组的文章列表 */}
                             <BaseTable 
                                 columns={columns} 
                                 filterColumns={filterColumns}  // filter会用到

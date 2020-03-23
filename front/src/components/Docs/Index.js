@@ -8,12 +8,12 @@ import {
     Redirect
 } from "react-router-dom";
 
-// 导入分类相关组件:
-import CategoryList from "./Category/List";
-import CategoryAdd from "./Category/Add";
-import CategoryDetail from "./Category/Detail";
-import CategoryEditor from "./Category/Editor";
-import CategoryArticlesPage from "./Category/Articles";
+// 导入分组相关组件:
+import GroupList from "./Group/List";
+import GroupAdd from "./Group/Add";
+import GroupDetail from "./Group/Detail";
+import GroupEditor from "./Group/Editor";
+import GroupArticlesPage from "./Group/Articles";
 
 // 导入Article相关组件:
 import ArticleList from "./Article/List";
@@ -26,15 +26,15 @@ import DiscussionList from "./Discussion/List";
 function DocsIndex(props){
       return (
           <Switch>
-              {/* 分类相关路由 */}
-              <Route exat path="/docs/category/list" component={CategoryList} />
-              <Route exat path="/docs/category/add" component={CategoryAdd} />
-              <Route exat path="/docs/category/:id/editor" component={CategoryEditor} />
-              <Route exat path="/docs/category/:id/articles" component={CategoryArticlesPage} />
-              <Route exat path="/docs/category/:id" component={CategoryDetail} />
+              {/* 分组相关路由 */}
+              <Route exat path="/docs/group/list" component={GroupList} />
+              <Route exat path="/docs/group/add" component={GroupAdd} />
+              <Route exat path="/docs/group/:id/editor" component={GroupEditor} />
+              <Route exat path="/docs/group/:id/articles" component={GroupArticlesPage} />
+              <Route exat path="/docs/group/:id" component={GroupDetail} />
               <Route exat 
-                path="/docs/category" 
-                render={() => <Redirect to="/docs/category/list" push={false} />}
+                path="/docs/group" 
+                render={() => <Redirect to="/docs/group/list" push={false} />}
               />
 
               {/* Article相关路由 */}

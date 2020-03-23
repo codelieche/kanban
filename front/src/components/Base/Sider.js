@@ -16,17 +16,17 @@ import fetchApi from "../Utils/fetchApi";
 // 显示文章相关的左侧Sider
 function LeftSider({showLeftSider, setShowLeftSider}){
     // 用户所有的分类列表
-    const [categories, setCategories] = useState([]);
+    const [groups, setGroups] = useState([]);
 
     // 选中的当前分类：这个的作用于是用于左侧导航的
-    // 遵循一点：通过修改全局的分类ID，然后再触发修改currentCategory
-    const [currentCategory, setCurrentCategory] = useState({});
+    // 遵循一点：通过修改全局的分类ID，然后再触发修改currentGroup
+    const [currentGroup, setCurrentGrooup] = useState({});
 
     // 刷新导航相关的操作
     const { 
         setRefreshNavTimes, history, 
-        currentArticleCategoryID,   // 是设置了全局的上下文的
-        setCurrentArticleCategoryID, // 在article详情页会用到
+        currentArticleGroupID,   // 是设置了全局的上下文的
+        setCurrentArticleGroupID, // 在article详情页会用到
     } = useContext(GlobalContext);
 
 
@@ -53,7 +53,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
         fetchApi.Get(url)
           .then(responseData => {
               if(Array.isArray(responseData)){
-                  setCategories(responseData);
+                  setGroups(responseData);
               }else{
                   message.warn("获取分类列表数据出错", 3);
               }
@@ -61,33 +61,33 @@ function LeftSider({showLeftSider, setShowLeftSider}){
             .catch(err => {
                 console.log(err);
             })
-    }, [setCategories])
+    }, [setGroups])
 
     useEffect(() => {
         // 获取分类数据
-        if(categories.length === 0 ){
+        if(groups.length === 0 ){
             fetchCategoriesData();
         }
 
         // 组件要卸载的时候，储存一下宽度
         return () => {localStorage.setItem("leftSiderWidth", width);}
-    }, [categories.length, fetchCategoriesData, width])
+    }, [groups.length, fetchCategoriesData, width])
 
     // 重新设置当前分类: 
     // 获取到分类列表了、或者修改了全局分类的id了，都会触发
     useEffect(() => {
-        // console.log(currentArticleCategoryID, categories);
-        if(!!currentArticleCategoryID && currentArticleCategoryID > 0){
-            // console.log("设置了分类ID:", currentArticleCategoryID, categories);
+        // console.log(currentArticleGroupID, categories);
+        if(!!currentArticleGroupID && currentArticleGroupID > 0){
+            // console.log("设置了分类ID:", currentArticleGroupID, categories);
             // 需要重新设置一下当前的分类了
-            if(!currentCategory.id  || currentCategory.id !== currentArticleCategoryID){
-                for(var i=0; i< categories.length; i++){
+            if(!currentGroup.id  || currentGroup.id !== currentArticleGroupID){
+                for(var i=0; i< groups.length; i++){
                     // console.log(categories[i]);
-                    if(categories[i].id === currentArticleCategoryID){
+                    if(groups[i].id === currentArticleGroupID){
                         // setCurrentCategory(categories[i]);
                         // 先修改当前文章的分类ID: 还要记得设置当前的分类
-                        setCurrentArticleCategoryID(categories[i].id);
-                        setCurrentCategory(categories[i])
+                        setCurrentArticleGroupID(groups[i].id);
+                        setCurrentGrooup(groups[i])
                         break;
                     }
                 }
@@ -97,12 +97,12 @@ function LeftSider({showLeftSider, setShowLeftSider}){
         }else{
             // console.log("还没分类ID");
             // 如果有分类就设置第一个
-            if(categories.length > 0){
+            if(groups.length > 0){
                 //   设置列表的第一个为，当前的分类
-                setCurrentCategory(categories[0]);
+                setCurrentGrooup(groups[0]);
             }
         }
-    }, [categories, currentArticleCategoryID, currentCategory.id, setCurrentArticleCategoryID])
+    }, [groups, currentArticleGroupID, currentGroup.id, setCurrentArticleGroupID])
 
     const onResize = useCallback((event, { element, size }) => {
         // console.log(size.width);
@@ -122,7 +122,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
 
     // namespace的选项
     let categoriesElements = useMemo(() => {
-        let menuItems = categories.map((item, index) => {
+        let menuItems = groups.map((item, index) => {
             return (
                 <Menu.Item key={index} onClick={e => {
                     // console.log(e);
@@ -130,7 +130,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
                     document.title = `看板-分类-${item.name}`;
                     // setCurrentCategory(item);
                     // 遵循修改全局的分类id，再去触发修改当前分类对象
-                    setCurrentArticleCategoryID(item.id);
+                    setCurrentArticleGroupID(item.id);
                 }}>
                     {item.name}
                 </Menu.Item>
@@ -142,7 +142,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
                 {menuItems}
             </Menu>
         );
-    }, [categories, setCurrentArticleCategoryID]);
+    }, [groups, setCurrentArticleGroupID]);
 
     const toogleLeftSider = useCallback((e) => {
         e.preventDefault();
@@ -156,20 +156,20 @@ function LeftSider({showLeftSider, setShowLeftSider}){
         if(showLeftSider){
             return (
              <ArticlesNav 
-               category={currentCategory.id}
+               group={currentGroup.id}
             />
             )
         }else{
             return null;
         }
-    }, [currentCategory.id, showLeftSider]);
+    }, [currentGroup.id, showLeftSider]);
 
     const handlerAddNewArticle = useCallback(e => {
         console.log(e);
         // 阻止冒泡
         e.stopPropagation();
         // 添加个新的文章
-        if(currentCategory.id < 0){
+        if(currentGroup.id < 0){
             message.warn("还未选择分类，不可创建文章", 3);
             return;
         }
@@ -177,7 +177,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
         // 发起创建文章请求
         let url = "/api/v1/docs/article/create";
         fetchApi.Post(url, {}, {
-            data: {category: currentCategory.id}
+            data: {category: currentGroup.id}
         })
           .then(responseData => {
               if(responseData.id > 0){
@@ -195,7 +195,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
                 console.log(err);
             })
         
-    }, [currentCategory.id, history, setRefreshNavTimes])
+    }, [currentGroup.id, history, setRefreshNavTimes])
 
     return (
         <Resizable className="box"  
@@ -227,7 +227,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
                                         <Icon type="flag"  />
                                     </span>
                                     <div className="current">
-                                        {currentCategory.name}
+                                        {currentGroup.name}
                                     </div>
                                     <Icon type="arrows-v" />
                                 </div>

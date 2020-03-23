@@ -1,5 +1,5 @@
 /**
- * 分类的文章页
+ * 分组的文章页
  */
 import React, {useState, useEffect, useMemo} from "react";
 import { Link } from "react-router-dom";
@@ -8,26 +8,26 @@ import {
 } from "antd";
 
 import Icon from "../../Base/Icon";
-// import CategoryArticlesTable from "./ArticlesTable";
+// import GroupArticlesTable from "./ArticlesTable";
 import BaseTable from "../../Page/BaseTable";
 
 
-export const CategoryArticlesPage = (props) => {
+export const GroupArticlesPage = (props) => {
     // 状态
-    const [categoryID, setCategoryID] = useState("");
+    const [groupID, setGroupID] = useState("");
 
-    // 修改分类id
+    // 修改分组id
     useEffect(() => {
-        if(props.match.params.id !== categoryID){
-            setCategoryID(props.match.params.id);
+        if(props.match.params.id !== groupID){
+            setGroupID(props.match.params.id);
         }
-    }, [categoryID, props.match.params.id, setCategoryID])
+    }, [groupID, props.match.params.id, setGroupID])
 
     // params字段:通过url可获取到的字段信息
     const paramsFields = useMemo(() => {
         return ["page", "search", "ordering", "parent", "level", "is_deleted"];
         
-    // 为了让当切换了另外一个分类的时候，触发表格的更新
+    // 为了让当切换了另外一个分组的时候，触发表格的更新
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.match.params.id]);
 
@@ -123,12 +123,12 @@ export const CategoryArticlesPage = (props) => {
                     <h4>文章列表</h4>
                 </Row>
 
-                {/* <CategoryArticlesTable 
-                    categoryID={categoryID} 
+                {/* <GroupArticlesTable 
+                    groupID={groupID} 
                     location={props.location} 
                     history={props.history}
-                    apiUrlPrefix={ categoryID ? `/api/v1/docs/category/${categoryID}/articles` : null}
-                    pageUrlPrefix={`/docs/category/${categoryID}/articles`}
+                    apiUrlPrefix={ groupID ? `/api/v1/docs/group/${groupID}/articles` : null}
+                    pageUrlPrefix={`/docs/group/${groupID}/articles`}
                 /> */}
 
                 {/* 列表 */}
@@ -137,12 +137,12 @@ export const CategoryArticlesPage = (props) => {
                     filterColumns={filterColumns}  // filter会用到
                     paramsFields={paramsFields}  // url传递的参数
 
-                    categoryID={categoryID} 
+                    groupID={groupID} 
                     location={props.location} 
                     history={props.history}
                     
-                    apiUrlPrefix={ categoryID ? `/api/v1/docs/category/${categoryID}/articles` : null}
-                    pageUrlPrefix={`/docs/category/${categoryID}/articles`}
+                    apiUrlPrefix={ groupID ? `/api/v1/docs/group/${groupID}/articles` : null}
+                    pageUrlPrefix={`/docs/group/${groupID}/articles`}
                 />
             </div>
         </div>
@@ -150,4 +150,4 @@ export const CategoryArticlesPage = (props) => {
     );
 }
 
-export default CategoryArticlesPage;
+export default GroupArticlesPage;

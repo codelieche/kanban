@@ -65,8 +65,8 @@ export const UserLoginOrInfo = (props) => {
                     </Menu.Item>
 
                     <Menu.Item>
-                        <Link to="/docs/category">
-                            <Icon type="file-text-o"> 分类列表</Icon>
+                        <Link to="/docs/group">
+                            <Icon type="file-text-o"> 文档分组</Icon>
                         </Link>
                     </Menu.Item>
 

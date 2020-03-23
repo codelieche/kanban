@@ -119,12 +119,12 @@ export const NavItem = ({item, index, activeNavIDs, canWrite}) => {
  * 获取某个分组的文章导航
  * @param {Number} param0 
  */
-export const ArticlesNav= ({category}) => {
-    const [currentCategoryID, setCurrentCategoryID] = useState(null);
+export const ArticlesNav= ({group}) => {
+    const [currentGroupID, setCurrentGroupID] = useState(null);
     const { 
         navData, refreshNavTimes, 
-        currentArticleCategoryID, // 当前的分类ID
-        categoryPermissions, setCategoryPermissions  // 文章分类的权限
+        currentArticleGroupID, // 当前的分类ID
+        groupPermissions, setGroupPermissions  // 文章分类的权限
     } = useContext(GlobalContext);
 
     const [dataSource, setDataSource] = useState([]);
@@ -134,9 +134,9 @@ export const ArticlesNav= ({category}) => {
     // 是否有写入分类文章的权限
     const [canWrite, setCanWrite] = useState(false);
 
-    const fetchData = useCallback((category, isReFresh) => {
+    const fetchData = useCallback((group, isReFresh) => {
         // 修改一下当前的分类
-        setCurrentCategoryID(category);
+        setCurrentGroupID(group);
         // 修改fetch次数
         if(isReFresh){
             setFetchTimes(prevState => {
@@ -144,11 +144,11 @@ export const ArticlesNav= ({category}) => {
             });
         }
 
-        if(! category){
+        if(! group){
             // category不可为空
             return 
         }
-        let url = `/api/v1/docs/article/all?category=${category}`;
+        let url = `/api/v1/docs/article/all?category=${group}`;
         // 获取当前分类的所有文章
         fetchApi.Get(url, {}, {})
           .then(data => {
@@ -180,44 +180,44 @@ export const ArticlesNav= ({category}) => {
     // 当category变更的时候需要获取一下文章列表
     useEffect(() => {
         // console.log(fetchTimes, refreshNavTimes);
-        if(category !== currentCategoryID){
+        if(group !== currentGroupID){
             // 获取新的文章列表
-            fetchData(category);
+            fetchData(group);
         }else if(fetchTimes <= refreshNavTimes){
             // 获取新的文章列表
-            fetchData(category, true);
+            fetchData(group, true);
         }
-    }, [currentCategoryID, category, fetchData, fetchTimes, refreshNavTimes]);
+    }, [currentGroupID, group, fetchData, fetchTimes, refreshNavTimes]);
 
-    // 获取当前用户对分类的操作权限：read,write,delete等
-    const fetchCategooryPermissions = useCallback( categoryID => {
+    // 获取当前用户对分组的操作权限：read,write,delete等
+    const fetchGroupPermissions = useCallback( categoryID => {
         let url = `/api/v1/docs/category/${categoryID}/permissions`;
         fetchApi.Get(url, {}, {})
           .then(responseData => {
             if(Array.isArray(responseData)){
-                setCategoryPermissions(responseData);
+                setGroupPermissions(responseData);
             }
           })
             .catch(err => {
                 console.log(err);
             })
-    }, [setCategoryPermissions])
+    }, [setGroupPermissions])
 
-    // 监控当前分类是否变化
+    // 监控当前分组是否变化
     useEffect(() => {
-        if(currentArticleCategoryID > 0){
-            fetchCategooryPermissions(currentArticleCategoryID);
+        if(currentArticleGroupID > 0){
+            fetchGroupPermissions(currentArticleGroupID);
         }
-    }, [currentArticleCategoryID, fetchCategooryPermissions])
+    }, [currentArticleGroupID, fetchGroupPermissions])
 
-    // 监控能否编辑
+    // 监控能否写入
     useEffect(() => {
-        if(categoryPermissions.indexOf("write") >= 0){
+        if(groupPermissions.indexOf("write") >= 0){
             setCanWrite(true);
         }else{
             setCanWrite(false);
         }
-    }, [categoryPermissions])
+    }, [groupPermissions])
 
     // 渲染导航
     let navElements = [];

@@ -32,8 +32,8 @@ export const ArticleDetail = function(props){
     // 修改全局的右侧顶部导航
     const { 
         setNavData, setRefreshNavTimes, 
-        currentArticleCategoryID, setCurrentArticleCategoryID,  // 全局的文章分类ID
-        categoryPermissions, setCategoryPermissions
+        currentArticleGroupID, setCurrentArticleGroupID,  // 全局的文章分类ID
+        groupPermissions, setGroupPermissions
     } = useContext(GlobalContext);
     // 是否显示描述、显示讨论
     const [showDescription, setShowDescription] = useState(false);
@@ -45,7 +45,7 @@ export const ArticleDetail = function(props){
     // 是否需要渲染错误页
     const [rendeErrorPage, setRendeErrorPage] = useState(0);
     // 获取当前分类的权限
-    // const [categoryPermissions, setCategoryPermissions] = useState([]);
+    // const [groupPermissions, setGroupPermissions] = useState([]);
     const [canEditor, setCanEditor] = useState(false);
 
     const fetchDetailData = useCallback(id => {
@@ -60,9 +60,9 @@ export const ArticleDetail = function(props){
               if(responseData.id > 0){
                   setData(responseData);
                   setArticleID(id);
-                  if( Number.isInteger(responseData.category) && currentArticleCategoryID !== responseData.category ){
+                  if( Number.isInteger(responseData.category) && currentArticleGroupID !== responseData.category ){
                     // 修改全局的分类id
-                    setCurrentArticleCategoryID(responseData.category);
+                    setCurrentArticleGroupID(responseData.category);
                   }
                   // 根据parent信息组织导航信息
                   let navData = [
@@ -115,7 +115,7 @@ export const ArticleDetail = function(props){
                     setRendeErrorPage(err.status);
                 }
             });
-    }, [currentArticleCategoryID, setCurrentArticleCategoryID, setNavData])
+    }, [currentArticleGroupID, setCurrentArticleGroupID, setNavData])
 
     useEffect(() => {
         // let ac = new AbortController();
@@ -168,35 +168,35 @@ export const ArticleDetail = function(props){
 
     }, [articleID, fetchDetailData]);
 
-    // 获取当前用户对分类的操作权限：read,write,delete等
-    const fetchCategooryPermissions = useCallback( categoryID => {
+    // 获取当前用户对分组的操作权限：read,write,delete等
+    const fetchGroupPermissions = useCallback( categoryID => {
         let url = `/api/v1/docs/category/${categoryID}/permissions`;
         fetchApi.Get(url, {}, {})
           .then(responseData => {
             if(Array.isArray(responseData)){
-                setCategoryPermissions(responseData);
+                setGroupPermissions(responseData);
             }
           })
             .catch(err => {
                 console.log(err);
             })
-    }, [setCategoryPermissions])
+    }, [setGroupPermissions])
 
-    // 监控当前分类是否变化
+    // 监控当前分组是否变化
     useEffect(() => {
-        if(currentArticleCategoryID > 0){
-            fetchCategooryPermissions(currentArticleCategoryID);
+        if(currentArticleGroupID > 0){
+            fetchGroupPermissions(currentArticleGroupID);
         }
-    }, [currentArticleCategoryID, fetchCategooryPermissions])
+    }, [currentArticleGroupID, fetchGroupPermissions])
 
     // 监控能否编辑
     useEffect(() => {
-        if(categoryPermissions.indexOf("write") >= 0){
+        if(groupPermissions.indexOf("write") >= 0){
             setCanEditor(true);
         }else{
             setCanEditor(false);
         }
-    }, [categoryPermissions])
+    }, [groupPermissions])
 
     // 判断是否加载完毕
     if(!loaded){

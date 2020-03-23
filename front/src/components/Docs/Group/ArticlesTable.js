@@ -1,5 +1,5 @@
 /**
- * 分类文章列表
+ * 分组文章列表
  */
 import React, { useState, useCallback, useEffect, useMemo} from "react";
 import { Link } from "react-router-dom";
@@ -16,10 +16,10 @@ import { getParamsFromLocationSearch } from "../../Utils/UrlParam";
 import ResizeableTitle from "./Resizeable";
 
 /**
- * 分类文章的表格
+ * 分组文章的表格
  * @param {*} props 
  */
-export const CategoryArticlesTable = (props) => {
+export const GroupArticlesTable = (props) => {
     // 状态
     const [apiUrlPrefix, setApiUrlPrefix] = useState(null);
     // 跳转页面的前缀
@@ -115,7 +115,7 @@ export const CategoryArticlesTable = (props) => {
         return ["page", "search", "ordering", "parent", "level", "is_deleted"];
     }, []);
 
-    // 获取分类文章列表
+    // 获取分组文章列表
     const fetchData = useCallback((page) => {
         // console.log(page);
         if(!props.apiUrlPrefix){
@@ -160,7 +160,7 @@ export const CategoryArticlesTable = (props) => {
                   setPage(page);
 
               }else{
-                  message.warn("获取分类文章列表出错")
+                  message.warn("获取分组文章列表出错")
                   message.warn(JSON.stringify(responseData));
               }
           })
@@ -170,7 +170,7 @@ export const CategoryArticlesTable = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.apiUrlPrefix, props.location.search])
 
-    // 修改分类
+    // 修改分组
     useEffect(() => {
         if(props.apiUrlPrefix !== apiUrlPrefix && props.apiUrlPrefix){
             setApiUrlPrefix(props.apiUrlPrefix);
@@ -388,4 +388,4 @@ export const CategoryArticlesTable = (props) => {
     );
 }
 
-export default CategoryArticlesTable;
+export default GroupArticlesTable;

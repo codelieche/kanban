@@ -1,5 +1,5 @@
 /**
- * 分类编辑页面
+ * 分组编辑页面
  */
 import React, { useState, useEffect, useContext } from "react";
 import {
@@ -72,17 +72,17 @@ function CategoryEditor(props){
               if(data.id > 0){
                   // 当data中有id字段，就表示添加成功了，跳转去category的详情页
                   // 显示结果：跳转去详情页
-                  message.success(`修改分类(id:${data.id})成功`, 5);
+                  message.success(`修改分组(id:${data.id})成功`, 5);
                   props.history.push(`/docs/category/${data.id}`);
 
               }else{
-                  message.warn(`修改分类(id:${data.id})失败`, 5);
+                  message.warn(`修改分组(id:${data.id})失败`, 5);
                   message.error(JSON.stringify(data), 8);
               }
           })
             .catch(err => {
                 console.log(err);
-                message.error(`修改分类(id:${data.id})出错`, 5);
+                message.error(`修改分组(id:${data.id})出错`, 5);
             });
     }
 
@@ -96,7 +96,7 @@ function CategoryEditor(props){
                 link: "/"
             },
             {
-                title: "文档分类",
+                title: "文档分组",
                 link: "/docs/category"
             },
             {
@@ -113,7 +113,7 @@ function CategoryEditor(props){
             {/* 主体内容开始 */}
             <div className="main">
                 <div className="title">
-                    <h4>编辑分类</h4>
+                    <h4>编辑分组</h4>
                 </div>
                 <CategoryForm 
                   data={data} type="editor"

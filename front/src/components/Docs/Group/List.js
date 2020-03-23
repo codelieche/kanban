@@ -1,5 +1,5 @@
 /**
- * 分类列表页
+ * 分组列表页
  */
 import React, {useState, useEffect, useMemo, useCallback, useContext} from "react"
 import { Link } from "react-router-dom";
@@ -26,10 +26,10 @@ const deleteOnCancel = e => {
     message.error("取消删除", 3);
 }
 
-// 父分类的颜色
+// 父分组的颜色
 const parantColors = ["#108ee9", "blue", "geekblue", "green", "gold"];
 
-function CategoryList(props){
+function GroupList(props){
 
     // params字段:通过url可获取到的字段信息
     const paramsFields = useMemo(() => {
@@ -148,10 +148,10 @@ function CategoryList(props){
     // 判断是否需要判断一下权限
     useEffect(() => {
         // console.log("判断权限")
-        if(other.userCanAddCategory === undefined){
-            checkUserPermissionAndUpdateStateHook("docs.add_category", "userCanAddCategory", otherState);
+        if(other.userCanAddGroup === undefined){
+            checkUserPermissionAndUpdateStateHook("docs.add_group", "userCanAddGroup", otherState);
         }
-    }, [other.userCanAddCategory]);
+    }, [other.userCanAddGroup]);
 
     // 获取parant过滤选项
     useEffect(() => {
@@ -179,7 +179,7 @@ function CategoryList(props){
             },
             {
                 title: "文档",
-                link: "/docs/category"
+                link: "/docs/group"
             },
             {
                 title: "列表"
@@ -190,7 +190,7 @@ function CategoryList(props){
 
     
 
-    // 删除分类函数
+    // 删除分组函数
     const deleteOnConfirm = useCallback((value) => {
         // 开始删除
         const url = `/api/v1/docs/category/${value.id}`;
@@ -199,13 +199,13 @@ function CategoryList(props){
           .then(response => {
             //   查看status状态码
             if (response.status === 204) {
-              message.success(`删除分类(ID:${value.id}-${value.name}-${value.code})成功`, 3);
+              message.success(`删除分组(ID:${value.id}-${value.name}-${value.code})成功`, 3);
               // 刷新数据
               fetchData(paginationData.current);
             } else if (response.status === 200) {
               return response.json();
             } else {
-              message.success(`删除分类(ID:${value.id}-${value.name}-${value.code})失败！`, 3);
+              message.success(`删除分组(ID:${value.id}-${value.name}-${value.code})失败！`, 3);
               return response.json();
             }
           })
@@ -232,9 +232,9 @@ function CategoryList(props){
         let url;
         if(value){
             // noSearch = false;
-            url = `/docs/category/list?page=1&search=${value}`;
+            url = `/docs/group/list?page=1&search=${value}`;
         }else{
-            url = `/docs/category/list?page=1`;
+            url = `/docs/group/list?page=1`;
         }
         // console.log(noSearch, value)
         
@@ -266,12 +266,12 @@ function CategoryList(props){
                 sorter: (a, b) => a.id - b.id,
                 render:(text, record) => {
                     return (
-                        <Link to={`/docs/category/${record.id}`}>{text}</Link>
+                        <Link to={`/docs/group/${record.id}`}>{text}</Link>
                     );
                 }
             },
             {
-                title: "分类名",
+                title: "分组名",
                 dataIndex: "name",
                 key: "name",
             },
@@ -281,7 +281,7 @@ function CategoryList(props){
                 key: "code"
             },
             {
-                title: "父级分类",
+                title: "父级分组",
                 dataIndex: "parent",
                 key: "parent",
                 filters: parentFilterOptions ? parentFilterOptions : [],
@@ -289,7 +289,7 @@ function CategoryList(props){
                 render: (text, record) => {
                     return (
                         <Tag color={ record.level <= parantColors.length ? parantColors[record.level -1] : "" }>
-                            {record.level > 1 ? text : "一级分类"}
+                            {record.level > 1 ? text : "一级分组"}
                         </Tag>
                     );
                 }
@@ -340,10 +340,10 @@ function CategoryList(props){
                 // ellipsis: true,
                 render: (text, record) => {
                     // 看用户能否添加
-                    if(other.userCanAddCategory){
+                    if(other.userCanAddGroup){
                         return (
                             <span>
-                                <Link to={`/docs/category/${text.id}`}>
+                                <Link to={`/docs/group/${text.id}`}>
                                     <Button type="link" size="small">
                                         <Icon type="link"> 详情</Icon>
                                     </Button>
@@ -351,7 +351,7 @@ function CategoryList(props){
 
                                 <Divider type="vertical" />
 
-                                <Link to={`/docs/category/${text.id}/editor`}>
+                                <Link to={`/docs/group/${text.id}/editor`}>
                                     <Button type="link" size="small">
                                         <Icon type="edit"> 编辑</Icon>
                                     </Button>
@@ -360,7 +360,7 @@ function CategoryList(props){
                                 <Divider type="vertical" />
                                 <Popconfirm
                                     // disabled={text.is_deleted}
-                                    title={`是否删除分类(ID:${text.id}-${text.name}-${text.code})`}
+                                    title={`是否删除分组(ID:${text.id}-${text.name}-${text.code})`}
                                     onCancel={deleteOnCancel}
                                     onConfirm={() =>deleteOnConfirm(text)}
                                     >
@@ -375,7 +375,7 @@ function CategoryList(props){
                     }else{
                         return (
                             <span>
-                               <Link to={`/docs/category/${text.id}`}>
+                               <Link to={`/docs/group/${text.id}`}>
                                 <Button type="link" size="small">
                                     <Icon type="link"> 详情</Icon>
                                 </Button>
@@ -386,7 +386,7 @@ function CategoryList(props){
                 }
             }
         ];
-    }, [deleteOnConfirm, other.userCanAddCategory, parentFilterOptions]);
+    }, [deleteOnConfirm, other.userCanAddGroup, parentFilterOptions]);
 
     // 显示展开
     const expandable = useMemo(() => {
@@ -437,7 +437,7 @@ function CategoryList(props){
         });
 
         // 构造新的连接
-        let url = `/docs/category/list?page=${currentPage}`;
+        let url = `/docs/group/list?page=${currentPage}`;
         if(urlParams.search){
             url = `${url}&search=${this.state.search}`;
         }
@@ -471,9 +471,9 @@ function CategoryList(props){
 
     //  add button ELement
     const addButtonElement = useMemo(() => {
-        if(other.userCanAddCategory){
+        if(other.userCanAddGroup){
             return (
-                <Link to="/docs/category/add">
+                <Link to="/docs/group/add">
                     <Button
                       style={{width: 100}}
                       type="primary"
@@ -484,7 +484,7 @@ function CategoryList(props){
         }else{
             return null;
         }
-    }, [other.userCanAddCategory])
+    }, [other.userCanAddGroup])
     
 
     // 显示顶级按钮组件
@@ -501,14 +501,14 @@ function CategoryList(props){
                     //     urlParamsState(prevState);
                     //     return prevState
                     // });
-                    url = "/docs/category/list?level=1";
+                    url = "/docs/group/list?level=1";
                 }else{
                     // urlParamsState(prevState => {
                     //     prevState.level = null; 
                     //     prevState.search = null; 
                     //     return prevState
                     // });
-                    url = "/docs/category/list";
+                    url = "/docs/group/list";
                 }
                 // onSearchHandler();
                 props.history.push(url);
@@ -516,7 +516,7 @@ function CategoryList(props){
               type="primary"
               icon={<Icon type="filter"/>}
             >
-                { urlParams.level !== 1 && urlParams.level !== "1" ? "一级分类" : "全部分类" } 
+                { urlParams.level !== 1 && urlParams.level !== "1" ? "一级分组" : "全部分组" } 
             </Button>
         );
     }, [props.history, urlParams.level]);
@@ -530,14 +530,14 @@ function CategoryList(props){
             {/* 主体内容开始 */}
             <div className="main">
                 <div className="title">
-                    <h4>文档分类</h4>
+                    <h4>文档分组</h4>
                 </div>
 
                 {/* 工具栏开始：搜索、属性、添加 */}
                 <Row className="tools">
                     <Col span={12}>
                         <Input.Search
-                          placeholder="search category"
+                          placeholder="search group"
                           style={{width: 200}}
                           onSearch={onSearchHandler}
                         >
@@ -553,14 +553,14 @@ function CategoryList(props){
                           >
                               刷新
                           </Button>
-                          {/* 显示一级分类按钮和添加按钮 */}
+                          {/* 显示一级分组按钮和添加按钮 */}
                           {showLeveOneButton}
                           {addButtonElement}
                     </Col>
                 </Row>
                 {/* 工具栏结束 */}
 
-                {/* 分类列表 */}
+                {/* 分组列表 */}
                 <div className="main-list">
                     <Table
                       columns={columns}
@@ -572,11 +572,11 @@ function CategoryList(props){
                       expandable={expandable}  
                     />
                 </div>
-                {/* 分类列表结束 */}
+                {/* 分组列表结束 */}
             </div>
             {/* 主体内容结束 */}
         </div>
     );
 }
 
-export default CategoryList;
+export default GroupList;
