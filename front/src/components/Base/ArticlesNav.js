@@ -51,8 +51,8 @@ export const NavItem = ({item, index, activeNavIDs, canWrite}) => {
         // 添加文章
         let url = "/api/v1/docs/article/create";
         let data = {
-            parent: item.id,
-            category: item.category,
+            parent: item.id,  // 添加子文章，记得添加parent
+            group: item.group,
         }
         fetchApi.Post(url, {}, {
             data: data,

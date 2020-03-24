@@ -177,7 +177,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
         // 发起创建文章请求
         let url = "/api/v1/docs/article/create";
         fetchApi.Post(url, {}, {
-            data: {category: currentGroup.id}
+            data: {group: currentGroup.id}
         })
           .then(responseData => {
               if(responseData.id > 0){

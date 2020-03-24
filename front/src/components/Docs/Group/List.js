@@ -41,7 +41,7 @@ function GroupList(props){
     // 状态值：
     // 列表数据、分页信息, url中的params,是否在加载数据
     const [urlParams, urlParamsState] = useState({})
-    const [dataSource, dataSourceState] = useState([]);
+    const [dataSource, setDataSource] = useState([]);
     const [paginationData, paginationDataState] = useState({current: 1, total: 0});
     const [loading, loadingState] = useState(false);
     const [parentFilterOptions, parentFilterOptionsState] = useState([]);
@@ -96,7 +96,7 @@ function GroupList(props){
             let data = responseData.results;
             if(data instanceof Array){
                 // 更新状态
-                dataSourceState(data);
+                setDataSource(data);
 
                 loadingState(false);
 
@@ -286,6 +286,8 @@ function GroupList(props){
                 key: "parent",
                 filters: parentFilterOptions ? parentFilterOptions : [],
                 filterMultiple: false,
+                width: 115,
+                ellipsis: true,
                 render: (text, record) => {
                     return (
                         <Tag color={ record.level <= parantColors.length ? parantColors[record.level -1] : "" }>
@@ -299,6 +301,7 @@ function GroupList(props){
                 dataIndex: "owner",
                 key: "owner",
                 width: 100,
+                ellipsis: true,
                 sorter: () => {},
             },
             {
@@ -391,19 +394,21 @@ function GroupList(props){
     // 显示展开
     const expandable = useMemo(() => {
         return { 
-            expandedRowRender: record => {
+            expandedRowRender: (record, index, indent, expanded) => {
+                // console.log(record, index, indent, expanded)
+                // console.log(dataSource)
                 if(record.children.length > 0){
                     return (
                         <Table 
-                        showHeader={false}
-                        bordered={false}
-                        dataSource={record.children} 
-                        rowKey={"id"}
-                        //   columns={columns.slice(0, 6)} 
-                        size="small"
-                        columns={columns} 
-                        pagination={false}
-                        expandable={expandable} 
+                            // showHeader={false}
+                            bordered={false}
+                            dataSource={record.children} 
+                            rowKey={"id"}
+                            //   columns={columns.slice(0, 6)} 
+                            size="small"
+                            columns={columns} 
+                            pagination={false}
+                                expandable={expandable} 
                         />
                     );
                 }else{
@@ -411,6 +416,10 @@ function GroupList(props){
                 }
             },
             rowExpandable: record => record.children.length > 0,
+            // 当点击展开的时候，会把childrenColumnName的数据追加到上级表格中。
+            childrenColumnName: "__children",
+            // indentSize: 0,
+            // defaultExpandAllRows: true
         }
     }, [columns]);
 
@@ -520,6 +529,8 @@ function GroupList(props){
             </Button>
         );
     }, [props.history, urlParams.level]);
+
+    // console.log(dataSource);
    
     return (
         <div className="content">
@@ -563,14 +574,16 @@ function GroupList(props){
                 {/* 分组列表 */}
                 <div className="main-list">
                     <Table
-                      columns={columns}
-                      dataSource={dataSource}
-                      rowKey="id"
-                      pagination={paginationData}
-                      onChange={handleTableChange}
-                      // 展开子表格
-                      expandable={expandable}  
+                       columns={columns}
+                       dataSource={dataSource}
+                       rowKey="id"
+                       pagination={paginationData}
+                       onChange={handleTableChange}
+                       // 展开子表格: antd默认会追加children的数据到dataSource中
+                       // 可通过修改childrenColumnName的名字来屏蔽这个功能
+                       expandable={expandable}
                     />
+
                 </div>
                 {/* 分组列表结束 */}
             </div>

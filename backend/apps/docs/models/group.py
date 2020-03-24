@@ -66,11 +66,11 @@ class Group(models.Model):
         获取用户所具有的权限
         """
         # 1. 权限dict
-        all = ("read", "write", "update", "delete", "all", "add_user", "delete_user", "update_user")
+        all = ["read", "write", "update", "delete", "all", "add_user", "delete_user", "update_user"]
 
         permissions_dict = {
             "R": ["read"],  # 只读权限
-            "RW": ("read", "write", "update", "delete"),  # 可写权限
+            "RW": ["read", "write", "update", "delete"],  # 可写权限
             "ALL": all  # 全部权限
         }
 

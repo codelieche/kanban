@@ -28,7 +28,7 @@ import CheckValuesFromTable from "../../Base/Forms/CheckTableValues";
 import SelectAndButton from "../../Base/Forms/SelectAndButton";
 
 // 分组表单
-function CategoryForm(props){
+function GroupForm(props){
     // 表单的ref：修改表单的值的时候会用到
     const formRef = React.createRef();
 
@@ -127,7 +127,7 @@ function CategoryForm(props){
     // console.log("表格渲染函数");
     // 表格的列，弹出的选择框需要用到：
     // 提升性能
-    const categoryListColumns = useMemo(() => {
+    const groupListColumns = useMemo(() => {
       return [
           {
               title: "ID",
@@ -305,7 +305,7 @@ function CategoryForm(props){
                     checkValues={checkValues}
                     checkValuesState={checkValuesState} 
                     dataSourceUrl="/api/v1/docs/group/list?level=1"
-                    columns={categoryListColumns}
+                    columns={groupListColumns}
                     rowKey="code"
                     isMultiple={false}
                     disabledKeys={[data.code]}
@@ -318,4 +318,4 @@ function CategoryForm(props){
     );
 }
 
-export default CategoryForm;
+export default GroupForm;

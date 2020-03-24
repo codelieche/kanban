@@ -134,6 +134,10 @@ function CheckValuesFromTable({checkValues, checkValuesState, dataSourceUrl, col
             }
         },
         rowExpandable: record => record[subsKey].length > 0,
+        // 当点击展开的时候，会把childrenColumnName的数据追加到上级表格中。
+        childrenColumnName: "__children",
+        // indentSize: 0,
+        // defaultExpandAllRows: true
     };
 
     return (

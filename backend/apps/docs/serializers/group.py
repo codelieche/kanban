@@ -97,6 +97,8 @@ class GroupModelSerializer(serializers.ModelSerializer):
         if self.context["request"].method == "GET":
             # 这样就可以调用自身这个Serializer类了
             fields['children'] = GroupModelSerializer(many=True, read_only=True)
+            # fields["subs"] = fields["children"]
+            # del fields["children"]
 
         # PUT方法，如果Image的标签为空，那么就设置Image为可读：或者用patch方法修改各字段
         if self.context["request"].method == "PUT":
