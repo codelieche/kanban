@@ -20,7 +20,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
 
     // 选中的当前分类：这个的作用于是用于左侧导航的
     // 遵循一点：通过修改全局的分类ID，然后再触发修改currentGroup
-    const [currentGroup, setCurrentGrooup] = useState({});
+    const [currentGroup, setCurrentGroup] = useState({});
 
     // 刷新导航相关的操作
     const { 
@@ -46,16 +46,15 @@ function LeftSider({showLeftSider, setShowLeftSider}){
     // 左侧导航的宽度
     const [width, setWidth] = useState(widthInit);
 
-    // 获取分类的列表
-    const fetchCategoriesData = useCallback(() => {
-        
+    // 获取分组的列表
+    const fetchGroupsData = useCallback(() => {
         let url = "/api/v1/docs/group/all";
         fetchApi.Get(url)
           .then(responseData => {
               if(Array.isArray(responseData)){
                   setGroups(responseData);
               }else{
-                  message.warn("获取分类列表数据出错", 3);
+                  message.warn("获取分组列表数据出错", 3);
               }
           })
             .catch(err => {
@@ -66,19 +65,19 @@ function LeftSider({showLeftSider, setShowLeftSider}){
     useEffect(() => {
         // 获取分类数据
         if(groups.length === 0 ){
-            fetchCategoriesData();
+            fetchGroupsData();
         }
 
         // 组件要卸载的时候，储存一下宽度
         return () => {localStorage.setItem("leftSiderWidth", width);}
-    }, [groups.length, fetchCategoriesData, width])
+    }, [groups.length, fetchGroupsData, width])
 
-    // 重新设置当前分类: 
-    // 获取到分类列表了、或者修改了全局分类的id了，都会触发
+    // 重新设置当前分组: 
+    // 获取到分组列表了、或者修改了全局分组的id了，都会触发
     useEffect(() => {
         // console.log(currentArticleGroupID, categories);
         if(!!currentArticleGroupID && currentArticleGroupID > 0){
-            // console.log("设置了分类ID:", currentArticleGroupID, categories);
+            // console.log("设置了分类ID:", currentArticleGroupID, groups);
             // 需要重新设置一下当前的分类了
             if(!currentGroup.id  || currentGroup.id !== currentArticleGroupID){
                 for(var i=0; i< groups.length; i++){
@@ -87,7 +86,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
                         // setCurrentCategory(categories[i]);
                         // 先修改当前文章的分类ID: 还要记得设置当前的分类
                         setCurrentArticleGroupID(groups[i].id);
-                        setCurrentGrooup(groups[i])
+                        setCurrentGroup(groups[i])
                         break;
                     }
                 }
@@ -99,7 +98,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
             // 如果有分类就设置第一个
             if(groups.length > 0){
                 //   设置列表的第一个为，当前的分类
-                setCurrentGrooup(groups[0]);
+                setCurrentGroup(groups[0]);
             }
         }
     }, [groups, currentArticleGroupID, currentGroup.id, setCurrentArticleGroupID])
@@ -165,7 +164,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
     }, [currentGroup.id, showLeftSider]);
 
     const handlerAddNewArticle = useCallback(e => {
-        console.log(e);
+        // console.log(e);
         // 阻止冒泡
         e.stopPropagation();
         // 添加个新的文章

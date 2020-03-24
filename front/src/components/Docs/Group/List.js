@@ -263,6 +263,7 @@ function GroupList(props){
                 title: "ID",
                 dataIndex: "id",
                 key: "id",
+                width: 60,
                 sorter: (a, b) => a.id - b.id,
                 render:(text, record) => {
                     return (
@@ -274,11 +275,16 @@ function GroupList(props){
                 title: "分组名",
                 dataIndex: "name",
                 key: "name",
+                width: 120,
+                ellipsis: true
             },
+            
             {
                 title: "代码",
                 dataIndex: "code",
-                key: "code"
+                key: "code",
+                width: 120,
+                ellipsis: true
             },
             {
                 title: "父级分组",
@@ -308,12 +314,14 @@ function GroupList(props){
                 title: "描述",
                 dataIndex: "description",
                 key: "description",
+                width: 200,
                 ellipsis: true, // 单元格自动省略
             },
             {
                 title: "状态",
                 dataIndex: "is_deleted",
                 key: "is_deleted",
+                width: 80,
                 render: value => {
                   if (!value) {
                     return (

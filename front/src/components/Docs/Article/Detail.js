@@ -60,9 +60,9 @@ export const ArticleDetail = function(props){
               if(responseData.id > 0){
                   setData(responseData);
                   setArticleID(id);
-                  if( Number.isInteger(responseData.category) && currentArticleGroupID !== responseData.category ){
+                  if( Number.isInteger(responseData.group) && currentArticleGroupID !== responseData.group ){
                     // 修改全局的分类id
-                    setCurrentArticleGroupID(responseData.category);
+                    setCurrentArticleGroupID(responseData.group);
                   }
                   // 根据parent信息组织导航信息
                   let navData = [
@@ -122,6 +122,7 @@ export const ArticleDetail = function(props){
         if(props.match.params.id !== articleID || (data.id && props.match.params.id !== data.id.toString())){
             // setArticleID(props.match.params.id);
             // setData({});  // 把文章内容置空
+            setLoaded(false);
             fetchDetailData(props.match.params.id);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -169,8 +170,8 @@ export const ArticleDetail = function(props){
     }, [articleID, fetchDetailData]);
 
     // 获取当前用户对分组的操作权限：read,write,delete等
-    const fetchGroupPermissions = useCallback( categoryID => {
-        let url = `/api/v1/docs/group/${categoryID}/permissions`;
+    const fetchGroupPermissions = useCallback( groupID => {
+        let url = `/api/v1/docs/group/${groupID}/permissions`;
         fetchApi.Get(url, {}, {})
           .then(responseData => {
             if(Array.isArray(responseData)){
