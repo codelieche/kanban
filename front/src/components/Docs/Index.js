@@ -23,6 +23,9 @@ import CommontList from "./Comment/List";
 
 import DiscussionList from "./Discussion/List";
 
+// 文档图片
+import ImageListPage from "./Image/List";
+
 function DocsIndex(props){
       return (
           <Switch>
@@ -51,11 +54,20 @@ function DocsIndex(props){
                 render={() => <Redirect to="/docs/comment/list" push={false} />}
               />
 
+              {/* 文档讨论 */}
               <Route exat path="/docs/discussion/list" component={DiscussionList} />
               <Route exat 
                 path="/docs/discussion" 
                 render={() => <Redirect to="/docs/discussion/list" push={false} />}
               />
+
+              {/* 文档图片 */}
+              <Route exat path="/docs/image/list" component={ImageListPage} />
+              <Route exat 
+                path="/docs/image" 
+                render={() => <Redirect to="/docs/image/list" push={false} />}
+              />
+              
           </Switch>
       );
 }

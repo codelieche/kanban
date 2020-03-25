@@ -28,7 +28,7 @@ class GroupUser(models.Model):
 
     def delete(self):
         # 不做物理删除，只标记删除
-        # 注意：如果修改Category传递了users，是会对CategoryUser做物理删除的，后续可优化
+        # 注意：如果修改Category传递了users，是会对GroupUser做物理删除的，后续可优化
         if self.is_active:
             self.is_active = False
             self.save()
@@ -79,8 +79,8 @@ class Group(models.Model):
             return permissions_dict["ALL"]
 
         # 3. 获取普通用户的权限
-        # 获取到CategoryUser对象
-        group_user = CategoryUser.objects.filter(group=self, user=user).first()
+        # 获取到GroupUser对象
+        group_user = GroupUser.objects.filter(group=self, user=user).first()
 
         # 如果不存在，或者用户不是激活的，则无权限
         if not group_user or (not group_user.is_active):
@@ -111,8 +111,8 @@ class Group(models.Model):
         if permission not in all:
             return False
         
-        # 获取到CategoryUser对象
-        group_user = CategoryUser.objects.filter(group=self, user=user).first()
+        # 获取到GroupUser对象
+        group_user = GroupUser.objects.filter(group=self, user=user).first()
 
         # 如果不存在，或者用户不是激活的，则无权限
         if not group_user or (not group_user.is_active):
