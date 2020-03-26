@@ -2,6 +2,8 @@
 """
 账号登陆登出相关api
 """
+import re
+
 from rest_framework import generics
 from rest_framework import status
 from rest_framework.views import APIView
@@ -11,12 +13,13 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
 from django.contrib.auth import authenticate, login, logout
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseForbidden
 
 from utils.permissions import IsSuperUserOrReadOnly
 from modellog.mixins import LoggingViewSetMixin
 from account.serializers.user import (
     UserLoginSerializer,
+    UserChangePasswordSerializer,
     UserAllListSerializer,
     UserSimpleInfoSerializer,
     UserDetailSerializer
@@ -95,6 +98,15 @@ def account_logout(request):
     return JsonResponse({"status": True, "next": next_url})
 
 
+class UserCreateApiView(generics.CreateAPIView):
+    """
+    用户添加API
+    """
+
+    queryset = User.objects.all()
+    serializer_class = UserSimpleInfoSerializer
+
+
 class UserListView(generics.ListAPIView):
     """
     用户列表
@@ -152,3 +164,125 @@ class UserDetailView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyAPIView)
         # 第3步：返回响应
         response = Response(status=204)
         return response
+
+
+class UserChangePasswordApiView(APIView):
+    """
+    修改用户密码
+    """
+    permission_classes = (IsAuthenticated,)
+
+    def put(self, request):
+        """通过PUT方法更新自己的密码"""
+        # 1. 获取到用户和密码信息
+        user = request.user
+        serializer = UserChangePasswordSerializer(data=request.data)
+
+        if serializer.is_valid():
+            username = serializer.validated_data.get("username", "").strip()
+            old_password = serializer.validated_data.get("old_password", "").strip()
+            password = serializer.validated_data.get("password", "").strip()
+            re_password = serializer.validated_data.get("re_password", "").strip()
+
+            # 2. 校验密码
+            # 2-1： 检查用户旧的密码和账号
+            # 检查当前用户的用户名
+            if user.username != username:
+                content = {
+                    "status": False,
+                    "message": "传入的username与当前登录的用户不匹配"
+                }
+                return JsonResponse(data=content, status=status.HTTP_400_BAD_REQUEST)
+
+            if not user.check_password(old_password):
+                # 传入的旧密码错误
+                content = {
+                    "status": False,
+                    "message": "传入的旧密码不正确"
+                }
+                return JsonResponse(data=content, status=status.HTTP_400_BAD_REQUEST)
+            
+            # 2-2：检查新的密码
+            if password != re_password:
+                # 密码错
+                content = {
+                    "status": False,
+                    "message": "传入的密码和重复密码不相同"
+                }
+                return JsonResponse(data=content, status=status.HTTP_400_BAD_REQUEST)
+            
+            # 2-3: 校验密码长度等是否符合规则: 数字+字符/特殊字符(6-16位)
+            if not re.match("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{6,16}$", password):
+                content = {
+                    "status": False,
+                    "message": "密码不符合要求:(由数字+字符/特殊字符组成，长度6-16位)"
+                }
+                return JsonResponse(data=content, status=status.HTTP_400_BAD_REQUEST)
+            
+            # 第3步：修改密码
+            user.set_password(password)
+            user.save()
+            content = {
+                "status": True,
+                "message": "密码修改成功"
+            }
+            # 退出登录
+            logout(request)
+            # 返回成功结果
+            return JsonResponse(data=content)
+        else:
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserResetPasswordApiView(APIView):
+    """
+    用户重置密码
+    """
+
+    def put(self, request):
+        # 1. 获取到用户
+        user = request.user
+
+        # 2. 判断是否是超级用户
+        if not user.is_superuser:
+            return HttpResponseForbidden()
+        
+        # 3. 超级用户才可重置别人的密码
+        # 3-1：校验数据
+        serializer = UserLoginSerializer(data=request.data)
+
+        if serializer.is_valid():
+            # 3-2：获取到数据
+            username = serializer.validated_data.get("username")
+            password = serializer.validated_data.get("password")
+
+            target_user = User.objects.filter(username=username).first()
+            if not target_user:
+                content = {
+                    "status": False,
+                    "message": "用户{}不存在".format(username)
+                }
+                return JsonResponse(data=content, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                # 校验密码
+                if not re.match("^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z\\W]{6,16}$", password):
+                    content = {
+                        "status": False,
+                        "message": "密码不符合要求:(由数字+字符/特殊字符组成，长度6-16位)"
+                    }
+                    return JsonResponse(data=content, status=status.HTTP_400_BAD_REQUEST)
+
+                # 重置用户的密码
+                target_user.set_password(password)
+                target_user.save()
+
+                # 返回成功的结果
+                content = {
+                    "status": True,
+                    "message": "重置{}的密码成功".format(username)
+                }
+                # 返回成功结果
+                return JsonResponse(data=content)
+
+        else:
+            return Response(data=serializer.errors, status=status.HTTP_400_BAD_REQUEST)

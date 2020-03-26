@@ -5,7 +5,9 @@ from django.views.generic import RedirectView
 from account.views.user import (
     UserListView,
     UserAllListView,
-    UserDetailView
+    UserDetailView,
+    UserChangePasswordApiView,
+    UserResetPasswordApiView
 )
 
 
@@ -21,4 +23,8 @@ urlpatterns = [
 
     # 根据用户名获取用户信息
     path('<str:username>', UserDetailView.as_view(lookup_field="username"), name="detail2"),
+
+    # 密码相关
+    path('password/change', UserChangePasswordApiView.as_view(), name="password_change"),
+    path('password/reset', UserResetPasswordApiView.as_view(), name="password_reset"),
 ]

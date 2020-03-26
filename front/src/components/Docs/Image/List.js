@@ -60,7 +60,7 @@ export const ImageListPage = (props) => {
                 render: (text, record) => {
                     let imageElement = (
                         <img 
-                          style={{maxWidth: 550, height: "auto", borderRadius: 5}}
+                          style={{maxWidth: 550, height: "auto", borderRadius: 5, maxHeight: 400, overflowY: "auto"}}
                           src={text} 
                           alt={record.filename} />
                     );

@@ -4,10 +4,50 @@ from rest_framework import serializers
 from account.models import User
 
 
+class UserModelSerializer(serializers.ModelSerializer):
+    """
+    User Model Serializer
+    """
+
+    def create(self, validated_data):
+        request = self.context["request"]
+        # 密码校验
+        password = request.data.get("password")
+        repassword = request.data.get("repassword")
+
+        if password and repassword:
+            if password != repassword:
+                raise serializers.ValidationError("输入的密码不相同")
+        else:
+            raise serializers.ValidationError("请输入密码")
+
+        instance = super().create(validated_data=validated_data)
+
+        # 设置密码
+        instance.set_password(password)
+        instance.nick_name = instance.username
+        # 注册的用户都需要管理员，手动设置其是否可访问本系统
+        instance.can_view = False
+        instance.save()
+        return instance
+
+    class Meta:
+        model = User
+        fields = ("id", "email", "username", "nick_name", "mobile", "qq", "wechart")
+
+
 class UserLoginSerializer(serializers.Serializer):
     """用户登录 Serializer"""
     username = serializers.CharField(max_length=40, required=True)
     password = serializers.CharField(max_length=40, required=True)
+
+
+class UserChangePasswordSerializer(serializers.Serializer):
+    """用户修改密码 Serializer"""
+    username = serializers.CharField(max_length=40, required=True)
+    old_password = serializers.CharField(max_length=40, required=True)
+    password = serializers.CharField(max_length=40, required=True)
+    re_password = serializers.CharField(max_length=40, required=True)
 
 
 class UserSimpleInfoSerializer(serializers.ModelSerializer):
