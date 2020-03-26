@@ -18,6 +18,7 @@ from django.http import JsonResponse, HttpResponseForbidden
 from utils.permissions import IsSuperUserOrReadOnly
 from modellog.mixins import LoggingViewSetMixin
 from account.serializers.user import (
+    UserModelSerializer,
     UserLoginSerializer,
     UserChangePasswordSerializer,
     UserAllListSerializer,
@@ -62,6 +63,14 @@ class LoginView(APIView):
             user = authenticate(username=username, password=password)
 
             if user is not None:
+                # 判断是否可以访问本系统
+                if not user.can_view:
+                    content = {
+                        "status": False,
+                        "message": "用户({})不能访问本系统，请找管理员开通访问权限".format(user.username)
+                    }
+                    return JsonResponse(data=content, status=status.HTTP_403_FORBIDDEN)
+
                 # 登陆
                 if user.is_active:
                     login(request, user)
@@ -104,7 +113,7 @@ class UserCreateApiView(generics.CreateAPIView):
     """
 
     queryset = User.objects.all()
-    serializer_class = UserSimpleInfoSerializer
+    serializer_class = UserModelSerializer
 
 
 class UserListView(generics.ListAPIView):

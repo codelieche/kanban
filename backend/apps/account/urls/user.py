@@ -3,16 +3,18 @@ from django.urls import path
 from django.views.generic import RedirectView
 
 from account.views.user import (
+    UserCreateApiView,
     UserListView,
     UserAllListView,
     UserDetailView,
     UserChangePasswordApiView,
-    UserResetPasswordApiView
+    UserResetPasswordApiView,
 )
 
 
 urlpatterns = [
     # 前缀：/api/v1/account/user/
+    path('create', UserCreateApiView.as_view(), name="create"),
     path('list', UserListView.as_view(), name="list"),
     path('all', UserAllListView.as_view(), name="all"),
     path('<int:pk>', UserDetailView.as_view(), name="detail"),

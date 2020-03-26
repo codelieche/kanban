@@ -23,7 +23,7 @@ class UserProfile(AbstractUser):
     gender = models.CharField(max_length=6, choices=GENDER_CHOICES, default="secret",
                               verbose_name="性别")
     # email可以随便填，但是手机号需要唯一: 后续可加入校验验证码
-    mobile = models.CharField(max_length=11, verbose_name="手机号", blank=True, unique=True)
+    mobile = models.CharField(max_length=11, verbose_name="手机号", unique=True)
     qq = models.CharField(max_length=12, verbose_name="QQ号", blank=True, null=True)
     # 公司有时候会用到钉钉/微信发送消息，需要记录用户相关ID
     dingding = models.CharField(max_length=40, verbose_name="钉钉ID", blank=True, null=True)

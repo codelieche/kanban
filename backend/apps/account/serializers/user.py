@@ -13,18 +13,18 @@ class UserModelSerializer(serializers.ModelSerializer):
         request = self.context["request"]
         # 密码校验
         password = request.data.get("password")
-        repassword = request.data.get("repassword")
+        re_password = request.data.get("repassword")
 
-        if password and repassword:
-            if password != repassword:
+        if password and re_password:
+            if password != re_password:
                 raise serializers.ValidationError("输入的密码不相同")
         else:
-            raise serializers.ValidationError("请输入密码")
+            raise serializers.ValidationError("请输入密码和重复密码")
 
         instance = super().create(validated_data=validated_data)
 
         # 设置密码
-        instance.set_password(password)
+        instance.set_password(password.strip())
         instance.nick_name = instance.username
         # 注册的用户都需要管理员，手动设置其是否可访问本系统
         instance.can_view = False
