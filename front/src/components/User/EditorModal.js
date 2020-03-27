@@ -6,56 +6,45 @@
  *  3. afterHandler: 操作完后要执行的函数
  */
 
-import React, { Component } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Modal, message } from "antd";
 
 import fetchApi from "../Utils/fetchApi";
 import UserEditorForm from "./EditorForm";
 
-export default class EditUserModal extends Component {
-  constructor(props) {
-    super(props);
+export const EditUserModal = (props) => {
+  // 状态
+  const [visible, setVisible ] = useState(false);
+  const [data, setData] = useState({});
+  const [showLoading, setShowLoading ] = useState(false);
 
-    this.state = {
-      data: this.props.data ? this.props.data : {},
-      visible: this.props.visible,
-      showLoading: false
-    };
-  }
-
-  static getDerivedStateFromProps(nexProps, prevState) {
-    // 当父组件传递的属性改变的时候，要改变下自身的状态
-    if (
-      nexProps.data !== prevState.data ||
-      nexProps.visible !== prevState.visible
-    ) {
-      // 设置下content的内容为空, 所以给ApproveForm传递个id，在ApproveForm里面再设置content为空
-      return {
-        data: nexProps.data,
-        visible: nexProps.visible,
-        showLoading: false
-      };
-    }else{
-      return null;
+  useEffect(() => {
+    if(props.data !== data){
+      setData(props.data);
+      setShowLoading(false);
     }
-  }
 
-  handleCancel = e => {
+    if(props.visible !== visible){
+      setVisible(props.visible);
+      setShowLoading(false);
+    }
+  }, [props.visible, props.data, data, visible]);
+
+  const handleCancel = useCallback(e => {
     message.info("取消编辑", 3);
-    this.setState({
-      visible: false,
-      showLoading: false
-    });
+    
+    setVisible(false);
+    setShowLoading(false);
 
-    if (this.props.afterHandler) {
+    if (props.afterHandler) {
       // 关闭对话框，不需要刷新数据
-      this.props.afterHandler(false);
+      props.afterHandler(false);
     }
-  };
+  }, [props]);
 
-  handleEditorSubmit = values => {
+  const handleEditorSubmit = useCallback(values => {
     // 提交编辑
-    var url = `/api/v1/account/user/${this.state.data.id}`;
+    var url = `/api/v1/account/user/${data.id}`;
     // PUT/PATCH修改用户信息
     fetchApi.Put(url, {}, 
       {
@@ -65,47 +54,50 @@ export default class EditUserModal extends Component {
         },
         data: values
     })
-      .then(data => {
-        if (data.id === this.state.data.id) {
+      .then(responseData => {
+        if (responseData.id === data.id) {
           // 成功
           message.success("修改用户信息成功", 5);
 
           // 关闭弹出框
-          this.setState({
-            visible: false,
-            showLoading: false
-          });
+          setVisible(false);
+          setShowLoading(false);
 
-          if (this.props.afterHandler) {
-            this.props.afterHandler();
+          if (props.afterHandler) {
+            props.afterHandler();
           }
         } else {
           // 失败
-          message.error(JSON.stringify(data), 5);
-          this.setState({
-            showLoading: false
-          });
+          message.error(JSON.stringify(responseData), 5);
+          setShowLoading(false);
         }
       })
       .catch(err => {
-        this.setState({ showLoading: false });
-        message.error("编辑出现错误！", 5);
+        setShowLoading(false);
+        // console.log(err);
+        if(err.status === 400){
+          message.error(JSON.stringify(err.data), 5);
+        }else{
+          message.error("编辑出现错误！", 5);
+        }
       });
-  };
+  }, [data.id, props]);
 
-  render() {
-    return (
-      <Modal
-        title="编辑用户"
-        visible={this.state.visible}
-        onCancel={this.handleCancel}
-        footer={null}
-      >
-        <UserEditorForm
-          data={this.state.data}
-          handleSubmit={this.handleEditorSubmit}
-        />
-      </Modal>
-    );
-  }
+  
+  return (
+    <Modal
+      title="编辑用户"
+      visible={visible}
+      onCancel={handleCancel}
+      footer={null}
+    >
+      <UserEditorForm
+        data={data}
+        showLoading={showLoading}
+        handleSubmit={handleEditorSubmit}
+      />
+    </Modal>
+  );
 }
+
+export default EditUserModal;

@@ -1,7 +1,8 @@
 /**
  * User相关的首页
  */
-import React, { useContext, useEffect } from "react";
+import React from "react";
+// import React, { useContext, useEffect } from "react";
 
 import { Route, Switch, Redirect } from "react-router-dom";
 

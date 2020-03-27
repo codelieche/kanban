@@ -6,61 +6,43 @@
  *     a. 需要传递url：编辑用户的url
  *     b. 需要传递values：表单数据
  */
-import React, { Component } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 
 import { Row, Col, Button, Form, Input, Radio } from "antd";
 
 
-class FormBase extends Component {
-  constructor(props) {
-    super(props);
-    var data = this.props.data ? this.props.data : {};
-    this.state = {
-      data: data
-    };
-  }
+export const FormBase = (props) => {
+  // 状态
+  const [data, setData] = useState({});
+  
+  const formRef = useMemo(() => React.createRef(), [])
 
-  formRef = React.createRef()
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    // 父组件传递了新的data过来，需要更新下
-    if (nextProps.data !== prevState.data) {
-      var data = nextProps.data;
-      return {
-          data: data
-        };
-        // this.updateFiedsValue
-    }else{
-      return null;
-    }
-  }
-
-  componentDidUpdate(prevProps, prevState, snaptshot){
-    if(prevProps.data !== this.state.data){
-        // 需要更新数据
-        this.updateFiedsValue();
-        // this.formRef.current.setFieldsValue(this.state.data);
-    }
-  }
   // 更新当前表单的数据
-  updateFiedsValue = () => {
-    this.formRef.current.setFieldsValue(this.state.data);
-  };
+  const updateFiedsValue = useCallback((data) => {
+    formRef.current.setFieldsValue(data);
+  }, [formRef]);
 
-  handleSubmit = values => {
+  useEffect(() => {
+    if(props.data !== data){
+      setData(props.data);
+      // 修改表单的数据
+      updateFiedsValue(props.data);
+    }
+  }, [data, props.data, updateFiedsValue]);
+
+
+  const handleSubmit = useCallback(values => {
     // 提交表单的处理函数
     // Form表单实例化的时候传递了handleSubmit，实际的操作都是调用它的
     // 主要是：editor或add操作
 
     // var url = `http://127.0.0.1:9000/api/v1/account/user/${this.state.data.id}`;
-    this.props.handleSubmit(values);
-  }
+    props.handleSubmit(values);
+  }, [props]);
 
-  render() {
-    // const { getFieldDecorator, getFieldsError } = this.props.form;
-
-    // 左侧表单Item的布局设置
-    const formItemLayout = {
+  // 左侧表单Item的布局设置
+  const formItemLayout = useMemo(() => {
+    return {
       labelCol: {
         xs: { span: 8 },
         sm: { span: 8 },
@@ -72,25 +54,28 @@ class FormBase extends Component {
         md: { span: 12 }
       }
     };
-    // 表单尾部的布局样式：Button
-    const tailFormItemLayout = {
-      wrapperCol: {
-        xs: {
-          span: 8,
-          offset: 8
-        },
-        sm: {
-          span: 8,
-          offset: 10
+  }, []);
+  // 表单尾部的布局样式：Button
+  const tailFormItemLayout = useMemo(() => {
+    return {
+        wrapperCol: {
+          xs: {
+            span: 8,
+            offset: 8
+          },
+          sm: {
+            span: 8,
+            offset: 10
+          }
         }
-      }
-    };
+      };
+  }, []);
 
-    return (
+  return (
       <Form name="userEditForm"
-        onFinish={this.handleSubmit}
-        initialValues={this.state.data}
-        ref={this.formRef}
+        onFinish={handleSubmit}
+        initialValues={data}
+        ref={formRef}
       >
         <Row>
           <Col xs={24} sm={24}>
@@ -108,7 +93,7 @@ class FormBase extends Component {
                 {required: true, message: "请选择是否开启用户!" },
               ]}
             >
-              <Radio.Group size="small">
+              <Radio.Group size="small" buttonStyle="solid">
                 <Radio.Button value={true}>开启</Radio.Button>
                 <Radio.Button value={false}>禁用</Radio.Button>
               </Radio.Group>
@@ -123,7 +108,7 @@ class FormBase extends Component {
                 { required: true, message: "请选择是否给用户访问权限!" }
               ]}
             >
-                <Radio.Group size="small">
+                <Radio.Group size="small" buttonStyle="solid">
                   <Radio.Button value={true}>能</Radio.Button>
                   <Radio.Button value={false}>否</Radio.Button>
                 </Radio.Group>
@@ -136,7 +121,7 @@ class FormBase extends Component {
 
               ]}
             >
-                <Radio.Group size="small">
+                <Radio.Group size="small" buttonStyle="solid">
                   <Radio.Button value={true}>是</Radio.Button>
                   <Radio.Button value={false}>否</Radio.Button>
                 </Radio.Group>
@@ -176,8 +161,6 @@ class FormBase extends Component {
         </Form.Item>
       </Form>
     );
-  }
 }
 
 export default FormBase;
-// export default Form.create()(FormBase);
