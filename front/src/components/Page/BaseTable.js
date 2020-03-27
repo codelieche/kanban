@@ -43,7 +43,11 @@ export const BaseTable = (props) => {
     useEffect(() => {
         if(columnsArray.length === 0 && props.columns){
             setColumnsArray(props.columns);
+        }else{
+            // console.log("columns变更了")
+            setColumnsArray(props.columns);
         }
+
     }, [columnsArray.length, props.columns])
 
     // params字段:通过url可获取到的字段信息
@@ -149,8 +153,13 @@ export const BaseTable = (props) => {
             // 导致获取到的数据，实际不匹配
             // 所以在fetchDate中不调用urlParams，而让fetchData直接从props.location.search中解析值
             if(!!apiUrlPrefix){
+                // console.log(params.page);
                 fetchData(params.page);
+            }else{
+                // console.log("未传递apiUrlPrefix")
             }
+        }else{
+            fetchData(urlParams.page)
         }
     
     }, [paramsFields, props.location, urlParams, other, fetchData, apiUrlPrefix])
@@ -288,6 +297,38 @@ export const BaseTable = (props) => {
         }
     }, []);
 
+    // 右侧的按钮
+    let rightButtons = useMemo(() => {
+        if(props.rightButtons){
+            return props.rightButtons;
+        }else{
+            return (
+                <Button
+                    type="default"
+                    style={{width: 100}}
+                    icon={<Icon type="refresh"/>}
+                    onClick={() => fetchData(page)}
+                    >
+                        刷新
+                </Button>
+            );
+        }
+    }, [fetchData, page, props.rightButtons]);
+
+    // 监控刷新数据
+    const reFreshData = useCallback(() => {
+        fetchData(page);
+    }, [fetchData, page])
+
+    useEffect(() => {
+        // 刷新数据
+        // console.log(props.reFreshTimes);
+        if(props.reFreshTimes && props.reFreshTimes > 0){
+            reFreshData()
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.reFreshTimes])
+
     return (
         <div className="base-table">
             <Row className="tools">
@@ -299,21 +340,8 @@ export const BaseTable = (props) => {
                       enterButton/>
                 </Col>
                 <Col sm={{span:12}} xs={{span: 24}} style={{textAlign: "right"}}>
-                    {/* <Input.Search 
-                      placeholder="搜索文章" 
-                      style={{width: 200}}
-                      onSearch={onSearchHandler}
-                      enterButton/> */}
-
-                        <Button
-                          type="default"
-                          style={{width: 100}}
-                          icon={<Icon type="refresh"/>}
-                          onClick={() => fetchData(page)}
-                          >
-                              刷新
-                          </Button>
-
+                    {rightButtons}
+                    {/* {page} */}
                 </Col>
             </Row>
             <Table rowKey="id"

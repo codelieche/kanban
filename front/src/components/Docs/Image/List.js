@@ -14,7 +14,7 @@ import BaseTable from "../../Page/BaseTable";
 export const ImageListPage = (props) => {
     // 状态
     
-    // paramsFields字段：通过url可获取到哦的字段信息
+    // paramsFields字段：通过url可获取到的字段信息
     const paramsFields = useMemo(() => {
         return ["page", "search", "ordering", "parent", "is_deleted"];
     }, []);

@@ -20,7 +20,7 @@ import UserGroupList from "./Group/List";
 import UserGroupAdd from "./Group/Add";
 import UserGroupEditor from "./Group/Editor";
 import UserGroupDetail from "./Group/Detail";
-import { GlobalContext } from "../Base/Context";
+// import { GlobalContext } from "../Base/Context";
 
 // 用户消息页面
 import UserMessage from "./Message/Index";
@@ -31,23 +31,23 @@ import UserCenterIndex from "./Center/Index";
 
 function UserIndex(props) {
 
-  const { setNavData } = useContext(GlobalContext);
+  // const { setNavData } = useContext(GlobalContext);
 
-  useEffect(() => {
-    // 因为user模块很多用的是class定义组件，不能使用useContext
-    // 故在这里设置顶部的导航
-    setNavData([
-      {
-        title: "首页",
-        icon: "home",
-        link: "/"
-      },
-      {
-        title: "用户",
-        link: "/user"
-      }
-    ])
-  }, [setNavData])
+  // useEffect(() => {
+  //   // 因为user模块很多用的是class定义组件，不能使用useContext
+  //   // 故在这里设置顶部的导航
+  //   setNavData([
+  //     {
+  //       title: "首页",
+  //       icon: "home",
+  //       link: "/"
+  //     },
+  //     {
+  //       title: "用户",
+  //       link: "/user"
+  //     }
+  //   ])
+  // }, [setNavData])
   
   return (
     <Switch>
