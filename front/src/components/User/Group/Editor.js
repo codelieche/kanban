@@ -1,50 +1,74 @@
 /**
  * 用户组编辑页
  */
-import React from "react";
+import React, {useState, useCallback, useContext, useEffect} from "react";
 import { message } from "antd";
 
 import fetchApi from "../../Utils/fetchApi";
 import UserGroupForm from "./Form";
+import { GlobalContext } from "../../Base/Context";
+import LoadingPage from "../../Page/Loading";
 
-export default class UserGroupEditor extends React.Component {
-  constructor(props) {
-    super(props);
-    // 获取Group的id
-    var id = this.props.match.params.id;
-    this.state = {
-      id: id,
-      data: {},
-      loaded: false
-    };
-  }
+export const UserGroupEditor = (props) => {
+  // 状态
+  const [ id, setID ] = useState(null);
+  const [ data, setData ] = useState({});
+  const [ loaded, setLoaded ] =useState(false);
 
-  componentDidMount() {
-    // 获取Group的数据
-    this.fetchData();
-  }
+  // 获取全局设置导航
+  const { setNavData } = useContext(GlobalContext);
 
-  fetchData = () => {
+  useEffect(() => {
+    // 设置导航数据
+    setNavData([
+      {
+        title: "首页",
+        icon: "home",
+        link: "/"
+      },
+      {
+        title: "用户",
+        link: "/user"
+      },
+      {
+        title: "分组",
+        link: "/user/group/list"
+      },
+      {
+        title: "编辑",
+      }
+    ])
+  }, [setNavData]);
+  
+
+  const fetchData = useCallback((groupID) => {
     // 获取group的编辑数据
     const url =
-      "/api/v1/account/group/" + this.state.id + "/editor";
+      "/api/v1/account/group/" + groupID + "/editor";
     fetchApi.Get(url)
-      .then(data => {
-        this.setState({
-          data: data,
-          loaded: true
-        });
+      .then(responseData => {
+        setData(responseData);
+        setLoaded(true);
       })
       .catch(err => {
         console.log(err);
+        setLoaded(true);
       });
-  };
+  }, []);
 
-  handleEditorSubmit = values => {
+  useEffect(() => {
+    if(props.match.params.id && props.match.params.id !== id){
+      setID(props.match.params.id);
+      // 获取详情数据
+      fetchData(props.match.params.id);
+    }
+  }, [fetchData, id, props.match.params.id])
+
+  const handleEditorSubmit = useCallback(values => {
     // 提交编辑表单处理函数
     // console.log(values);
     // 通过fetch PUT 编辑Group
-    const url = "/api/v1/account/group/" + this.state.id;
+    const url = "/api/v1/account/group/" + id;
     fetchApi.Put(url, {}, {
       headers: {
         "Content-Type": "application/json",
@@ -52,44 +76,40 @@ export default class UserGroupEditor extends React.Component {
       },
       data: values
     })
-      .then(data => {
-        if (data.id > 0) {
-          this.props.history.push("/user/group/" + data.id);
+      .then(responseData => {
+        if (responseData.id > 0) {
+          props.history.push("/user/group/" + id);
         } else {
-          message.error(JSON.stringify(data), 8);
+          message.error(JSON.stringify(responseData), 8);
         }
       })
       .catch(err => {
         console.log(err);
       });
-  };
+  }, [id, props.history]);
 
-  render() {
+  if(!loaded){
     return (
-      <div className="content">
-        {/* <Breadcrumb className="nav">
-          <Breadcrumb.Item>
-            <Link to="/">首页</Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>
-            <Link to="/user/group">用户组</Link>
-          </Breadcrumb.Item>
-          <Breadcrumb.Item>编辑</Breadcrumb.Item>
-        </Breadcrumb> */}
-        
-        <div className="main">
-          <div className="title">
-            <h4>编辑用户组</h4>
-          </div>
-          <div className="wrap">
-            <UserGroupForm
-              handleSubmit={this.handleEditorSubmit}
-              data={this.state.data}
-              type="editor"
-            />
-          </div>
-        </div>
-      </div>
+      <LoadingPage />
     );
   }
+
+  return (
+    <div className="content">
+      <div className="main">
+        <div className="title">
+          <h4>编辑用户组</h4>
+        </div>
+        <div className="wrap">
+          <UserGroupForm
+            handleSubmit={handleEditorSubmit}
+            data={data}
+            type="editor"
+          />
+        </div>
+      </div>
+    </div>
+  );
 }
+
+export default UserGroupEditor;

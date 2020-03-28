@@ -60,17 +60,18 @@ export const BaseTable = (props) => {
 
     // 获取分类文章列表
     const fetchData = useCallback((page) => {
-        // console.log(page);
+        // console.log(page, isNaN(page), !page);
         if(!props.apiUrlPrefix){
             return
         }
 
         // 对page进行校验
-        if(isNaN(page) || ! page){
+        if(isNaN(page) || !page){
             page = 1;
         }else{
             // 把page转换成数值类型
             page = parseInt(page, 10);
+            // console.log(page);
         }
 
         // 构造url
@@ -92,6 +93,7 @@ export const BaseTable = (props) => {
                 url = `${url}&${item}=${value}`;
             }
         });
+        // console.log(url);
         // 发起请求
         fetchApi.Get(url, {}, {})
           .then(responseData => {
@@ -117,10 +119,8 @@ export const BaseTable = (props) => {
     useEffect(() => {
         if(props.apiUrlPrefix !== apiUrlPrefix && props.apiUrlPrefix){
             setApiUrlPrefix(props.apiUrlPrefix);
-            fetchData(urlParams.page)
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [fetchData, props.apiUrlPrefix])
+    }, [apiUrlPrefix, props.apiUrlPrefix])
 
     useEffect(() => {
         if(props.pageUrlPrefix && props.pageUrlPrefix !== pageUrlPrefix){
@@ -159,6 +159,7 @@ export const BaseTable = (props) => {
                 // console.log("未传递apiUrlPrefix")
             }
         }else{
+            // console.log(urlParams);
             fetchData(urlParams.page)
         }
     
@@ -260,7 +261,6 @@ export const BaseTable = (props) => {
         
         }
         // console.log(url);
-
         // 跳转新的连接
         props.history.push(url);
         
