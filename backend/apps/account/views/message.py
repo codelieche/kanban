@@ -6,7 +6,7 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework.filters import SearchFilter
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 from account.serializers.message import MessageSerializer
 from account.models import Message
@@ -31,7 +31,7 @@ class MessageListView(generics.ListAPIView):
     permission_classes = (IsAuthenticated,)
 
     # 搜索和过滤
-    filter_backends = (DjangoFilterBackend, SearchFilter)
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     filter_fields = ('scope', 'unread')
     search_fields = ('title', 'content')
     ordering_fields = ('id', 'time_added')

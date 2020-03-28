@@ -30,12 +30,12 @@ export const BaseTable = (props) => {
 
     const [ page, setPage ] = useState(1);
     // 列表数据、分页信息, url中的params,是否在加载数据
-    const [urlParams, urlParamsState] = useState({});
+    const [urlParams, setUrlParams] = useState({});
 
     const [ count, setCount ] = useState(0);
     const [ dataSource, setDataSource] = useState([]);
     // other是其它的一些状态，如果重要的就单独提取出来
-    const [other, otherState] = useState({});
+    const [other, setOtherState] = useState({});
     // 表格列
     const [columnsArray, setColumnsArray] = useState([])
 
@@ -64,6 +64,9 @@ export const BaseTable = (props) => {
         if(!props.apiUrlPrefix){
             return
         }
+        if(props.apiUrlPrefix !== apiUrlPrefix || pageUrlPrefix !== props.pageUrlPrefix){
+            return
+        }
 
         // 对page进行校验
         if(isNaN(page) || !page){
@@ -76,7 +79,7 @@ export const BaseTable = (props) => {
 
         // 构造url
         let url
-        if(props.apiUrlPrefix.indexOf > 0){
+        if(props.apiUrlPrefix.indexOf("?") > 0){
             url = `${props.apiUrlPrefix}&page=${page}`;
         }else{
             url = `${props.apiUrlPrefix}?page=${page}`;
@@ -112,13 +115,17 @@ export const BaseTable = (props) => {
             .catch(err => {
                 console.log(err);
             })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.apiUrlPrefix, props.location.search])
+    }, [apiUrlPrefix, pageUrlPrefix, paramsFields, props.apiUrlPrefix, props.location.search, props.pageUrlPrefix])
 
     // 修改分类
     useEffect(() => {
+        // console.log(props.apiUrlPrefix);
         if(props.apiUrlPrefix !== apiUrlPrefix && props.apiUrlPrefix){
             setApiUrlPrefix(props.apiUrlPrefix);
+            // if(!!apiUrlPrefix){
+            //     // console.log("刷新数据")
+            //     fetchData()
+            // }
         }
     }, [apiUrlPrefix, props.apiUrlPrefix])
 
@@ -142,9 +149,9 @@ export const BaseTable = (props) => {
             let params = getParamsFromLocationSearch(paramsFields, locationSearch);
             // console.log(params);
             // 更新urlParams：
-            urlParamsState(params);
+            setUrlParams(params);
 
-            otherState(prevState => {
+            setOtherState(prevState => {
                 prevState["locationSearch"] = locationSearch;
                 return prevState;
             });
@@ -152,18 +159,24 @@ export const BaseTable = (props) => {
             // 更新数据：如果立刻执行fetchData，由于urlParams更新是异步的，这个时候获取数据可能不是最新的
             // 导致获取到的数据，实际不匹配
             // 所以在fetchDate中不调用urlParams，而让fetchData直接从props.location.search中解析值
-            if(!!apiUrlPrefix){
+            if(!!apiUrlPrefix && apiUrlPrefix === props.apiUrlPrefix){
                 // console.log(params.page);
-                fetchData(params.page);
+                // fetchData(params.page);
             }else{
                 // console.log("未传递apiUrlPrefix")
             }
         }else{
             // console.log(urlParams);
-            fetchData(urlParams.page)
+            if(apiUrlPrefix === props.apiUrlPrefix && props.pageUrlPrefix === pageUrlPrefix){
+                // console.log(urlParams);
+                fetchData(urlParams.page)
+            }else{
+                // console.log(urlParams, "不要发起fetch")
+            }
         }
     
-    }, [paramsFields, props.location, urlParams, other, fetchData, apiUrlPrefix])
+    }, [paramsFields, props.location, urlParams, other, fetchData, 
+        apiUrlPrefix, props.apiUrlPrefix, props.pageUrlPrefix, pageUrlPrefix])
 
     // 搜索处理函数
     const onSearchHandler = useCallback((value) => {
@@ -236,7 +249,7 @@ export const BaseTable = (props) => {
             url = `${pageUrlPrefix}?page=${currentPage}`;
         }
         if(urlParams.search){
-            url = `${url}&search=${this.state.search}`;
+            url = `${url}&search=${urlParams.search}`;
         }
 
         // 过滤字段
@@ -352,6 +365,11 @@ export const BaseTable = (props) => {
               pagination={{total: count, current: page}}
               onChange={handleTableChange}
             />
+
+            {/* <br/>
+            {apiUrlPrefix}
+            <br/>
+            {pageUrlPrefix} */}
         </div>
     );
 }
