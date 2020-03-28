@@ -13,7 +13,7 @@ class UserModelSerializer(serializers.ModelSerializer):
         request = self.context["request"]
         # 密码校验
         password = request.data.get("password")
-        re_password = request.data.get("repassword")
+        re_password = request.data.get("re_password")
 
         if password and re_password:
             if password != re_password:

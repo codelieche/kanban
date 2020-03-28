@@ -110,7 +110,7 @@ function LeftSider({showLeftSider, setShowLeftSider, defaultOpenKey}){
                         <div className="logo">
                             <Link to="/">
                                 <img alt="logo"
-                                src="https://www.codelieche.com/static/images/logo-kanban.svg">
+                                src="http://127.0.0.1:9000/static/image/logo-kanban.svg">
                                 </img>
                             </Link>
                             {/* 是否显示左侧导航的按钮 */}

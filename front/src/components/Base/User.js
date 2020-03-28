@@ -16,12 +16,6 @@ export const UserLoginOrInfo = (props) => {
     const [ userInfo, setUserInfo] = useState({});
     const [checked, setChecked] = useState(false);
 
-    useEffect(() => {
-        // 检查登录
-        checkLogin();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
-
     // 不同系统需要不同的checkLogin函数
     const checkLogin = useCallback(() => {
         const url = "/api/v1/account/login";
@@ -47,6 +41,11 @@ export const UserLoginOrInfo = (props) => {
                 setChecked(true);
             })
     }, [setIsLogined, setUserInfo])
+
+    useEffect(() => {
+        // 检查登录
+        checkLogin();
+    }, [checkLogin]);
 
     // 如果用户是登录的，就显示用户名字
     // 如果是未登录的状态，就显示登录/注册按钮

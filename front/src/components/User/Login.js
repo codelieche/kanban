@@ -1,7 +1,7 @@
 /**
  * 用户登陆组件
  */
-import React, { Component } from "react";
+import React, { useMemo, useCallback, useEffect } from "react";
 import {Link} from "react-router-dom";
 import { Layout, Row, Col, Form, Input, Button, message } from "antd";
 import Icon from "../Base/Icon";
@@ -11,16 +11,14 @@ import URLSearchParams from "../Utils/UrlParam";
 
 const FormItem = Form.Item;
 
-class LoginForm extends Component {
+const LoginForm = (props) => {
 
-  constructor(props){
-    super(props);
-    this.state = {};
-  }
+  // 状态
+  // const [data, setData] = useState({})
 
-  formRef = React.createRef();
+  const formRef = useMemo(() => React.createRef(), []);
 
-  handleSubmit = (values) => {
+  const handleSubmit = useCallback((values) => {
     // console.log(values);
 
     // POST登陆账号
@@ -40,7 +38,7 @@ class LoginForm extends Component {
       if (data.status === "success" || data.status === true) {
         // 获取next的url
         // 首先获取search参数：?next=/
-        const params = new URLSearchParams(this.props.location.search);
+        const params = new URLSearchParams(props.location.search);
         // 获取next的值
         let next = params.get("next", "/");
         // console.log(next);
@@ -71,91 +69,93 @@ class LoginForm extends Component {
     })
     .catch(err => {
       console.log(err);
+      if(err.status === 400 || err.status === 403){
+        if(err.data && err.data.message){
+          message.warn(err.data.message, 5);
+        }else{
+          message.err(JSON.stringify(err.data), 5);
+        }
+      }
     });
-  }
+  }, [props.location.search])
 
-  componentDidMount() {
-    try {
-      localStorage.reFreshPathname = null;
-    } catch (error) {}
-  }
+  useEffect(() => {
+    localStorage.reFreshPathname = null;
+  }, [])
 
-  render() {
-    // const { getFieldDecorator } = this.props.form;
-    return (
-      <Layout className="container">
-        <Row className="login">
-          <Col xs={{ span: 20, offset: 2 }} lg={{ span: 6, offset: 9 }}>
-            <div
-              className="logo"
-              // style={{ textAlign: "center", marginTop: "100px", 
-              // backgroundColor:"#4A90E2", padding: "30px 20px", borderRadius: "10px 10px 0 0" }}
+  return (
+    <Layout className="container">
+      <Row className="login">
+        <Col xs={{ span: 20, offset: 2 }} lg={{ span: 6, offset: 9 }}>
+          <div
+            className="logo"
+            // style={{ textAlign: "center", marginTop: "100px", 
+            // backgroundColor:"#4A90E2", padding: "30px 20px", borderRadius: "10px 10px 0 0" }}
+          >
+            <img
+              src="http://127.0.0.1:9000/static/image/logo-kanban.svg"
+              alt="Logo"
+            />
+          </div>
+
+          <Form ref={formRef}
+            onFinish={handleSubmit} name="baseForm"
+          className="login-form">
+            <FormItem
+              name="username"
+              rules={[
+                {required: true, message: "请输入用户名"},
+              ]}
             >
-              <img
-                src="https://www.codelieche.com/static/images/logo-kanban.svg"
-                alt="Logo"
-              />
-            </div>
+                <Input
+                  prefix={<Icon type="user" />}
+                  placeholder="username"
+                />
+            </FormItem>
 
-            <Form ref={this.formRef}
-              onFinish={this.handleSubmit} name="baseForm"
-            className="login-form">
-              <FormItem
-                name="username"
-                rules={[
-                  {required: true, message: "请输入用户名"},
-                ]}
+            <FormItem
+              name="password"
+              rules={[{ required: true, message: "请输入密码" }]}
+            >
+                <Input
+                  prefix={<Icon type="lock" />}
+                  size="large"
+                  type="password"
+                  placeholder="password"
+                />
+            </FormItem>
+
+            <FormItem>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="login-form-button"
+                style={{ width: "100%" }}
               >
-                  <Input
-                    prefix={<Icon type="user" />}
-                    placeholder="username"
-                  />
-              </FormItem>
+                登录
+              </Button>
+            </FormItem>
 
-              <FormItem
-                name="password"
-                rules={[{ required: true, message: "请输入密码" }]}
-              >
-                  <Input
-                    prefix={<Icon type="lock" />}
-                    size="large"
-                    type="password"
-                    placeholder="password"
-                  />
-              </FormItem>
+            <FormItem>
+              <Row>
+                <Col span={12} className="login-form-change">
+                  <Link to="">
+                    修改密码
+                  </Link>
+                </Col>
+                <Col span={12} className="login-form-forget">
+                  <Link to="/user/signup">
+                    注册
+                  </Link>
+                </Col>
+              </Row>
+            </FormItem>
+          </Form>
 
-              <FormItem>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  className="login-form-button"
-                  style={{ width: "100%" }}
-                >
-                  登录
-                </Button>
-              </FormItem>
-
-              <FormItem>
-                <Row>
-                  <Col span={12} className="login-form-change">
-                    <Link to="">
-                      修改密码
-                    </Link>
-                  </Col>
-                  <Col span={12} className="login-form-forget">
-                    <Link to="">
-                      忘记密码
-                    </Link>
-                  </Col>
-                </Row>
-              </FormItem>
-            </Form>
-
-          </Col>
-        </Row>
-      </Layout>
-    );
-  }
+        </Col>
+      </Row>
+    </Layout>
+  );
 }
 
 // var Login = Form.create()(LoginForm);
