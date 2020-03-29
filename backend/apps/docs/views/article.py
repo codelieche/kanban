@@ -42,7 +42,7 @@ class ArticleListApiView(generics.ListAPIView):
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ("title", "parent__title")
     filter_fields = ("parent", "parent_id", "group", "level")
-    ordering_fields = ("id", "parent_id", "parent", "order")
+    ordering_fields = ("id", "parent_id", "parent", "order", "time_added")
     ordering = ("parent", "order")
 
     def get_serializer_class(self):

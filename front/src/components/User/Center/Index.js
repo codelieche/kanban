@@ -11,6 +11,7 @@ import { Row, Col } from "antd";
 import Icon from "../../Base/Icon";
 import { GlobalContext } from "../../Base/Context";
 import UserGroupsList from "./GroupList";
+import LatestArticlesList from "./ArticleList";
 import MessageList from "./MessageList";
 
 export const UserCenterIndex = (props) => {
@@ -48,6 +49,14 @@ export const UserCenterIndex = (props) => {
           {/* 暂无任务信息 */}
           <UserGroupsList {...props} />
         </div>
+
+        <div className="latest-articles">
+          <div className="title">
+            <h4>最新文章</h4>
+          </div>
+          <LatestArticlesList />
+        </div>
+        
       </Col>
 
       {/*右边部分  */}
