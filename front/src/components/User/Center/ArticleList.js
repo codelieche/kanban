@@ -4,11 +4,10 @@
 import React, { useState, useEffect, useCallback, useMemo} from "react";
 import { Link } from "react-router-dom";
 import {
-    Tag, message
+    Tag, Spin, message
 } from "antd";
 
 import fetchApi from "../../Utils/fetchApi";
-import LoadingPage from "../../Page/Loading";
 
 export const LatestArticlesList = (props) => {
     // 状态
@@ -90,10 +89,7 @@ export const LatestArticlesList = (props) => {
 
     // 文章列表
     const articlesItemElements = useMemo(() => {
-        if(loading){
-            return <LoadingPage />;
-        }
-
+        
         return articlesList.map((item, index) => {
             return (
                 <div className="article-item" key={item.id}>
@@ -114,20 +110,23 @@ export const LatestArticlesList = (props) => {
                 </div>
             );
         })
-    }, [articlesList, loading])
+    }, [articlesList])
 
     return (
         <div className="articles">
             <div className="tags-list">
-                <div className="title">工作区：</div>
+                {/* <div className="title">工作区：</div> */}
                 <div className="list">
                     {groupsTagList}
                 </div>
             </div>
 
-            <div className="articles-list">
-                {articlesItemElements}
-            </div>
+            <Spin spinning={loading}>
+                <div className="articles-list">
+                    {articlesItemElements}
+                </div>
+            </Spin>
+            
         </div>
     )
 }
