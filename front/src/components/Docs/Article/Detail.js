@@ -22,6 +22,8 @@ import { patchUpdateArticle } from "./Operation";
 import EditorArticleModel from "./EditorModal";
 import CodeBlock from "../../Editor/Element/Code";
 import LoadingPage from "../../Page/Loading";
+// 上传文章图片
+import { UploadImageTabsModal } from "../../Page/UploadImage";
 // 文章评论
 import ArticleDiscussions from "./Discussions";
 
@@ -37,6 +39,7 @@ export const ArticleDetail = function(props){
     } = useContext(GlobalContext);
     // 是否显示描述、显示讨论
     const [showDescription, setShowDescription] = useState(false);
+    const [showEditCover, setShowEditCover] = useState(false);
     const [showDiscussion, setShowDiscussion] = useState(false);
     // 是否显示编辑的对话框
     const [showEditorModal, setShowEditorModal] = useState(false);
@@ -206,6 +209,17 @@ export const ArticleDetail = function(props){
         }
     }, [groupPermissions])
 
+    const afterCoverUploadHandle = useCallback((imageUrl) => {
+        // 回调函数
+        const callback = () => {
+            setShowEditCover(false);
+            // 刷新图片数据
+            fetchDetailData(articleID);
+        }
+        // 先patch修改
+        patchUpdateArticle(articleID, {cover: imageUrl}, callback)
+    }, [articleID, fetchDetailData])
+
     // 判断是否加载完毕
     if(!loaded){
         return <LoadingPage size="large"/>
@@ -259,6 +273,13 @@ export const ArticleDetail = function(props){
                         </span>
 
                         <span className="button" 
+                          onClick={() => {setShowEditCover(prevState => !prevState)}}
+                        >
+                            <Icon type="image"/>
+                            { canEditor && (data.cover ? "修改封面" : "添加封面")}
+                        </span>
+
+                        <span className="button" 
                           onClick={() => {setShowDiscussion(prevState => !prevState)}}
                         >
                             <Icon type="commenting"/>
@@ -289,6 +310,15 @@ export const ArticleDetail = function(props){
                     </div>
                     
                 </div>
+                
+                {/* 显示封面 */}
+                {
+                    data.cover && (
+                        <div className="cover">
+                            <img src={data.cover} alt="封面" />
+                        </div>
+                    )
+                }
 
                 {
                     // 需要显示描述，才显示描述部分
@@ -379,6 +409,17 @@ export const ArticleDetail = function(props){
                     handleContentUpdated={(data) => patchUpdateArticle(articleID, {content: data})}
                 />
             )}
+
+            {/* 文章图片封面 */}
+            {
+                (canEditor && showEditCover) && (
+                    <UploadImageTabsModal 
+                      visible={showEditCover}
+                      afterUploadHandle={afterCoverUploadHandle}
+                      handleAfterClose={() => setShowEditCover(false)}
+                    />
+                )
+            }
             
         </article>
     );

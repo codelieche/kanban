@@ -20,6 +20,42 @@
             margin-bottom: 10px;
             padding: 10px 10px;
             border-bottom: 1px solid @border-bottom-line-color;
+            display: flex;
+            flex-direction: row;
+            // height: 100%;
+            // align-items: center;
+            
+            .cover {
+                flex-direction: column;
+                // width: 200px;
+                min-width: 120px;
+                max-width: 260px;
+                flex: 1;
+                margin-right: 15px;
+                border: 1px solid #d9d9d9;
+                padding: 3px;
+                border-radius: 3px;
+                height: 100%;
+                // height: 200px;
+                min-height: 80px;
+                display: flex;
+                flex-direction: column;
+                text-align: center;
+                img {
+                    max-width: 100%;
+                    margin-bottom: 0;
+                    border-radius: 3px;
+                    max-height: 300px;
+                    overflow-y: hidden;
+                    margin: auto 0;
+                }
+            }
+            .content {
+                min-width: 200px;
+                flex: 2;
+                align-self: start;
+            }
+
             .title{
                 font-size: 24px;
                 color: #666;
@@ -180,6 +216,19 @@
             // border-left: 4px solid #989898;
             border-left: 5px solid #d9d9d9;
             padding: 10px 20px;
+        }
+
+        .cover {
+            text-align: center;
+            border-radius: 8px;
+            img {
+                max-width: 100%;
+                max-height: 550px;
+                border-radius: 8px;
+                // border: 1px solid @border-bottom-line-color;
+            }
+            margin-bottom: 10px;
+            border-bottom: 1px solid @border-bottom-line-color;
         }
     }
     // header结束

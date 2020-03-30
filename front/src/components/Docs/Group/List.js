@@ -405,6 +405,7 @@ function GroupList(props){
             expandedRowRender: (record, index, indent, expanded) => {
                 // console.log(record, index, indent, expanded)
                 // console.log(dataSource)
+                // return null;
                 if(record.children.length > 0){
                     return (
                         <Table 

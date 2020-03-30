@@ -93,20 +93,30 @@ export const LatestArticlesList = (props) => {
         return articlesList.map((item, index) => {
             return (
                 <div className="article-item" key={item.id}>
-                    <div className="title">
+                    { item.cover && (
                         <Link to={`/docs/article/${item.id}`}>
-                            <h2>{item.title}</h2>
+                            <div className="cover">
+                                <img src={item.cover} alt="封面" />
+                            </div>
                         </Link>
-                    </div>
-                    <div className="metadata">
-                        <span className="item">时间: {item.time_added}</span>
-                        <span className="item">作者: {item.user}</span>
-                    </div>
+                    )}
+                    <div className="content">
+                        <div className="title">
+                            <Link to={`/docs/article/${item.id}`}>
+                                <h2>{item.title}</h2>
+                            </Link>
+                        </div>
+                        <div className="metadata">
+                            <span className="item">时间: {item.time_added}</span>
+                            <span className="item">作者: {item.user}</span>
+                        </div>
 
-                    {!!item.description && (
-                    <div className="description">
-                        {item.description}
-                    </div>)}
+                        {!!item.description && (
+                        <div className="description">
+                            {item.description}
+                        </div>)}
+                    </div>
+                    
                 </div>
             );
         })
