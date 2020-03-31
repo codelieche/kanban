@@ -143,3 +143,53 @@ table .react-resizable-handle {
     cursor: col-resize;
     z-index: 1;
 }
+
+
+// docs/images/list
+.images-list {
+    // border: 1px solid #d9d9d9;
+    // column-count: 5;
+    min-height: 400px;
+    column-gap: 1em;
+    padding: 10px 15px;
+    padding-left: 5px;
+    padding-right: 18px;
+    // text-align: left;
+    align-self: start;
+    border: 1px solid #d4d6d8;
+    box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.1);
+    background-color: #eee;
+
+    .image-item {
+        // min-width: 320px;
+        background-color: #fff;
+        min-width: 200px;
+        // -webkit-column-break-inside:avoid;
+        break-inside:avoid;
+        // border:2px solid @border-bottom-line-color;
+        // background:#909090;
+        margin: 12px 8px;
+        text-align: center;
+        width: 100%;
+        // background-color: #eee;
+        cursor: pointer;
+        padding: 5px;
+        border-radius: 5px;
+        border: 1px solid #d4d6d8;
+        box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.18);
+        img {
+            max-width: 100%;
+            margin-bottom: 0;
+            border-radius: 3px;
+        }
+
+        box-sizing: border-box;
+
+        &:hover{
+            border: 1px solid @left-sider-nav-active-background;
+            // box-shadow: 0 3px 4px -4px @border-bottom-line-color;
+            box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.58);
+        }
+    }
+    margin-bottom: 15px;
+}

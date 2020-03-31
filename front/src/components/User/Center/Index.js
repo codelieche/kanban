@@ -37,7 +37,7 @@ export const UserCenterIndex = (props) => {
       {/*左边部分  */}
       <Col xs={{ span: 24 }} sm={{ span: 24 }} md={{span: 16}} lg={{span: 18}} className="main">
         <div className="title position-relative">
-          <h4>工作区列表</h4>
+          <h4>工作区</h4>
           <div className="right">
             <Link to="/docs/group/list">
               more <Icon type="angle-double-right"></Icon>

@@ -24,7 +24,7 @@ import CommontList from "./Comment/List";
 import DiscussionList from "./Discussion/List";
 
 // 文档图片
-import ImageListPage from "./Image/List";
+import ImageListPage from "./Image/List2";
 
 function DocsIndex(props){
       return (
