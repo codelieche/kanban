@@ -39,12 +39,15 @@ export const ImageListPage = (props) => {
     const dataSourceElements = useMemo(() => {
         // console.log(listRef)
         if(listRef && listRef.current){
-            setColumnNumber(Math.ceil((listRef.current.offsetWidth - 60) / 260));
+            let columnCount = Math.ceil((listRef.current.offsetWidth - 60) / 270);
+            setColumnNumber(columnCount > 1 ? columnCount : 1);
         }
         return dataSource.map((item,index) => {
             return (
                 <div className="image-item" key={item.id}>
-                    <img src={item.file} alt="图片" />
+                    <div className="item-inner">
+                        <img src={item.file} alt="图片" />
+                    </div>
                 </div>
             )
         })
@@ -67,6 +70,7 @@ export const ImageListPage = (props) => {
                     setDataSource={setDataSource} // 把分页获取到数据追加到当前页面来
                     renderItem={renderItemFunc} // 渲染每一项
                     pageSize={20}
+                    hideOnSinglePage={false} // 当只有一页的时候，是否隐藏
                 >
                     {/* 图片列表数据 */}
                     <div className="images-list" ref={listRef} style={{columnCount: columnNumber}}>

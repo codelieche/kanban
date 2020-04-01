@@ -6,6 +6,7 @@ import { Button } from "antd";
 import ResizeDemo from "./demo/resizeable";
 import UplaodImageItem from  "../Page/UplaodImageItem"
 import { UploadImageTabsModal, UploadImageTabs } from "../Page/UploadImage";
+import CopyIcon from "../Page/Copy";
 
 
 export class TestPage extends React.Component{
@@ -62,6 +63,15 @@ export function TestPageFunc() {
               handleAfterClose={() => setModalVisible(false)}
               afterUploadHandle={(imageUrl) => {console.log("上传了图片：", imageUrl); setModalVisible(false)}}
             />
+
+            {/* 测试复制 */}
+            <div>
+                <span>测试复制功能：</span>
+                <CopyIcon title="图片链接" content="This Is For Test" />
+                <CopyIcon title="图片链接" content="This Is For Test2" className="copy" />
+                <CopyIcon title="图片链接" content="This Is For Test3" className="copy3" text="复制" />
+            </div>
+            
             
         </div>
     );

@@ -317,9 +317,10 @@ export const BaseTable = (props) => {
               onChange={handleTableChange}
               showSizeChanger
               showQuickJumper
-              showTotal={total => `总共有 ${total} 条数据!`}
+              showTotal={total => `总共有 ${total} 条数据!`} // 导航左侧显示总共有多少条数据的信息
               pageSize={pageSize}
               onShowSizeChange={onShowSizeChange}
+              hideOnSinglePage={props.hideOnSinglePage} // 当只有一页的时候是否隐藏
             />
             {/* <br/>
             {apiUrlPrefix}

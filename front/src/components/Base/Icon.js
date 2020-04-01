@@ -11,10 +11,48 @@
  * 故改用fontawesome
  * 参考文档：https://github.com/FortAwesome/Font-Awesome
  */
-import React from 'react';
+import React, { useMemo } from 'react';
+import PropTypes from "prop-types";
+
+
+export const Icon2 = ({type, spin, danger, className, children}) => {
+    // 状态
+
+    const iconClassName = useMemo(() => {
+        let name = `fa fa-${type}`;
+
+        if(spin){
+            name += " fa-spin"
+        }
+
+        if(danger){
+            name += " danger";
+        }
+
+        return name;
+    }, [danger, spin, type]);
+    return (
+        <span className={className} style={{display: "inline-block", padding: "0 3px"}}>
+            <i className={iconClassName}>
+                {children}
+            </i>
+        </span>
+    )
+}
+
+// 类型检查
+Icon2.propTypes = {
+    type: PropTypes.string.isRequired,
+    spin: PropTypes.bool,
+    danger: PropTypes.bool,
+    className: PropTypes.string,
+    children: PropTypes.elementType
+}
+
 
 // 自定义的Icon组件
-class Icon extends React.Component {
+export class Icon extends React.Component {
+
     constructor(props){
         super(props);
         this.state = {
@@ -65,4 +103,4 @@ class Icon extends React.Component {
         );
     }
 }
-export default Icon;
+export default Icon2;
