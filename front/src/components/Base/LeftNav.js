@@ -16,7 +16,7 @@
  *      children: [item, "二级菜单的列表"], 
  *   }
  */
-import React, {useState, useEffect, useCallback} from "react";
+import React, {useState, useEffect, useCallback, useMemo} from "react";
 import { NavLink} from "react-router-dom";
 import { Popover } from "antd";
 
@@ -197,16 +197,15 @@ export const NavItem = ({item, index, collapsed, defaultOpenKey}) => {
                 }
             </div>
     )
-
 }
 
 export const LeftSiderNav = (props) => {
     // 导航数据
-    const [ navData, setNavData ] = useState([]);
+    const [ navData, setNavData ] = useState(null);
     const [ collapsed, setCollapsed] = useState(false);
 
     // 获取用用户导航数据
-    const fetchNavData = () => {
+    const fetchNavData = useCallback(() => {
         const url = "/api/v1/account/user/nav/list";
         fetchApi.Get(url)
         .then(data => {
@@ -220,23 +219,30 @@ export const LeftSiderNav = (props) => {
         .catch(err => {
             console.log(err);
         });
-    }
+    }, [])
+
+    // 获取导航数据
+    useEffect(() => {
+        fetchNavData();
+    }, [fetchNavData])
 
     useEffect(() => {
-        if(navData.length === 0){
-            // 获取导航数据
-            fetchNavData();
-        }
         // 是否折叠
         if(props.collapsed !== collapsed){
             setCollapsed(props.collapsed);
         }
-    }, [collapsed, navData.length, props.collapsed])
+    }, [collapsed, props.collapsed])
 
     // 导航菜单
-    let navElements = navData.map((item, index) => {
-        return <NavItem item={item} index={index} key={index} collapsed={collapsed} defaultOpenKey={props.defaultOpenKey} />
-    })
+    let navElements = useMemo(() => {
+        if(navData && navData.length > 0){
+            return navData.map((item, index) => {
+                return <NavItem item={item} index={index} key={index} collapsed={collapsed} defaultOpenKey={props.defaultOpenKey} />
+            })
+        }else{
+            return null;
+        }
+    }, [collapsed, navData, props.defaultOpenKey])
 
     return (
         <div className="nav-list">

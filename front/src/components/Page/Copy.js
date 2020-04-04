@@ -19,7 +19,8 @@ export const copyTextFunc = (title, content) => {
         message.success(`已复制${title}到剪切板!`);
 
     }else{
-        let tmpInput = document.createElement('input');
+        // 因为input是不能换行，当复制多行文本的时候用textarea即可
+        let tmpInput = document.createElement('textarea');
         tmpInput.value = content;                      // 设置内容
         document.body.appendChild(tmpInput);           // 添加元素到body的后面
         tmpInput.select();                             // 选择对象

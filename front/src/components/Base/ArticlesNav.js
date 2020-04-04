@@ -183,7 +183,8 @@ export const ArticlesNav= ({group}) => {
         if(group !== currentGroupID){
             // 获取新的文章列表
             fetchData(group);
-        }else if(fetchTimes <= refreshNavTimes){
+        }else if(refreshNavTimes > 0 && fetchTimes <= refreshNavTimes){
+            // 加个：efreshNavTimes > 0 可防止第一次加载页面的时候，获取了2次文章。
             // 获取新的文章列表
             fetchData(group, true);
         }

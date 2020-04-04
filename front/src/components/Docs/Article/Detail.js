@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 import {
     Button,
     Result,
+    Menu, Dropdown,
     message,
 } from "antd";
 import ReactMarkdown from "react-markdown";
@@ -22,6 +23,7 @@ import { patchUpdateArticle } from "./Operation";
 import EditorArticleModel from "./EditorModal";
 import CodeBlock from "../../Editor/Element/Code";
 import LoadingPage from "../../Page/Loading";
+import { CopyIcon, copyTextFunc } from "../../Page/Copy";
 // 上传文章图片
 import { UploadImageTabsModal } from "../../Page/UploadImage";
 // 文章评论
@@ -220,6 +222,45 @@ export const ArticleDetail = function(props){
         patchUpdateArticle(articleID, {cover: imageUrl}, callback)
     }, [articleID, fetchDetailData])
 
+    // 复制文章的html
+    const copyArticleContentHtml = useCallback(() => {
+        // 1. 获取到article元素
+        try {
+            let articleEle = document.getElementsByTagName("article")[0];
+
+            // 2. 获取到文章内容
+            let contentEle = articleEle.getElementsByClassName("content")[0];
+            // window.xx = contentEle;
+            let contentHtml = contentEle.innerHTML;
+            // 3. 执行复制函数
+            copyTextFunc("文章HTML", contentHtml);
+        } catch (error) {
+            console.log(error);
+            message.warn("复制文章HTML出错");
+        }
+
+    }, []);
+
+    // 文章操作
+    const articleOperationMenus = useMemo(() => {
+        return (
+            <Menu>
+                <Menu.Item onClick={handleEditorButtonClick}>
+                    <Icon type="edit" />编辑内容
+                </Menu.Item>
+                <Menu.Item>
+                    <CopyIcon title="文章内容" content={data.content ? data.content : "内容为空"} text="复制内容" />
+                </Menu.Item>
+                <Menu.Item onClick={copyArticleContentHtml}>
+                    <Icon type="copy" />复制HTML
+                </Menu.Item>
+                <Menu.Item disabled={true}>
+                    <Icon type="trash-o" />删除文章
+                </Menu.Item>
+            </Menu>
+        );
+    }, [handleEditorButtonClick, data.content, copyArticleContentHtml])
+
     // 判断是否加载完毕
     if(!loaded){
         return <LoadingPage size="large"/>
@@ -258,10 +299,22 @@ export const ArticleDetail = function(props){
     //     processingInstructions: [/* ... */]
     // })
 
+    
+
     return (
         <article>
-            <header className="middle">
+            {/* 操作按钮:有编辑权限才可显示 */}
+            {canEditor ? (
+                    <div className="tools">
+                        <Dropdown overlay={articleOperationMenus} overlayClassName="article-tools">
+                            <div className="toogle">
+                                <Icon type="ellipsis-h" />
+                            </div>
+                        </Dropdown>
+                    </div>
+                ): null}
 
+            <header className="middle">
                 <div className="title">
                     {/* 显示描述等的开关 */}
                     <div className="toogle">
@@ -353,15 +406,15 @@ export const ArticleDetail = function(props){
                         // astPlugins={[htmlParser()]}
                     />
                     {/* 有编辑权限，就显示编辑按钮 */}
-                    {canEditor ? (
-                    <div className="editor-button">
-                        <Button type="primary" 
-                        size="small"
-                        disabled={showEditorModal}
-                        icon={<Icon type="edit"/>}
-                        onClick={handleEditorButtonClick}>编辑</Button>
-                    </div>
-                    ): null}
+                    {/* {canEditor ? (
+                        <div className="editor-button">
+                            <Button type="primary" 
+                            size="small"
+                            disabled={showEditorModal}
+                            icon={<Icon type="edit"/>}
+                            onClick={handleEditorButtonClick}>编辑</Button>
+                        </div>
+                    ): null} */}
                    
                 </section>
 

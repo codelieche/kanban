@@ -99,9 +99,44 @@
     }
   }
 
+.article-tools {
+    .ant-dropdown-menu-root {
+        padding: 0px;
+        border: 1px solid #d4d6d8;
+        box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.1);
+        background-color: #fff;
+        .ant-dropdown-menu-item {
+            &:hover{
+                background-color: #eee;
+            }
+        }
+        .ant-dropdown-menu-item + .ant-dropdown-menu-item {
+            border-top: 1px solid @border-bottom-line-color;
+        }
+    }
+}
+
+
 // 右侧文章的样式
 .right-content article{
     font-size: 14px;
+    position: relative;
+
+    // 右侧的操作按钮
+    .tools {
+        position: absolute;
+        right: 10px;
+        top: 20px;
+        .toogle {
+            font-size: 20px;
+            padding: 2px 5px;
+            cursor: pointer;
+            &:hover {
+                background-color: #eee;
+            }
+        }
+    }
+
     .middle {
         padding-left: calc((100% - 780px) /2);
         padding-right: calc((100% - 780px) /2);

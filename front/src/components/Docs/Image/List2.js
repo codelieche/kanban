@@ -220,15 +220,6 @@ export const ImageListPage = (props) => {
             return (
                 <span>
                     <Button
-                        type="primary"
-                        style={{width: 100}}
-                        // icon={<i className="fa fa-user"/>}
-                        icon={<Icon type="upload"/>}
-                        onClick={() => setShowUploadImageModal(true)}
-                        >
-                        Add
-                    </Button>
-                    <Button
                         style={{width: 100}}
                         type="default"
                         // icon="reload"
@@ -237,6 +228,17 @@ export const ImageListPage = (props) => {
                     >
                         刷新
                     </Button>
+                    
+                    <Button
+                        type="primary"
+                        style={{width: 100}}
+                        // icon={<i className="fa fa-user"/>}
+                        icon={<Icon type="upload"/>}
+                        onClick={() => setShowUploadImageModal(true)}
+                        >
+                        Add
+                    </Button>
+                    
                 </span>
             )
     }, []);
