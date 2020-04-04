@@ -45,8 +45,8 @@ export const CopyIcon = ({title, content, className, text}) => {
     }, [content, title])
 
     return (
-        <span onClick={handleCopyClick}>
-            <Icon type="copy" className={className}></Icon>{text}
+        <span onClick={handleCopyClick} className={className}>
+            <Icon type="copy" ></Icon>{text}
         </span>
     )
 }

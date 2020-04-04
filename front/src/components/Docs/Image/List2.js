@@ -4,12 +4,14 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 
 import {
-    Row, Button, Modal, Divider
+    Row, Button, Modal, Divider, message
 } from "antd";
 
 import Icon from "../../Base/Icon";
 import { copyTextFunc, CopyIcon } from "../../Page/Copy";
 import BasePaginationData from "../../Page/BasePaginationData";
+// 上传文章图片
+import { UploadImageTabsModal } from "../../Page/UploadImage";
 
 const ShowImageModal = ({visible, data, afterCloseHandle}) => {
 
@@ -61,7 +63,10 @@ const ShowImageModal = ({visible, data, afterCloseHandle}) => {
                         <dt>上传者:</dt>
                         <dd>{data.user}</dd>
                     </dl>
-                    
+                    <dl>
+                        <dt>图片名:</dt>
+                        <dd>{data.filename}</dd>
+                    </dl>
                     <dl>
                         <dt>状态:</dt>
                         <dd className="status">
@@ -85,9 +90,9 @@ const ShowImageModal = ({visible, data, afterCloseHandle}) => {
                             <dl>
                                 <dt>操作:</dt>
                                 <dd>
-                                    <CopyIcon title="链接" content={imageUrl} text="复制链接" />
+                                    <CopyIcon title="链接" content={imageUrl} text="复制链接" className="copy" />
                                     <Divider type="vertical" />
-                                    <CopyIcon title="Markdown" content={`![data.filename](${imageUrl})`} text="Markdown" />
+                                    <CopyIcon title="Markdown" content={`![data.filename](${imageUrl})`} text="Markdown" className="copy" />
                                 </dd>
                             </dl>
                         )
@@ -112,9 +117,13 @@ export const ImageListPage = (props) => {
     const listRef = useMemo(() => React.createRef(), []);
     // 展示图片的列
     const [ columnNumber, setColumnNumber ] = useState(3);
+    // 显示添加图片
+    const [showUploadImageModal, setShowUploadImageModal] = useState(false);
     // 显示图片的modal
     const [showImageModal, setShowImageModal] = useState(false);
     const [currentImage, setCurrentImage] = useState({});
+    // 刷新数据
+    const [ reFreshTimes, setReFreshTimes ] = useState(0);
 
     // paramsFields字段：通过url可获取到的字段信息
     const paramsFields = useMemo(() => {
@@ -185,12 +194,52 @@ export const ImageListPage = (props) => {
         })
     }, [dataSource, handleOnCopyClick, showImageToogle])
 
+    // 图片上传成功后
+    const afterUploadImageHandle = useCallback(imageUrl => {
+        message.success("图片上传成功：" + imageUrl, 3);
+        // 刷新
+        setReFreshTimes(prevState => prevState + 1);
+        // 隐藏上传
+        setShowUploadImageModal(false);
+    }, [])
+
+    // 当上传图片关闭的时候要的操作
+    const handleAfterUploadClose = useCallback(() => {
+        setShowUploadImageModal(false);
+    }, [])
+
     // 当图片modal关闭的时候要做的操作
-    const afterCloseHandle = useCallback(() => {
+    const handleAfterShowImageModelClose = useCallback(() => {
         // 不显示modal
         setShowImageModal(false);
         setCurrentImage({});
     }, [])
+
+    // 右侧按钮
+    const rightButtons = useMemo(() => {
+            return (
+                <span>
+                    <Button
+                        type="primary"
+                        style={{width: 100}}
+                        // icon={<i className="fa fa-user"/>}
+                        icon={<Icon type="upload"/>}
+                        onClick={() => setShowUploadImageModal(true)}
+                        >
+                        Add
+                    </Button>
+                    <Button
+                        style={{width: 100}}
+                        type="default"
+                        // icon="reload"
+                        icon={<Icon type="refresh"/>}
+                        onClick={() => {setReFreshTimes(preState => preState + 1)}}
+                    >
+                        刷新
+                    </Button>
+                </span>
+            )
+    }, []);
 
     return (
         <div className="content">
@@ -210,6 +259,8 @@ export const ImageListPage = (props) => {
                     renderItem={renderItemFunc} // 渲染每一项
                     pageSize={20}
                     hideOnSinglePage={false} // 当只有一页的时候，是否隐藏
+                    reFreshTimes={reFreshTimes} // 刷新数据
+                    rightButtons={rightButtons} // 右侧的按钮
                 >
                     {/* 图片列表数据 */}
                     <div className="images-list" ref={listRef} style={{columnCount: columnNumber}}>
@@ -218,11 +269,19 @@ export const ImageListPage = (props) => {
                 </BasePaginationData>
             </div>
 
+            {/* 上传图片 */}
+            <UploadImageTabsModal 
+              visible={showUploadImageModal}
+              handleAfterClose={handleAfterUploadClose}
+              afterUploadHandle={afterUploadImageHandle}
+              disableLink={true} // 不显示通过url的上传
+            />
+
             {/* 展示图片的modal */}
             <ShowImageModal 
               visible={showImageModal}
               data={currentImage} 
-              afterCloseHandle={afterCloseHandle} />
+              afterCloseHandle={handleAfterShowImageModelClose} />
         </div>
     )
 }

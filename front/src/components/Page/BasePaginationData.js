@@ -3,6 +3,8 @@
  * 通过传递简单的参数：就可以获取相应的数据
  */
 import React, { useState, useCallback, useEffect, useMemo} from "react";
+import PropTypes from "prop-types";
+
 import { 
     Row, Col,
     Input, Button,
@@ -328,6 +330,19 @@ export const BaseTable = (props) => {
             {pageUrlPrefix} */}
         </div>
     );
+}
+
+// 属性控制
+BaseTable.propTypes = {
+    pageSize: PropTypes.number.isRequired,
+    showTools: PropTypes.bool,
+    paramsFields: PropTypes.array.isRequired,
+    apiUrlPrefix: PropTypes.string.isRequired,
+    pageUrlPrefix: PropTypes.string.isRequired,
+    setDataSource: PropTypes.func.isRequired,
+    hideOnSinglePage: PropTypes.bool,
+    reFreshTimes: PropTypes.number,
+    rightButtons: PropTypes.element
 }
 
 export default BaseTable;

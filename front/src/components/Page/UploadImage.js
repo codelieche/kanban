@@ -7,6 +7,7 @@
  * 4. 网络搜索图片
  */
 import React, { useState, useEffect, useCallback, useMemo} from "react";
+import PropTypes from "prop-types";
 
 import {
     Tabs,
@@ -76,7 +77,7 @@ export const UploadImageTabs = (props) => {
         let url = "/api/v1/docs/image/upload";
         fetchApi.Post(url, formData, {})
           .then(responseData => {
-              console.log(responseData);
+            //   console.log(responseData);
               // 执行得到图片链接后的：后续的操作
               if(responseData.qiniu){
                   if(props.afterUploadHandle){
@@ -162,21 +163,25 @@ export const UploadImageTabs = (props) => {
                     </div>
                     
                 </Tabs.TabPane>
-
-                <Tabs.TabPane tab="使用链接" key="useLink">
-                    <div className="input-url">
-                        <Input placeholder="输入图片地址" 
-                          allowClear={true}
-                          onChange={handleInputImageUrl} />
-                    </div>
-                        { 
-                            activeTabKey === "useLink" && imageUrl && checkImageUrlPattern.test(imageUrl) &&  (
-                                <div className="show-image"> 
-                                    <img src={imageUrl} alt="图片"></img>
-                                </div>
-                            )
-                        }
-                </Tabs.TabPane>
+                {
+                    props.disableLink || (
+                    <Tabs.TabPane tab="使用链接" key="useLink">
+                        <div className="input-url">
+                            <Input placeholder="输入图片地址" 
+                            allowClear={true}
+                            onChange={handleInputImageUrl} />
+                        </div>
+                            { 
+                                activeTabKey === "useLink" && imageUrl && checkImageUrlPattern.test(imageUrl) &&  (
+                                    <div className="show-image"> 
+                                        <img src={imageUrl} alt="图片"></img>
+                                    </div>
+                                )
+                            }
+                    </Tabs.TabPane>
+                    )
+                }
+                
             </Tabs>
             {/* <div>
                 <span>{imageUrl}</span>
@@ -197,7 +202,7 @@ export const UploadImageTabsModal = (props) => {
     const {visible, ...restProps} = props;
 
     const handleOnCloseOrOk = useCallback((e) => {
-        console.log(e);
+        // console.log(e);
         if(props.handleAfterClose){
             props.handleAfterClose()
         }
@@ -215,6 +220,14 @@ export const UploadImageTabsModal = (props) => {
             <UploadImageTabs {...restProps} />
         </Modal>
     )
+}
+
+// 属性控制
+UploadImageTabsModal.propTypes = {
+    visible: PropTypes.bool.isRequired,
+    handleAfterClose: PropTypes.func.isRequired,
+    afterUploadHandle: PropTypes.func.isRequired,  // 上传图片后的处理函数
+    disableLink: PropTypes.bool,      // 隐藏通过连接上传
 }
 
 export default UploadImageTabs;
