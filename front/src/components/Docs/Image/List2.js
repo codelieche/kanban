@@ -4,14 +4,16 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 
 import {
-    Row, Button, Modal
+    Row, Button, Modal, Divider
 } from "antd";
 
 import Icon from "../../Base/Icon";
-import { copyTextFunc } from "../../Page/Copy";
+import { copyTextFunc, CopyIcon } from "../../Page/Copy";
 import BasePaginationData from "../../Page/BasePaginationData";
 
 const ShowImageModal = ({visible, data, afterCloseHandle}) => {
+
+    const [showInfo, setShowInfo] = useState(true);
 
     const handleOnOkOrCancel = useCallback((e) => {
         if(afterCloseHandle){
@@ -21,12 +23,17 @@ const ShowImageModal = ({visible, data, afterCloseHandle}) => {
 
     const imageElement = useMemo(() => {
         if((data && data.id > 0) && (data.file || data.qiniu)){
+            setShowInfo(true);
             return (
                 <img src={data.qiniu ? data.qiniu : data.file} alt="图片" />
             );
         }else{
             return null;
         }
+    }, [data]);
+
+    const imageUrl = useMemo(() => {
+        return data.qiniu ? data.qiniu : data.file;
     }, [data])
 
     return (
@@ -43,6 +50,56 @@ const ShowImageModal = ({visible, data, afterCloseHandle}) => {
             <div className="show-image" style={{display: visible ? "block" : "none"}}>
                 {/* <img src={data.file} alt="图片" /> */}
                 {imageElement}
+
+                {/* 图片信息 */}
+                <div className="info info-property" style={{display: showInfo ? "block" : "none"}}>
+                    
+                    <div className="close" onClick={() => setShowInfo(false)}>
+                        <span className="text">隐藏</span><Icon type="close" />
+                    </div>
+                    <dl>
+                        <dt>上传者:</dt>
+                        <dd>{data.user}</dd>
+                    </dl>
+                    
+                    <dl>
+                        <dt>状态:</dt>
+                        <dd className="status">
+                            <Icon type={data.is_active ? "check" : "close"} />
+                        </dd>
+                    </dl>
+
+                    {/* 图片的尺寸 */}
+                    {(data.width && data.height) && (
+                        <dl>
+                        <dt>尺寸:</dt>
+                        <dd>
+                            {  `${data.width} x ${data.height}`}
+                        </dd>
+                    </dl>
+                    )}
+                    
+                    {/* 复制图片连接 */}
+                    {
+                        imageUrl && (
+                            <dl>
+                                <dt>操作:</dt>
+                                <dd>
+                                    <CopyIcon title="链接" content={imageUrl} text="复制链接" />
+                                    <Divider type="vertical" />
+                                    <CopyIcon title="Markdown" content={`![data.filename](${imageUrl})`} text="Markdown" />
+                                </dd>
+                            </dl>
+                        )
+                    }
+                    
+                    <dl>
+                        <dt>添加时间:</dt>
+                        <dd>{data.time_added}</dd>
+                    </dl>
+                   
+                </div>
+                
             </div>
           </Modal>
     );

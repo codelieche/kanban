@@ -137,10 +137,50 @@
             // display: flex !important;
             // align-items: center;
             // justify-content: center;
-            img {
+            & > img {
                 // max-width: 100%;
                 max-width: 750px;
                 max-height: 90vh;
+            }
+
+            .info {
+                min-width: 320px;
+                position: absolute;
+                background-color: #fff;
+                right: 10px;
+                bottom: 3px;
+                padding: 10px;
+                border-radius: 2px;
+                text-align: left;
+                border: 1px solid #d4d6d8;
+                box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.1);
+                dt {
+                    width: 80px;
+                    // text-align: justify;
+                    // text-align-last: justify;
+                }
+                .close {
+                    transition: display 1s;
+                    padding: 5px;
+                    cursor: pointer;
+                    position: absolute;
+                    right: 10px;
+                    i {
+                        display: inline-block;
+                    }
+                    .text {
+                        display: none;
+                    }
+                    &:hover{
+                        .text {
+                            display: block;
+                        }
+                        i {
+                            display: none;
+                            font-size: 15px;
+                        }
+                    }
+                }
             }
         }
     }
