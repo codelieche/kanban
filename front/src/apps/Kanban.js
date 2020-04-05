@@ -29,6 +29,11 @@ function App(props) {
                 <Route exact path="/" component={Home2} />
 
                 <Route
+                    path="/docs/article/list"
+                    render={props => <Home defaultOpenKey="/docs" {...props} />}
+                />
+
+                <Route
                     path="/docs/article"
                     render={props => <Home2 defaultOpenKey="/docs" {...props} />}
                 />

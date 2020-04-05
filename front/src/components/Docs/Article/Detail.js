@@ -204,7 +204,7 @@ export const ArticleDetail = function(props){
 
     // 监控能否编辑
     useEffect(() => {
-        if(groupPermissions.indexOf("write") >= 0){
+        if(Array.isArray(groupPermissions) && groupPermissions.indexOf("write") >= 0){
             setCanEditor(true);
         }else{
             setCanEditor(false);

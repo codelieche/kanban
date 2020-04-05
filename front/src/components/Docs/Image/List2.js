@@ -1,7 +1,7 @@
 /**
  * 图片列表页：瀑布流
  */
-import React, { useState, useMemo, useCallback, useEffect } from "react";
+import React, { useState, useMemo, useCallback, useEffect, useContext } from "react";
 
 import {
     Row, Button, Modal, Divider, message
@@ -12,6 +12,7 @@ import { copyTextFunc, CopyIcon } from "../../Page/Copy";
 import BasePaginationData from "../../Page/BasePaginationData";
 // 上传文章图片
 import { UploadImageTabsModal } from "../../Page/UploadImage";
+import { GlobalContext } from "../../Base/Context";
 
 const ShowImageModal = ({visible, data, afterCloseHandle}) => {
 
@@ -124,6 +125,28 @@ export const ImageListPage = (props) => {
     const [currentImage, setCurrentImage] = useState({});
     // 刷新数据
     const [ reFreshTimes, setReFreshTimes ] = useState(0);
+    // 设置导航
+    const { setNavData } = useContext(GlobalContext);
+
+    // 顶部导航面包屑的数据
+    // 设置导航
+    useEffect(() => {
+        const navData = [
+            {
+                title: "首页",
+                icon: "home",
+                link: "/"
+            },
+            {
+                title: "文档图片",
+                link: "/docs/image"
+            },
+            {
+                title: "列表"
+            }
+        ]
+        setNavData(navData);
+    }, [setNavData])
 
     // paramsFields字段：通过url可获取到的字段信息
     const paramsFields = useMemo(() => {

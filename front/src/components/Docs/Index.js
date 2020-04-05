@@ -42,7 +42,8 @@ function DocsIndex(props){
 
               {/* Article相关路由 */}
               <Route exat path="/docs/article/list" component={ArticleList} />
-              <Route exat 
+
+              <Route exat={true} 
                 path="/docs/article" 
                 render={() => <Redirect to="/docs/article/list" push={false} />}
               />

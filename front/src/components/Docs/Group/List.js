@@ -178,7 +178,7 @@ function GroupList(props){
                 link: "/"
             },
             {
-                title: "文档",
+                title: "文档分组",
                 link: "/docs/group"
             },
             {
@@ -187,8 +187,6 @@ function GroupList(props){
         ]
         setNavData(navData);
     }, [setNavData])
-
-    
 
     // 删除分组函数
     const deleteOnConfirm = useCallback((value) => {
