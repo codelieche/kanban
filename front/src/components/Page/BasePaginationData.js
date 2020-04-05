@@ -62,6 +62,9 @@ export const BaseTable = (props) => {
         if(!props.apiUrlPrefix){
             return
         }
+        if(props.setLoading){
+            props.setLoading(true);
+        }
         if(props.apiUrlPrefix !== apiUrlPrefix || pageUrlPrefix !== props.pageUrlPrefix){
             return
         }
@@ -101,6 +104,9 @@ export const BaseTable = (props) => {
         fetchApi.Get(url, {}, {})
           .then(responseData => {
               let data = responseData.results;
+              if(props.setLoading){
+                props.setLoading(false);
+            }
               if(Array.isArray(data)){
                 //   setDataSource(data);
                   setCount(responseData.count);
@@ -117,6 +123,9 @@ export const BaseTable = (props) => {
             .catch(err => {
                 console.log(err);
                 props.setDataSource([]);
+                if(props.setLoading){
+                    props.setLoading(false);
+                }
             })
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [apiUrlPrefix, pageUrlPrefix, paramsFields, props.setDataSource, pageSize, props.location.search])

@@ -7,6 +7,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from django.shortcuts import get_object_or_404
+# from django.db.models import Q
 from django.http.response import JsonResponse, HttpResponseForbidden
 
 from docs.models.article import Article
@@ -41,7 +42,7 @@ class ArticleListApiView(generics.ListAPIView):
     
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ("title", "parent__title")
-    filter_fields = ("parent", "parent_id", "group", "level")
+    filter_fields = ("parent", "parent_id", "group", "group_id", "level")
     ordering_fields = ("id", "parent_id", "parent", "order", "time_added")
     ordering = ("parent", "order")
 
@@ -51,6 +52,19 @@ class ArticleListApiView(generics.ListAPIView):
             return ArticleWithInfovaluesListSerializer
         else:
             return ArticleModelSerializer
+
+    def get_queryset(self):
+        # 超级用户可以查看所有，其它的用户只能看到自己创建的文章
+        user = self.request.user
+
+        # 获取用户的分类的文章
+        if user.is_superuser:
+            return Article.objects.all()
+        else:
+            groups = user.group_set.all().union(user.owner_group_set.all())
+            groups_ids = list(groups.values_list("id", flat=True))
+            queryset = Article.objects.filter(group__in=groups_ids).all()
+            return queryset
 
     def list(self, request, *args, **kwargs):
         return super().list(request, args, kwargs)

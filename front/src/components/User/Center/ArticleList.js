@@ -124,7 +124,7 @@ export const LatestArticlesList = (props) => {
 
     return (
         <div className="articles">
-            <div className="tags-list">
+            <div className="tags-list border-bottom">
                 {/* <div className="title">工作区：</div> */}
                 <div className="list">
                     {groupsTagList}
