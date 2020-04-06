@@ -40,7 +40,7 @@ class ArticleModelSerializer(serializers.ModelSerializer):
         model = Article
         fields = (
             "id", "title", "group", "icon", "description", "cover", 
-            "user", "parent", "infovalues", "time_added",
+            "user", "parent", "infovalues", "time_added", "time_updated",
             "content", "order", "level", "is_active"
         )
 
@@ -88,6 +88,7 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
     """
 
     parent = ArticleParentInfoSerializer(read_only=True, required=False)
+    user = serializers.SlugRelatedField(read_only=True, required=False, slug_field="username")
 
     def validate(self, attrs):
         # 设置user
@@ -114,7 +115,7 @@ class ArticleDetailSerializer(serializers.ModelSerializer):
         fields = (
             "id", "title", "group", "icon", "description", "cover", 
             "user", "parent", "infovalues",
-            "content", "order", "level", "is_active"
+            "content", "order", "level", "is_active", "time_added", "time_updated"
         )
 
 

@@ -12,6 +12,7 @@ import {
     message,
 } from "antd";
 import ReactMarkdown from "react-markdown";
+import moment from "moment";
 // import htmlParser from 'react-markdown/plugins/html-parser'
 
 import EditableContent from "../../Base/EditableContent";
@@ -43,6 +44,7 @@ export const ArticleDetail = function(props){
     const [showDescription, setShowDescription] = useState(false);
     const [showEditCover, setShowEditCover] = useState(false);
     const [showDiscussion, setShowDiscussion] = useState(false);
+    const [showCover, setShowCover] = useState(false);
     // 是否显示编辑的对话框
     const [showEditorModal, setShowEditorModal] = useState(false);
     // 判断是否加载完毕了
@@ -346,7 +348,7 @@ export const ArticleDetail = function(props){
                 <div className="title">
                     {/* 显示描述等的开关 */}
                     <div className="toogle">
-                        <span className="button" 
+                        <span className={showDescription ? "button active" : "button"} 
                           onClick={() => {setShowDescription(prevState => !prevState)}}
                         >
                             <Icon type="info-circle"/>
@@ -360,11 +362,18 @@ export const ArticleDetail = function(props){
                             { canEditor && (data.cover ? "修改封面" : "添加封面")}
                         </span>
 
-                        <span className="button" 
+                        <span className={showDiscussion ? "button active" : "button"}
                           onClick={() => {setShowDiscussion(prevState => !prevState)}}
                         >
                             <Icon type="commenting"/>
                             {showDiscussion ? "隐藏讨论" : "显示讨论"}
+                        </span>
+
+                        <span className={showCover ? "button active" : "button"} 
+                          onClick={() => {setShowCover(prevState => !prevState)}}
+                        >
+                            <Icon type="image"/>
+                            {showCover ? "隐藏封面" : "显示封面"}
                         </span>
                     </div>
 
@@ -380,6 +389,7 @@ export const ArticleDetail = function(props){
                                 content={data.title ? data.title : "无标题"}
                                 contentType="text" // 类型是html或者text
                                 tagName="h1"
+                                spellCheck="false" // html5的单词拼写检查
                                 //   onChange={e => console.log(e.target.text)}
                                 //  当内容更新了之后，我们需要做点操作
                                 handleContentUpdated={data => patchUpdateArticle(articleID, {title: data.text}, handleRefreshNav)}
@@ -392,15 +402,38 @@ export const ArticleDetail = function(props){
                     
                 </div>
                 
+                {/* 文章的元数据 */}
+                <div className="metadata">
+                    <div className="infos">
+                        <div className="item">
+                            {/* 用户: */}
+                            {data.user}
+                        </div>
+                        <div className="item">
+                            发布于:{data.time_added && moment(data.time_added, "YYYY-MM-DD HH:mm:ss").format("YYYY-MM-DD")} · {data.time_added && moment(data.time_added, "YYYY-MM-DD HH:mm:ss").fromNow()}
+                        </div>
+                        {
+                            data.time_updated && (
+                                <div className="item">
+                                    更新于:{data.time_updated && moment(data.time_updated, "YYYY-MM-DD HH:mm:ss").fromNow()}
+                                </div>
+                            )
+                            
+                        }
+                    </div>
+                </div>
+                
                 {/* 显示封面 */}
                 {
-                    data.cover && (
+                    // 有封面 而且设置了显示封面
+                    (data.cover && showCover) && (
                         <div className="cover">
                             <img src={data.cover} alt="封面" />
                         </div>
                     )
                 }
 
+                {/* 文章描述 */}
                 {
                     // 需要显示描述，才显示描述部分
                     showDescription && (
@@ -421,8 +454,8 @@ export const ArticleDetail = function(props){
                         </div>
                     )
                 }
-                
             </header>
+            {/* 文章header部分结束 */}
             
             {/* 文章内容 */}
             <div className="content">

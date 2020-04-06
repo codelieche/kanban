@@ -1,8 +1,8 @@
 /**
  * 上传图片的块
  * 有三种方式上传图片
- * 1. 选择本地的图片
- * 2. 选择链接
+ * 1. 选择本地的图片: uploadImage
+ * 2. 选择链接: useLink
  * 3. 选择系统中的图片
  * 4. 网络搜索图片
  */
@@ -46,10 +46,14 @@ export const UploadImageTabs = (props) => {
     }, [])
 
     useEffect(() => {
-        if(props.activeTabKey && props.activeTabKey !== activeTabKey){
+        // 当组件初始化的时候传递了activeTabKey就使用它
+        // 后续props.activeTabkey更新了，也修改它
+        if(props.activeTabKey && props.activeTabKey 
+            // 后续如果添加新的tab了，这里记得添加一下
+            && ["uploadImage", "useLink"].indexOf(props.activeTabKey) >= 0){
             setActiveTabKey(props.activeTabKey);
         }
-    }, [activeTabKey, props.activeTabKey])
+    }, [props.activeTabKey])
 
     // 输入图片链接
     const handleInputImageUrl = useCallback((e) => {
