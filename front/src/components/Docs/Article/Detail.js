@@ -52,7 +52,10 @@ export const ArticleDetail = function(props){
     // 获取当前分类的权限
     // const [groupPermissions, setGroupPermissions] = useState([]);
     const [canEditor, setCanEditor] = useState(false);
+    // 图片中的url
+    const [contentImageUrls, setContentImageUrls] = useState([]);
 
+    // 获取文章数据
     const fetchDetailData = useCallback(id => {
         if(! id){
             return
@@ -211,6 +214,33 @@ export const ArticleDetail = function(props){
         }
     }, [groupPermissions])
 
+    // 能编辑的时候，就提取一下文章的图片: 修改文章的cover需要用到
+    useEffect(() => {
+        if(canEditor){
+            // 从文章中提取图片
+            let imagePattern = /!\[.*?\]\((.*?)\)/g;
+            if(!!data.content){
+                let imageUrls = [];
+                if( data.cover ){
+                    imageUrls.push(data.cover);
+                }
+                let i = 0;
+                let result = imagePattern.exec(data.content);
+                while(result !== null && i < 20){
+                    i++;
+                    // console.log(result);
+                    let imageUrl = result[1];
+                    if( imageUrls.indexOf(imageUrl) < 0 && imageUrl){
+                        imageUrls.push(result[1]);
+                    }
+                    result = imagePattern.exec(data.content);
+                }
+                // console.log(imageUrls);
+                setContentImageUrls(imageUrls);
+            }
+        }
+    }, [canEditor, data.content, data.cover])
+
     const afterCoverUploadHandle = useCallback((imageUrl) => {
         // 回调函数
         const callback = () => {
@@ -298,8 +328,6 @@ export const ArticleDetail = function(props){
     //     isValidNode: node => node.type !== 'script',
     //     processingInstructions: [/* ... */]
     // })
-
-    
 
     return (
         <article>
@@ -405,17 +433,6 @@ export const ArticleDetail = function(props){
                         // escapeHtml={false}
                         // astPlugins={[htmlParser()]}
                     />
-                    {/* 有编辑权限，就显示编辑按钮 */}
-                    {/* {canEditor ? (
-                        <div className="editor-button">
-                            <Button type="primary" 
-                            size="small"
-                            disabled={showEditorModal}
-                            icon={<Icon type="edit"/>}
-                            onClick={handleEditorButtonClick}>编辑</Button>
-                        </div>
-                    ): null} */}
-                   
                 </section>
 
                 {/* 文章评论 */}
@@ -445,7 +462,6 @@ export const ArticleDetail = function(props){
             
             {/* 文章底部内容 */}
             <footer>
-
             </footer>
 
             {/* 文章编辑的对话框 */}
@@ -468,12 +484,13 @@ export const ArticleDetail = function(props){
                 (canEditor && showEditCover) && (
                     <UploadImageTabsModal 
                       visible={showEditCover}
+                      activeTabKey={contentImageUrls.length > 0 ? "useLink" : "uploadImage"}
                       afterUploadHandle={afterCoverUploadHandle}
                       handleAfterClose={() => setShowEditCover(false)}
+                      imageUrls={contentImageUrls}
                     />
                 )
             }
-            
         </article>
     );
 }

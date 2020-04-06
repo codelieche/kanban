@@ -17,6 +17,7 @@ import {
     Modal
 } from "antd";
 
+import Icon from "../Base/Icon";
 import fetchApi from "../Utils/fetchApi";
 import UploadImageItem from "./UplaodImageItem"
 
@@ -45,8 +46,10 @@ export const UploadImageTabs = (props) => {
     }, [])
 
     useEffect(() => {
-        
-    }, [])
+        if(props.activeTabKey && props.activeTabKey !== activeTabKey){
+            setActiveTabKey(props.activeTabKey);
+        }
+    }, [activeTabKey, props.activeTabKey])
 
     // 输入图片链接
     const handleInputImageUrl = useCallback((e) => {
@@ -149,10 +152,30 @@ export const UploadImageTabs = (props) => {
             submitDisable = false;
         }
     }
+    // 检查下是否传递了imageUrls
+    const imageUrlChoicesElements = useMemo(() => {
+        if(props.imageUrls && Array.isArray(props.imageUrls)){
+            return props.imageUrls.map((item, index) => {
+                return (
+                    <div className={imageUrl === item ? "image-item active" : "image-item" }
+                       key={index} onClick={(e) => {e.stopPropagation(); setImageUrl(item)}}>
+                        <img src={item} alt="图片" />
+                        <div className="status">
+                            <Icon type="check" />
+                        </div>
+                    </div>
+                );
+            })
+        }else{
+            return null;
+        }
+    }, [imageUrl, props.imageUrls]);
 
     return (
         <div className="upload-image-tabs">
-            <Tabs defaultActiveKey={activeTabKey} onChange={onTabChange}>
+            <Tabs 
+            //   defaultActiveKey={activeTabKey} 
+              activeKey={activeTabKey} onChange={onTabChange}>
                 <Tabs.TabPane tab="上传图片" key="uploadImage">
                     <div className="upload">
                         <UploadImageItem
@@ -169,7 +192,12 @@ export const UploadImageTabs = (props) => {
                         <div className="input-url">
                             <Input placeholder="输入图片地址" 
                             allowClear={true}
+                            value={imageUrl}
                             onChange={handleInputImageUrl} />
+                        </div>
+                        {/* 图片的选项 */}
+                        <div className="image-choices">
+                            {imageUrlChoicesElements}
                         </div>
                             { 
                                 activeTabKey === "useLink" && imageUrl && checkImageUrlPattern.test(imageUrl) &&  (
@@ -225,9 +253,11 @@ export const UploadImageTabsModal = (props) => {
 // 属性控制
 UploadImageTabsModal.propTypes = {
     visible: PropTypes.bool.isRequired,
+    activeTabKey: PropTypes.string,                 // 激活的TabKey
     handleAfterClose: PropTypes.func.isRequired,
     afterUploadHandle: PropTypes.func.isRequired,  // 上传图片后的处理函数
-    disableLink: PropTypes.bool,      // 隐藏通过连接上传
+    disableLink: PropTypes.bool,                   // 隐藏通过连接上传
+    imageUrls: PropTypes.arrayOf(PropTypes.string) // 传递的图片链接数组
 }
 
 export default UploadImageTabs;
