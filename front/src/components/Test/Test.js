@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button } from "antd";
+import { Button, message } from "antd";
 
 // import MyEditor from "../Editor";
 // import { CodePrismDemo } from "../Editor/Element/Code";
@@ -8,6 +8,7 @@ import UplaodImageItem from  "../Page/UplaodImageItem"
 import { UploadImageTabsModal, UploadImageTabs } from "../Page/UploadImage";
 import CopyIcon from "../Page/Copy";
 import BaseForm from "../Base/Forms/BaseForm";
+import BaseFormModal from "../Page/BaseForm";
 
 const baseFormFieds = [
     {
@@ -88,6 +89,7 @@ export class TestPage extends React.Component{
 export function TestPageFunc() {
     // console.log(React)
     const [modalVisible, setModalVisible] = useState(false)
+    const [ showBaseFormModal, setShowBaseFormModal] = useState(false);
 
     const [fileListData, setFileListData] = useState([]);
 
@@ -141,6 +143,16 @@ export function TestPageFunc() {
                   buttonName="提交基础表单"
                   handleSubmit={(values) => {console.log(values)}}
                 />
+
+                {/* 点击弹出基础表单 */}
+                <Button type="primary" onClick={() => setShowBaseFormModal(true)}>显示表单</Button>
+                    <BaseFormModal name="testBaseFormModal" 
+                    title="测试基础表单Modal"
+                    visible={showBaseFormModal}
+                    data={{id: 10}}
+                    handleAfterClose={e => {setShowBaseFormModal(false)}}
+                    handleSubmit={values => {setShowBaseFormModal(false); console.log(values); message.success(JSON.stringify(values))}}
+                    fields={baseFormFieds}/>
             </div>
             
             

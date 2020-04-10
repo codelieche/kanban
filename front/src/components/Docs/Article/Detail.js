@@ -27,6 +27,7 @@ import LoadingPage from "../../Page/Loading";
 import { CopyIcon, copyTextFunc } from "../../Page/Copy";
 // 上传文章图片
 import { UploadImageTabsModal } from "../../Page/UploadImage";
+import { BaseFormModel } from "../../Page/BaseForm";
 // 文章评论
 import ArticleDiscussions from "./Discussions";
 
@@ -45,6 +46,7 @@ export const ArticleDetail = function(props){
     const [showEditCover, setShowEditCover] = useState(false);
     const [showDiscussion, setShowDiscussion] = useState(false);
     const [showCover, setShowCover] = useState(false);
+    const [showAddTagModal, setShowAddTagModal] = useState(false);  // 添加标签
     // 是否显示编辑的对话框
     const [showEditorModal, setShowEditorModal] = useState(false);
     // 判断是否加载完毕了
@@ -293,6 +295,92 @@ export const ArticleDetail = function(props){
         );
     }, [handleEditorButtonClick, data.content, copyArticleContentHtml])
 
+    // 添加标签的字段
+    const addTagFormFields = useMemo(() => {
+        return [
+            {
+                type: "input",
+                name: "tag",
+                label: "标签",
+                required: true,
+                disabled: true,
+                rules: [
+                    {
+                        required: true,
+                        message: "请选择标签！"
+                    }
+                ]
+            },
+            {
+                type: "input",
+                name: "value",
+                label: "标签值",
+                required: true,
+                rules: [
+                    {
+                        required: true,
+                        message: "请输入标签值！"
+                    }
+                ]
+            },
+            {
+                type: "input",
+                name: "object_id",
+                label: "对象ID",
+                disabled: true,
+                // hiddle: true,
+                rules: [
+                    {
+                        required: true,
+                        message: "请输入对象的ID"
+                    }
+                ]
+            },
+            {
+                type: "input",
+                name: "app_label",
+                label: "App",
+                disabled: true,
+                hiddle: true,
+            },
+            {
+                type: "input",
+                name: "model",
+                label: "Model",
+                disabled: true,
+                hiddle: true,
+            }
+        ]
+    }, [])
+
+    // 标签关闭
+    const handleAddTagModalAfterClose = useCallback(e => {
+        setShowAddTagModal(false);
+    }, []);
+
+    // 添加标签操作
+    const handleAddTagModealSubmit = useCallback((values) => {
+        // console.log(values);
+        let url = "/api/v1/tags/objecttag/create";
+        fetchApi.Post(url, {}, {data: values})
+          .then(responseData => {
+              setShowAddTagModal(false);
+              if(responseData.id > 0){
+                  message.success("添加标签成功", 3);
+              }else{
+                message.warn(`添加标签失败：${JSON.stringify(responseData)}`, 3);
+              }
+          })
+            .catch(err => {
+                if(err.data){
+                    message.error(`添加标签失败：${err.data}`);
+                }else{
+                    message.warn("添加标签出错！");
+                }
+                setShowAddTagModal(false);
+            })
+    }, [])
+
     // 判断是否加载完毕
     if(!loaded){
         return <LoadingPage size="large"/>
@@ -374,6 +462,13 @@ export const ArticleDetail = function(props){
                         >
                             <Icon type="image"/>
                             {showCover ? "隐藏封面" : "显示封面"}
+                        </span>
+
+                        <span className={showAddTagModal ? "button active" : "button"}
+                          onClick={() => {setShowAddTagModal(prevState => !prevState)}}
+                        >
+                            <Icon type="tag"/>
+                            { canEditor && "添加标签"}
                         </span>
                     </div>
 
@@ -524,6 +619,16 @@ export const ArticleDetail = function(props){
                     />
                 )
             }
+
+            {/* 添加标签的表单 */}
+            <BaseFormModel
+              title="添加标签"
+              visible={showAddTagModal}
+              fields={addTagFormFields}
+              data={{object_id: articleID, tag: "tag", app_label: "docs", model: "article", value: null}}
+              handleAfterClose={handleAddTagModalAfterClose}
+              handleSubmit={handleAddTagModealSubmit}
+            />
         </article>
     );
 }
