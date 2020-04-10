@@ -7,7 +7,68 @@ import ResizeDemo from "./demo/resizeable";
 import UplaodImageItem from  "../Page/UplaodImageItem"
 import { UploadImageTabsModal, UploadImageTabs } from "../Page/UploadImage";
 import CopyIcon from "../Page/Copy";
+import BaseForm from "../Base/Forms/BaseForm";
 
+const baseFormFieds = [
+    {
+        type: "input",
+        label: "ID",
+        required: true,
+        name: "id",
+        hiddle: true,
+        placeholder: "请输入ID",
+        help: "请输入ID",
+        disabled: true,
+        rules: [
+            {
+                required: true,
+                message: "请输入ID"
+            }
+        ]
+
+    },
+    {
+        type: "input",
+        label: "名字",
+        required: true,
+        name: "name",
+        placeholder: "请输入名字",
+        help: "请输入用户名",
+        rules: [
+            {
+                required: true,
+                message: "请输入名字"
+            }
+        ]
+    },
+    {
+        type: "radio",
+        label: "状态",
+        name: "active",
+        help: "请输入状态",
+        rules: [
+            {
+                required: true,
+                message: "请选择状态"
+            }
+        ],
+        choices: [
+            {
+                text: "开启",
+                value: true,
+            },
+            {
+                text: "禁用",
+                value: false
+            },
+            {
+                text: "不设置",
+                value: "none"
+            }
+        ]
+    
+    }
+]
 
 export class TestPage extends React.Component{
     constructor(props){
@@ -70,6 +131,16 @@ export function TestPageFunc() {
                 <CopyIcon title="图片链接" content="This Is For Test" />
                 <CopyIcon title="图片链接" content="This Is For Test2" className="copy" />
                 <CopyIcon title="图片链接" content="This Is For Test3" className="copy3" text="复制" />
+            </div>
+            {/* 动态Form */}
+            <div>
+                <BaseForm 
+                  fields={baseFormFieds}
+                  data={{id: 10, name: "This is For Test", active: true}}
+                //   data={{name: "This is For Test", active: true}}
+                  buttonName="提交基础表单"
+                  handleSubmit={(values) => {console.log(values)}}
+                />
             </div>
             
             
