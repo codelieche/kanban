@@ -9,6 +9,7 @@ import {
     Button,
     Result,
     Menu, Dropdown,
+    Tag,
     message,
 } from "antd";
 import ReactMarkdown from "react-markdown";
@@ -58,6 +59,8 @@ export const ArticleDetail = function(props){
     const [canEditor, setCanEditor] = useState(false);
     // 图片中的url
     const [contentImageUrls, setContentImageUrls] = useState([]);
+    // 文章的标签
+    const [articleTags, setArticleTags] = useState([]);
 
     // 获取文章数据
     const fetchDetailData = useCallback(id => {
@@ -129,16 +132,38 @@ export const ArticleDetail = function(props){
             });
     }, [currentArticleGroupID, setCurrentArticleGroupID, setNavData])
 
+    // 获取文章的标签
+    const fetchArticleTagsData = useCallback((articleID, page=1) => {
+        // 连接
+        let url = `/api/v1/tags/objecttag/list?app_label=docs&model=article&object_id=${articleID}&page=${page}`;
+        // 发起请求
+        fetchApi.Get(url, {}, {})
+          .then(responseData => {
+              let data = responseData.results;
+              if(Array.isArray(data)){
+                  setArticleTags(data);
+              }else{
+                  // 获取文章标签出错啦
+              }
+          })
+            .catch(err => {
+                console.log(err);
+            })
+
+
+    }, [])
+
     useEffect(() => {
         // let ac = new AbortController();
         if(props.match.params.id !== articleID || (data.id && props.match.params.id !== data.id.toString())){
             // setArticleID(props.match.params.id);
             // setData({});  // 把文章内容置空
             setLoaded(false);
-            fetchDetailData(props.match.params.id);
+            fetchDetailData(props.match.params.id);      // 获取文章详情数据
+            fetchArticleTagsData(props.match.params.id, 1); // 获取文章的标签
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.match.params.id, fetchDetailData])
+    }, [props.match.params.id, fetchDetailData, fetchArticleTagsData])
 
     // 文章底部的子文章列表
     let childrenListElement = useMemo(() => {
@@ -367,6 +392,7 @@ export const ArticleDetail = function(props){
               setShowAddTagModal(false);
               if(responseData.id > 0){
                   message.success("添加标签成功", 3);
+                  fetchArticleTagsData(articleID, 1);
               }else{
                 message.warn(`添加标签失败：${JSON.stringify(responseData)}`, 3);
               }
@@ -379,7 +405,20 @@ export const ArticleDetail = function(props){
                 }
                 setShowAddTagModal(false);
             })
-    }, [])
+    }, [articleID, fetchArticleTagsData]);
+
+    // 文章标签列表
+    const articleTagsElements = useMemo(() => {
+        if(articleTags && Array.isArray(articleTags)){
+            return articleTags.map((item, index) => {
+                return (
+                    <Tag key={item.id} color="blue">{item.value}</Tag>
+                );
+            })
+        }else{
+            return null;
+        }     
+    }, [articleTags])
 
     // 判断是否加载完毕
     if(!loaded){
@@ -499,6 +538,10 @@ export const ArticleDetail = function(props){
                 
                 {/* 文章的元数据 */}
                 <div className="metadata">
+                    <div className="tags">
+                        {articleTagsElements}
+                    </div>
+
                     <div className="infos">
                         <div className="item">
                             {/* 用户: */}
