@@ -252,7 +252,24 @@
         .metadata {
             .infos, .tags {
                 display: inline-block;
-               
+            }
+
+            .tags {  // 标签
+                .ant-tag {
+                    cursor: pointer;
+                    transition: display 0.3s, width 0.5s;
+                    span[role="img"]{
+                        display: none;   // 标签的关闭按钮，默认不显示，鼠标移上去了才显示
+                        // visibility: hidden;
+                    }
+
+                    &:hover {
+                        span[role="img"]{
+                            // visibility: visible;
+                            display: inline;
+                        } 
+                    }
+                }
             }
 
             .infos {

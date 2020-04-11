@@ -353,7 +353,7 @@ export const ArticleDetail = function(props){
                 name: "object_id",
                 label: "对象ID",
                 disabled: true,
-                // hiddle: true,
+                hiddle: true,
                 rules: [
                     {
                         required: true,
@@ -407,18 +407,40 @@ export const ArticleDetail = function(props){
             })
     }, [articleID, fetchArticleTagsData]);
 
+    // 删除标签
+    const deleteArticleObjectTag = useCallback((objectTagID) => {
+        let url = `/api/v1/tags/objecttag/${objectTagID}`;
+        // 发起删除请求
+        fetchApi.Delete(url, {}, {})
+          .then(responseData => {
+              if(responseData.status === 204){
+                  message.info("删除标签成功");
+                  fetchArticleTagsData(articleID, 1);
+              }else{
+                  console.log(responseData);
+                  message.warn(JSON.stringify(responseData.data));
+              }
+          })
+            .catch(err => {
+                console.log(err);
+            })
+    }, [articleID, fetchArticleTagsData])
+
     // 文章标签列表
     const articleTagsElements = useMemo(() => {
         if(articleTags && Array.isArray(articleTags)){
             return articleTags.map((item, index) => {
                 return (
-                    <Tag key={item.id} color="blue">{item.value}</Tag>
+                    <Tag key={item.id}
+                      closable={canEditor}
+                      onClose={e => {e.stopPropagation(); deleteArticleObjectTag(item.id);}}
+                      color="blue">{item.value}</Tag>
                 );
             })
         }else{
             return null;
         }     
-    }, [articleTags])
+    }, [articleTags, canEditor, deleteArticleObjectTag])
 
     // 判断是否加载完毕
     if(!loaded){

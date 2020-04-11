@@ -92,3 +92,12 @@ class ObjectTagValueListApiView(generics.ListAPIView):
     def get_queryset(self):
         queryset = ObjectTag.objects.filter(**self.kwargs).order_by("id")
         return queryset
+
+
+class ObjectTagDetailApiView(generics.RetrieveDestroyAPIView):
+    """
+    对象标签的详情
+    """
+    queryset = ObjectTag.objects.all()
+    permission_classes = (IsAuthenticated,)
+    serializer_class = ObjectTagModelSerializer

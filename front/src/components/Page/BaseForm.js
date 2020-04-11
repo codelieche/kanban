@@ -17,7 +17,8 @@ export const BaseFormModel = (props) => {
 
     // 确认或者关闭的时候
     const handleOnCloseOrOk = useCallback(e => {
-        console.log(e);
+        // console.log(e);
+        e.stopPropagation();
         if(handleAfterClose){
             handleAfterClose();
         }
