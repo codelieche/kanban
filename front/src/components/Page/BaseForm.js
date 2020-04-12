@@ -11,7 +11,7 @@ import {
     Modal
 } from "antd";
 
-export const BaseFormModel = (props) => {
+export const BaseFormModal = (props) => {
     // 状态
     const {visible, title, handleAfterClose, ...restProps} = props;
 
@@ -38,7 +38,7 @@ export const BaseFormModel = (props) => {
     );
 }
 
-BaseFormModel.propTypes = {
+BaseFormModal.propTypes = {
     title: PropTypes.string,
     visible: PropTypes.bool.isRequired,
     handleAfterClose: PropTypes.func.isRequired,
@@ -50,4 +50,4 @@ export {
     BaseForm,
 }
 
-export default BaseFormModel;
+export default BaseFormModal;

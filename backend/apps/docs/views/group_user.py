@@ -26,7 +26,12 @@ class GroupUserAddApiView(generics.CreateAPIView):
         # 1. 从请求中获取分类和用户
         user = self.request.user
         group_id = self.request.data.get("group")
-        users_username = self.request.data.getlist("user")
+        if self.request.content_type.find("form-data") > 0:
+            users_username = self.request.data.getlist("user")
+        else:
+            # 如果传递的是json，则无getlist方法的
+            users_username = self.request.data.get("user")
+        
         permission = self.request.data.get("permission", "R")
 
         # 2. 获取分类对象
@@ -49,13 +54,17 @@ class GroupUserAddApiView(generics.CreateAPIView):
         
         # 4. 执行添加用户操作
         # 4-1: 获取用户
+        if isinstance(users_username, str):
+            # 如果users_username是字符，就用逗号分隔一下
+            users_username = users.username.split(",")
+
         users = User.objects.filter(username__in=users_username)
 
         results = []
         for u in users:
             instance, created = GroupUser.objects.get_or_create(group=group, user=u)
             # print(instance, created)
-            if instance.permission == "R" and instance.permission != permission:
+            if instance.permission != permission:
                 instance.permission = permission
                 instance.save()
             # 判断是否是删除的

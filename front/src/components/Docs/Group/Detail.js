@@ -2,7 +2,7 @@
  * 分组详情页
  * 采用Hook方式：不编写class的情况下使用state，以及其它React特性。
  */
-import React, {useState, useEffect, useContext, useMemo} from "react";
+import React, {useState, useCallback, useEffect, useContext, useMemo} from "react";
 import { Link } from "react-router-dom";
 import {
     Row,
@@ -18,6 +18,7 @@ import fetchApi from "../../Utils/fetchApi";
 import LoadingPage from "../../Page/Loading";
 
 import BaseTable from "../../Page/BaseTable";
+import { AddGroupUserPermissionButton, delteGroupUserPermission } from "../Tools/Permissions";
 
 // 分组详情页
 function CategoryDetail(props) {
@@ -29,8 +30,11 @@ function CategoryDetail(props) {
     // 获取context
     const { setNavData } = useContext(GlobalContext);
 
+    // 分组的权限
+    const [permissions, setPermissions] = useState([]);
+
     // 获取详情数据
-    const fetchDetailData = (id) => {
+    const fetchDetailData = useCallback((id) => {
         const url = `/api/v1/docs/group/${id}`;
         fetchApi.Get(url)
           .then(data => {
@@ -45,7 +49,7 @@ function CategoryDetail(props) {
                 setLoaded(true);
                 console.log(err)
             });
-    }
+    }, [])
 
     // 相当于 componentDidMount和componentDidUpdate
     // 特别小心，一不小心就陷入循环了
@@ -59,7 +63,7 @@ function CategoryDetail(props) {
             idState(paramID);
             fetchDetailData(props.match.params.id);
         }
-    }, [props, id]);
+    }, [props, id, fetchDetailData]);
 
     // 设置导航
     useEffect(() => {
@@ -83,11 +87,18 @@ function CategoryDetail(props) {
 
     // 用户权限
     const userPermissionElements = useMemo(() => {
+        let canDelete = permissions.indexOf("add_user") >= 0;
+
         if(data.users_permisson && data.users_permisson.length > 0){
             let tagsElements = data.users_permisson.map((item, index) => {
                 // console.log(item, index);
                 return (
-                    <Tag key={item.id} color={ item.is_active ? "blue" : ""}>
+                    <Tag 
+                      key={item.id} 
+                      color={ item.is_active ? "blue" : ""}
+                      closable={canDelete}
+                      onClose={canDelete ? () => delteGroupUserPermission(data.code, item.user, fetchDetailData(data.id)) : null}
+                    >
                         {item.user}
                         <Divider type="vertical" />
                         {item.permission}
@@ -96,15 +107,15 @@ function CategoryDetail(props) {
             });
             // 标签用div包裹起来
             return (
-                <div style={{margin: "3px 0"}}>
+                <span style={{margin: "3px 0", display: "inline-block"}}>
                     {tagsElements}
-                </div>
+                </span>
             )
              
         }else{
             return <span>无用户</span>;
         }
-    }, [data.users_permisson])
+    }, [data.users_permisson, fetchDetailData, data.id, data.code, permissions])
 
     // 分组文章相关的表格
     // params字段:通过url可获取到的字段信息
@@ -241,7 +252,24 @@ function CategoryDetail(props) {
                             </dl>
                             <dl>
                                 <dt>用户</dt>
-                                <dd>{userPermissionElements}</dd>
+                                <dd>
+                                    <div className="tags">
+                                        {userPermissionElements}
+
+                                        {/* data有值的时候我们才显示添加user按钮 */}
+                                        {
+                                            ( data.id > 0 && data.code) && (
+                                                <AddGroupUserPermissionButton 
+                                                    id={data.id} code={data.code}
+                                                    setPermissions={setPermissions}
+                                                    callback={() => fetchDetailData(data.id)}
+                                                />
+                                            )
+                                        }
+                                       
+                                    </div>
+
+                                </dd>
                             </dl>
                             <dl>
                                 <dt>描述</dt>

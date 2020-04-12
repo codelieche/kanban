@@ -28,7 +28,7 @@ import LoadingPage from "../../Page/Loading";
 import { CopyIcon, copyTextFunc } from "../../Page/Copy";
 // 上传文章图片
 import { UploadImageTabsModal } from "../../Page/UploadImage";
-import { BaseFormModel } from "../../Page/BaseForm";
+import { BaseFormModal } from "../../Page/BaseForm";
 // 文章评论
 import ArticleDiscussions from "./Discussions";
 
@@ -61,6 +61,7 @@ export const ArticleDetail = function(props){
     const [contentImageUrls, setContentImageUrls] = useState([]);
     // 文章的标签
     const [articleTags, setArticleTags] = useState([]);
+    // 当前用户所具有的权限
 
     // 获取文章数据
     const fetchDetailData = useCallback(id => {
@@ -686,7 +687,7 @@ export const ArticleDetail = function(props){
             }
 
             {/* 添加标签的表单 */}
-            <BaseFormModel
+            <BaseFormModal
               title="添加标签"
               visible={showAddTagModal}
               fields={addTagFormFields}
