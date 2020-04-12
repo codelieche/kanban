@@ -1,3 +1,36 @@
+
+// 标签列表：文章详情页、图片的modal信息面板
+.tags {  // 标签
+    .ant-tag.tag-plus {
+        background-color: #fff;
+        border-style: dashed;
+    }
+
+    .ant-tag {
+        cursor: pointer;
+        transition: display 0.3s, width 0.5s;
+        span[role="img"]{
+            display: none;   // 标签的关闭按钮，默认不显示，鼠标移上去了才显示
+            // visibility: hidden;
+        }
+
+        &:hover {
+            span[role="img"]{
+                // visibility: visible;
+                display: inline;
+            } 
+        }
+
+        .ant-input.tag-input{ // 添加标签的输入框
+            width: 170px !important;
+            margin-right: 8px;
+            border: 20px;
+            vertical-align: top;
+            border: 1px solid red !important;
+        }
+    }
+}
+
 // docs/images/list
 // 图片瀑布流
 .images-list {
@@ -189,6 +222,9 @@
                     &:hover {
                         color: #232323;
                     }
+                }
+                dd {
+                    max-width: 320px;
                 }
             }
         }

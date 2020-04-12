@@ -4,7 +4,7 @@
 import React, { useState, useMemo, useCallback, useEffect, useContext } from "react";
 
 import {
-    Row, Button, Modal, Divider, message
+    Row, Button, Modal, Divider, Tag, message
 } from "antd";
 
 import Icon from "../../Base/Icon";
@@ -13,10 +13,12 @@ import BasePaginationData from "../../Page/BasePaginationData";
 // 上传文章图片
 import { UploadImageTabsModal } from "../../Page/UploadImage";
 import { GlobalContext } from "../../Base/Context";
+import { fetchObjectTags, deleteObjectTag, AddObjectTag } from "../../Page/Tags";
 
 const ShowImageModal = ({visible, data, afterCloseHandle}) => {
-
+    // 状态
     const [showInfo, setShowInfo] = useState(true);
+    const [ imageTags, setImageTags ] = useState([]);
 
     const handleOnOkOrCancel = useCallback((e) => {
         if(afterCloseHandle){
@@ -38,6 +40,48 @@ const ShowImageModal = ({visible, data, afterCloseHandle}) => {
     const imageUrl = useMemo(() => {
         return data.qiniu ? data.qiniu : data.file;
     }, [data])
+
+    // 获取图片的标签
+    const fetchImageTagsData = useCallback(() => {
+        if(data.id > 0){
+            fetchObjectTags(
+                "docs", "image", data.id, 
+                1, 
+                (tags) => {setImageTags(tags)}
+            )
+        }
+    }, [data.id])
+
+    // 获取标签
+    useEffect(() => {
+        if( data.id && data.id > 0){
+            fetchObjectTags(
+                "docs", "image", data.id, 
+                1, 
+                (tags) => {setImageTags(tags)}
+            )
+        }
+    }, [data.id]);
+
+    // 图片标签
+    const imageTagsElements = useMemo(() => {
+        if(imageTags && Array.isArray(imageTags)){
+            return imageTags.map((item, index) => {
+                const handleOnClose = (e) => {
+                    e.stopPropagation(); 
+                    deleteObjectTag(
+                        item.id, 
+                        fetchImageTagsData
+                    );
+                }
+                return (
+                    <Tag key={item.id} color="blue"
+                    closable={true} onClose={handleOnClose}
+                >{item.value}</Tag>
+                )
+            })
+        }
+    }, [fetchImageTagsData, imageTags])
 
     return (
         <Modal
@@ -84,6 +128,20 @@ const ShowImageModal = ({visible, data, afterCloseHandle}) => {
                         </dd>
                     </dl>
                     )}
+                    <dl>
+                        <dt>标签:</dt>
+                        <dd className="tags">
+                            {imageTagsElements}
+                            {data.id && (
+                                <AddObjectTag 
+                                    tag="tag" 
+                                    appLabel="docs" model="image" objectID={data.id}
+                                    callback={fetchImageTagsData} // 添加标签后的回调函数
+                                />
+                            )}
+                            
+                        </dd>
+                    </dl>
                     
                     {/* 复制图片连接 */}
                     {
@@ -105,6 +163,7 @@ const ShowImageModal = ({visible, data, afterCloseHandle}) => {
                     </dl>
                    
                 </div>
+                {/* 图片信息结束 */}
                 
             </div>
           </Modal>
