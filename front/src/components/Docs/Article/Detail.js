@@ -333,29 +333,33 @@ export const ArticleDetail = function(props){
                 label: "标签",
                 required: true,
                 // disabled: true,
-                placeholder: "标签的Key",
                 help: "标签的key是区分大小写的",
-                allowClear: true,
                 rules: [
                     {
                         required: true,
                         message: "请选择标签！"
                     }
-                ]
+                ],
+                props: { // 组件的属性
+                    allowClear: true,
+                    placeholder: "标签的key",
+                }
             },
             {
                 type: "input",
                 name: "value",
                 label: "标签值",
-                placeholder: "标签的值",
                 required: true,
-                allowClear: true,
                 rules: [
                     {
                         required: true,
                         message: "请输入标签值！"
                     }
-                ]
+                ],
+                props: {
+                    allowClear: true,
+                    placeholder: "标签的值",
+                }
             },
             {
                 type: "input",

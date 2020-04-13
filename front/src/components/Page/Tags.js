@@ -233,7 +233,7 @@ export const ShowObjectTagsDataSource = ({dataSource, canDelete, color}) => {
                 let tagNameElement;
                 if(item.tag !== "tag"){
                     tagNameElement = (
-                        <span style={{color: "#999"}}>
+                        <span className="key">
                             {item.tag} | 
                         </span>
                     )

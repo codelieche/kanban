@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import {
     Row, Col,
     Button,
-    Input, Radio,
+    Input, Radio, Checkbox, Switch, DatePicker,
     Form
 }from "antd";
 
@@ -18,6 +18,7 @@ const BaseFormFieldItem = ({data, formItemLayout}) => {
         if(!Array.isArray(choices)){
             return [];
         }
+
         switch(type){
             case "radio":
                 // 如果value为null和undefined是会报错的
@@ -29,41 +30,82 @@ const BaseFormFieldItem = ({data, formItemLayout}) => {
                     );
                 })
             case "checkbox":
-                return null
+                return choices.map((item, index) => {
+                    return (
+                        <Checkbox value={item.value} key={index}>
+                            {item.text}
+                        </Checkbox>
+                    );
+                });
             default:
                 return null
         }
     }, [])
 
+    let itemLayout = useMemo(() => {
+        return data.layout ? data.layout : formItemLayout;
+    }, [data.layout, formItemLayout])
+
     switch ( data.type ) {
         case "input" :
             return (
-                <Form.Item {...formItemLayout} 
-                  label={data.label} name={data.name}
-                  className={data.hiddle ? "hiddle" : null}
-                  rules={Array.isArray(data.rules) ? data.rules : []}
-                  help={data.help}
+                <Form.Item {...itemLayout} 
+                  label={data.label} name={data.name}                  // 表单左侧的Label
+                  className={data.hiddle ? "hiddle" : null}            // 是否隐藏
+                  rules={Array.isArray(data.rules) ? data.rules : []}  // 字段的规则
+                  help={data.help}                                     // 帮组信息
                 >
                     <Input 
-                      placeholder={data.placeholder} 
                       disabled={data.disabled} 
-                      allowClear={data.allowClear}
+                      {...data.props} // 其它的相关配置对象
                     />
                 </Form.Item>
             )
         case "radio":
             return (
-                <Form.Item {...formItemLayout} 
+                <Form.Item {...itemLayout} 
                   label={data.label} name={data.name}
                   rules={Array.isArray(data.rules) ? data.rules : []}
                 >
-                    <Radio.Group size="small" buttonStyle="solid">
+                    <Radio.Group size="small" buttonStyle="solid" {...data.props}>
                         {/* <Radio.Button value={true}>开启</Radio.Button>
                         <Radio.Button value={false}>禁用</Radio.Button> */}
                         {generateChoicesElements("radio", data.choices)}
                     </Radio.Group>
                 </Form.Item>
             )
+        case "checkbox":
+            return (
+                <Form.Item {...itemLayout}
+                  label={data.label} name={data.name}
+                  rules={Array.isArray(data.rules) ? data.rules : []}
+                >
+                    <Checkbox.Group {...data.props}>
+                        {generateChoicesElements("checkbox", data.choices)}
+                    </Checkbox.Group>
+                  </Form.Item>
+            );
+
+        case "switch":
+            return (
+                <Form.Item {...itemLayout}
+                  label={data.label} name={data.name}
+                  rules={Array.isArray(data.rules) ? data.rules : []}
+                  valuePropName="checked"  // 这个是不一样的哦，valuePropName不是value
+                >
+                    <Switch {...data.props}/>
+                </Form.Item>
+            );
+        case "datepick":
+            return (
+                <Form.Item {...itemLayout}
+                  label={data.label} name={data.name}
+                  rules={Array.isArray(data.rules) ? data.rules : []}
+                >
+                    <DatePicker {...data.props} />
+                </Form.Item>
+            )
+       
         default:
             return null;
     }
@@ -73,13 +115,13 @@ BaseFormFieldItem.propTypes = {
     data: PropTypes.shape({
         name: PropTypes.string.isRequired, // 表单字段的名字
         label: PropTypes.string,           // 表单的label
-        allowClear: PropTypes.bool,        // 是否允许清除
         help: PropTypes.string,            // 帮助信息
         choices: PropTypes.shape({         // 表单字段的选项：raido、checkbox会用到
             text: PropTypes.isRequired,
             value: PropTypes.isRequired,
         }).isArray,
         rules: PropTypes.object.isArray,   // 规则
+        props: PropTypes.object,           // 各组件其它的配置，参考antd进行配置即可
     }).isRequired,
     formItemLayout: PropTypes.object,       // 表单字段的布局
 }

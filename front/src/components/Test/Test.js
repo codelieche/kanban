@@ -3,6 +3,7 @@ import { Button, message } from "antd";
 
 // import MyEditor from "../Editor";
 // import { CodePrismDemo } from "../Editor/Element/Code";
+import Icon from "../Base/Icon";
 import ResizeDemo from "./demo/resizeable";
 import UplaodImageItem from  "../Page/UplaodImageItem"
 import { UploadImageTabsModal, UploadImageTabs } from "../Page/UploadImage";
@@ -40,7 +41,10 @@ const baseFormFieds = [
                 required: true,
                 message: "请输入名字"
             }
-        ]
+        ],
+        props: {
+            addonAfter: <Icon type="eye" />
+        }
     },
     {
         type: "radio",
@@ -67,7 +71,49 @@ const baseFormFieds = [
                 value: "none"
             }
         ]
-    
+    },
+    {
+        type: "checkbox",
+        label: " ",
+        name: "check",
+        rules: [
+            {required: false, message: "请选择"}
+        ],
+        choices: [
+            {text: "Python", value: "python"},
+            {text: "Golang", value: "go"}
+        ],
+        props: {
+            onChange: (values) => console.log(values)
+        },
+        layout: {
+            wrapperCol: { offset: 8, span: 16 },
+        }
+    },
+    {
+        type: "switch",
+        label: "开关",
+        name: "toogle",
+        rules: [
+            {required: true, message: "请选择值"}
+        ],
+        props: {
+            checkedChildren: "开",
+            unCheckedChildren: "关"
+        },
+        
+    },
+    {
+        type: "datepick",
+        label: "开始日期",
+        name: "date_start",
+        rules: [
+            {required: true, message: "请选择开始日期"}
+        ],
+        props: {
+            showTime: true
+        },
+        
     }
 ]
 
