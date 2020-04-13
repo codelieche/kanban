@@ -42,8 +42,13 @@ const BaseFormFieldItem = ({data, formItemLayout}) => {
                   label={data.label} name={data.name}
                   className={data.hiddle ? "hiddle" : null}
                   rules={Array.isArray(data.rules) ? data.rules : []}
+                  help={data.help}
                 >
-                    <Input placeholder={data.placeholder} disabled={data.disabled} />
+                    <Input 
+                      placeholder={data.placeholder} 
+                      disabled={data.disabled} 
+                      allowClear={data.allowClear}
+                    />
                 </Form.Item>
             )
         case "radio":
@@ -66,16 +71,17 @@ const BaseFormFieldItem = ({data, formItemLayout}) => {
 
 BaseFormFieldItem.propTypes = {
     data: PropTypes.shape({
-        name: PropTypes.string.isRequired,
-        label: PropTypes.string,
-        help: PropTypes.string,
-        choices: PropTypes.shape({
+        name: PropTypes.string.isRequired, // 表单字段的名字
+        label: PropTypes.string,           // 表单的label
+        allowClear: PropTypes.bool,        // 是否允许清除
+        help: PropTypes.string,            // 帮助信息
+        choices: PropTypes.shape({         // 表单字段的选项：raido、checkbox会用到
             text: PropTypes.isRequired,
             value: PropTypes.isRequired,
         }).isArray,
-        rules: PropTypes.object.isArray,
+        rules: PropTypes.object.isArray,   // 规则
     }).isRequired,
-    formItemLayout: PropTypes.object,
+    formItemLayout: PropTypes.object,       // 表单字段的布局
 }
 
 export const BaseForm = (props) => {

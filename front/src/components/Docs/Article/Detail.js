@@ -9,7 +9,6 @@ import {
     Button,
     Result,
     Menu, Dropdown,
-    Tag,
     message,
 } from "antd";
 import ReactMarkdown from "react-markdown";
@@ -31,6 +30,8 @@ import { UploadImageTabsModal } from "../../Page/UploadImage";
 import { BaseFormModal } from "../../Page/BaseForm";
 // 文章评论
 import ArticleDiscussions from "./Discussions";
+// 文章对象标签
+import { ShowObjectTags } from "../../Page/Tags";
 
 export const ArticleDetail = function(props){
     // 状态
@@ -60,7 +61,8 @@ export const ArticleDetail = function(props){
     // 图片中的url
     const [contentImageUrls, setContentImageUrls] = useState([]);
     // 文章的标签
-    const [articleTags, setArticleTags] = useState([]);
+    // const [articleTags, setArticleTags] = useState([]);
+    const [ reFreshTagsTimes, setReFreshTagsTimes] = useState(0);
     // 当前用户所具有的权限
 
     // 获取文章数据
@@ -134,25 +136,25 @@ export const ArticleDetail = function(props){
     }, [currentArticleGroupID, setCurrentArticleGroupID, setNavData])
 
     // 获取文章的标签
-    const fetchArticleTagsData = useCallback((articleID, page=1) => {
-        // 连接
-        let url = `/api/v1/tags/objecttag/list?app_label=docs&model=article&object_id=${articleID}&page=${page}`;
-        // 发起请求
-        fetchApi.Get(url, {}, {})
-          .then(responseData => {
-              let data = responseData.results;
-              if(Array.isArray(data)){
-                  setArticleTags(data);
-              }else{
-                  // 获取文章标签出错啦
-              }
-          })
-            .catch(err => {
-                console.log(err);
-            })
+    // const fetchArticleTagsData = useCallback((articleID, page=1) => {
+    //     // 连接
+    //     let url = `/api/v1/tags/objecttag/list?app_label=docs&model=article&object_id=${articleID}&page=${page}`;
+    //     // 发起请求
+    //     fetchApi.Get(url, {}, {})
+    //       .then(responseData => {
+    //           let data = responseData.results;
+    //           if(Array.isArray(data)){
+    //               setArticleTags(data);
+    //           }else{
+    //               // 获取文章标签出错啦
+    //           }
+    //       })
+    //         .catch(err => {
+    //             console.log(err);
+    //         })
 
 
-    }, [])
+    // }, [])
 
     useEffect(() => {
         // let ac = new AbortController();
@@ -161,10 +163,11 @@ export const ArticleDetail = function(props){
             // setData({});  // 把文章内容置空
             setLoaded(false);
             fetchDetailData(props.match.params.id);      // 获取文章详情数据
-            fetchArticleTagsData(props.match.params.id, 1); // 获取文章的标签
+            // fetchArticleTagsData(props.match.params.id, 1); // 获取文章的标签
+            setReFreshTagsTimes(0);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.match.params.id, fetchDetailData, fetchArticleTagsData])
+    }, [props.match.params.id, fetchDetailData])
 
     // 文章底部的子文章列表
     let childrenListElement = useMemo(() => {
@@ -329,7 +332,10 @@ export const ArticleDetail = function(props){
                 name: "tag",
                 label: "标签",
                 required: true,
-                disabled: true,
+                // disabled: true,
+                placeholder: "标签的Key",
+                help: "标签的key是区分大小写的",
+                allowClear: true,
                 rules: [
                     {
                         required: true,
@@ -341,7 +347,9 @@ export const ArticleDetail = function(props){
                 type: "input",
                 name: "value",
                 label: "标签值",
+                placeholder: "标签的值",
                 required: true,
+                allowClear: true,
                 rules: [
                     {
                         required: true,
@@ -393,7 +401,9 @@ export const ArticleDetail = function(props){
               setShowAddTagModal(false);
               if(responseData.id > 0){
                   message.success("添加标签成功", 3);
-                  fetchArticleTagsData(articleID, 1);
+                //   fetchArticleTagsData(articleID, 1);
+                  setReFreshTagsTimes(prevState => prevState + 1); // 触发更新标签
+
               }else{
                 message.warn(`添加标签失败：${JSON.stringify(responseData)}`, 3);
               }
@@ -406,42 +416,58 @@ export const ArticleDetail = function(props){
                 }
                 setShowAddTagModal(false);
             })
-    }, [articleID, fetchArticleTagsData]);
+    }, [setReFreshTagsTimes]);
 
-    // 删除标签
-    const deleteArticleObjectTag = useCallback((objectTagID) => {
-        let url = `/api/v1/tags/objecttag/${objectTagID}`;
-        // 发起删除请求
-        fetchApi.Delete(url, {}, {})
-          .then(responseData => {
-              if(responseData.status === 204){
-                  message.info("删除标签成功");
-                  fetchArticleTagsData(articleID, 1);
-              }else{
-                  console.log(responseData);
-                  message.warn(JSON.stringify(responseData.data));
-              }
-          })
-            .catch(err => {
-                console.log(err);
-            })
-    }, [articleID, fetchArticleTagsData])
-
-    // 文章标签列表
+    // 显示文章的标签
     const articleTagsElements = useMemo(() => {
-        if(articleTags && Array.isArray(articleTags)){
-            return articleTags.map((item, index) => {
-                return (
-                    <Tag key={item.id}
-                      closable={canEditor}
-                      onClose={e => {e.stopPropagation(); deleteArticleObjectTag(item.id);}}
-                      color="blue">{item.value}</Tag>
-                );
-            })
+        // 如果不加props.match.params.id === articleID：当文章页跳转文章页的时候，会获取2次tags
+        if(data.id > 0 && props.match.params.id === data.id.toString()){
+            return (
+                <ShowObjectTags 
+                    appLabel="docs" model="article" 
+                    objectID={data.id} canDelete={canEditor}
+                    reFreshTimes={reFreshTagsTimes}
+                />
+            )
         }else{
             return null;
-        }     
-    }, [articleTags, canEditor, deleteArticleObjectTag])
+        }
+    }, [data.id, props.match.params.id, canEditor, reFreshTagsTimes])
+
+    // 删除标签
+    // const deleteArticleObjectTag = useCallback((objectTagID) => {
+    //     let url = `/api/v1/tags/objecttag/${objectTagID}`;
+    //     // 发起删除请求
+    //     fetchApi.Delete(url, {}, {})
+    //       .then(responseData => {
+    //           if(responseData.status === 204){
+    //               message.info("删除标签成功");
+    //               fetchArticleTagsData(articleID, 1);
+    //           }else{
+    //               console.log(responseData);
+    //               message.warn(JSON.stringify(responseData.data));
+    //           }
+    //       })
+    //         .catch(err => {
+    //             console.log(err);
+    //         })
+    // }, [articleID, fetchArticleTagsData])
+
+    // 文章标签列表
+    // const articleTagsElements = useMemo(() => {
+    //     if(articleTags && Array.isArray(articleTags)){
+    //         return articleTags.map((item, index) => {
+    //             return (
+    //                 <Tag key={item.id}
+    //                   closable={canEditor}
+    //                   onClose={e => {e.stopPropagation(); deleteArticleObjectTag(item.id);}}
+    //                   color="blue">{item.value}</Tag>
+    //             );
+    //         })
+    //     }else{
+    //         return null;
+    //     }     
+    // }, [articleTags, canEditor, deleteArticleObjectTag])
 
     // 判断是否加载完毕
     if(!loaded){
@@ -561,9 +587,9 @@ export const ArticleDetail = function(props){
                 
                 {/* 文章的元数据 */}
                 <div className="metadata">
-                    <div className="tags">
-                        {articleTagsElements}
-                    </div>
+                    {/* 文章标签 */}
+                    {articleTagsElements}
+                    {/* 文章标签结束 */}
 
                     <div className="infos">
                         <div className="item">

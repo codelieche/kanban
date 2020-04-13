@@ -162,7 +162,7 @@ AddObjectTag.propTypes = {
 }
 
 // 展示对象的标签
-export const ShowObjectTags = ({appLabel, model, objectID, showAll, callback, canDelete, color}) => {
+export const ShowObjectTags = ({appLabel, model, objectID, showAll, callback, canDelete, color, reFreshTimes}) => {
     // 状态：对象的标签数组
     const [dataSource, setDataSource] = useState([]);
     const [page, setPage] = useState(1);
@@ -182,36 +182,32 @@ export const ShowObjectTags = ({appLabel, model, objectID, showAll, callback, ca
 
     // 首先是获取对象的标签数组
     useEffect(() => {
+        // console.log("拉取标签")
+        // console.log(appLabel, fetchCallback, model, objectID, page)
         if(appLabel && model && objectID){
             fetchObjectTags(appLabel, model, objectID, page, fetchCallback);
         }
     }, [appLabel, fetchCallback, model, objectID, page])
 
-    // 展示数据
-    const tagsElements = useMemo(() => {
-        if(dataSource && Array.isArray(dataSource)){
-            return dataSource.map((item, index) => {
-                return (
-                    <Tag key={item.id} color={color ? color : "blue"}>
-                        {item.value}
-                    </Tag>
-                );
-            })
-        }else{
-            return null;
+    // 每次reFreshTimes变更就触发刷新操作
+    useEffect(() => {
+        // 执行刷新数据操作
+        // console.log("我刷新数据")
+        if(reFreshTimes > 0){
+            if(appLabel && model && objectID){
+                fetchObjectTags(appLabel, model, objectID, page, fetchCallback);
+            }
         }
-    }, [dataSource, color]);
+    }, [appLabel, fetchCallback, model, objectID, page, reFreshTimes])
 
-    // 返回展示的标签
-    if(tagsElements && tagsElements.length > 0){
-        return (
-            <div className="tags">
-                {tagsElements}
-            </div>
-        )
-    }else{
-        return null;
-    }
+    // 展示数据
+    return (
+        <ShowObjectTagsDataSource 
+          dataSource={dataSource}
+          canDelete={canDelete} 
+          color={color} 
+        />
+    )
 }
 
 // ShowObjectTags的属性控制
@@ -219,10 +215,11 @@ ShowObjectTags.propTypes = {
     appLabel: PropTypes.string.isRequired, // 后端app的名称
     model: PropTypes.string.isRequired,    // 对应的Model
     objectID: PropTypes.number.isRequired, // 对象的主键
-    color: PropTypes.string,    // 颜色
-    showAll: PropTypes.bool,   // 是否显示全部
-    callback: PropTypes.func,  // 获取标签数据后的回调函数
-    canDelete: PropTypes.bool  // 能否删除标签
+    color: PropTypes.string,            // 颜色
+    showAll: PropTypes.bool,            // 是否显示全部
+    callback: PropTypes.func,           // 获取标签数据后的回调函数
+    canDelete: PropTypes.bool,          // 能否删除标签
+    reFreshTimes: PropTypes.number      // 控制刷新
 }
 
 // 展示标签，传递dataSource
@@ -230,17 +227,31 @@ export const ShowObjectTagsDataSource = ({dataSource, canDelete, color}) => {
     // 展示数据
     const tagsElements = useMemo(() => {
         if(dataSource && Array.isArray(dataSource)){
+            
             return dataSource.map((item, index) => {
+                // 如果标签不是tag，那么就显示标签的key
+                let tagNameElement;
+                if(item.tag !== "tag"){
+                    tagNameElement = (
+                        <span style={{color: "#999"}}>
+                            {item.tag} | 
+                        </span>
+                    )
+                }
                 return (
-                    <Tag key={item.id} color={color ? color : "blue"}>
-                        {item.value}
+                    <Tag key={item.id} 
+                      color={color ? color : "blue"}
+                      closable={canDelete}
+                      onClose={() => deleteObjectTag(item.id)}
+                    >
+                        {tagNameElement} {item.value}
                     </Tag>
                 );
             })
         }else{
             return null;
         }
-    }, [dataSource, color]);
+    }, [dataSource, color, canDelete]);
 
      // 返回展示的标签
      if(tagsElements && tagsElements.length > 0){
@@ -255,7 +266,7 @@ export const ShowObjectTagsDataSource = ({dataSource, canDelete, color}) => {
 }
 
 ShowObjectTagsDataSource.propTypes = {
-    dataSource: PropTypes.object.isArray,
+    dataSource: PropTypes.arrayOf(PropTypes.object).isRequired,
     canDelete: PropTypes.bool,
     color: PropTypes.string,
 }

@@ -109,7 +109,8 @@ export const LatestArticlesList = (props) => {
                         </div>
                         <div className="metadata">
                             {/* 显示文章的标签 */}
-                            <ShowObjectTags appLabel="docs" model="article" objectID={item.id} />
+                            <ShowObjectTags 
+                              appLabel="docs" model="article" objectID={item.id}/>
                             <span className="item">时间: {item.time_added}</span>
                             <span className="item">作者: {item.user}</span>
                         </div>
