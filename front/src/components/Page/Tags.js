@@ -2,7 +2,7 @@
  * 标签相关的操作
  */
 import React, {
-    useState, useCallback, useMemo
+    useState, useCallback, useMemo, useEffect
 } from "react";
 import PropTypes from "prop-types";
 
@@ -14,7 +14,6 @@ import {
 
 import Icon from "../Base/Icon";
 import fetchApi from "../Utils/fetchApi";
-
 
 // 获取对象标签
 export const fetchObjectTags = (appLabel, model, objectID, page=1, callback) => {
@@ -153,12 +152,112 @@ export const AddObjectTag = ({tag, appLabel, model, objectID, callback}) => {
     }
 }
 
+// 添加对象标签的属性控制
 AddObjectTag.propTypes = {
     tag: PropTypes.string.isRequired,
     appLabel: PropTypes.string.isRequired,
     model: PropTypes.string.isRequired,
     objectID: PropTypes.number.isRequired,
     callback: PropTypes.func
+}
+
+// 展示对象的标签
+export const ShowObjectTags = ({appLabel, model, objectID, showAll, callback, canDelete, color}) => {
+    // 状态：对象的标签数组
+    const [dataSource, setDataSource] = useState([]);
+    const [page, setPage] = useState(1);
+
+    // 获取数据后的回调函数
+    const fetchCallback = useCallback((tags) => {
+        setDataSource(tags);
+        if(typeof callback === "function"){
+            callback(tags);
+        }
+    }, [callback])
+
+    useEffect(() => {
+        setPage(1);
+    // 下面三项：每一项变更都会触发重置page，一般都是同时变更的
+    }, [appLabel, model, objectID])
+
+    // 首先是获取对象的标签数组
+    useEffect(() => {
+        if(appLabel && model && objectID){
+            fetchObjectTags(appLabel, model, objectID, page, fetchCallback);
+        }
+    }, [appLabel, fetchCallback, model, objectID, page])
+
+    // 展示数据
+    const tagsElements = useMemo(() => {
+        if(dataSource && Array.isArray(dataSource)){
+            return dataSource.map((item, index) => {
+                return (
+                    <Tag key={item.id} color={color ? color : "blue"}>
+                        {item.value}
+                    </Tag>
+                );
+            })
+        }else{
+            return null;
+        }
+    }, [dataSource, color]);
+
+    // 返回展示的标签
+    if(tagsElements && tagsElements.length > 0){
+        return (
+            <div className="tags">
+                {tagsElements}
+            </div>
+        )
+    }else{
+        return null;
+    }
+}
+
+// ShowObjectTags的属性控制
+ShowObjectTags.propTypes = {
+    appLabel: PropTypes.string.isRequired, // 后端app的名称
+    model: PropTypes.string.isRequired,    // 对应的Model
+    objectID: PropTypes.number.isRequired, // 对象的主键
+    color: PropTypes.string,    // 颜色
+    showAll: PropTypes.bool,   // 是否显示全部
+    callback: PropTypes.func,  // 获取标签数据后的回调函数
+    canDelete: PropTypes.bool  // 能否删除标签
+}
+
+// 展示标签，传递dataSource
+export const ShowObjectTagsDataSource = ({dataSource, canDelete, color}) => {
+    // 展示数据
+    const tagsElements = useMemo(() => {
+        if(dataSource && Array.isArray(dataSource)){
+            return dataSource.map((item, index) => {
+                return (
+                    <Tag key={item.id} color={color ? color : "blue"}>
+                        {item.value}
+                    </Tag>
+                );
+            })
+        }else{
+            return null;
+        }
+    }, [dataSource, color]);
+
+     // 返回展示的标签
+     if(tagsElements && tagsElements.length > 0){
+        return (
+            <div className="tags">
+                {tagsElements}
+            </div>
+        )
+    }else{
+        return null;
+    }
+}
+
+ShowObjectTagsDataSource.propTypes = {
+    dataSource: PropTypes.object.isArray,
+    canDelete: PropTypes.bool,
+    color: PropTypes.string,
 }
 
 export default {

@@ -8,6 +8,7 @@ import {
 } from "antd";
 
 import fetchApi from "../../Utils/fetchApi";
+import { ShowObjectTags } from "../../Page/Tags";
 
 export const LatestArticlesList = (props) => {
     // 状态
@@ -107,6 +108,8 @@ export const LatestArticlesList = (props) => {
                             </Link>
                         </div>
                         <div className="metadata">
+                            {/* 显示文章的标签 */}
+                            <ShowObjectTags appLabel="docs" model="article" objectID={item.id} />
                             <span className="item">时间: {item.time_added}</span>
                             <span className="item">作者: {item.user}</span>
                         </div>

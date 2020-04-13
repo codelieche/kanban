@@ -8,6 +8,9 @@ import {
     Skeleton
 } from "antd";
 
+// 文章标签
+import { ShowObjectTags } from "../../Page/Tags";
+
 export const ArticleListInfoItem = ({data}) => {
 
     return (
@@ -27,6 +30,8 @@ export const ArticleListInfoItem = ({data}) => {
                         </Link>
                     </div>
                     <div className="metadata">
+                        {/* 显示文章的标签 */}
+                        <ShowObjectTags appLabel="docs" model="article" objectID={data.id} />
                         <span className="data">时间: {data.time_added}</span>
                         <span className="data">作者: {data.user}</span>
                     </div>
