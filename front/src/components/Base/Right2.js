@@ -13,6 +13,7 @@ import { UserLoginOrInfo } from "./User";
 import Footer from "./Footer";
 // import ArticlePage from "../Docs/Article/Detail";
 import DocsIndex from "../Docs/Index";
+import TagsIndex from "../Tags/index";
 import UserIndex from "../User/Index";
 import TestIndex from "../Test/Index";
 
@@ -69,6 +70,13 @@ function RightContent(props){
                     <Route
                         path="/docs/"
                         component={DocsIndex}
+                        location={props.location}
+                    />
+                    
+                    {/* 标签相关 */}
+                    <Route
+                        path="/tags/"
+                        component={TagsIndex}
                         location={props.location}
                     />
 

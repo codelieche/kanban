@@ -134,7 +134,7 @@ const ShowImageModal = ({visible, data, afterCloseHandle}) => {
                             {imageTagsElements}
                             {data.id && (
                                 <AddObjectTag 
-                                    tag="tag" 
+                                    tagKey="tag"   // 由于key是关键词，用tagKey 
                                     appLabel="docs" model="image" objectID={data.id}
                                     callback={fetchImageTagsData} // 添加标签后的回调函数
                                 />

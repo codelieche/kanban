@@ -42,6 +42,11 @@ function App(props) {
                     path="/docs"
                     render={props => <Home defaultOpenKey="/docs" {...props} />}
                 />
+                {/* 标签相关路由 */}
+                <Route
+                    path="/tags"
+                    render={props => <Home defaultOpenKey="/tags" {...props} />}
+                />
 
                 <Route
                     path="/user"

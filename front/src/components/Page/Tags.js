@@ -62,7 +62,7 @@ export const deleteObjectTag = (objectID, callback) => {
 }
 
 // 添加标签
-export const AddObjectTag = ({tag, appLabel, model, objectID, callback}) => {
+export const AddObjectTag = ({tagKey, appLabel, model, objectID, callback}) => {
     // 状态
     const [inputVisibale, setInputVisibale] = useState(false);
     const [inputValue, setInputValue] = useState("");
@@ -77,8 +77,6 @@ export const AddObjectTag = ({tag, appLabel, model, objectID, callback}) => {
         setInputValue(e.target.value);
     }, [])
 
-    
-
     // fetch创建对象标签
     const handleTagAddSubmit = useCallback((value) => {
         if(!value){
@@ -88,9 +86,9 @@ export const AddObjectTag = ({tag, appLabel, model, objectID, callback}) => {
         let url = "/api/v1/tags/objecttag/create";
         let data = {
             app_label: appLabel,
-            tag: tag,
             model: model,
-            value: value,
+            key: tagKey,           // 标签的键
+            value: value,       // 标签的值
             object_id: objectID,
         }
         // 发起创建请求
@@ -112,7 +110,7 @@ export const AddObjectTag = ({tag, appLabel, model, objectID, callback}) => {
                 }else{
                 }
             })
-    }, [appLabel, callback, model, objectID, tag])
+    }, [appLabel, callback, model, objectID, tagKey])
 
     // tag值的提交
     const handleInputConfirm = useCallback(e => {
@@ -154,7 +152,7 @@ export const AddObjectTag = ({tag, appLabel, model, objectID, callback}) => {
 
 // 添加对象标签的属性控制
 AddObjectTag.propTypes = {
-    tag: PropTypes.string.isRequired,
+    tagKey: PropTypes.string.isRequired,  // 由于key是关键词，用tagKey
     appLabel: PropTypes.string.isRequired,
     model: PropTypes.string.isRequired,
     objectID: PropTypes.number.isRequired,
@@ -229,12 +227,12 @@ export const ShowObjectTagsDataSource = ({dataSource, canDelete, color}) => {
         if(dataSource && Array.isArray(dataSource)){
             
             return dataSource.map((item, index) => {
-                // 如果标签不是tag，那么就显示标签的key
+                // 如果标签的键不是tag，那么就显示标签的key
                 let tagNameElement;
-                if(item.tag !== "tag"){
+                if(item.key !== "tag"){
                     tagNameElement = (
                         <span className="key">
-                            {item.tag} | 
+                            {item.key} | 
                         </span>
                     )
                 }

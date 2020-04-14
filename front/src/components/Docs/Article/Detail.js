@@ -135,27 +135,6 @@ export const ArticleDetail = function(props){
             });
     }, [currentArticleGroupID, setCurrentArticleGroupID, setNavData])
 
-    // 获取文章的标签
-    // const fetchArticleTagsData = useCallback((articleID, page=1) => {
-    //     // 连接
-    //     let url = `/api/v1/tags/objecttag/list?app_label=docs&model=article&object_id=${articleID}&page=${page}`;
-    //     // 发起请求
-    //     fetchApi.Get(url, {}, {})
-    //       .then(responseData => {
-    //           let data = responseData.results;
-    //           if(Array.isArray(data)){
-    //               setArticleTags(data);
-    //           }else{
-    //               // 获取文章标签出错啦
-    //           }
-    //       })
-    //         .catch(err => {
-    //             console.log(err);
-    //         })
-
-
-    // }, [])
-
     useEffect(() => {
         // let ac = new AbortController();
         if(props.match.params.id !== articleID || (data.id && props.match.params.id !== data.id.toString())){
@@ -329,8 +308,8 @@ export const ArticleDetail = function(props){
         return [
             {
                 type: "input",
-                name: "tag",
-                label: "标签",
+                name: "key",
+                label: "标签键",
                 required: true,
                 // disabled: true,
                 help: "标签的key是区分大小写的",
@@ -437,41 +416,6 @@ export const ArticleDetail = function(props){
             return null;
         }
     }, [data.id, props.match.params.id, canEditor, reFreshTagsTimes])
-
-    // 删除标签
-    // const deleteArticleObjectTag = useCallback((objectTagID) => {
-    //     let url = `/api/v1/tags/objecttag/${objectTagID}`;
-    //     // 发起删除请求
-    //     fetchApi.Delete(url, {}, {})
-    //       .then(responseData => {
-    //           if(responseData.status === 204){
-    //               message.info("删除标签成功");
-    //               fetchArticleTagsData(articleID, 1);
-    //           }else{
-    //               console.log(responseData);
-    //               message.warn(JSON.stringify(responseData.data));
-    //           }
-    //       })
-    //         .catch(err => {
-    //             console.log(err);
-    //         })
-    // }, [articleID, fetchArticleTagsData])
-
-    // 文章标签列表
-    // const articleTagsElements = useMemo(() => {
-    //     if(articleTags && Array.isArray(articleTags)){
-    //         return articleTags.map((item, index) => {
-    //             return (
-    //                 <Tag key={item.id}
-    //                   closable={canEditor}
-    //                   onClose={e => {e.stopPropagation(); deleteArticleObjectTag(item.id);}}
-    //                   color="blue">{item.value}</Tag>
-    //             );
-    //         })
-    //     }else{
-    //         return null;
-    //     }     
-    // }, [articleTags, canEditor, deleteArticleObjectTag])
 
     // 判断是否加载完毕
     if(!loaded){
@@ -721,7 +665,7 @@ export const ArticleDetail = function(props){
               title="添加标签"
               visible={showAddTagModal}
               fields={addTagFormFields}
-              data={{object_id: articleID, tag: "tag", app_label: "docs", model: "article", value: null}}
+              data={{object_id: articleID, key: "tag", app_label: "docs", model: "article", value: null}}
               handleAfterClose={handleAddTagModalAfterClose}
               handleSubmit={handleAddTagModealSubmit}
             />
