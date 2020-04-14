@@ -4,35 +4,35 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_204_NO_CONTENT
 from rest_framework.permissions import IsAuthenticated
 
-from tags.models import Tag, TagValue
-from tags.serializers.tags import TagModelSerializer
+from tags.models import TagKey, TagValue
+from tags.serializers.tagkey import TagKeyModelSerializer
 from tags.serializers.tagvalue import TagValueModelSerializer
 
 
-class TagCreateApiView(generics.CreateAPIView):
+class TagKeyCreateApiView(generics.CreateAPIView):
     """
     创建标签
     """
-    queryset = Tag.objects.all()
-    serializer_class = TagModelSerializer
+    queryset = TagKey.objects.all()
+    serializer_class = TagKeyModelSerializer
     permission_classes = (IsAuthenticated,)
 
 
-class TagListApiView(generics.ListAPIView):
+class TagKeyListApiView(generics.ListAPIView):
     """
     标签列表api
     """
-    queryset = Tag.objects.filter(is_deleted=False)
-    serializer_class = TagModelSerializer
+    queryset = TagKey.objects.filter(is_deleted=False)
+    serializer_class = TagKeyModelSerializer
     permission_classes = (IsAuthenticated,)
 
 
-class TagDetailApiView(generics.RetrieveUpdateDestroyAPIView):
+class TagKeyDetailApiView(generics.RetrieveUpdateDestroyAPIView):
     """
     标签详情api
     """
-    queryset = Tag.objects.all()
-    serializer_class = TagModelSerializer
+    queryset = TagKey.objects.all()
+    serializer_class = TagKeyModelSerializer
     permission_classes = (IsAuthenticated, )
 
     def destroy(self, request, *args, **kwargs):
@@ -52,7 +52,6 @@ class TagValuesListApiView(generics.ListAPIView):
     pagination_class = None
 
     def get_queryset(self):
-        tag = Tag.objects.filter(**self.kwargs).first()
-
-        queryset = TagValue.objects.filter(tag=tag)
+        tag_key = TagKey.objects.filter(**self.kwargs).first()
+        queryset = TagValue.objects.filter(key=tag_key)
         return queryset

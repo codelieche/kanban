@@ -1,16 +1,17 @@
 # -*- coding:utf-8 -*-
 from rest_framework import serializers
 
-from tags.models import Tag, TagValue
+from tags.models import TagKey, TagValue
 
 
 class TagValueModelSerializer(serializers.ModelSerializer):
     """
     标签值 Model Serializer
     """
-    tag = serializers.SlugRelatedField(slug_field="tag", read_only=False,
-                                       queryset=Tag.objects.all())
+    # 键值对，区分大小写的
+    key = serializers.SlugRelatedField(slug_field="key", read_only=False,
+                                       queryset=TagKey.objects.all())
 
     class Meta:
         model = TagValue
-        fields = ("id", "tag", "value")
+        fields = ("id", "key", "value")

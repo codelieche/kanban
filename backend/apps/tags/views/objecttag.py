@@ -10,7 +10,7 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
 
-from tags.models import Tag, TagValue, ObjectTag
+from tags.models import TagKey, TagValue, ObjectTag
 from tags.serializers.objecttag import (
     ObjectTagCreateSerializer,
     ObjectTagModelSerializer,
@@ -28,16 +28,16 @@ class ObjectTagCreateApiView(APIView):
         serializer = ObjectTagCreateSerializer(data=request.data)
         if serializer.is_valid():
             validated_data = serializer.validated_data
-            tag = validated_data.get("tag")
-            if not tag:
-                return Response("tag不能为空")
-            tag = tag.strip()
-            tag, created = Tag.objects.get_or_create(tag=tag)
+            key = validated_data.get("key")
+            if not key:
+                return Response("key不能为空")
+            key = key.strip()
+            tag_key, created = TagKey.objects.get_or_create(key=key)
             value = validated_data.get('value')
             if not value:
                 return Response("value不能为空")
-            value = value.strip()
-            tagvalue, created = TagValue.objects.get_or_create(tag=tag, value=value)
+            value = value.strip()  # 去掉左右的空格
+            tagvalue, created = TagValue.objects.get_or_create(key=tag_key, value=value)
             # if not created and tagvalue.is_deleted:
             #     tagvalue.is_deleted = False
             #     tagvalue.save()
@@ -50,7 +50,7 @@ class ObjectTagCreateApiView(APIView):
                                                                 app_label=app_label,
                                                                 model=model,
                                                                 object_id=object_id)
-
+            # 设置创建标签的user
             instance.user = request.user
             if not created and instance.is_deleted:
                 instance.is_deleted = False
