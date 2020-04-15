@@ -14,4 +14,4 @@ class TagValueModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TagValue
-        fields = ("id", "key", "value")
+        fields = ("id", "key", "value", "is_hot", "is_deleted")

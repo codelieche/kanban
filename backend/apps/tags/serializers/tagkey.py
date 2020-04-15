@@ -18,4 +18,4 @@ class TagKeyModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TagKey
-        fields = ('id', 'key', 'name', 'description', 'is_hot')
+        fields = ('id', 'key', 'name', 'description', 'is_hot', "time_added")

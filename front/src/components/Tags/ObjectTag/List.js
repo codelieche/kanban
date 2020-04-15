@@ -1,18 +1,17 @@
 /**
- * 标签Key的列表页
+ * 对象标签的列表页
  */
 import React, {useEffect, useContext, useMemo} from "react";
-import { Link } from "react-router-dom";
+
 import {
     Row
 } from "antd";
 
 import { GlobalContext } from "../../Base/Context";
-
 import Icon from "../../Base/Icon";
 import BaseTable from "../../Page/BaseTable";
 
-export const TagsKeyList = (props) => {
+export const ObjcetTagList = (props) => {
 
     // 全局设置导航的函数
     const { setNavData } = useContext(GlobalContext);
@@ -27,8 +26,8 @@ export const TagsKeyList = (props) => {
                 link: "/"
             },
             {
-                title: "标签Key",
-                link: "/tags/key"
+                title: "标签值",
+                link: "/tags/value"
             },
             {
                 title: "列表"
@@ -39,7 +38,7 @@ export const TagsKeyList = (props) => {
 
     // paramsFields字段：通过url可获取到的字段信息
     const paramsFields = useMemo(() => {
-        return ["page", "search", "ordering", "is_hot", "is_deleted"]
+        return ["page", "search", "ordering", "is_deleted", "tagvalue", "tagvalue__key"]
     }, [])
 
     // 表格的filter字段
@@ -60,29 +59,37 @@ export const TagsKeyList = (props) => {
             {
                 title: "Key",
                 dataIndex: "key",
-                key: "_key",
+                key: "key__key",
                 width: 120,
                 ellipsis: true,
             },
             {
-                title: "Name",
-                dataIndex: "name",
-                key: "name",
+                title: "Value",
+                dataIndex: "value",
+                key: "value",
                 ellipsis: true,
                 width: 120
             },
             {
-                title: "热门",
-                dataIndex: "is_hot",
-                key: "is_hot",
-                width: 100,
-                render: (text, record) => {
-                    return (
-                        <span className="status">
-                            <Icon type={text ? "check" : "close"} />
-                        </span>
-                    )
-                }
+                title: "App Label",
+                dataIndex: "app_label",
+                key: "app_label",
+                ellipsis: true,
+                width: 120
+            },
+            {
+                title: "Model",
+                dataIndex: "model",
+                key: "model",
+                ellipsis: true,
+                width: 120
+            },
+            {
+                title: "Object ID",
+                dataIndex: "object_id",
+                key: "object_id",
+                ellipsis: true,
+                width: 100
             },
             {
                 title: "状态",
@@ -98,28 +105,12 @@ export const TagsKeyList = (props) => {
                 }
             },
             {
-                title: "添加时间",
-                dataIndex: "time_added",
-                key: "time_added",
-                width: 180,
-                ellipsis: true,
-            },
-            {
-                title: "描述",
-                dataIndex: "description",
-                key: "description",
-                width: 280,
-                ellipsis: true,
-            },
-            {
                 title: "操作",
                 key: "action",
                 render: (text, record) => {
                     return (
                         <span>
-                            <Link to={`/tags/value/list?key=${record.id}`}>
-                                <Icon type="tags">Value列表</Icon>
-                            </Link>
+                            ---
                         </span>
                     )
                 }
@@ -131,18 +122,17 @@ export const TagsKeyList = (props) => {
         <div className="content">
             <div className="main">
                 <Row className="title">
-                    <h4>标签Key列表</h4>
+                    <h4>标签值列表</h4>
                 </Row>
-                
-                {/* 显示标签key列表 */}
+                {/* 显示对象标签列表 */}
                 <BaseTable
                     columns={columns}
                     filterColumns={filterColumns} // filter会用到
                     paramsFields={paramsFields}  // url传递的参数
                     location={props.location}
                     history={props.history}
-                    apiUrlPrefix="/api/v1/tags/key/list"
-                    pageUrlPrefix="/tags/key/list"
+                    apiUrlPrefix="/api/v1/tags/objecttag/list"
+                    pageUrlPrefix="/tags/objecttag/list"
                 />
             </div>
             
@@ -150,4 +140,4 @@ export const TagsKeyList = (props) => {
     )
 }
 
-export default TagsKeyList;
+export default ObjcetTagList;

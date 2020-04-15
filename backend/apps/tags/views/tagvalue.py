@@ -21,7 +21,7 @@ class TagValueListApiView(generics.ListAPIView):
 
     # 搜索和过滤
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    filter_fields = ("tag", "tag__tag")
-    search_fields = ("tag__tag", "value")
-    ordering_fields = ("id", "tag")
+    filter_fields = ("key", "key__key", "is_hot", "is_deleted")
+    search_fields = ("key__key", "value")
+    ordering_fields = ("id", "key")
     ordering = ("id",)

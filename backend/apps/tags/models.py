@@ -20,6 +20,7 @@ class TagKey(models.Model):
     description = models.CharField(verbose_name="描述", max_length=256, blank=True,
                                    null=True)
     is_hot = models.BooleanField(verbose_name="热门", default=False, blank=True)
+    time_added = models.DateTimeField(verbose_name="添加时间", auto_now_add=True, blank=True)
     is_deleted = models.BooleanField(verbose_name="删除", default=False, blank=True)
 
     def save(self, force_insert=False, force_update=False, using=None,
@@ -50,14 +51,15 @@ class TagValue(models.Model):
     key = models.ForeignKey(to=TagKey, verbose_name="标签键", related_name="values",
                             on_delete=models.CASCADE)
     value = models.CharField(verbose_name="标签值", max_length=128)
-    # is_deleted = models.BooleanField(verbose_name="删除", default=False, blank=True)
+    is_hot = models.BooleanField(verbose_name="热门", default=False, blank=True)
+    is_deleted = models.BooleanField(verbose_name="删除", default=False, blank=True)
 
     def __str__(self):
         return "{}:{}".format(self.key.key, self.value)
 
     def delete(self, using=None, keep_parents=False):
-        # self.is_deleted = True
-        # self.save()
+        self.is_deleted = True
+        self.save()
         return False
 
     class Meta:
