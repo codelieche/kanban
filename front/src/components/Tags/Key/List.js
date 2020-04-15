@@ -4,7 +4,7 @@
 import React, {useEffect, useContext, useMemo} from "react";
 import { Link } from "react-router-dom";
 import {
-    Row
+    Row, Divider
 } from "antd";
 
 import { GlobalContext } from "../../Base/Context";
@@ -82,7 +82,13 @@ export const TagsKeyList = (props) => {
                             <Icon type={text ? "check" : "close"} />
                         </span>
                     )
-                }
+                },
+                filters: [
+                    { text: "热门", value: "true" },
+                    { text: "普通", value: "false" }
+                  ],
+                  filterMultiple: false,
+                  onFilter: (value, record) => record.is_hot.toString() === value
             },
             {
                 title: "状态",
@@ -108,7 +114,7 @@ export const TagsKeyList = (props) => {
                 title: "描述",
                 dataIndex: "description",
                 key: "description",
-                width: 280,
+                // width: 280,
                 ellipsis: true,
             },
             {
@@ -118,7 +124,11 @@ export const TagsKeyList = (props) => {
                     return (
                         <span>
                             <Link to={`/tags/value/list?key=${record.id}`}>
-                                <Icon type="tags">Value列表</Icon>
+                                <Icon type="tags"></Icon>Value列表
+                            </Link>
+                            <Divider type="vertical" />
+                            <Link to={`/tags/objecttag/list?tagvalue__key_id=${record.id}`}>
+                                <Icon type="link"></Icon>对象列表
                             </Link>
                         </span>
                     )

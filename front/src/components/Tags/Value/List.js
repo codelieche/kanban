@@ -81,7 +81,13 @@ export const TagsValueList = (props) => {
                             <Icon type={text ? "check" : "close"} />
                         </span>
                     )
-                }
+                },
+                filters: [
+                    { text: "热门", value: "true" },
+                    { text: "普通", value: "false" }
+                  ],
+                  filterMultiple: false,
+                  onFilter: (value, record) => record.is_hot.toString() === value
             },
             {
                 title: "状态",
@@ -94,7 +100,13 @@ export const TagsValueList = (props) => {
                             <Icon type={text ? "close" : "check"} />
                         </span>
                     )
-                }
+                },
+                filters: [
+                    { text: "有效", value: "false" },
+                    { text: "禁用", value: "true" }
+                  ],
+                  filterMultiple: false,
+                  onFilter: (value, record) => record.is_deleted.toString() === value
             },
             {
                 title: "操作",

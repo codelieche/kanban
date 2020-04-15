@@ -28,7 +28,7 @@ class ObjectTagModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = ObjectTag
-        fields = ("id", "key", "value", "app_label", "model", "object_id", "user", "time_added")
+        fields = ("id", "key", "value", "app_label", "model", "object_id", "user", "is_deleted", "time_added")
 
 
 class ObjectTagValueSerializer(serializers.ModelSerializer):

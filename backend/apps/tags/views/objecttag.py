@@ -76,9 +76,10 @@ class ObjectTagListApiView(generics.ListAPIView):
 
     # 搜索过滤
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
-    filter_fields = ("app_label", "model", "object_id", "tagvalue")
-    search_fields = ("tagvalue_value",)
-    ordering_fields = ("id", "tagvalue")
+    filter_fields = ("app_label", "model", "object_id", "tagvalue", 
+                     "tagvalue__key_id", "tagvalue__value", "tagvalue__key__key",)
+    search_fields = ("tagvalue_value", "tagvalue__key__key")
+    ordering_fields = ("id", "tagvalue", "object_id")
     ordering = ("-id",)
 
 

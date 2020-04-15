@@ -271,13 +271,22 @@ export const BaseTable = (props) => {
                 // 降序排列
                 url = `${url}&ordering=-${sorter.columnKey}`;
             }
-        
         }
+
+        // 从urlParams中获取数据: 如果不从这里获取，则会丢失掉这些
+        paramsFields.forEach(item => {
+            let value = urlParams[item];
+            // console.log(item, value);
+            if(value !== undefined && value !== null && ["page", "ordering"].indexOf(item) < 0 && filterColumns.indexOf(item) < 0){
+                url = `${url}&${item}=${value}`;
+            }
+        });
+
         // console.log(url);
         // 跳转新的连接
         props.history.push(url);
         
-    }, [pageUrlPrefix, props.filterColumns, props.history, urlParams.search])
+    }, [pageUrlPrefix, paramsFields, props.filterColumns, props.history, urlParams])
 
     // 处理变更尺寸
     const handleResize = useCallback(index => (e, { size }) => {

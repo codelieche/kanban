@@ -26,8 +26,8 @@ export const ObjcetTagList = (props) => {
                 link: "/"
             },
             {
-                title: "标签值",
-                link: "/tags/value"
+                title: "对象标签",
+                link: "/tags/objecttag"
             },
             {
                 title: "列表"
@@ -38,12 +38,12 @@ export const ObjcetTagList = (props) => {
 
     // paramsFields字段：通过url可获取到的字段信息
     const paramsFields = useMemo(() => {
-        return ["page", "search", "ordering", "is_deleted", "tagvalue", "tagvalue__key"]
+        return ["page", "search", "ordering", "is_deleted", "tagvalue", "tagvalue__key_id", "tagvalue__key_key", "model"]
     }, [])
 
     // 表格的filter字段
     const filterColumns = useMemo(() => {
-        return ["is_hot", "is_deleted"]
+        return ["is_hot", "is_deleted", "model"]
     }, [])
 
     // 表格的列数据
@@ -82,14 +82,20 @@ export const ObjcetTagList = (props) => {
                 dataIndex: "model",
                 key: "model",
                 ellipsis: true,
-                width: 120
+                width: 120,
+                filters: [
+                    { text: "文章", value: "article" },
+                    { text: "图片", value: "image" }
+                  ],
+                  filterMultiple: false,
             },
             {
                 title: "Object ID",
                 dataIndex: "object_id",
                 key: "object_id",
                 ellipsis: true,
-                width: 100
+                width: 120,
+                sorter: (a, b) => {}
             },
             {
                 title: "状态",
@@ -102,7 +108,13 @@ export const ObjcetTagList = (props) => {
                             <Icon type={text ? "close" : "check"} />
                         </span>
                     )
-                }
+                },
+                filters: [
+                    { text: "有效", value: "false" },
+                    { text: "禁用", value: "true" }
+                  ],
+                  filterMultiple: false,
+                  onFilter: (value, record) => record.is_deleted.toString() === value
             },
             {
                 title: "操作",
@@ -110,7 +122,7 @@ export const ObjcetTagList = (props) => {
                 render: (text, record) => {
                     return (
                         <span>
-                            ---
+                            对象信息
                         </span>
                     )
                 }
