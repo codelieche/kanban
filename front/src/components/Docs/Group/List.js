@@ -17,7 +17,7 @@ import Icon from "../../Base/Icon";
 // Utils相关
 import { getParamsFromLocationSearch } from "../../Utils/UrlParam";
 import fetchApi from "../../Utils/fetchApi";
-import { checkUserPermissionAndUpdateStateHook } from "../../Utils/auth";
+import { checkUserPermission } from "../../Utils/auth";
 // 生成表单过滤选项的函数
 import { generateTableFilterOptionsHook } from "../../Utils/table";
 
@@ -149,7 +149,7 @@ function GroupList(props){
     useEffect(() => {
         // console.log("判断权限")
         if(other.userCanAddGroup === undefined){
-            checkUserPermissionAndUpdateStateHook("docs.add_group", "userCanAddGroup", otherState);
+            checkUserPermission("docs.add_group", (result) => otherState(prevState => {prevState["userCanAddGroup"] = result; return prevState}));
         }
     }, [other.userCanAddGroup]);
 

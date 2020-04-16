@@ -44,7 +44,7 @@ function checkUserPermissionAndUpdateState(permission, stateFieldName) {
         .catch(err => console.log(err));
 }
 
-export function checkUserPermissionAndUpdateStateHook(permission, stateFieldName, setState) {
+export function checkUserPermission(permission, callback) {
    
     let url = "/api/v1/account/permission/check";
     fetchApi.Post(url, {}, {
@@ -58,7 +58,12 @@ export function checkUserPermissionAndUpdateStateHook(permission, stateFieldName
         //     updateFields[stateFieldName] = false;
         //   };
           // 修改状态
-          setState(prevState => {prevState[stateFieldName] = data.result; return prevState});
+          // setState(prevState => {prevState[stateFieldName] = data.result; return prevState});
+          // 调用回调函数
+          if(typeof callback === "function"){
+            // console.log("执行callback", data.result)
+            callback(data.result);
+          }
       })
         .catch(err => console.log(err));
 }

@@ -115,7 +115,7 @@ export const TagsValueList = (props) => {
                     return (
                         <span>
                             <Link to={`/tags/objecttag/list?tagvalue=${record.id}`}>
-                                <Icon type="link">对象列表</Icon>
+                                <Icon type="link"></Icon>对象列表
                             </Link>
                         </span>
                     )

@@ -13,7 +13,7 @@ import {
 
 export const BaseFormModal = (props) => {
     // 状态
-    const {visible, title, handleAfterClose, ...restProps} = props;
+    const {visible, title, width, handleAfterClose, ...restProps} = props;
 
     // 确认或者关闭的时候
     const handleOnCloseOrOk = useCallback(e => {
@@ -27,6 +27,7 @@ export const BaseFormModal = (props) => {
     return (
         <Modal 
          title={title}
+         width={width}
          visible={props.visible}
          onOk={handleOnCloseOrOk}
          onCancel={handleOnCloseOrOk}

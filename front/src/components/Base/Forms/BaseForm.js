@@ -61,6 +61,20 @@ export const BaseFormFieldItem = ({data, formItemLayout}) => {
                     />
                 </Form.Item>
             )
+        case "textarea":
+            return (
+                <Form.Item {...itemLayout} 
+                  label={data.label} name={data.name}                  // 表单左侧的Label
+                  className={data.hiddle ? "hiddle" : null}            // 是否隐藏
+                  rules={Array.isArray(data.rules) ? data.rules : []}  // 字段的规则
+                  help={data.help}                                     // 帮组信息
+                >
+                    <Input.TextArea 
+                      disabled={data.disabled} 
+                      {...data.props} // 其它的相关配置对象
+                    />
+                </Form.Item>
+            )
         case "radio":
             return (
                 <Form.Item {...itemLayout} 
@@ -176,14 +190,14 @@ export const BaseForm = (props) => {
     const formItemLayout = useMemo(() => {
         return {
             labelCol: {
-              xs: { span: 8 },
-              sm: { span: 8 },
-              md: { span: 8 }
+              xs: { span: 6 },
+              sm: { span: 6 },
+              md: { span: 6 }
             },
             wrapperCol: {
-              xs: { span: 12 },
-              sm: { span: 12 },
-              md: { span: 12 }
+              xs: { span: 16 },
+              sm: { span: 16 },
+              md: { span: 16 }
             }
           };
     }, []);
