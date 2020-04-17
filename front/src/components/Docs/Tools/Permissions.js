@@ -33,7 +33,7 @@ export const fetchGroupPermissions = (categoryID, callback) => {
 }
 
 // 添加用户权限的modal
-export const AddGroupUserPermissionButton = ({id, code, setPermissions, callback}) => {
+export const AddGroupUserPermissionButton = ({id, setPermissions, callback}) => {
 
     // 显示添加用户权限的modal
     const [showModal, setShowModal] = useState(false);
@@ -159,7 +159,7 @@ export const AddGroupUserPermissionButton = ({id, code, setPermissions, callback
               handleAfterClose={handleModalAfterClose}
               fields={fields}
               handleSubmit={handleFormSubmit}
-              data={{group: code, permission: "R", user: ""}}
+              data={{group: id, permission: "R", user: ""}}
             />
         </span>
     )
@@ -168,7 +168,7 @@ export const AddGroupUserPermissionButton = ({id, code, setPermissions, callback
 // 属性设置
 AddGroupUserPermissionButton.propTypes = {
     id: PropTypes.number.isRequired,
-    code: PropTypes.string.isRequired,
+    code: PropTypes.string,
     setPermissions: PropTypes.func,
     callback: PropTypes.func,
 

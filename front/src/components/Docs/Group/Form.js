@@ -56,8 +56,9 @@ function GroupForm(props){
                 // delete(newData, "image");
                 let newData = props.data;
                 // 如果pareng的值是null，那就不要设置哦
-                if(props.data["parent"]){
-                  newData["parent"] = props.data["parent"];
+                // 因为Get获取到的Parent是个对象
+                if(props.data["parent"] && props.data["parent"].id > 0){
+                  newData["parent"] = props.data["parent"].id;
                 }else{
                   newData["parent"] = "";
                 }
@@ -186,10 +187,10 @@ function GroupForm(props){
                       label="Code"
                       name="code"
                       rules={[
-                          {required: props.type === "editor" ? false: true, message: "请填写分组的code"}
+                          {required: false, message: "请填写分组的code"}
                       ]}
                     >
-                      <Input placeholder="code" disabled={props.type === "editor" ? true: false}/>
+                      <Input placeholder="code" />
                     </Form.Item>
 
                     {/* 父级分组 */}
@@ -306,7 +307,7 @@ function GroupForm(props){
                     checkValuesState={checkValuesState} 
                     dataSourceUrl="/api/v1/docs/group/list?level=1"
                     columns={groupListColumns}
-                    rowKey="code"
+                    rowKey="id"
                     isMultiple={false}
                     disabledKeys={[data.code]}
                     showSubs={true}

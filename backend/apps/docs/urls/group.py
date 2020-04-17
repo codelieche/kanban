@@ -19,5 +19,4 @@ urlpatterns = [
     path('<int:pk>', GroupDetailApiView.as_view(), name="detail"),
     path('<int:pk>/articles', GroupArticlesListApiView.as_view(), name="articles"),
     path('<int:pk>/permissions', GroupUserPermissionApiView.as_view(), name="permissions"),
-    path('<str:code>', GroupDetailApiView.as_view(lookup_field="code"), name="detail2"),
 ]

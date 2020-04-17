@@ -10,7 +10,7 @@ class GroupUserAddSerializer(serializers.Serializer):
     """
     给分类添加用户时使用
     """
-    group = serializers.SlugRelatedField(slug_field="code", queryset=Group.objects.all(), 
+    group = serializers.SlugRelatedField(slug_field="id", queryset=Group.objects.all(), 
                                             required=True)
     user = serializers.SlugRelatedField(many=True, slug_field="username", queryset=User.objects.all())
     permission = serializers.CharField(default="R", required=False)
@@ -20,7 +20,7 @@ class GroupUserModelSerializer(serializers.ModelSerializer):
     """
     分类用户多对多关系
     """
-    group = serializers.SlugRelatedField(slug_field="code", queryset=Group.objects.all(),
+    group = serializers.SlugRelatedField(slug_field="id", queryset=Group.objects.all(),
                                            required=True)
     user = serializers.SlugRelatedField(slug_field="username", queryset=User.objects.all())
 
@@ -41,13 +41,24 @@ class GroupUserModelSerializer(serializers.ModelSerializer):
         model = GroupUser
         fields = ("id", "group", "user", "permission", "time_added", "is_active")
 
+class GroupParentSimpleModelSerializer(serializers.ModelSerializer):
+    """
+    分组父类的简单信息
+    """
+    # 所有者
+    owner = serializers.SlugRelatedField(slug_field="username", queryset=User.objects.all(),
+                                         required=False)
+
+    class Meta:
+        model = Group
+        fields = ("id", "name", "code", "image", "owner")
 
 class GroupModelSerializer(serializers.ModelSerializer):
     """
     Docs Group Model Serializer
     """
 
-    parent = serializers.SlugRelatedField(slug_field="code", queryset=Group.objects.all(), 
+    parent = serializers.SlugRelatedField(slug_field="id", queryset=Group.objects.all(), 
                                           required=False, allow_null=True)
     # 分组用户
     users = serializers.SlugRelatedField(many=True, slug_field="username", queryset=User.objects.all(),
@@ -96,6 +107,7 @@ class GroupModelSerializer(serializers.ModelSerializer):
         # print(self.context["request"].data, self.context["request"].method)
         if self.context["request"].method == "GET":
             # 这样就可以调用自身这个Serializer类了
+            fields['parent'] = GroupParentSimpleModelSerializer(many=False, read_only=True)
             fields['children'] = GroupModelSerializer(many=True, read_only=True)
             # fields["subs"] = fields["children"]
             # del fields["children"]
@@ -109,6 +121,6 @@ class GroupModelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Group
-        fields = ("id", "name", "code", "image", "description", "parent",
+        fields = ("id", "name", "code", "image", "description", "parent", "parent_id",
                    "owner", "users", "users_permisson",
                   "level", "order", "time_added", "is_deleted")

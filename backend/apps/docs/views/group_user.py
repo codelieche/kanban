@@ -35,7 +35,7 @@ class GroupUserAddApiView(generics.CreateAPIView):
         permission = self.request.data.get("permission", "R")
 
         # 2. 获取分类对象
-        group = Group.objects.filter(code=group_id).first()
+        group = Group.objects.filter(id=group_id).first()
         if not group:
             content = {
                 "status": False,

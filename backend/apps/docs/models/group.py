@@ -44,7 +44,9 @@ class Group(models.Model):
     文档的分组
     """
     name = models.CharField(verbose_name="名称", max_length=40, db_index=True)
-    code = models.SlugField(verbose_name="代码", max_length=128, unique=True)
+    # 多用户可以有各自的分组，code和name都是可以相同的: 其实只传一个Name即可, code 可以为name
+    # code是为了方面查看层级关系：比如：worker-develop-python: 后续是否可考虑code在user的空间下是唯一
+    code = models.SlugField(verbose_name="代码", max_length=128, blank=True, null=True)
     image = models.ImageField(verbose_name="图标", upload_to="docs/group/%Y/%m", storage=ImageStorage(),
                               help_text="图片路径", blank=True, null=True)
     description = models.CharField(verbose_name="描述", max_length=1024, blank=True, null=True)

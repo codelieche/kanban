@@ -238,7 +238,17 @@ function CategoryDetail(props) {
                             </dl>
                             <dl>
                                 <dt>父级分组</dt>
-                                <dd>{data.parent ? data.parent : "---"}</dd>
+                                <dd>
+                                    {
+                                        (data.parent && data.parent.id > 0) ? 
+                                        (
+                                            <Link to={`/docs/group/${data.parent.id}`}>
+                                                {data.parent.name}
+                                            </Link>
+                                         ) : 
+                                        <Tag color="blue">一级分类</Tag>
+                                    }
+                                </dd>
                             </dl>
                             <dl>
                                 <dt>状态</dt>

@@ -261,8 +261,8 @@ function GroupList(props){
                 title: "ID",
                 dataIndex: "id",
                 key: "id",
-                width: 60,
-                sorter: (a, b) => a.id - b.id,
+                width: 75,
+                sorter: (a, b) => {},
                 render:(text, record) => {
                     return (
                         <Link to={`/docs/group/${record.id}`}>{text}</Link>
@@ -292,10 +292,10 @@ function GroupList(props){
                 filterMultiple: false,
                 width: 115,
                 ellipsis: true,
-                render: (text, record) => {
+                render: (value, record) => {
                     return (
                         <Tag color={ record.level <= parantColors.length ? parantColors[record.level -1] : "" }>
-                            {record.level > 1 ? text : "一级分组"}
+                            {record.level > 1 ? value.name : "一级分组"}
                         </Tag>
                     );
                 }
@@ -345,8 +345,8 @@ function GroupList(props){
             {
                 title: "操作",
                 key: "action",
-                width: 300,
-                // ellipsis: true,
+                // width: 300,
+                ellipsis: true,
                 render: (text, record) => {
                     // 看用户能否添加
                     if(other.userCanAddGroup){
