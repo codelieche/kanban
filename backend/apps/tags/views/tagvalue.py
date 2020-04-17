@@ -3,7 +3,7 @@
 标签值相关视图
 """
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, DjangoModelPermissions
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -25,3 +25,13 @@ class TagValueListApiView(generics.ListAPIView):
     search_fields = ("key__key", "value")
     ordering_fields = ("id", "key")
     ordering = ("id",)
+
+
+class TagValueDetailApiView(generics.RetrieveUpdateAPIView):
+    """
+    TagValue Detail Api 
+    Method：Get、Put、Patch
+    """
+    queryset = TagValue.objects.all()
+    serializer_class = TagValueModelSerializer
+    permission_classes = (IsAuthenticated, DjangoModelPermissions)

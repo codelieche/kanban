@@ -1,12 +1,17 @@
 # -*- coding:utf-8 -*-
 from django.urls import path
 
-from tags.views.tagvalue import TagValueListApiView
+from tags.views.tagvalue import (
+    TagValueListApiView,
+    TagValueDetailApiView
+)
 from tags.views.objecttag import ObjectTagValueListApiView
 
 urlpatterns = [
     # 前缀：/api/v1/tags/tagvalue/
     path('list', TagValueListApiView.as_view(), name="list"),
+    # 详情
+    path("<int:pk>", TagValueDetailApiView.as_view(), name="detail"),
 
     # 获取某个对象的标签值列表：/api/v1/tags/tagvalue/auth/group/1
     path('<str:app_label>/<str:model>/<int:object_id>',

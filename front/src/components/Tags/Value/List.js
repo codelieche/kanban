@@ -1,18 +1,20 @@
 /**
  * 标签Value的列表页
  */
-import React, {useEffect, useContext, useMemo} from "react";
+import React, {useState, useEffect, useCallback, useContext, useMemo} from "react";
 import { Link } from "react-router-dom";
 import {
-    Row
+    Row, Popconfirm, message
 } from "antd";
 
 import { GlobalContext } from "../../Base/Context";
 import Icon from "../../Base/Icon";
 import BaseTable from "../../Page/BaseTable";
+import fetchApi from "../../Utils/fetchApi";
 
 export const TagsValueList = (props) => {
-
+    // 状态
+    const [reFreshTimes, setReFreshTimes] = useState(0); // 控制刷新
     // 全局设置导航的函数
     const { setNavData } = useContext(GlobalContext);
 
@@ -46,6 +48,32 @@ export const TagsValueList = (props) => {
         return ["is_hot", "is_deleted"]
     }, [])
 
+    // 取消设置
+    const handleCancel = useCallback(() => {
+        message.info("取消设置");
+    }, [])
+
+    // 设置为hot或者普通
+    const patchUpdateTagValue = useCallback((id, data) => {
+        if(!id || id <= 0){
+            return;
+        }
+        let url = `/api/v1/tags/tagvalue/${id}`;
+        fetchApi.Patch(url, {}, {data: {is_hot: data.is_hot}})
+          .then(responseData => {
+              if(responseData.id > 0){
+                  message.success("修改标签Value成功");
+                  setReFreshTimes(prevState => prevState + 1);
+              }else{
+                  message.warn("修改标签Value失败！");
+              }
+          })
+            .catch(err => {
+                console.log(err);
+                message.error("修改标签Value出错！");
+            })
+    }, [])
+
     // 表格的列数据
     const columns = useMemo(() => {
         return [
@@ -76,14 +104,21 @@ export const TagsValueList = (props) => {
                 key: "is_hot",
                 width: 100,
                 render: (text, record) => {
+                    let tagValue = `${record.key}-${record.value}`;
                     return (
-                        <span className="status">
-                            <Icon type={text ? "check" : "close"} />
-                        </span>
+                        <Popconfirm
+                          title={text ? `是否设置(${tagValue})为普通？` : `是否设置(${tagValue})为热门？`}
+                          onCancel={handleCancel}
+                          onConfirm={() => patchUpdateTagValue(record.id, {is_hot: !text})}
+                        >
+                            <span className="status">
+                                <Icon type={text ? "check" : "close"} />
+                            </span>
+                        </Popconfirm>
                     )
                 },
                 filters: [
-                    { text: "热门", value: "true" },
+                    { text: <span>热门<span style={{color:"red"}}><Icon type="fire"/></span></span>, value: "true" },
                     { text: "普通", value: "false" }
                   ],
                   filterMultiple: false,
@@ -111,6 +146,7 @@ export const TagsValueList = (props) => {
             {
                 title: "操作",
                 key: "action",
+                ellipsis: true,
                 render: (text, record) => {
                     return (
                         <span>
@@ -122,7 +158,7 @@ export const TagsValueList = (props) => {
                 }
             }
         ]
-    }, [])
+    }, [handleCancel, patchUpdateTagValue])
 
     return (
         <div className="content">
@@ -139,6 +175,7 @@ export const TagsValueList = (props) => {
                     history={props.history}
                     apiUrlPrefix="/api/v1/tags/tagvalue/list"
                     pageUrlPrefix="/tags/value/list"
+                    reFreshTimes={reFreshTimes}  // 控制刷新
                 />
             </div>
             

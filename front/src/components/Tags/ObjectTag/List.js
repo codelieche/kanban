@@ -1,17 +1,23 @@
 /**
  * 对象标签的列表页
  */
-import React, {useEffect, useContext, useMemo} from "react";
+import React, {useState, useEffect, useCallback, useContext, useMemo} from "react";
 
 import {
-    Row
+    Button, Row, Popconfirm, Divider, message
 } from "antd";
 
 import { GlobalContext } from "../../Base/Context";
 import Icon from "../../Base/Icon";
+import { checkUserPermission } from "../../Utils/auth";
 import BaseTable from "../../Page/BaseTable";
+import { deleteObjectTag } from "../../Page/Tags";
 
 export const ObjcetTagList = (props) => {
+    // 状态
+    const [canEdit, setCanEdit] = useState(false);
+    // 控制刷新
+    const [reFreshTimes, setReFreshTimes] = useState(0);
 
     // 全局设置导航的函数
     const { setNavData } = useContext(GlobalContext);
@@ -36,6 +42,11 @@ export const ObjcetTagList = (props) => {
         setNavData(navData);
     }, [setNavData])
 
+    // 检查用户能否编辑ObjectTag
+    useEffect(() => {
+        checkUserPermission("tags.change_objecttag", setCanEdit);
+    }, [])
+
     // paramsFields字段：通过url可获取到的字段信息
     const paramsFields = useMemo(() => {
         return ["page", "search", "ordering", "is_deleted", "tagvalue", "tagvalue__key_id", "tagvalue__key_key", "model"]
@@ -45,6 +56,18 @@ export const ObjcetTagList = (props) => {
     const filterColumns = useMemo(() => {
         return ["is_hot", "is_deleted", "model"]
     }, [])
+
+    // 取消删除
+    const handleDeleteCancel = useCallback(() => {
+        message.info("取消删除");
+    }, []);
+
+    // 删除对象标签
+    const handleDeleteObjectTag = useCallback((id) => {
+        deleteObjectTag(id, () => {
+            setReFreshTimes(prevState => prevState + 1);
+        })
+    }, []);
 
     // 表格的列数据
     const columns = useMemo(() => {
@@ -84,8 +107,8 @@ export const ObjcetTagList = (props) => {
                 ellipsis: true,
                 width: 120,
                 filters: [
-                    { text: "文章", value: "article" },
-                    { text: "图片", value: "image" }
+                    { text: <Icon type="file-text-o"> 文章</Icon>, value: "article" },
+                    { text: <Icon type="image"> 图片</Icon>, value: "image" }
                   ],
                   filterMultiple: false,
             },
@@ -119,16 +142,31 @@ export const ObjcetTagList = (props) => {
             {
                 title: "操作",
                 key: "action",
+                ellipsis: true,
                 render: (text, record) => {
                     return (
                         <span>
+                            {
+                                canEdit && (
+                                    <Popconfirm 
+                                      title={`确定删除(${record.app_label}-${record.model}-${record.object_id})的标签(${record.key}-${record.value})`}
+                                      onCancel={handleDeleteCancel} 
+                                      onConfirm={() => handleDeleteObjectTag(record.id)}>
+                                        <Button type="link" size="small" danger>
+                                            <Icon type="trash-o"/>删除
+                                        </Button>
+                                    </Popconfirm>
+                                    
+                                )
+                            }
+                            <Divider type="vertical"/>
                             对象信息
                         </span>
                     )
                 }
             }
         ]
-    }, [])
+    }, [canEdit, handleDeleteCancel, handleDeleteObjectTag])
 
     return (
         <div className="content">
@@ -145,6 +183,7 @@ export const ObjcetTagList = (props) => {
                     history={props.history}
                     apiUrlPrefix="/api/v1/tags/objecttag/list"
                     pageUrlPrefix="/tags/objecttag/list"
+                    reFreshTimes={reFreshTimes}  // 控制刷新的
                 />
             </div>
             

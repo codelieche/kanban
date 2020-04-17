@@ -106,7 +106,7 @@ export const TagsKeyList = (props) => {
                     )
                 },
                 filters: [
-                    { text: "热门", value: "true" },
+                    { text: <span>热门<span style={{color:"red"}}><Icon type="fire"/></span></span>, value: "true" },
                     { text: "普通", value: "false" }
                   ],
                   filterMultiple: false,
@@ -142,6 +142,7 @@ export const TagsKeyList = (props) => {
             {
                 title: "操作",
                 key: "action",
+                ellipsis: true,
                 render: (text, record) => {
                     return (
                         <span>
@@ -275,7 +276,7 @@ export const TagsKeyList = (props) => {
                 />
             </div>
 
-            {/* 编辑的表单 */}
+            {/* 编辑表单Modal */}
             {
                 canEditor && (
                     <BaseFormModal 
@@ -290,7 +291,6 @@ export const TagsKeyList = (props) => {
                     />
                 )
             }
-            
         </div>
     )
 }
