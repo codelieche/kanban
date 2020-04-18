@@ -148,15 +148,21 @@ export const ArticleList = (props) => {
 }, []);
 
     const articlesItemElements = useMemo(() => {
-        if( Array.isArray(dataSource) ){
+        if( Array.isArray(dataSource) && dataSource.length > 0 ){
             return dataSource.map((item, index) => {
                     return <ArticleListInfoItem data={item} key={item.id} />
                 });
             
         }else{
-            return null;
+            return (
+                <div className="no-content">
+                    No Data
+                </div>
+            );
         }
     }, [dataSource])
+
+    console.log(articlesItemElements);
 
     return (
         <div className="content">

@@ -10,6 +10,7 @@ from django.shortcuts import get_object_or_404
 # from django.db.models import Q
 from django.http.response import JsonResponse, HttpResponseForbidden
 
+from tags.models import ObjectTag
 from docs.models.article import Article
 from docs.models.discussion import Discussion
 from docs.models.info import Info
@@ -57,14 +58,46 @@ class ArticleListApiView(generics.ListAPIView):
         # 超级用户可以查看所有，其它的用户只能看到自己创建的文章
         user = self.request.user
 
+        # 查看是否传递了tag__key, tag__value：这2个值可以以逗号分隔
+        tag__keys = self.request.query_params.get("tag__keys")
+        tag__values = self.request.query_params.get("tag__values")
+
+        # 对tag进行处理
+        tag__key_list = tag__keys.split(",") if tag__keys else []
+        tag__value_list = tag__values.split(",") if tag__values else []
+
+        # 判断是否传递了标签
+        objecttag_ids = None
+        if tag__key_list or tag__value_list:
+            if tag__key_list:
+                objecttag_queryset = ObjectTag.objects.filter(app_label="docs", model="article", 
+                                                              tagvalue__key__key__in=tag__key_list)
+                if tag__value_list:
+                    objecttag_queryset = objecttag_queryset.filter(tagvalue__value__in=tag__value_list)
+            else:
+                objecttag_queryset = ObjectTag.objects.filter(app_label="docs", model="article",
+                                                              tagvalue__value__in=tag__value_list)
+            
+            # 得到对象的id
+            objecttag_ids = list(objecttag_queryset.values_list("id", flat=True))
+        
+        # print("文章id列表：", objecttag_ids)
+
         # 获取用户的分类的文章
         if user.is_superuser:
-            return Article.objects.all()
+            if isinstance(objecttag_ids, list):
+                queryset = Article.objects.filter(id__in=objecttag_ids)
+            else:
+                queryset = Article.objects.all()
         else:
             groups = user.group_set.all().union(user.owner_group_set.all())
             groups_ids = list(groups.values_list("id", flat=True))
-            queryset = Article.objects.filter(group__in=groups_ids).all()
-            return queryset
+            if isinstance(objecttag_ids, list):
+                queryset = Article.objects.filter(group__in=groups_ids, in__in=objecttag_ids).all()
+            else:
+                queryset = Article.objects.filter(group__in=groups_ids).all()
+        # 返回结果集
+        return queryset
 
     def list(self, request, *args, **kwargs):
         return super().list(request, args, kwargs)

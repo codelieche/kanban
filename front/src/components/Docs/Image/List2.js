@@ -224,6 +224,11 @@ export const ImageListPage = (props) => {
     // 数据变更的时候，计算列
     useEffect(() => {
         // console.log(listRef)
+        if(dataSource.length < 1){
+            setColumnNumber(1);
+            return;
+        }
+
         if(listRef && listRef.current){
             let columnCount = Math.ceil((listRef.current.offsetWidth - 60) / 270);
             if(columnCount !== columnNumber){
@@ -249,9 +254,13 @@ export const ImageListPage = (props) => {
     // 图片瀑布流
     const dataSourceElements = useMemo(() => {
         // 测试
-        // if(dataSource.length > 0){
-        //     showImageToogle(dataSource[0])
-        // }
+        if(dataSource.length === 0){
+            return (
+                <div className="no-content no-background">
+                    No Data
+                </div>
+            );
+        }
         
         return dataSource.map((item,index) => {
             return (

@@ -128,10 +128,15 @@
   // color: #9B9B9B;
   color: #999;
   background-color: #fff;
-  box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.1);
-  &.border {
+  &.shadow { // 阴影
+    box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.1);
+  }
+  &.border { // 边框
     border: 1px solid #d4d6d8;
     border-radius: 8px;
+  }
+  &.no-background {
+    background: none;
   }
   button {
     margin: 0 10px;
