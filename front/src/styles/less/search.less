@@ -1,34 +1,85 @@
 // 搜索相关的页面
 
-.main > .search {
+.base-layout > .search {
+    padding-top: 100px;
+    &.results {
+        padding-top: 10px;
+        .form {
+            display: flex;
+            flex-direction: row;
+            text-align: left;
+            .logo{ 
+                display: inline-block;
+                margin-right: 20px;
+                img {
+                    padding: 3px 5px;
+                    height: 30px;
+                }
+            }
+            .input {
+                flex: 1;
+                .ant-input-search {
+                    max-width: 450px;
+                }
+            }
+        }
+    }
+
     .form {
         text-align: center;
         .logo {
             text-align: center;
+            margin-bottom: 10px;
             img {
                 padding: 15px 20px;
                 background-color: #1890ff;
-                border-radius: 5px 5px 0 0;
+                // border-radius: 5px 5px 0 0;
             }
         }
         .input {
             width: 45%;
+            min-width: 320px;
             margin: 0 auto;
+            .ant-select-selector {
+                color: #999;
+            }
         }
     }
     
 }
 
-.main .results {
+.base-layout .main .results {
+    .item {
+        padding: 5px;
+        margin: 5px;
+        // max-width: 600px;
+    }
+
     .images {
+        .item {
+            display: inline-block;
+            max-width: 500px;
+        }
         img {
             max-height: 230px;
             width: auto;
         }
     }
-    .item {
-        display: inline-block;
-        padding: 5px;
-        margin: 5px;
+    
+    .articles {
+        max-width: 750px;
+        padding-right: 10px;
+        border-right: 1px solid @border-bottom-line-color;
+        .item {
+            img {
+                max-height: 90px;
+                width: auto;
+            }
+        }
     }
+    
+}
+
+.main > .search + .results {
+    padding-top: 10px;
 }

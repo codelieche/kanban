@@ -56,84 +56,85 @@
     // -webkit-column-break-inside:avoid;
     // break-inside:avoid;
     box-sizing: border-box;
-
-    .image-item {
-        // background-color: #fff;
-        max-width: 320px;
-        min-width: 200px;
-        // 如果使用了margin可能会造成一个元素显示在两列，改用padding，break-inside为avoid才有效
-        // 故在css里面再加一层：item-inner
-        -webkit-column-break-inside: avoid;
-        break-inside:avoid;
-        width: 100%;
-        cursor: pointer;
-        padding: 5px 3px; // 为了让.item-inner有margin的效果
-        box-sizing: border-box;
-
-        .item-inner{
-            position: relative;
-            background-color: #fff;
-            padding: 3px 3px;
-            margin: 5px 5px;
-            border-radius: 5px;
-            border: 1px solid #d4d6d8;
-            box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.18);
-            box-sizing: border-box;
-            text-align: center;
-            width: 100%;
-            box-sizing: border-box;
-            // min-height: 65px;
-
-            &:hover{
-                // border: 1px solid @left-sider-nav-active-background;
-                // box-shadow: 0 3px 4px -4px @border-bottom-line-color;
-                box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.58);
-                min-height: 65px;
-                .buttons {
-                    display: block;
-                    
-                }
-            }
-            .buttons {
-                // background-color: rgba(255, 255, 255, 0.8);
-                background-color: #fff;
-                // z-index: 12;
-                width: 100%;
-                border-top: 1px solid @border-bottom-line-color;
-                // border-top: 1px solid @left-sider-nav-active-background;
-                padding: 3px 5px;
-                display: none;
-                position: absolute;
-                right: 0;
-                // top: 0;
-                bottom: 0;
-                text-align: right;
-                box-shadow: 0 8px 14px -4px rgba(0, 0, 0, 0.2);
-                button {
-                    background-color: #fff;
-                    color: #777;
-                    &:hover{
-                        color: #232323;
-                    }
-                }
-            }
-        }
-
-        img {
-            max-width: 100%;
-            margin-bottom: 0;
-            border-radius: 3px;
-            box-sizing: border-box;
-            break-inside:avoid;
-        }
-
-        // &:hover{
-        //     border: 1px solid @left-sider-nav-active-background;
-        //     // box-shadow: 0 3px 4px -4px @border-bottom-line-color;
-        //     box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.58);
-        // }
-    }
     margin-bottom: 15px;
+}
+
+.image-list .image-item, // 图片列表页
+.results .image-item { // 搜索页
+    // background-color: #fff;
+    max-width: 320px;
+    min-width: 200px;
+    // 如果使用了margin可能会造成一个元素显示在两列，改用padding，break-inside为avoid才有效
+    // 故在css里面再加一层：item-inner
+    -webkit-column-break-inside: avoid;
+    break-inside:avoid;
+    width: 100%;
+    cursor: pointer;
+    padding: 5px 3px; // 为了让.item-inner有margin的效果
+    box-sizing: border-box;
+
+    .item-inner{
+        position: relative;
+        background-color: #fff;
+        padding: 3px 3px;
+        margin: 5px 5px;
+        border-radius: 5px;
+        border: 1px solid #d4d6d8;
+        box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.18);
+        box-sizing: border-box;
+        text-align: center;
+        width: 100%;
+        box-sizing: border-box;
+        // min-height: 65px;
+
+        &:hover{
+            // border: 1px solid @left-sider-nav-active-background;
+            // box-shadow: 0 3px 4px -4px @border-bottom-line-color;
+            box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.58);
+            min-height: 65px;
+            .buttons {
+                display: block;
+                
+            }
+        }
+        .buttons {
+            // background-color: rgba(255, 255, 255, 0.8);
+            background-color: #fff;
+            // z-index: 12;
+            width: 100%;
+            border-top: 1px solid @border-bottom-line-color;
+            // border-top: 1px solid @left-sider-nav-active-background;
+            padding: 3px 5px;
+            display: none;
+            position: absolute;
+            right: 0;
+            // top: 0;
+            bottom: 0;
+            text-align: right;
+            box-shadow: 0 8px 14px -4px rgba(0, 0, 0, 0.2);
+            button {
+                background-color: #fff;
+                color: #777;
+                &:hover{
+                    color: #232323;
+                }
+            }
+        }
+    }
+
+    img {
+        max-width: 100%;
+        margin-bottom: 0;
+        border-radius: 3px;
+        box-sizing: border-box;
+        break-inside:avoid;
+    }
+
+    // &:hover{
+    //     border: 1px solid @left-sider-nav-active-background;
+    //     // box-shadow: 0 3px 4px -4px @border-bottom-line-color;
+    //     box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.58);
+    // }
 }
 
 // 图片对话框

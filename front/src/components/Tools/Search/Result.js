@@ -49,8 +49,8 @@ export const SearchResult = ({type, dataSource}) => {
             return dataSource.map((item, index) => {
                 if(type === "article"){
                     return (
-                        <div className="item">
-                            <ArticleListInfoItem data={item} key={index} />
+                        <div className="item" key={index}>
+                            <ArticleListInfoItem data={item} />
                         </div>
                     )
                 }else if(type === "image"){

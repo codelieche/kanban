@@ -4,7 +4,7 @@
 import React, { useState, useContext, useEffect, useCallback, useMemo } from "react";
 
 import { GlobalContext } from "../../Base/Context";
-import { Input } from "antd";
+import { Input, Select, Tabs } from "antd";
 
 import { getParamsFromLocationSearch } from "../../Utils/UrlParam";
 import BasePaginationData from "../../Page/BasePaginationData";
@@ -42,62 +42,102 @@ export const SearchIndex = (props) => {
 
     // 从url中获取type
     useEffect(() => {
-        let params = getParamsFromLocationSearch(["sourceType"], props.location.search);
-        if(!!params && !!params["sourceType"]){
-            setSourceType(params["sourceType"]);
+        let params = getParamsFromLocationSearch(["sourceType", "search"], props.location.search);
+        if( !!params) {
+            if( !!params["sourceType"] ){
+                setSourceType(params["sourceType"]);
+            }
+
+            if( !!params["search"] ){
+                setSearchValue(params["search"]);
+            }else{
+                setSearchValue("");
+            }
         }
     }, [props.location.search]);
 
     const handleOnSearch = useCallback((value) => {
         console.log(value);
+
         if(!value){
             setDataSource([]);
             setLoading(false);
         }
 
-        setSearchValue(value);
+        let url = `/tools/search?sourceType=${sourceType}&search=${value}`;
+        props.history.push(url);
+        // setSearchValue(value);
 
-
-    }, [])
+    }, [sourceType, props.history])
 
     // paramsFields字段：通过url可获取到的字段信息
     const paramsFields = useMemo(() => {
         return ["page", "page_size", "search", "ordering", "parent", "is_deleted"];
     }, []);
+
+    // 搜索类型变更
+    const sourceTypeOnChange = useCallback((type, search) => {
+        if(!type){
+            return;
+        }
+        let url = `/tools/search?sourceType=${type}`;
+        if(search){
+            url = `${url}&search=${search}`
+        }
+        props.history.push(url);
+    }, [props.history])
     
+    // 搜索资源类型选择
+    const sourceTypeSelect = useMemo(() => {
+        return (
+            <Tabs defaultActiveKey={sourceType} 
+              onChange={value => value !== sourceType && sourceTypeOnChange(value, searchValue)}>
+                <Tabs.TabPane tab="文章" key="article">
+                </Tabs.TabPane>
+
+                <Tabs.TabPane tab="图片" key="image">
+                </Tabs.TabPane>
+            </Tabs>
+        );
+    }, [searchValue, sourceType, sourceTypeOnChange])
 
     return (
-        <div className="content">
-            <div className="main">
-                <div className="search">
-                    <div className="form">
-                        <div className="logo">
-                            <img src="http://127.0.0.1:9000/static/image/logo-kanban.svg" alt="logo" />
-                        </div>
-                        <div className="input">
-                            <Input.Search
-                              loading={loading}
-                              onSearch={handleOnSearch}
-                              enterButton="搜索一下" 
-                            />
-                        </div>
-                        
+        <div className="base-layout">
+            <div className={searchValue ? "search results" : "search"}>
+                <div className="form">
+                    <div className="logo">
+                        <img src="http://127.0.0.1:9000/static/image/logo-kanban.svg" alt="logo" />
+                    </div>
+                    <div className="input">
+                        <Input.Search
+                           placeholder={searchValue ? searchValue : ""}
+                            loading={loading}
+                            onSearch={handleOnSearch}
+                            enterButton="搜索一下" 
+                        />  
                     </div>
                 </div>
-                
-                {/* 搜索结果 */}
+            </div>
+            
+            {/* 搜索结果 */}
+            {
+                searchValue && (
+                    <div className="main">
+                        {/* 修改资源类型 */}
+                        {sourceTypeSelect}
+
+                        <SearchResult 
+                            dataSource={dataSource} 
+                            type={sourceType}/>
+                    </div>
+                )
+            }
+            
+
+                {/* 分页数据 */}
                 {
                     searchValue && (
-                    <SearchResult 
-                        dataSource={dataSource} 
-                        type={sourceType}/>
-                    )
-                }
-                
-
-                  {/* 分页数据 */}
-                  {
-                      searchValue && (
+                        <div className="footer">
                         <BasePaginationData
                             showTools={false}
                             paramsFields={paramsFields}
@@ -108,10 +148,9 @@ export const SearchIndex = (props) => {
                             setDataSource={setDataSource}
                             pageSize={20}
                         />
-                      )
-                  }
-                 
-            </div>
+                    </div>
+                    )
+                }
         </div>
     )
 }
