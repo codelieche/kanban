@@ -24,7 +24,7 @@ import { getParamsFromLocationSearch } from "../Utils/UrlParam";
  * 2. apiUrlPrefix: 获取数据的接口，eg：/api/v1/docs/article/list
  * 3. pageUrlPrefix: 前端页面，eg：/docs/article/list
  */
-export const BaseTable = (props) => {
+export const BasePaginationData = (props) => {
     // 状态
     const [apiUrlPrefix, setApiUrlPrefix] = useState(null);
     // 跳转页面的前缀
@@ -342,7 +342,7 @@ export const BaseTable = (props) => {
 }
 
 // 属性控制
-BaseTable.propTypes = {
+BasePaginationData.propTypes = {
     pageSize: PropTypes.number.isRequired,
     showTools: PropTypes.bool,
     paramsFields: PropTypes.array.isRequired,
@@ -354,4 +354,4 @@ BaseTable.propTypes = {
     rightButtons: PropTypes.element
 }
 
-export default BaseTable;
+export default BasePaginationData;

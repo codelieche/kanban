@@ -49,6 +49,11 @@ function App(props) {
                 />
 
                 <Route
+                    path="/tools"
+                    render={props => <Home defaultOpenKey="/tools" {...props} />}
+                />
+
+                <Route
                     path="/user"
                     render={props => <Home defaultOpenKey="/user" {...props} />}
                 />

@@ -14,6 +14,7 @@ import Footer from "./Footer";
 // import ArticlePage from "../Docs/Article/Detail";
 import DocsIndex from "../Docs/Index";
 import TagsIndex from "../Tags/index";
+import { ToolsIndexPage } from "../Tools/index";
 import UserIndex from "../User/Index";
 import TestIndex from "../Test/Index";
 
@@ -77,6 +78,13 @@ function RightContent(props){
                     <Route
                         path="/tags/"
                         component={TagsIndex}
+                        location={props.location}
+                    />
+
+                    {/* 工具相关 */}
+                    <Route
+                        path="/tools/"
+                        component={ToolsIndexPage}
                         location={props.location}
                     />
 
