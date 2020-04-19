@@ -15,7 +15,7 @@ import { UploadImageTabsModal } from "../../Page/UploadImage";
 import { GlobalContext } from "../../Base/Context";
 import { fetchObjectTags, deleteObjectTag, AddObjectTag } from "../../Page/Tags";
 
-const ShowImageModal = ({visible, data, afterCloseHandle}) => {
+export const ShowImageModal = ({visible, data, afterCloseHandle}) => {
     // 状态
     const [showInfo, setShowInfo] = useState(true);
     const [ imageTags, setImageTags ] = useState([]);

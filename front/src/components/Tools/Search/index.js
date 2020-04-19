@@ -4,7 +4,7 @@
 import React, { useState, useContext, useEffect, useCallback, useMemo } from "react";
 
 import { GlobalContext } from "../../Base/Context";
-import { Input, Select, Tabs } from "antd";
+import { Input, Tabs } from "antd";
 
 import { getParamsFromLocationSearch } from "../../Utils/UrlParam";
 import BasePaginationData from "../../Page/BasePaginationData";
@@ -80,6 +80,8 @@ export const SearchIndex = (props) => {
         if(!type){
             return;
         }
+        // 切换资源类型的时候，重新设置数值为空
+        setDataSource([]);
         let url = `/tools/search?sourceType=${type}`;
         if(search){
             url = `${url}&search=${search}`
