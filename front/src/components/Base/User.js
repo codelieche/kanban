@@ -84,13 +84,13 @@ export const UserLoginOrInfo = (props) => {
             );
 
             return (
-                <Dropdown overlay={menu}>
+                  <Dropdown overlay={menu}>
                     <div>
                         {/* <Avatar style={{backgroundColor: "#4A90E2"}}>{userInfo.username}</Avatar> */}
                         <Icon type="user-o"></Icon>
                         Hi ~ {userInfo.username}
                     </div>
-                </Dropdown>
+                  </Dropdown>
             );
         }else{
             return (

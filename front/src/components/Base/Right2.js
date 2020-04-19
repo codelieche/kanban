@@ -8,6 +8,7 @@ import { Switch, Route } from "react-router-dom";
 import { GlobalContext } from "./Context";
 import Icon from "./Icon";
 import Breadcrumb from "../Page/Breadcrumb";
+import { HeaderSearchButton } from "../Tools/Search/Button";
 import { UserLoginOrInfo } from "./User";
 
 import Footer from "./Footer";
@@ -53,8 +54,13 @@ function RightContent(props){
                     <Breadcrumb data={navData} />
                 {/* 面包屑结束 */}
 
+                {/* 搜索按钮 */}
+                <HeaderSearchButton history={props.history} />
+
                 {/* 用户信息 */}
                 <div className="user">
+                    {/* 搜索按钮 */}
+                    {/* 用户登录信息 */}
                     <UserLoginOrInfo />
                 </div>
             </div>

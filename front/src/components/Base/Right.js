@@ -8,6 +8,7 @@ import { Switch, Route } from "react-router-dom";
 import { GlobalContext } from "./Context";
 import Icon from "./Icon";
 import Breadcrumb from "../Page/Breadcrumb";
+import { HeaderSearchButton } from "../Tools/Search/Button";
 import { UserLoginOrInfo } from "./User";
 
 // 底部
@@ -51,7 +52,12 @@ function RightContent(props){
                 {/* 面包屑结束 */}
 
                 {/* 用户信息 */}
+                {/* <div className="search"> */}
+                {/* 搜索按钮 */}
+                <HeaderSearchButton history={props.history} />
+                {/* </div> */}
                 <div className="user">
+                    {/* 用户登录信息 */}
                     <UserLoginOrInfo />
                 </div>
             </div>

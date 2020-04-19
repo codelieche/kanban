@@ -34,7 +34,7 @@ export const SearchIndex = (props) => {
             },
             {
                 title: "搜索",
-                icon: "search",
+                // icon: "search",
                 link: "/tools/search"
             }
         ]);
@@ -57,7 +57,7 @@ export const SearchIndex = (props) => {
     }, [props.location.search]);
 
     const handleOnSearch = useCallback((value) => {
-        console.log(value);
+        // console.log(value);
 
         if(!value){
             setDataSource([]);
@@ -108,7 +108,7 @@ export const SearchIndex = (props) => {
             <div className={searchValue ? "search results" : "search"}>
                 <div className="form">
                     <div className="logo">
-                        <img src="http://127.0.0.1:9000/static/image/logo-kanban.svg" alt="logo" />
+                        <img src="http://127.0.0.1:9000/static/image/kanban-blue.svg" alt="logo" />
                     </div>
                     <div className="input">
                         <Input.Search

@@ -32,6 +32,9 @@ export const UserGroupsList = (props) => {
           // this.setState({ dataSource: data, loaded: true });
           setDataSource(data);
           setLoaded(true);
+        }else{
+          setLoaded(true);
+          setDataSource([]);
         }
       })
       .catch(err => {
