@@ -59,6 +59,11 @@ function App(props) {
                 />
 
                 <Route
+                    path="/config"
+                    render={props => <Home defaultOpenKey="/config" {...props} />}
+                />
+
+                <Route
                     path="/test"
                     render={props => <Home defaultOpenKey="/test" {...props} />}
                 />

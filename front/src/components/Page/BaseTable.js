@@ -29,6 +29,7 @@ export const BaseTable = (props) => {
     const [pageUrlPrefix, setPageUrlPrefix] = useState(null);
 
     const [ page, setPage ] = useState(1);
+    const [pageSize, setPageSize] = useState(10);
     // 列表数据、分页信息, url中的params,是否在加载数据
     const [urlParams, setUrlParams] = useState({});
 
@@ -106,7 +107,12 @@ export const BaseTable = (props) => {
                   setCount(responseData.count);
                   //   设置当前页
                   setPage(page);
-
+              }else if(Array.isArray(responseData)){
+                  setDataSource(responseData);
+                  setCount(responseData.length);
+                  setPageSize(responseData.length);
+                  //   设置当前页
+                  setPage(page);
               }else{
                   message.warn("获取分类文章列表出错")
                   message.warn(JSON.stringify(responseData));
@@ -351,6 +357,8 @@ export const BaseTable = (props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.reFreshTimes])
 
+    // console.log({total: count, current: page}, pageSize)
+
     return (
         <div className="base-table">
             <Row className="tools">
@@ -371,7 +379,7 @@ export const BaseTable = (props) => {
               bordered
               columns={columns}
               dataSource={dataSource}
-              pagination={{total: count, current: page}}
+              pagination={{total: count, current: page, pageSize: pageSize}}
               onChange={handleTableChange}
             />
 

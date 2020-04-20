@@ -17,6 +17,7 @@ import DocsIndex from "../Docs/Index";
 import TagsIndex from "../Tags/index";
 import { ToolsIndexPage } from "../Tools/index";
 import UserIndex from "../User/Index";
+import ConfigIndex from "../Config/index";
 import TestIndex from "../Test/Index";
 
 function RightContent(props){
@@ -98,6 +99,13 @@ function RightContent(props){
                     <Route
                         path="/user"
                         component={UserIndex}
+                        location={props.location}
+                    />
+
+                    {/* config页面 */}
+                    <Route
+                        path="/config"
+                        component={ConfigIndex}
                         location={props.location}
                     />
 

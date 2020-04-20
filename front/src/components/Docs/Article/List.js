@@ -162,7 +162,7 @@ export const ArticleList = (props) => {
         }
     }, [dataSource])
 
-    console.log(articlesItemElements);
+    // console.log(articlesItemElements);
 
     return (
         <div className="content">

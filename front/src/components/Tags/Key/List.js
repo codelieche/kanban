@@ -17,9 +17,9 @@ import fetchApi from "../../Utils/fetchApi";
 
 export const TagsKeyList = (props) => {
     // 状态
-    const [canEditor, setCanEditor] = useState(null);
+    const [canEdit, setCanEdit] = useState(null);
     // 显示编辑对话框
-    const [showEditModal, setShowEditModel] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
     // 当前的标签数据
     const [currentItem, setCurrentItem] = useState({});
     // 刷新表单数据
@@ -50,7 +50,7 @@ export const TagsKeyList = (props) => {
     // 检查能否编辑的标签
     useEffect(() => {
         // 检查权限
-        checkUserPermission("tags.change_tag", setCanEditor)
+        checkUserPermission("tags.change_tag", setCanEdit)
     }, [])
 
     // paramsFields字段：通过url可获取到的字段信息
@@ -65,7 +65,7 @@ export const TagsKeyList = (props) => {
 
     // 编辑点击事件
     const handleShowEditorModal = useCallback(data => {
-        setShowEditModel(true);
+        setShowEditModal(true);
         setCurrentItem(data);
     }, [])
 
@@ -147,7 +147,7 @@ export const TagsKeyList = (props) => {
                     return (
                         <span>
                             {
-                                canEditor && (
+                                canEdit && (
                                     <Button type="link" size="small" onClick={() => handleShowEditorModal(record)}>
                                         <Icon type="edit"/>编辑
                                     </Button>
@@ -165,11 +165,11 @@ export const TagsKeyList = (props) => {
                 }
             }
         ]
-    }, [canEditor, handleShowEditorModal])
+    }, [canEdit, handleShowEditorModal])
 
     // 处理关闭表单
     const handleModelAfterClose = useCallback(() => {
-        setShowEditModel(false);
+        setShowEditModal(false);
         setCurrentItem({});
     }, [])
 
@@ -186,7 +186,7 @@ export const TagsKeyList = (props) => {
           .then(responseData => {
               if(responseData.id > 0){
                   message.success("修改标签Key成功");
-                  setShowEditModel(false);
+                  setShowEditModal(false);
                   setCurrentItem({});
                   // 刷新页面
                   setReFreshTimes(prevState => prevState + 1);
@@ -278,7 +278,7 @@ export const TagsKeyList = (props) => {
 
             {/* 编辑表单Modal */}
             {
-                canEditor && (
+                canEdit && (
                     <BaseFormModal 
                       title="编辑标签Key"
                       buttonName="提交修改"
