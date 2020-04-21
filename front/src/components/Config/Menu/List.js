@@ -4,6 +4,7 @@
 import React, {useState, useEffect, useCallback, useContext, useMemo} from "react";
 import {
     Button,
+    Modal,
     Row, message
 } from "antd";
 
@@ -13,6 +14,8 @@ import { checkUserPermission } from "../../Utils/auth";
 import BaseTable from "../../Page/BaseTable";
 import { BaseFormModal } from "../../Page/BaseForm";
 import fetchApi from "../../Utils/fetchApi";
+// 从表单中选择值【数组】
+import CheckValuesFromTable from "../../Base/Forms/CheckTableValues";
 
 export const MenuListPage = (props) => {
     // 设置导航
@@ -55,6 +58,12 @@ export const MenuList = (props) => {
     const [currentItem, setCurrentItem] = useState({});
     // 刷新表单数据
     const [reFreshTimes, setReFreshTimes] = useState(0);
+    // 显示选择parent的对话框
+    const [ showSelectModal, setShowSelectModal] = useState(false);
+    const [selectedValues, setSelectedValues] = useState([]);
+
+    // 显示编辑modal的表单
+    const formRef = useMemo(() => React.createRef(), []);
 
     // 检查用户是否有编辑的权限
     useEffect(() => {
@@ -86,7 +95,7 @@ export const MenuList = (props) => {
                 dataIndex: "id",
                 key: "id",
                 sorter: (a, b) => {},
-                width: 75,
+                width: 85,
             },
             {
                 title: "图标",
@@ -104,6 +113,41 @@ export const MenuList = (props) => {
                 title: "网址",
                 dataIndex: "slug",
                 key: "slug",
+                width: 150,
+            },
+            {
+                title: "打开方式",
+                dataIndex: "target",
+                key: "target",
+                width: 100,
+            },
+
+            {
+                title: "是否外部连接",
+                dataIndex: "is_link",
+                key: "is_link",
+                width: 80,
+                render: (value, record) => {
+                    return (
+                        <div className="status">
+                            <Icon type={value ? "check" : "close"} />
+                        </div>
+                    )
+                }
+            },
+
+            {
+                title: "状态",
+                dataIndex: "is_deleted",
+                key: "id_deleted",
+                width: 80,
+                render: (value, record) => {
+                    return (
+                        <div className="status">
+                            <Icon type={value ? "close" : "check"} />
+                        </div>
+                    )
+                }
             },
             {
                 title: "操作",
@@ -195,34 +239,58 @@ export const MenuList = (props) => {
                 rules: [{required: true, message: "请输入菜单对应的网址"}],
             },
             {
-                type: "switch",
+                type: "radio.group",
                 label: "是否为站外连接",
                 name: "is_link",
                 rules: [
                     {required: false, message: "请选择是否是外部连接"}
                 ],
+                choices: [
+                    {value: true, text: "站外"},
+                    {value: false, text: "站内"},
+                ],
                 props: {
-                    checkedChildren: "站外",
-                    unCheckedChildren: "站内"
+                    size: "small",
+                    buttonStyle: "solid"
                 }
             },
             {
                 type: "input",
+                label: "站外链接",
+                name: "link",
+            },
+            {
+                type: "radio.group",
                 label: "跳转方式",
                 name: "target",
                 rules: [{required: false, message: "请输入菜单链接的跳转方式"}],
+                choices: [
+                    {value: "_self", text: "当前页面"},
+                    {value: "_blank", text: "新的页面"},
+                ],
+                props: {
+                    // size: "normal",
+                    size: "small",
+                    buttonStyle: "solid"
+                }
             },
             {
                 type: "input",
                 label: "父级菜单",
                 name: "parent",
                 rules: [{required: false, message: "请输入菜单的父级菜单"}],
+                props: {
+                    addonAfter: <div onClick={(e) => {setShowSelectModal(true); e.stopPropagation();}}>选择</div>
+                }
             },
             {
-                type: "input",
+                type: "inputnumber",
                 label: "排序",
                 name: "order",
-                rules: [{required: true, message: "请输入菜单的父级菜单"}],
+                rules: [{required: true, message: "请输入菜单的序号"}],
+                props: {
+                    min: 1,
+                }
             },
             {
                 type: "switch",
@@ -240,8 +308,19 @@ export const MenuList = (props) => {
         ]
     }, [])
 
+    // 选择parent的对话框ok的时候
+    const handleSelectModalOk = useCallback(values => {
+        // console.log(values);
+        setShowSelectModal(false);
 
+        if(selectedValues.length > 0){
+            // 可以更新字段
+            setCurrentItem({parent: selectedValues[0]})
+        }
+        
+    }, [selectedValues])
 
+    // console.log(selectedValues, currentItem);
     return (
         <div>
             <Row className="title">
@@ -266,6 +345,7 @@ export const MenuList = (props) => {
                     <BaseFormModal 
                       title="编辑导航菜单"
                       buttonName="提交修改"
+                      formRef={formRef}
                     //   width={650}
                       visible={showEditModal}
                       fields={formFields}
@@ -275,6 +355,29 @@ export const MenuList = (props) => {
                     />
                 )
             }
+
+            {/* 从列表中选择parent的对话框 */}
+            <Modal
+                title="请选择父级菜单"
+                visible={showSelectModal}
+                width={"60%"}
+                // footer={null}
+                onOk={handleSelectModalOk}
+                onCancel={() => {setShowSelectModal(false)}}
+              >
+                  <CheckValuesFromTable
+                    selectedValues={selectedValues}         // 当前选中的值
+                    setSelectedValues={setSelectedValues} // 修改选中的值
+                    dataSourceUrl="/api/v1/config/menu/user?level=1" // 数据源的api
+                    columns={columns.slice(0, 7)}                   // 展示列表
+                    rowKey="id"
+                    isMultiple={false}                  // 是否可选择多个
+                    disabledKeys={[currentItem.id]}     // 不可选择的值
+                    showSubs={true}                     // 是否显示子元素
+                    subsKey="children"
+                  />
+              </Modal>
+
         </div>
     )
 }

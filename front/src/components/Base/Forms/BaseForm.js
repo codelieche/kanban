@@ -8,7 +8,7 @@ import PropTypes from "prop-types";
 import {
     Row, Col,
     Button,
-    Input, Radio, Checkbox, Switch, DatePicker,
+    Input, InputNumber, Radio, Checkbox, Select, Switch, DatePicker,
     Form
 }from "antd";
 
@@ -29,6 +29,14 @@ export const BaseFormFieldItem = ({data, formItemLayout}) => {
                         </Radio.Button>
                     );
                 })
+            case "radio.group":
+                return choices.map((item, index) => {
+                    return (
+                        <Radio.Button value={item.value} key={index}>
+                            {item.text}
+                        </Radio.Button>
+                    )
+                });
             case "checkbox":
                 return choices.map((item, index) => {
                     return (
@@ -37,6 +45,15 @@ export const BaseFormFieldItem = ({data, formItemLayout}) => {
                         </Checkbox>
                     );
                 });
+            case "select":
+                return choices.map((item, index) => {
+                    return (
+                        <Select.Option value={item.value} key={index}>
+                            {item.text}
+                        </Select.Option>
+                    )
+                });
+            
             default:
                 return null
         }
@@ -58,6 +75,20 @@ export const BaseFormFieldItem = ({data, formItemLayout}) => {
                     <Input 
                       disabled={data.disabled} 
                       {...data.props} // 其它的相关配置对象
+                    />
+                </Form.Item>
+            )
+        case "inputnumber" :
+            return (
+                <Form.Item {...itemLayout} 
+                    label={data.label} name={data.name}                  // 表单左侧的Label
+                    className={data.hiddle ? "hiddle" : null}            // 是否隐藏
+                    rules={Array.isArray(data.rules) ? data.rules : []}  // 字段的规则
+                    help={data.help}                                     // 帮组信息
+                >
+                    <InputNumber 
+                        disabled={data.disabled} 
+                        {...data.props} // 其它的相关配置对象
                     />
                 </Form.Item>
             )
@@ -88,6 +119,17 @@ export const BaseFormFieldItem = ({data, formItemLayout}) => {
                     </Radio.Group>
                 </Form.Item>
             )
+        case "radio.group":
+            return (
+                <Form.Item {...itemLayout}
+                    label={data.label} name={data.name}
+                    rules={Array.isArray(data.rules) ? data.rules : []}
+                >
+                    <Radio.Group {...data.props}>
+                        {generateChoicesElements("radio.group", data.choices)}
+                    </Radio.Group>
+                    </Form.Item>
+            );
         case "checkbox":
             return (
                 <Form.Item {...itemLayout}
@@ -97,6 +139,18 @@ export const BaseFormFieldItem = ({data, formItemLayout}) => {
                     <Checkbox.Group {...data.props}>
                         {generateChoicesElements("checkbox", data.choices)}
                     </Checkbox.Group>
+                  </Form.Item>
+            );
+
+        case "select":
+            return (
+                <Form.Item {...itemLayout}
+                  label={data.label} name={data.name}
+                  rules={Array.isArray(data.rules) ? data.rules : []}
+                >
+                    <Radio.Group {...data.props}>
+                        {generateChoicesElements("radio.group", data.choices)}
+                    </Radio.Group>
                   </Form.Item>
             );
 
@@ -150,27 +204,33 @@ export const BaseForm = (props) => {
     const [fields, setFields] = useState([])
 
     useEffect(() => {
-        if(props.ref){
-            setFormRef(props.ref);
+        if(props.formRef){
+            setFormRef(props.formRef);
         }
         if(props.name){
             setFormName(props.name);
         }
-    }, [props.ref, props.name])
+    }, [props.formRef, props.name])
 
     // 更新当前表单的数据
-  const updateFiedsValue = useCallback((data) => {
-    formRef.current.setFieldsValue(data);
-  }, [formRef]);
+    const updateFiedsValue = useCallback((data) => {
+        // console.log("update");
+        formRef.current.setFieldsValue(data);
+    }, [formRef]);
 
+    // console.log(props.data);
+    
     // 初始化的数据
     useEffect(() => {
-        if(props.data){
+        if(props.data && props.data !== data){
             setData(props.data);
             // 更新表单的数据
             updateFiedsValue(props.data);
+        }else{
+            // console.log(props.data, data);
+            // console.log("不更新")
         }
-    }, [props.data, updateFiedsValue]);
+    }, [props.data, updateFiedsValue, data]);
 
     // 表单的字段
     useEffect(() => {

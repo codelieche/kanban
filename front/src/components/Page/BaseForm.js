@@ -13,7 +13,7 @@ import {
 
 export const BaseFormModal = (props) => {
     // 状态
-    const {visible, title, width, handleAfterClose, ...restProps} = props;
+    const {visible, title, width, handleAfterClose, data, ...restProps} = props;
 
     // 确认或者关闭的时候
     const handleOnCloseOrOk = useCallback(e => {
@@ -23,7 +23,9 @@ export const BaseFormModal = (props) => {
             handleAfterClose();
         }
     }, [handleAfterClose])
-    
+
+    // console.log(data);
+
     return (
         <Modal 
          title={title}
@@ -34,7 +36,7 @@ export const BaseFormModal = (props) => {
          destroyOnClose={true}
          footer={null}
          >
-             <BaseForm {...restProps} />
+             <BaseForm data={data} {...restProps} />
          </Modal>
     );
 }

@@ -2,6 +2,7 @@
  * 从表单中选择值
  */
 import React, {useState, useEffect} from "react";
+import PropTypes from "prop-types";
 import {
     Table
 } from "antd";
@@ -9,8 +10,8 @@ import {
 import fetchApi from "../../Utils/fetchApi";
 
 // 参数：
-// -: checkValues: 选择的数据数组
-// - checkValuesState: 操作checkValues的函数与checkValues是成对出现的
+// -: selectedValues: 选择的数据数组
+// - setSelectedValues: 操作selectedValues的函数与selectedValues是成对出现的
 // - dataSourceUrl: 表单数据的api接口
 // - columns: 表单的列
 // - rowKey: 唯一值列的字段名
@@ -18,8 +19,8 @@ import fetchApi from "../../Utils/fetchApi";
 // - disabledKeys: 禁用的keys列表
 // - showSubs: 是否显示子列表
 // function CheckValuesFromTable(props){
-function CheckValuesFromTable({checkValues, checkValuesState, dataSourceUrl, columns, rowKey="id", isMultiple=true, disabledKeys=[], showSubs=false, subsKey="subs"}){
-    // checkValues, checkValuesState, dataSourceUrl, columns, rowKey="id", isMultiple=true, disabledKeys=[], showSubs=false
+function CheckValuesFromTable({selectedValues, setSelectedValues, dataSourceUrl, columns, rowKey="id", isMultiple=true, disabledKeys=[], showSubs=false, subsKey="subs"}){
+    // selectedValues, setSelectedValues, dataSourceUrl, columns, rowKey="id", isMultiple=true, disabledKeys=[], showSubs=false
     // 保存api获取的数据的state
     // 第1个state：数据源的url
     // console.log("CheckValuesFromTable");
@@ -79,11 +80,11 @@ function CheckValuesFromTable({checkValues, checkValuesState, dataSourceUrl, col
     // 行选择
     const rowSelection = {
         hideDefaultSelections: true,
-        selectedRowKeys: checkValues ? checkValues : [],
+        selectedRowKeys: selectedValues ? selectedValues : [],
         onChange: (selectedRowKeys) => {
             // console.log(selectedRowKeys);
-            // checkValuesState(selectedRowKeys);
-            checkValuesState(selectedRowKeys);
+            // setSelectedValues(selectedRowKeys);
+            setSelectedValues(selectedRowKeys);
         },
         type: isMultiple ? "checkbox" : "radio",
         getCheckboxProps: record => ({
@@ -110,32 +111,57 @@ function CheckValuesFromTable({checkValues, checkValuesState, dataSourceUrl, col
         fetchData(dataSourceUrl, currentPage);
       }
 
-    //   console.log(checkValues);
+    //   console.log(selectedValues);
     // 显示展开
     const expandable = { 
-        expandedRowRender: record => {
-            if(record[subsKey].length > 0){
-                return (
-                    <Table 
-                      showHeader={false}
-                      bordered={false}
-                      dataSource={record[subsKey]} 
-                      rowKey={rowKey}
-                      //   columns={columns.slice(0, 6)} 
-                      size="small"
-                      rowSelection={rowSelection}
-                      columns={columns} 
-                      pagination={false}
-                      expandable={showSubs ? expandable : undefined}
-                    />
-                );
+        // expandedRowRender: record => {
+        //     if(record[subsKey].length > 0){
+        //         return (
+        //             <Table 
+        //               showHeader={false}
+        //               bordered={false}
+        //               dataSource={record[subsKey]} 
+        //               rowKey={rowKey}
+        //               //   columns={columns.slice(0, 6)} 
+        //               size="small"
+        //               rowSelection={rowSelection}
+        //               columns={columns} 
+        //               pagination={false}
+        //               expandable={showSubs ? expandable : undefined}
+        //             />
+        //         );
+        //     }else{
+        //         return null;
+        //     }
+        // },
+        expandIcon: ({expanded, onExpand, record}) => {
+            // console.log(props);
+            if(record && record.children && record.children.length > 0){
+                if(expanded){
+                    return (
+                    <span onClick={e => {onExpand(record, e)}}>
+                        <span className="ant-table-row-expand-icon ant-table-row-expand-icon-expanded">
+                        </span>
+                    </span>
+                    )
+                }else{
+                    return (
+                        <span onClick={e => {onExpand(record, e)}}>
+                            {/* <Icon type="plus" /> */}
+                            <span className="ant-table-row-expand-icon ant-table-row-expand-icon-collapsed">
+
+                            </span>
+                        </span>
+                    );
+                }
             }else{
-                return null;
+                return " "
             }
         },
-        rowExpandable: record => record[subsKey].length > 0,
+        rowExpandable: record => record[subsKey] && record[subsKey].length > 0,
         // 当点击展开的时候，会把childrenColumnName的数据追加到上级表格中。
-        childrenColumnName: "__children",
+        // childrenColumnName: "children",
+        childrenColumnName: subsKey ? subsKey : "children",
         // indentSize: 0,
         // defaultExpandAllRows: true
     };
@@ -143,7 +169,7 @@ function CheckValuesFromTable({checkValues, checkValuesState, dataSourceUrl, col
     return (
         <div>
             <Table
-              title={() => checkValues.length > 0 ? `当前选中的值有：${JSON.stringify(checkValues)}` : null}
+              title={() => selectedValues.length > 0 ? `当前选中的值有：${JSON.stringify(selectedValues)}` : null}
               columns={columns}
               dataSource={dataSource}
               pagination={pagination}
@@ -159,4 +185,14 @@ function CheckValuesFromTable({checkValues, checkValuesState, dataSourceUrl, col
 
 }
 
+CheckValuesFromTable.propTypes = {
+    selectedValues: PropTypes.array.isRequired,
+    setSelectedValues: PropTypes.func.isRequired,
+    dataSourceUrl: PropTypes.string.isRequired,
+    columns: PropTypes.array.isRequired,
+    isMultiple: PropTypes.bool,
+    rowKey: PropTypes.string,
+    showSubs: PropTypes.bool,
+    subsKey: PropTypes.string
+}
 export default CheckValuesFromTable;

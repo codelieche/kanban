@@ -39,7 +39,7 @@ function GroupForm(props){
     // 弹出框
     const [visibleModal, visibleModalState] = useState(false);
     // 父级分组的选择值
-    const [checkValues, checkValuesState] = useState([]);
+    const [selectedValues, setSelectedValues] = useState([]);
 
     // 相当于：componentDidMount()、componentWillUpdate()等函数
     // 由于useEffect里面调用了dataState, 注意给其设置第二个参数[props.data, props.type, data]
@@ -67,7 +67,7 @@ function GroupForm(props){
                 formRef.current.setFieldsValue(newData);
 
                 // 修改默认的选择值
-                checkValuesState([props.data.parent]);
+                setSelectedValues([props.data.parent]);
             }
         }
     }, [props.data, props.type, data, formRef, props]);
@@ -76,14 +76,14 @@ function GroupForm(props){
     useEffect(() => {
       // console.log(checkValues);
       // if(checkValues instanceof Array && checkValues.length > 0 && checkValues[0] !== data.parent){
-      if(checkValues instanceof Array){
+      if(selectedValues instanceof Array){
           // console.log("我需要修改表单中的parent");
           // 修改表单的值
           formRef.current.setFieldsValue({
-            parent: checkValues,
+            parent: selectedValues,
           });
       }
-    }, [checkValues, formRef]);
+    }, [selectedValues, formRef]);
 
     const handleModelOk = useCallback(() => {
       // console.log("处理关闭", checkValues);
@@ -91,9 +91,9 @@ function GroupForm(props){
       // 关闭弹出框
       visibleModalState(false);
       formRef.current.setFieldsValue({
-        parent: checkValues,
+        parent: selectedValues,
       });
-    }, [checkValues, formRef])
+    }, [selectedValues, formRef])
 
     // 表单提交处理函数
     // 需要对values做处理，要不会报400错误
@@ -204,8 +204,8 @@ function GroupForm(props){
                     >
                       {/* 采用了表单自定义的控件 */}
                       <SelectAndButton 
-                        checkValues={checkValues}
-                        checkValuesState={checkValuesState}
+                        checkValues={selectedValues}
+                        checkValuesState={setSelectedValues}
                         onButtonClick={() => visibleModalState(true)}
                         isMultiple={false}
                       />
@@ -303,8 +303,8 @@ function GroupForm(props){
                 onCancel={() => {visibleModalState(false)}}
               >
                   <CheckValuesFromTable
-                    checkValues={checkValues}
-                    checkValuesState={checkValuesState} 
+                    selectedValues={selectedValues}
+                    setSelectedValues={setSelectedValues} 
                     dataSourceUrl="/api/v1/docs/group/list?level=1"
                     columns={groupListColumns}
                     rowKey="id"
@@ -314,7 +314,6 @@ function GroupForm(props){
                     subsKey="children"
                   />
               </Modal>
-
         </Form>
     );
 }

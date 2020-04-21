@@ -359,6 +359,50 @@ export const BaseTable = (props) => {
 
     // console.log({total: count, current: page}, pageSize)
 
+    // 显示展开
+    const expandable = useMemo(() => {
+        if(props.expandable) {
+            return props.expandable;
+        }else{
+            return {
+                // expandedRowRender: (record, index) => {
+                //     if(record.children && record.children.length > 0){
+                //         return <span>有{record.children.length}条子元素</span>;
+                //     }else{
+                //         return null;
+                //     }
+                // },
+                expandIcon: ({expanded, onExpand, record}) => {
+                    // console.log(props);
+                    if(record && record.children && record.children.length > 0){
+                        if(expanded){
+                            return (
+                            <span onClick={e => {onExpand(record, e)}}>
+                                <span className="ant-table-row-expand-icon ant-table-row-expand-icon-expanded">
+                                </span>
+                            </span>
+                            )
+                        }else{
+                            return (
+                                <span onClick={e => {onExpand(record, e)}}>
+                                    {/* <Icon type="plus" /> */}
+                                    <span className="ant-table-row-expand-icon ant-table-row-expand-icon-collapsed">
+
+                                    </span>
+                                </span>
+                            );
+                        }
+                    }else{
+                        return " "
+                    }
+                },
+                rowExpandable: (record, index) => {
+                    return record.children && record.children.length > 0
+                },
+            }
+        }
+    }, [props]);
+
     return (
         <div className="base-table">
             <Row className="tools">
@@ -381,6 +425,7 @@ export const BaseTable = (props) => {
               dataSource={dataSource}
               pagination={{total: count, current: page, pageSize: pageSize}}
               onChange={handleTableChange}
+              expandable={expandable}
             />
 
             {/* <br/>

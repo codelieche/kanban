@@ -415,7 +415,7 @@ function GroupList(props){
                             size="small"
                             columns={columns} 
                             pagination={false}
-                                expandable={expandable} 
+                            expandable={expandable} 
                         />
                     );
                 }else{
