@@ -52,6 +52,7 @@ export const MenuList = (props) => {
     // 状态
 
     // 用户能否编辑菜单
+    const [isAdd, setIsAdd] = useState(false); // 是否是添加菜单
     const [canEdit, setCanEdit] = useState(false);
     // 显示编辑菜单的对话框
     const [showEditModal, setShowEditModal] = useState(false);
@@ -83,6 +84,7 @@ export const MenuList = (props) => {
 
     // 点击编辑事件
     const handleShowEditModal = useCallback(data => {
+        setIsAdd(false); // 设置为不是编辑
         setShowEditModal(true);
         setCurrentItem(data);
     }, [])
@@ -123,7 +125,7 @@ export const MenuList = (props) => {
             },
 
             {
-                title: "是否外部连接",
+                title: "站外",
                 dataIndex: "is_link",
                 key: "is_link",
                 width: 80,
@@ -148,6 +150,12 @@ export const MenuList = (props) => {
                         </div>
                     )
                 }
+            },
+            {
+                title: "排序",
+                dataIndex: "order",
+                key: "order",
+                width: 80,
             },
             {
                 title: "操作",
@@ -175,33 +183,88 @@ export const MenuList = (props) => {
         setCurrentItem({});
     }, [])
 
+    // 右侧按钮
+    const rightButtons = useMemo(() => {
+        return (
+            <span>
+                <Button
+                    style={{width: 100}}
+                    type="default"
+                    // icon="reload"
+                    icon={<Icon type="refresh"/>}
+                    onClick={() => {setReFreshTimes(preState => preState + 1)}}
+                >
+                    刷新
+                </Button>
+                
+                <Button
+                    type="primary"
+                    style={{width: 100}}
+                    icon={<Icon type="plus"/>}
+                    // 显示编辑/添加Modal，
+                    onClick={
+                        () => {
+                            setIsAdd(true);
+                            setShowEditModal(true); 
+                            setCurrentItem({is_link: false, is_deleted: false, target: "_self"});
+                        }}
+                    >
+                    Add
+                </Button>
+                
+            </span>
+        )
+}, []);
+
     // 提交编辑表单
     const handleFormSubbmit = useCallback((values) => {
         // console.log(values);
         // PUT修改标签
-        if( !values.id){
-            message.warn("传入的id为空");
-            return
-        }
-        let url = `/api/v1/config/menu/${values.id}`;
-        fetchApi.Put(url, {}, {data: values})
-          .then(responseData => {
-              if(responseData.id > 0){
-                  message.success("修改菜单成功");
-                  setShowEditModal(false);
-                  setCurrentItem({});
-                  // 刷新页面
-                  setReFreshTimes(prevState => prevState + 1);
-              }else{
-                  message.warn("编辑菜单失败");
-              }
-          })
-            .catch(err => {
-                message.error("编辑菜单出错！");
-                console.log(err);
+        if( !isAdd ){
+            if(!values.id){
+                message.warn("传入的id为空");
+                return
+            }
+            let url = `/api/v1/config/menu/${values.id}`;
+            fetchApi.Put(url, {}, {data: values})
+            .then(responseData => {
+                if(responseData.id > 0){
+                    message.success("修改菜单成功");
+                    setShowEditModal(false);
+                    setCurrentItem({});
+                    // 刷新页面
+                    setReFreshTimes(prevState => prevState + 1);
+                }else{
+                    message.warn("编辑菜单失败");
+                }
             })
+                .catch(err => {
+                    message.error("编辑菜单出错！");
+                    console.log(err);
+                })
+        }else{
+            // 添加操作
+            let url = `/api/v1/config/menu/create`;
+            fetchApi.Post(url, {}, {data: values})
+            .then(responseData => {
+                if(responseData.id > 0){
+                    message.success("添加菜单成功");
+                    setShowEditModal(false);
+                    setCurrentItem({});
+                    // 刷新页面
+                    setReFreshTimes(prevState => prevState + 1);
+                }else{
+                    message.warn("编辑菜单失败");
+                }
+            })
+                .catch(err => {
+                    message.error("编辑菜单出错！");
+                    console.log(err);
+                })
+        }
+
         
-    }, [])
+    }, [isAdd])
 
     // 提交的表单字段
     const formFields = useMemo(() => {
@@ -211,14 +274,18 @@ export const MenuList = (props) => {
                 label: "ID",
                 disabled: true,
                 name: "id",
-                required: true,
-                rules: [{required: true, message: "请输入菜单的ID"}],
+                hiddle: isAdd,
+                required: !isAdd,
+                rules: [{required: !isAdd, message: "请输入菜单的ID"}],
             },
             {
                 type: "input",
                 label: "Key",
                 name: "key",
                 rules: [{required: true, message: "请输入菜单的Key"}],
+                props: {
+                    placeholder: "/docs"
+                }
             },
             {
                 type: "input",
@@ -231,12 +298,18 @@ export const MenuList = (props) => {
                 label: "图标",
                 name: "icon",
                 rules: [{required: true, message: "请输入菜单的图标"}],
+                props: {
+                    placeholder: "angle-right"
+                }
             },
             {
                 type: "input",
                 label: "网址",
                 name: "slug",
                 rules: [{required: true, message: "请输入菜单对应的网址"}],
+                props: {
+                    placeholder: "/docs"
+                }
             },
             {
                 type: "radio.group",
@@ -306,7 +379,7 @@ export const MenuList = (props) => {
             },
 
         ]
-    }, [])
+    }, [isAdd])
 
     // 选择parent的对话框ok的时候
     const handleSelectModalOk = useCallback(values => {
@@ -337,14 +410,15 @@ export const MenuList = (props) => {
                 apiUrlPrefix="/api/v1/config/menu/user"
                 pageUrlPrefix="/tags/menu/list"
                 reFreshTimes={reFreshTimes}  // 控制刷新
+                rightButtons={rightButtons}  // 右侧按钮
             />
 
             {/* 编辑表单Modal */}
             {
                 canEdit && (
                     <BaseFormModal 
-                      title="编辑导航菜单"
-                      buttonName="提交修改"
+                      title={ isAdd ? "添加导航菜单" : "编辑导航菜单" }
+                      buttonName={ isAdd ? "添加" : "提交修改" }
                       formRef={formRef}
                     //   width={650}
                       visible={showEditModal}

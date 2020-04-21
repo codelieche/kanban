@@ -195,4 +195,5 @@ CheckValuesFromTable.propTypes = {
     showSubs: PropTypes.bool,
     subsKey: PropTypes.string
 }
+
 export default CheckValuesFromTable;
