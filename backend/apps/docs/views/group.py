@@ -11,6 +11,7 @@ from rest_framework.permissions import (
     DjangoModelPermissionsOrAnonReadOnly
 )
 from django.shortcuts import get_object_or_404
+from django.http.response import HttpResponseForbidden
 
 from modellog.mixins import LoggingViewSetMixin
 from docs.models.group import Group
@@ -28,7 +29,8 @@ class GroupCreateApiView(LoggingViewSetMixin, generics.CreateAPIView):
     """
     queryset = Group.objects.all()
     serializer_class = GroupModelSerializer
-    permission_classes = (DjangoModelPermissions,)
+    # 用户都可以创建自己的分组，而且名字是可以相同的
+    permission_classes = (IsAuthenticated,)
 
 
 class GroupListApiView(generics.ListAPIView):
@@ -94,7 +96,7 @@ class GroupDetailApiView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyAPIV
     """
     queryset = Group.objects.filter()
     serializer_class = GroupModelSerializer
-    permission_classes = (IsAuthenticated, DjangoModelPermissionsOrAnonReadOnly)
+    permission_classes = (IsAuthenticated,)
 
     def get_object(self):
         # 先获取到pk 或者 是 code
@@ -103,6 +105,45 @@ class GroupDetailApiView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyAPIV
         for key_ in self.kwargs:
             filter_kwargs[key_] = self.kwargs[key_]
         return get_object_or_404(Group, **filter_kwargs)
+
+    def retrieve(self, request, pk):
+        # 1. 获取到当前用户
+        user = request.user
+        instance = self.get_object()
+
+        # 2. 判断权限
+        if instance.check_user_permission(user, "read"):
+            return super().retrieve(request, pk)
+        else:
+            return HttpResponseForbidden()
+
+    def update(self, request, *args, **kwargs):
+        """
+        更新分组
+        """
+        # 1. 获取到当前用户
+        user = request.user
+        instance = self.get_object()
+
+        # 2. 判断权限
+        if instance.check_user_permission(user, "write"):
+            return super().update(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden()
+
+    def delete(self, request, *args, **kwargs):
+        """
+        删除分组
+        """
+        # 1. 获取到当前用户
+        user = request.user
+        instance = self.get_object()
+
+        # 2. 判断权限
+        if instance.check_user_permission(user, "delete"):
+            return super().delete(request, *args, **kwargs)
+        else:
+            return HttpResponseForbidden()
 
 
 class GroupArticlesListApiView(generics.ListAPIView):

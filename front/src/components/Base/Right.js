@@ -52,14 +52,14 @@ function RightContent(props){
                 {/* 面包屑结束 */}
 
                 {/* 用户信息 */}
-                {/* <div className="search"> */}
-                {/* 搜索按钮 */}
-                <HeaderSearchButton history={props.history} />
-                {/* </div> */}
                 <div className="user">
                     {/* 用户登录信息 */}
                     <UserLoginOrInfo />
                 </div>
+
+                {/* 搜索按钮 */}
+                <HeaderSearchButton history={props.history} />
+                
             </div>
             {/* 右侧头部结束 */}
 

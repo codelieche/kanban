@@ -8,7 +8,7 @@ import {
     Row,
     Col,
     Tag,
-    Divider
+    Divider,
 } from "antd";
 
 import { GlobalContext } from "../../Base/Context";
@@ -16,6 +16,7 @@ import Icon from "../../Base/Icon";
 import ModelLogs from "../../Base/ModelLogs";
 import fetchApi from "../../Utils/fetchApi";
 import LoadingPage from "../../Page/Loading";
+import RendeErrorPage from "../../Page/Error";
 
 import BaseTable from "../../Page/BaseTable";
 import { AddGroupUserPermissionButton, delteGroupUserPermission } from "../Tools/Permissions";
@@ -32,6 +33,8 @@ function CategoryDetail(props) {
 
     // 分组的权限
     const [permissions, setPermissions] = useState([]);
+    // 页面错误代码：403、404
+    const [errorCode, setErrorCode] = useState(0);
 
     // 获取详情数据
     const fetchDetailData = useCallback((id) => {
@@ -48,6 +51,9 @@ function CategoryDetail(props) {
             .catch(err => {
                 setLoaded(true);
                 console.log(err)
+                if(err.status === 403){
+                    setErrorCode(403);
+                }
             });
     }, [])
 
@@ -213,6 +219,18 @@ function CategoryDetail(props) {
     // 判断是否加载完了
     if(!loaded){
         return <LoadingPage size="large"/>;
+    }
+
+    // 判断是否渲染错误页面
+    if(errorCode && errorCode > 0){
+        // 需要渲染错误页面
+        if(errorCode === 403 || errorCode === 404){
+            return (
+                <RendeErrorPage 
+                  errorCode={errorCode} 
+                  pathname={props.history.pathname} />
+            )
+        }
     }
 
     // 相当于class方式的render(){}

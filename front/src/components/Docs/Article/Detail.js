@@ -32,6 +32,7 @@ import { BaseFormModal } from "../../Page/BaseForm";
 import ArticleDiscussions from "./Discussions";
 // 文章对象标签
 import { ShowObjectTags } from "../../Page/Tags";
+import RendeErrorPage from "../../Page/Error";
 
 export const ArticleDetail = function(props){
     // 状态
@@ -54,7 +55,7 @@ export const ArticleDetail = function(props){
     // 判断是否加载完毕了
     const [loaded, setLoaded] = useState(false);
     // 是否需要渲染错误页
-    const [rendeErrorPage, setRendeErrorPage] = useState(0);
+    const [errorCode, setErrorCode] = useState(0);
     // 获取当前分类的权限
     // const [groupPermissions, setGroupPermissions] = useState([]);
     const [canEditor, setCanEditor] = useState(false);
@@ -130,7 +131,7 @@ export const ArticleDetail = function(props){
                 // 判断错误是不是：404或者403
                 if(err && err.status && (err.status === 403 || err.status === 404)){
                     setData({})
-                    setRendeErrorPage(err.status);
+                    setErrorCode(err.status);
                 }
             });
     }, [currentArticleGroupID, setCurrentArticleGroupID, setNavData])
@@ -423,28 +424,13 @@ export const ArticleDetail = function(props){
     }
 
     // 判断是不是渲染错误页：404或者403
-    if( !data.id && rendeErrorPage > 0){
-        // 需要渲染错误页面
-        if(rendeErrorPage === 403){
+    if( !data.id && errorCode > 0){
+        // 需要渲染错误页面:
+        if(errorCode === 403 || errorCode === 404){
             return (
-                <Result status="403" title="403"
-                    subTitle={`Sorry，您暂时无权限访问本页面:${props.history.location.pathname}`}
-                    extra={(
-                        <Button type="primary">
-                            <Link to="/">返回首页</Link>
-                        </Button>
-                    )}
-                />
-            )
-        }else if(rendeErrorPage === 404){
-            return (
-                <Result status="404" title="404"
-                    subTitle={`Sorry，您访问的页面不存在:${props.history.location.pathname}`}
-                    extra={(
-                        <Button type="primary">
-                            <Link to="/">返回首页</Link>
-                        </Button>
-                    )}
+                <RendeErrorPage
+                  errorCode={errorCode}
+                  pathname={props.history.pathname}
                 />
             )
         }
