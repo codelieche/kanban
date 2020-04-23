@@ -121,6 +121,14 @@ export const ObjcetTagList = (props) => {
                 sorter: (a, b) => {}
             },
             {
+                title: "添加者",
+                dataIndex: "user",
+                key: "user",
+                ellipsis: true,
+                width: 120,
+                sorter: (a, b) => {}
+            },
+            {
                 title: "状态",
                 dataIndex: "is_deleted",
                 key: "is_deleted",

@@ -6,8 +6,6 @@ import React, {useState, useContext, useMemo, useCallback, useEffect} from "reac
 import { Link } from "react-router-dom";
 
 import {
-    Button,
-    Result,
     Menu, Dropdown,
     message,
 } from "antd";
@@ -465,12 +463,16 @@ export const ArticleDetail = function(props){
                             {showDescription ? "隐藏描述" : "显示描述"}
                         </span>
 
-                        <span className="button" 
-                          onClick={() => {setShowEditCover(prevState => !prevState)}}
-                        >
-                            <Icon type="image"/>
-                            { canEditor && (data.cover ? "修改封面" : "添加封面")}
-                        </span>
+                       {
+                           canEditor && (
+                            <span className="button" 
+                              onClick={() => {setShowEditCover(prevState => !prevState)}}
+                            >
+                              <Icon type="image"/>
+                              { canEditor && (data.cover ? "修改封面" : "添加封面")}
+                            </span>
+                           )
+                       }
 
                         <span className={showDiscussion ? "button active" : "button"}
                           onClick={() => {setShowDiscussion(prevState => !prevState)}}
@@ -479,19 +481,31 @@ export const ArticleDetail = function(props){
                             {showDiscussion ? "隐藏讨论" : "显示讨论"}
                         </span>
 
-                        <span className={showCover ? "button active" : "button"} 
-                          onClick={() => {setShowCover(prevState => !prevState)}}
-                        >
-                            <Icon type="image"/>
-                            {showCover ? "隐藏封面" : "显示封面"}
-                        </span>
-
-                        <span className={showAddTagModal ? "button active" : "button"}
-                          onClick={() => {setShowAddTagModal(prevState => !prevState)}}
-                        >
-                            <Icon type="tag"/>
-                            { canEditor && "添加标签"}
-                        </span>
+                       {/* 显示封面 */}
+                       {
+                           !!data.cover && (
+                                <span className={showCover ? "button active" : "button"} 
+                                    onClick={() => {setShowCover(prevState => !prevState)}}
+                                >
+                                    <Icon type="image"/>
+                                    {showCover ? "隐藏封面" : "显示封面"}
+                                </span>
+                           )
+                       }
+                       
+                        
+                        {/* 添加标签 */}
+                        {
+                            canEditor && (
+                                <span className={showAddTagModal ? "button active" : "button"}
+                                onClick={() => {setShowAddTagModal(prevState => !prevState)}}
+                                >
+                                    <Icon type="tag"/>
+                                    { canEditor && "添加标签"}
+                                </span>
+                            )
+                        }
+                        
                     </div>
 
                     {/* 文章的标题行 */}

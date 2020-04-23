@@ -72,7 +72,11 @@ export const SearchIndex = (props) => {
 
     // paramsFields字段：通过url可获取到的字段信息
     const paramsFields = useMemo(() => {
-        return ["page", "page_size", "search", "ordering", "parent", "is_deleted"];
+        return [
+            "page", "page_size", "search", 
+            "ordering", "parent", "is_deleted",
+            "tag__keys", "tag__values"
+        ];
     }, []);
 
     // 搜索类型变更

@@ -58,8 +58,8 @@ class ImageListApiView(generics.ListAPIView):
                 objecttag_queryset = ObjectTag.objects.filter(app_label="docs", model="image",
                                                               tagvalue__value__in=tag__value_list)
             
-            # 得到对象的id
-            objecttag_ids = list(objecttag_queryset.values_list("id", flat=True))
+            # 得到对象的id: 是object_id而不是去ObjectTag的id哦
+            objecttag_ids = list(objecttag_queryset.values_list("object_id", flat=True))
         
         # print("图片id列表：", objecttag_ids)
         # 超级用户可以查看全部

@@ -78,8 +78,8 @@ class ArticleListApiView(generics.ListAPIView):
                 objecttag_queryset = ObjectTag.objects.filter(app_label="docs", model="article",
                                                               tagvalue__value__in=tag__value_list)
             
-            # 得到对象的id
-            objecttag_ids = list(objecttag_queryset.values_list("id", flat=True))
+            # 得到对象的id: 是object_id而不是去ObjectTag的id哦
+            objecttag_ids = list(objecttag_queryset.values_list("object_id", flat=True))
         
         # print("文章id列表：", objecttag_ids)
 
@@ -93,9 +93,9 @@ class ArticleListApiView(generics.ListAPIView):
             groups = user.group_set.all().union(user.owner_group_set.all())
             groups_ids = list(groups.values_list("id", flat=True))
             if isinstance(objecttag_ids, list):
-                queryset = Article.objects.filter(group__in=groups_ids, in__in=objecttag_ids).all()
+                queryset = Article.objects.filter(group_id__in=groups_ids, id__in=objecttag_ids)
             else:
-                queryset = Article.objects.filter(group__in=groups_ids).all()
+                queryset = Article.objects.filter(group_id__in=groups_ids)
         # 返回结果集
         return queryset
 
