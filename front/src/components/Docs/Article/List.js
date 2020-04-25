@@ -7,7 +7,8 @@ import {
     Row,
     Spin,
     Tag,
-    message
+    message,
+    Dropdown
 } from "antd";
 
 import Icon from "../../Base/Icon";
@@ -16,6 +17,7 @@ import { getParamsFromLocationSearch } from "../../Utils/UrlParam";
 import BasePaginationData from "../../Page/BasePaginationData";
 
 import { GlobalContext } from "../../Base/Context";
+import TagsFilter from "../../Tools/Search/Tags";
 import { ArticleListInfoItem } from "./InfoItem";
 
 export const ArticleList = (props) => {
@@ -28,6 +30,7 @@ export const ArticleList = (props) => {
             id: 0,
         }
     ]);
+    const [activeTagKey, setActiveTagKey] = useState();
     const [currentGrooupID, setCurrentGroupID] = useState(0);
     const [ loading, setLoading ] = useState(true);
     const { setNavData } = useContext(GlobalContext);
@@ -58,9 +61,13 @@ export const ArticleList = (props) => {
         // 引入如果调用状态中的urlParams，获取到的可能不是最新值，所以这里从url中解析值
         let locationSearch = props.location.search;
         // console.log(locationSearch);
-        let urlParams = getParamsFromLocationSearch(["group_id"], locationSearch)
+        let urlParams = getParamsFromLocationSearch(["group_id", "tag__keys"], locationSearch)
         // console.log(urlParams);
         let groupIDStr = urlParams["group_id"];
+
+        if(urlParams["tag__keys"]){
+            setActiveTagKey(urlParams["tag__keys"]);
+        }
         
         if(parseInt(groupIDStr, 10)){
             setCurrentGroupID(parseInt(groupIDStr, 10));
@@ -95,7 +102,10 @@ export const ArticleList = (props) => {
 
     // paramsFields字段：通过url可获取到的字段信息
     const paramsFields = useMemo(() => {
-        return ["page", "page_size", "group_id", "search", "ordering", "parent", "is_active"];
+        return [
+            "page", "page_size", "group_id", "search", "ordering", 
+            "parent", "is_active", "tag__keys", "tag__values"
+        ];
     }, [])
 
     // 分组变化
@@ -121,10 +131,69 @@ export const ArticleList = (props) => {
         });
     }, [currentGrooupID, groups, handleGroupOnChange])
 
+    // 处理filter了之后
+    const handleTagSelected = useCallback(tag => {
+        const locationSearch = props.location.search;
+        const urlParamsFiles = ["group_id", "page", "search"];
+        let urlParams = getParamsFromLocationSearch(urlParamsFiles, locationSearch);
+        let url = "/docs/article/list";
+
+        urlParamsFiles.forEach(item => {
+            if(item && urlParams[item]){
+                let value = urlParams[item];
+                if(value !== undefined && value !== null){
+                    if(url.indexOf("?") > 0){
+                        url = `${url}&${item}=${value}`;
+                    }else{
+                        url = `${url}?${item}=${value}`;
+                    }
+                }
+            }
+        })
+
+        // tag_keys, tag_values
+        for(var item in tag){
+            if(["key", "value"].indexOf(item) >= 0){
+                let value = tag[item];
+                if(value !== undefined && value !== null){
+                    if(url.indexOf("?") > 0){
+                        url = `${url}&tag__${item}s=${value}`;
+                    }else{
+                        url = `${url}?tag__${item}s=${value}`;
+                    }
+                }
+            }
+        }
+
+        // 跳转
+        // console.log(url);
+        props.history.push(url);
+        
+    }, [props.location, props.history]);
+
     // 右侧按钮
     const rightButtons = useMemo(() => {
+        const tagsFilter = (
+            <TagsFilter 
+              type="select"
+              activeTagKey={activeTagKey}
+              handleSelected={handleTagSelected}
+            />
+        )
         return (
             <span>
+                <span>
+                    <Dropdown 
+                      overlay={tagsFilter}
+                      placement="bottomCenter"
+                      trigger={['click']}
+                    >
+                        <span style={{display: "inline-block", marginRight: 10, cursor: "pointer"}}>
+                            <Icon type="filter" />
+                            Filter
+                        </span>
+                    </Dropdown>
+                </span>
                 <Button
                     style={{width: 100}}
                     type="default"
@@ -145,7 +214,7 @@ export const ArticleList = (props) => {
                 
             </span>
         )
-}, []);
+    }, [activeTagKey, handleTagSelected]);
 
     const articlesItemElements = useMemo(() => {
         if( Array.isArray(dataSource) && dataSource.length > 0 ){
@@ -193,15 +262,15 @@ export const ArticleList = (props) => {
                   reFreshTimes={reFreshTimes}  // 刷新数据
                   rightButtons={rightButtons}  // 右侧按钮
                   setLoading={setLoading}      // 设置加载状态
-                  >
-                      {/* 文章列表数据 */}
-                      <div className="articles-list">
+                >
+                    {/* 文章列表数据 */}
+                    <div className="articles-list">
                         <div className="articles">
                             <Spin spinning={loading}>
                                 {articlesItemElements}
                             </Spin>
                         </div>
-                      </div>
+                    </div>
                   </BasePaginationData>
             </div>
         </div>

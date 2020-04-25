@@ -108,9 +108,9 @@ export const TagsSelect = ({tags, activeTagKey, handleSelected}) => {
     const handleOnTagValueChange = useCallback((value) => {
         setCurrentTagValue(value);
         if(handleSelected && typeof handleSelected === "function"){
-            handleSelected({key: currentTag, value: currentTagValue});
+            handleSelected({key: currentTag, value: value});
         }
-    }, [currentTag, currentTagValue, handleSelected])
+    }, [currentTag, handleSelected])
 
     const tagsSelectOptions = useMemo(() => {
         if(tags && Array.isArray(tags)){
@@ -157,7 +157,7 @@ export const TagsSelect = ({tags, activeTagKey, handleSelected}) => {
             {
                 tagValuesSelectOptions && (
                     <span>
-                        <Select defaultValue="=">
+                        <Select defaultValue="=" disabled>
                             <Select.Option value="=">=</Select.Option>
                         </Select>
                         <Select  
