@@ -3,6 +3,8 @@ from rest_framework import generics
 from rest_framework.response import Response
 from rest_framework.status import HTTP_204_NO_CONTENT
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.filters import SearchFilter, OrderingFilter
+from django_filters.rest_framework import DjangoFilterBackend
 
 from tags.models import TagKey, TagValue
 from tags.serializers.tagkey import TagKeyModelSerializer
@@ -25,6 +27,29 @@ class TagKeyListApiView(generics.ListAPIView):
     queryset = TagKey.objects.filter(is_deleted=False)
     serializer_class = TagKeyModelSerializer
     permission_classes = (IsAuthenticated,)
+
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ("key", "name", "description")
+    filter_fields = ("is_hot", "is_deleted")
+    ordering_fields = ("id", "is_hot", "is_deleted")
+    ordering = ("id",)
+
+
+class TagKeyListAllApiView(generics.ListAPIView):
+    """
+    标签列表All api
+    """
+    queryset = TagKey.objects.filter(is_deleted=False)
+    serializer_class = TagKeyModelSerializer
+    permission_classes = (IsAuthenticated,)
+
+    filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
+    search_fields = ("key", "name", "description")
+    filter_fields = ("is_hot", "is_deleted")
+    ordering_fields = ("id", "is_hot", "is_deleted")
+    ordering = ("id",)
+
+    pagination_class = None
 
 
 class TagKeyDetailApiView(generics.RetrieveUpdateDestroyAPIView):

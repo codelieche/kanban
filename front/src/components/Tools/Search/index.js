@@ -9,6 +9,7 @@ import { Input, Tabs } from "antd";
 import { getParamsFromLocationSearch } from "../../Utils/UrlParam";
 import BasePaginationData from "../../Page/BasePaginationData";
 
+// import TagsFilter from "./Tags";
 import { SearchResult } from "./Result";
 
 export const SearchIndex = (props) => {
@@ -109,6 +110,9 @@ export const SearchIndex = (props) => {
 
     return (
         <div className="base-layout">
+            {/* <div>
+                <TagsFilter type="select" activeTagKey="Group" />
+            </div> */}
             <div className={searchValue ? "search results" : "search"}>
                 <div className="form">
                     <div className="logo">
