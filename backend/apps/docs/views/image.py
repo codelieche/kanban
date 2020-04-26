@@ -6,6 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
 
+from tags.models import ObjectTag
 from docs.models.image import Image
 from docs.serializers.image import ImageModelSerializer
 

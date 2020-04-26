@@ -13,6 +13,7 @@ import BasePaginationData from "../../Page/BasePaginationData";
 // 上传文章图片
 import { UploadImageTabsModal } from "../../Page/UploadImage";
 import { GlobalContext } from "../../Base/Context";
+import { TagsFilterButton } from "../../Page/Filter";
 import { fetchObjectTags, deleteObjectTag, AddObjectTag } from "../../Page/Tags";
 
 export const ShowImageModal = ({visible, data, afterCloseHandle}) => {
@@ -209,7 +210,10 @@ export const ImageListPage = (props) => {
 
     // paramsFields字段：通过url可获取到的字段信息
     const paramsFields = useMemo(() => {
-        return ["page", "page_size", "search", "ordering", "parent", "is_deleted"];
+        return [
+            "page", "page_size", "search", "ordering", 
+            "parent", "is_deleted", "tag__keys", "tag__values"
+        ];
     }, []);
 
     // 渲染数据
@@ -310,6 +314,14 @@ export const ImageListPage = (props) => {
     const rightButtons = useMemo(() => {
             return (
                 <span>
+                    {/* 过滤按钮 */}
+                    <TagsFilterButton 
+                      history={props.history} 
+                      location={props.location} 
+                      paramsFields={paramsFields}
+                      pageUrl="/docs/image/list"
+                    />
+
                     <Button
                         style={{width: 100}}
                         type="default"
@@ -332,7 +344,7 @@ export const ImageListPage = (props) => {
                     
                 </span>
             )
-    }, []);
+    }, [paramsFields, props.history, props.location]);
 
     return (
         <div className="content">

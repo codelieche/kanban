@@ -8,7 +8,7 @@ import {
     Spin,
     Tag,
     message,
-    Dropdown
+    // Dropdown
 } from "antd";
 
 import Icon from "../../Base/Icon";
@@ -17,7 +17,7 @@ import { getParamsFromLocationSearch } from "../../Utils/UrlParam";
 import BasePaginationData from "../../Page/BasePaginationData";
 
 import { GlobalContext } from "../../Base/Context";
-import TagsFilter from "../../Tools/Search/Tags";
+import { TagsFilterButton } from "../../Page/Filter";
 import { ArticleListInfoItem } from "./InfoItem";
 
 export const ArticleList = (props) => {
@@ -30,7 +30,6 @@ export const ArticleList = (props) => {
             id: 0,
         }
     ]);
-    const [activeTagKey, setActiveTagKey] = useState();
     const [currentGrooupID, setCurrentGroupID] = useState(0);
     const [ loading, setLoading ] = useState(true);
     const { setNavData } = useContext(GlobalContext);
@@ -65,10 +64,6 @@ export const ArticleList = (props) => {
         // console.log(urlParams);
         let groupIDStr = urlParams["group_id"];
 
-        if(urlParams["tag__keys"]){
-            setActiveTagKey(urlParams["tag__keys"]);
-        }
-        
         if(parseInt(groupIDStr, 10)){
             setCurrentGroupID(parseInt(groupIDStr, 10));
         }else{
@@ -116,9 +111,28 @@ export const ArticleList = (props) => {
             if(groupID > 0){
                 url = `/docs/article/list?group_id=${groupID}`
             }
+            
+            // 从params中获取字段
+            const locationSearch = props.location.search;
+            const urlParamsFiles = ["group_id", "page", "search", "tag__keys", "tag__values"];
+            let urlParams = getParamsFromLocationSearch(urlParamsFiles, locationSearch);
+
+            urlParamsFiles.forEach(item => {
+                if(item && urlParams[item] && item !== "group_id"){
+                    let value = urlParams[item];
+                    if(value !== undefined && value !== null){
+                        if(url.indexOf("?") > 0){
+                            url = `${url}&${item}=${value}`;
+                        }else{
+                            url = `${url}?${item}=${value}`;
+                        }
+                    }
+                }
+            })
+            // console.log(url);
             props.history.push(url);
         }
-    }, [currentGrooupID, props.history])
+    }, [currentGrooupID, props.history, props.location.search])
 
     // 分组的标签选项
     const groupsTagList = useMemo(() => {
@@ -131,69 +145,19 @@ export const ArticleList = (props) => {
         });
     }, [currentGrooupID, groups, handleGroupOnChange])
 
-    // 处理filter了之后
-    const handleTagSelected = useCallback(tag => {
-        const locationSearch = props.location.search;
-        const urlParamsFiles = ["group_id", "page", "search"];
-        let urlParams = getParamsFromLocationSearch(urlParamsFiles, locationSearch);
-        let url = "/docs/article/list";
-
-        urlParamsFiles.forEach(item => {
-            if(item && urlParams[item]){
-                let value = urlParams[item];
-                if(value !== undefined && value !== null){
-                    if(url.indexOf("?") > 0){
-                        url = `${url}&${item}=${value}`;
-                    }else{
-                        url = `${url}?${item}=${value}`;
-                    }
-                }
-            }
-        })
-
-        // tag_keys, tag_values
-        for(var item in tag){
-            if(["key", "value"].indexOf(item) >= 0){
-                let value = tag[item];
-                if(value !== undefined && value !== null){
-                    if(url.indexOf("?") > 0){
-                        url = `${url}&tag__${item}s=${value}`;
-                    }else{
-                        url = `${url}?tag__${item}s=${value}`;
-                    }
-                }
-            }
-        }
-
-        // 跳转
-        // console.log(url);
-        props.history.push(url);
-        
-    }, [props.location, props.history]);
-
     // 右侧按钮
     const rightButtons = useMemo(() => {
-        const tagsFilter = (
-            <TagsFilter 
-              type="select"
-              activeTagKey={activeTagKey}
-              handleSelected={handleTagSelected}
-            />
-        )
+       
         return (
             <span>
-                <span>
-                    <Dropdown 
-                      overlay={tagsFilter}
-                      placement="bottomCenter"
-                      trigger={['click']}
-                    >
-                        <span style={{display: "inline-block", marginRight: 10, cursor: "pointer"}}>
-                            <Icon type="filter" />
-                            Filter
-                        </span>
-                    </Dropdown>
-                </span>
+                {/* 过滤按钮 */}
+                <TagsFilterButton 
+                  history={props.history} 
+                  location={props.location} 
+                  paramsFields={paramsFields}
+                  pageUrl="/docs/article/list"
+                />
+                
                 <Button
                     style={{width: 100}}
                     type="default"
@@ -204,17 +168,9 @@ export const ArticleList = (props) => {
                     刷新
                 </Button>
                 
-                {/* <Button
-                    type="primary"
-                    style={{width: 100}}
-                    icon={<Icon type="plus"/>}
-                    >
-                    Add
-                </Button> */}
-                
             </span>
         )
-    }, [activeTagKey, handleTagSelected]);
+    }, [paramsFields, props.history, props.location]);
 
     const articlesItemElements = useMemo(() => {
         if( Array.isArray(dataSource) && dataSource.length > 0 ){

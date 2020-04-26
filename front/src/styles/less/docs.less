@@ -244,8 +244,25 @@
 
 // 标签过滤相关:
 .tags-select {
+    background-color: #fff;
+    // padding: 5px 8px;
+    border: 1px solid @border-bottom-line-color;
     margin-top: 10px;
-    .ant-select {
+    .ant-select{
+        margin-left: 5px;
         margin-right: 5px;
+        &.key, &.value{
+            min-width: 100px;
+        }
+    }
+    .clear{
+        padding: 3px 5px;
+        text-align: right;
+
+        .close{
+            display: inline-block;
+            cursor: pointer;
+            margin-top: 5px;
+        }
     }
 }
