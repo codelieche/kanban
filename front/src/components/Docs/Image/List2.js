@@ -4,7 +4,7 @@
 import React, { useState, useMemo, useCallback, useEffect, useContext } from "react";
 
 import {
-    Row, Button, Modal, Divider, Tag, message
+    Row, Button, Modal, Divider, message
 } from "antd";
 
 import Icon from "../../Base/Icon";
@@ -14,12 +14,13 @@ import BasePaginationData from "../../Page/BasePaginationData";
 import { UploadImageTabsModal } from "../../Page/UploadImage";
 import { GlobalContext } from "../../Base/Context";
 import { TagsFilterButton } from "../../Page/Filter";
-import { fetchObjectTags, deleteObjectTag, AddObjectTag } from "../../Page/Tags";
+import { ShowObjectTags, AddObjectTag } from "../../Page/Tags";
 
 export const ShowImageModal = ({visible, data, afterCloseHandle}) => {
     // 状态
     const [showInfo, setShowInfo] = useState(true);
-    const [ imageTags, setImageTags ] = useState([]);
+    // const [ imageTags, setImageTags ] = useState([]);
+    const [ reFreshTimes, setRefreshTimes] = useState(0);
 
     const handleOnOkOrCancel = useCallback((e) => {
         if(afterCloseHandle){
@@ -43,46 +44,62 @@ export const ShowImageModal = ({visible, data, afterCloseHandle}) => {
     }, [data])
 
     // 获取图片的标签
-    const fetchImageTagsData = useCallback(() => {
-        if(data.id > 0){
-            fetchObjectTags(
-                "docs", "image", data.id, 
-                1, 
-                (tags) => {setImageTags(tags)}
-            )
-        }
-    }, [data.id])
+    // const fetchImageTagsData = useCallback(() => {
+    //     if(data.id > 0){
+    //         fetchObjectTags(
+    //             "docs", "image", data.id, 
+    //             1, 
+    //             (tags) => {setImageTags(tags)}
+    //         )
+    //     }
+    // }, [data.id])
 
     // 获取标签
-    useEffect(() => {
-        if( data.id && data.id > 0){
-            fetchObjectTags(
-                "docs", "image", data.id, 
-                1, 
-                (tags) => {setImageTags(tags)}
-            )
-        }
-    }, [data.id]);
+    // useEffect(() => {
+    //     if( data.id && data.id > 0){
+    //         fetchObjectTags(
+    //             "docs", "image", data.id, 
+    //             1, 
+    //             (tags) => {setImageTags(tags)}
+    //         )
+    //     }
+    // }, [data.id]);
 
     // 图片标签
+    // const imageTagsElements = useMemo(() => {
+    //     if(imageTags && Array.isArray(imageTags)){
+    //         return imageTags.map((item, index) => {
+    //             const handleOnClose = (e) => {
+    //                 e.stopPropagation(); 
+    //                 deleteObjectTag(
+    //                     item.id, 
+    //                     fetchImageTagsData
+    //                 );
+    //             }
+    //             return (
+    //                 <Tag key={item.id} color="blue"
+    //                 closable={true} onClose={handleOnClose}
+    //             >{item.value}</Tag>
+    //             )
+    //         })
+    //     }
+    // }, [fetchImageTagsData, imageTags])
+
     const imageTagsElements = useMemo(() => {
-        if(imageTags && Array.isArray(imageTags)){
-            return imageTags.map((item, index) => {
-                const handleOnClose = (e) => {
-                    e.stopPropagation(); 
-                    deleteObjectTag(
-                        item.id, 
-                        fetchImageTagsData
-                    );
-                }
-                return (
-                    <Tag key={item.id} color="blue"
-                    closable={true} onClose={handleOnClose}
-                >{item.value}</Tag>
-                )
-            })
+        if(data && data.id > 0){
+            return (
+                <ShowObjectTags 
+                    appLabel="docs" model="image" 
+                    objectID={data.id} canDelete={true}
+                    reFreshTimes={reFreshTimes}
+                    filterPageUrl="/docs/image/list"
+                />
+            )
+        }else{
+            return null;
         }
-    }, [fetchImageTagsData, imageTags])
+        
+    }, [data, reFreshTimes])
 
     return (
         <Modal
@@ -137,7 +154,8 @@ export const ShowImageModal = ({visible, data, afterCloseHandle}) => {
                                 <AddObjectTag 
                                     tagKey="tag"   // 由于key是关键词，用tagKey 
                                     appLabel="docs" model="image" objectID={data.id}
-                                    callback={fetchImageTagsData} // 添加标签后的回调函数
+                                    // callback={fetchImageTagsData} // 添加标签后的回调函数
+                                    callback={() => {setRefreshTimes(prevState => prevState + 1)}} // 添加标签后的回调函数
                                 />
                             )}
                             

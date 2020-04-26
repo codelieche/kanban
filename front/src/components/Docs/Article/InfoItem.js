@@ -31,7 +31,10 @@ export const ArticleListInfoItem = ({data}) => {
                     </div>
                     <div className="metadata">
                         {/* 显示文章的标签 */}
-                        <ShowObjectTags appLabel="docs" model="article" objectID={data.id} />
+                        <ShowObjectTags 
+                          appLabel="docs" model="article" objectID={data.id} 
+                          filterPageUrl="/docs/article/list"
+                        />
                         <span className="data">时间: {data.time_added}</span>
                         <span className="data">作者: {data.user}</span>
                     </div>

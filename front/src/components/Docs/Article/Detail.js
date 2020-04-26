@@ -409,6 +409,7 @@ export const ArticleDetail = function(props){
                     appLabel="docs" model="article" 
                     objectID={data.id} canDelete={canEditor}
                     reFreshTimes={reFreshTagsTimes}
+                    filterPageUrl="/docs/article/list"
                 />
             )
         }else{

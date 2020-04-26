@@ -5,7 +5,7 @@ import React, {
     useState, useCallback, useMemo, useEffect
 } from "react";
 import PropTypes from "prop-types";
-
+import { Link } from "react-router-dom";
 import {
     Tag,
     Input,
@@ -160,7 +160,7 @@ AddObjectTag.propTypes = {
 }
 
 // 展示对象的标签
-export const ShowObjectTags = ({appLabel, model, objectID, showAll, callback, canDelete, color, reFreshTimes}) => {
+export const ShowObjectTags = ({appLabel, model, objectID, showAll, callback, canDelete, color, reFreshTimes, filterPageUrl}) => {
     // 状态：对象的标签数组
     const [dataSource, setDataSource] = useState([]);
     const [page, setPage] = useState(1);
@@ -204,6 +204,7 @@ export const ShowObjectTags = ({appLabel, model, objectID, showAll, callback, ca
           dataSource={dataSource}
           canDelete={canDelete} 
           color={color} 
+          filterPageUrl={filterPageUrl}
         />
     )
 }
@@ -217,16 +218,19 @@ ShowObjectTags.propTypes = {
     showAll: PropTypes.bool,            // 是否显示全部
     callback: PropTypes.func,           // 获取标签数据后的回调函数
     canDelete: PropTypes.bool,          // 能否删除标签
-    reFreshTimes: PropTypes.number      // 控制刷新
+    reFreshTimes: PropTypes.number,     // 控制刷新
+    filterPageUrl: PropTypes.string     // 跳转标签过滤的列表页面
 }
 
 // 展示标签，传递dataSource
-export const ShowObjectTagsDataSource = ({dataSource, canDelete, color}) => {
+export const ShowObjectTagsDataSource = ({dataSource, canDelete, color, filterPageUrl}) => {
     // 展示数据
     const tagsElements = useMemo(() => {
         if(dataSource && Array.isArray(dataSource)){
             
             return dataSource.map((item, index) => {
+                
+
                 // 如果标签的键不是tag，那么就显示标签的key
                 let tagNameElement;
                 if(item.key !== "tag"){
@@ -236,7 +240,9 @@ export const ShowObjectTagsDataSource = ({dataSource, canDelete, color}) => {
                         </span>
                     )
                 }
-                return (
+
+                // 标签元素
+                let tagElement = (
                     <Tag key={item.id} 
                       color={color ? color : "blue"}
                       closable={canDelete}
@@ -245,11 +251,29 @@ export const ShowObjectTagsDataSource = ({dataSource, canDelete, color}) => {
                         {tagNameElement} {item.value}
                     </Tag>
                 );
+
+                // 判断是否需要跳转
+                if(filterPageUrl){
+                    let filterUrl;
+                    if(filterPageUrl.indexOf("?") > 0){
+                        filterUrl = `${filterPageUrl}&tag__keys=${item.key}&tag__values=${item.value}`;
+                    }else{
+                        filterUrl = `${filterPageUrl}?tag__keys=${item.key}&tag__values=${item.value}`;
+                    }
+
+                    return (
+                        <Link to={filterUrl} key={item.id}>
+                            {tagElement}
+                        </Link>
+                    )
+                }else{
+                    return tagElement;
+                }
             })
         }else{
             return null;
         }
-    }, [dataSource, color, canDelete]);
+    }, [dataSource, color, canDelete, filterPageUrl]);
 
      // 返回展示的标签
      if(tagsElements && tagsElements.length > 0){
@@ -267,6 +291,7 @@ ShowObjectTagsDataSource.propTypes = {
     dataSource: PropTypes.arrayOf(PropTypes.object).isRequired,
     canDelete: PropTypes.bool,
     color: PropTypes.string,
+    filterPageUrl: PropTypes.string // 跳转过滤的页面
 }
 
 export default {

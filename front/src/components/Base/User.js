@@ -65,7 +65,19 @@ export const UserLoginOrInfo = (props) => {
 
                     <Menu.Item>
                         <Link to="/docs/group">
-                            <Icon type="file-text-o"> 文档分组</Icon>
+                            <Icon type="folder"> 文档分组</Icon>
+                        </Link>
+                    </Menu.Item>
+
+                    <Menu.Item>
+                        <Link to="/docs/article/list">
+                            <Icon type="file-text-o"> 文章列表</Icon>
+                        </Link>
+                    </Menu.Item>
+
+                    <Menu.Item>
+                        <Link to="/docs/image">
+                            <Icon type="image"> 图片列表</Icon>
                         </Link>
                     </Menu.Item>
 
