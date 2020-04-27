@@ -28,7 +28,10 @@ class Image(models.Model):
     def save(self, *args, **kwargs):
         # 没有id，就表示是第一次上传文件
         if not self.id and self.file:
+            self.is_active = True
             self.file = self.resize_image(self.file)
+            if not self.filename:
+                self.filename = self.file.name
             super().save(*args, **kwargs)
 
             # 这里开始把图片上传到七牛云中

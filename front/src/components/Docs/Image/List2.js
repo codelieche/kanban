@@ -19,7 +19,6 @@ import { ShowObjectTags, AddObjectTag } from "../../Page/Tags";
 export const ShowImageModal = ({visible, data, afterCloseHandle}) => {
     // 状态
     const [showInfo, setShowInfo] = useState(true);
-    // const [ imageTags, setImageTags ] = useState([]);
     const [ reFreshTimes, setRefreshTimes] = useState(0);
 
     const handleOnOkOrCancel = useCallback((e) => {
@@ -42,48 +41,6 @@ export const ShowImageModal = ({visible, data, afterCloseHandle}) => {
     const imageUrl = useMemo(() => {
         return data.qiniu ? data.qiniu : data.file;
     }, [data])
-
-    // 获取图片的标签
-    // const fetchImageTagsData = useCallback(() => {
-    //     if(data.id > 0){
-    //         fetchObjectTags(
-    //             "docs", "image", data.id, 
-    //             1, 
-    //             (tags) => {setImageTags(tags)}
-    //         )
-    //     }
-    // }, [data.id])
-
-    // 获取标签
-    // useEffect(() => {
-    //     if( data.id && data.id > 0){
-    //         fetchObjectTags(
-    //             "docs", "image", data.id, 
-    //             1, 
-    //             (tags) => {setImageTags(tags)}
-    //         )
-    //     }
-    // }, [data.id]);
-
-    // 图片标签
-    // const imageTagsElements = useMemo(() => {
-    //     if(imageTags && Array.isArray(imageTags)){
-    //         return imageTags.map((item, index) => {
-    //             const handleOnClose = (e) => {
-    //                 e.stopPropagation(); 
-    //                 deleteObjectTag(
-    //                     item.id, 
-    //                     fetchImageTagsData
-    //                 );
-    //             }
-    //             return (
-    //                 <Tag key={item.id} color="blue"
-    //                 closable={true} onClose={handleOnClose}
-    //             >{item.value}</Tag>
-    //             )
-    //         })
-    //     }
-    // }, [fetchImageTagsData, imageTags])
 
     const imageTagsElements = useMemo(() => {
         if(data && data.id > 0){
@@ -363,6 +320,13 @@ export const ImageListPage = (props) => {
                 </span>
             )
     }, [paramsFields, props.history, props.location]);
+
+    // 每次url变更了，就设置当前的modal为false
+    useEffect(() => {
+        // console.log(props.location);
+        setShowImageModal(false);
+        setCurrentImage({});
+    }, [props.location])
 
     return (
         <div className="content">

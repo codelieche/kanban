@@ -19,6 +19,8 @@ class ImageModelSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if self.context["request"].method == "POST":
             attrs["user"] = self.context["request"].user
+        # if "is_active" not in attrs:
+        #     attrs["is_active"] = True
         return attrs
     
     class Meta:
