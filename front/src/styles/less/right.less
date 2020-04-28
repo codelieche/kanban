@@ -19,7 +19,9 @@
             flex: 1;
             background-color: #fff;
             display: flex;
+            display: -webkit-flex;
             flex-direction: column;
+            // overflow-y: auto; // 设置了overflow，那么footer就会总是显示
 
             article{
                 // 各层级设置flex，让文章主体内容占更多的空间
@@ -53,6 +55,7 @@
             background-color: #EEE;
             white-space: nowrap;
         }
+
     }
 }
 

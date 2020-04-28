@@ -54,15 +54,19 @@ function RightContent(props){
                 {/* 面包屑开始 */}
                     <Breadcrumb data={navData} />
                 {/* 面包屑结束 */}
+                
+                {/* 顶部右侧 */}
+                <div className="right">
+                    {/* 搜索按钮 */}
+                    <HeaderSearchButton history={props.history} />
 
-                {/* 用户信息 */}
-                <div className="user">
-                    {/* 用户登录信息 */}
-                    <UserLoginOrInfo />
+                    {/* 用户信息 */}
+                    <div className="user">
+                        {/* 用户登录信息 */}
+                        <UserLoginOrInfo />
+                    </div>
                 </div>
-
-                {/* 搜索按钮 */}
-                <HeaderSearchButton history={props.history} />
+                {/* 顶部右侧 End */}
             </div>
 
             {/* 右侧的主体内容区域 */}
@@ -116,12 +120,13 @@ function RightContent(props){
                     />
 
                 </Switch>
+
+                {/* 把底部放在container中：那么footer不会是最底部 */}
+                {/* <Footer /> */}
             </div>
 
             {/* 右侧底部 */}
-            <Footer>
-
-            </Footer>
+            <Footer />
             
         </div>
     );

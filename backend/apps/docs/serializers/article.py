@@ -4,7 +4,7 @@
 from rest_framework import serializers
 
 from account.models import User
-
+from account.tasks.message import send_message
 from docs.models.article import Article
 
 
@@ -27,8 +27,20 @@ class ArticleModelSerializer(serializers.ModelSerializer):
             parent = attrs["parent"]
             if parent:
                 attrs["group"] = parent.group
-
         return attrs
+    
+    def create(self, validated_data):
+        # 调用父类方法
+        instance = super().create(validated_data=validated_data)
+
+        # 创建文章成功：发送消息
+        link = "/docs/article/{}".format(instance.id)
+        send_message(
+            user=validated_data["user"], title="创建文章成功", content="创建文章成功", 
+            link=link, sender="system", scope="docs", website=True, dingding=False
+        )
+
+        return instance
 
     def get_fields(self):
         fields = super().get_fields()

@@ -65,6 +65,7 @@ export const TagsFilter = ({activeTagKey, activeTagValue, type, handleSelected, 
             <TagsSelect 
               tags={tagKeys} 
               activeTagKey={activeTagKey}
+              activeTagValue={activeTagValue}
               handleSelected={handleSelected}
               handleFilterClear={handleFilterClear}
             />
@@ -90,12 +91,13 @@ TagsFilter.propTypes = {
 }
 
 // 已select的形式展示标签
-export const TagsSelect = ({tags, activeTagKey, handleSelected, handleFilterClear}) => {
+export const TagsSelect = ({tags, activeTagKey, activeTagValue, handleSelected, handleFilterClear}) => {
     // 状态
     const [currentTag, setCurrentTag] = useState();
     const [ tagValues, setTagValues ] = useState([]);
     const [currentTagValue, setCurrentTagValue] = useState();
 
+    // tagKey变更的时候
     useEffect(() => {
         // console.log(activeTagKey);
         if(activeTagKey){
@@ -103,6 +105,14 @@ export const TagsSelect = ({tags, activeTagKey, handleSelected, handleFilterClea
             fetchTagValuesData(activeTagKey, setTagValues)
         }
     }, [activeTagKey])
+
+    // tagValue变更的时候
+    useEffect(() => {
+        // console.log(activeTagValue);
+        if(activeTagValue){
+            setCurrentTagValue(activeTagValue);
+        }
+    }, [activeTagValue])
 
     // tag key变更的时候
     const handleOnTagChange = useCallback((tagKey) => {
@@ -349,7 +359,6 @@ export const TagsFilterButton = ({pageUrl, paramsFields, history, location}) => 
                 }
             }
         }
-
         // 跳转
         // console.log(url);
         history.push(url);

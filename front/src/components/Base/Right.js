@@ -51,14 +51,18 @@ function RightContent(props){
                     <Breadcrumb data={navData} />
                 {/* 面包屑结束 */}
 
-                {/* 用户信息 */}
-                <div className="user">
-                    {/* 用户登录信息 */}
-                    <UserLoginOrInfo />
-                </div>
+                {/* 顶部右侧 */}
+                <div className="right">
+                    {/* 搜索按钮 */}
+                    <HeaderSearchButton history={props.history} />
 
-                {/* 搜索按钮 */}
-                <HeaderSearchButton history={props.history} />
+                    {/* 用户信息 */}
+                    <div className="user">
+                        {/* 用户登录信息 */}
+                        <UserLoginOrInfo />
+                    </div>
+                </div>
+                {/* 顶部右侧 End */}
                 
             </div>
             {/* 右侧头部结束 */}

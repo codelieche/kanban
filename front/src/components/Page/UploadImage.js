@@ -81,9 +81,9 @@ export const UploadImageTabs = (props) => {
             formData.append("file", fileListData[i]);
 
             // 添加filename参数
-            // if(!formData.get("filename")){
-            //     formData.append("filename", fileListData[i].name);
-            // }
+            if(!formData.get("filename")){
+                formData.append("filename", fileListData[i].name);
+            }
         }
         
         // 发起Post请求

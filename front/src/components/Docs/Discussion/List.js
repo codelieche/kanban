@@ -2,7 +2,7 @@
  * 文档讨论列表页
  */
 import React, { useMemo } from "react";
-// import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import {
     Row,
@@ -35,7 +35,7 @@ export const DiscussionListPage = (props) => {
                 // render: (text, record) => {
                 //     return <Link to={`/docs/article/${text}`}>{text}</Link>;
                 // },
-                width: 50,
+                width: 80,
             },
             {
                 title: "类型",
@@ -44,7 +44,6 @@ export const DiscussionListPage = (props) => {
                 width: 100,
                 ellipsis: true,
             },
-    
             {
                 title: "内容",
                 dataIndex: "content",
@@ -56,7 +55,9 @@ export const DiscussionListPage = (props) => {
                 title: "用户",
                 dataIndex: "user",
                 key: "user",
-                width: 100,
+                width: 130,
+                ellipsis: true,
+                sorter: () => {}
             },
             {
                 title: "时间",
@@ -64,6 +65,7 @@ export const DiscussionListPage = (props) => {
                 key: "time_added",
                 width: 180,
                 ellipsis: true,
+                sorter: () => {}
             },
             {
                 title: "状态",
@@ -98,7 +100,11 @@ export const DiscussionListPage = (props) => {
                 render: (text, record) => {
                     return (
                         <div>
-                            <span>-</span>
+                            <span>
+                                <Link to={`/docs/article/${record.article}`}>
+                                    <Icon type="file-text-o" />查看文章
+                                </Link>
+                            </span>
                         </div>
                     )
                 }

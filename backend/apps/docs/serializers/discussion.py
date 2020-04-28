@@ -4,6 +4,7 @@
 from rest_framework import serializers
 
 from account.models import User
+from account.tasks.message import send_message
 from docs.models.article import Article
 from docs.models.discussion import Discussion
 
@@ -33,6 +34,15 @@ class DiscussionModelSerializer(serializers.ModelSerializer):
 
         # 调用父类的复方，创建Discussion实例
         instance = super().create(validated_data=validated_data)
+
+        # 发送消息
+        link = "/docs/article/{}".format(instance.article.id)
+        # 后续可改成异步的
+        send_message(
+            user=instance.article.user, title="文章ID:{}收到评论".format(instance.article.id), 
+            content="{}评论了你的文章({})".format(user.username, instance.article.title), link=link, 
+            sender="system", scope="docs", website=True, dingding=False
+        )
         return instance
 
     def get_fields(self):
@@ -49,6 +59,6 @@ class DiscussionModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Discussion
         fields = (
-            "id", "group", "article", "content", "parent",
+            "id", "category", "article", "content", "parent",
             "user", "time_added", "time_updated", "is_deleted"
         )

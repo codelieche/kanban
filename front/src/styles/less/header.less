@@ -81,25 +81,27 @@
         clear: both;
     }
 
-    .search {
-        // position: absolute;
-        // right: 170px;
-        // top: 0;
-        line-height: 35px;
-        padding: 5px 5px;
+    .right {
         float: right;
-    }
-    
-    .user{
-        // position: absolute;
-        // right: 25px;
-        // top: 0;
-        float: right;
-        line-height: 35px;
-        padding: 5px 10px;
-        // font-weight: 500;
-        &:hover{
-            color: #000;
+        text-align: right;
+        
+        .search {  // 搜索
+            line-height: 35px;
+            padding: 5px 5px;
+            // float: right;
+            display: inline-block;
+        }
+        
+        .user{  // 用户信息 下拉导航
+            // float: right;
+            line-height: 35px;
+            padding: 5px 10px;
+            // font-weight: 500;
+            display: inline-block;
+            &:hover{
+                color: #000;
+            }
         }
     }
+   
 }
