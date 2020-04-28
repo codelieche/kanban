@@ -4,6 +4,7 @@ import { Button } from "antd";
 // import {StarFilled} from "@ant-design/icons";
 import api from "../Utils/fetchApi";
 import Icon from "../Base/Icon";
+import MermaidPreviewDemo from "./demo/mermaid";
 
 // import "../../styles/font-awesome.min.css";
 
@@ -57,6 +58,11 @@ class App extends React.Component{
           </span>
           
         </header>
+
+        <div>
+          <div>Test: MermaidPreviewDemo</div>
+          <MermaidPreviewDemo />
+        </div>
       </div>
     );
   }

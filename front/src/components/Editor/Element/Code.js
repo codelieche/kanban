@@ -4,6 +4,7 @@
 import React from "react";
 
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import {MermaidElement} from "./Mermaid";
 
 // https://github.com/conorhastings/react-syntax-highlighter/tree/master/dist/esm/styles
 
@@ -17,6 +18,12 @@ import atomDark from "./AtomDark";
 // ReactMarkdown渲染code node
 export const CodeBlock = ({value, language}) => {
     // console.log(value, language);
+    if( language === "mermaid"){
+        return (
+            <MermaidElement code={value} />
+        )
+    }
+
     return (
         <SyntaxHighlighter language={language} 
             style={ atomDark }
