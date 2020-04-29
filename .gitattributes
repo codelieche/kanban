@@ -1,0 +1,4 @@
+
+backend/static/js/* linguist-vendored
+backend/static/css/* linguist-vendored
+backend/static/media/* linguist-vendored

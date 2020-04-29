@@ -103,6 +103,7 @@ export const MermaidElement = ({ code }) => {
     return (
         <div className="mermaid">
             <div ref={containerRef} className="preview">
+                
             </div>
 
             {/* 是否有错误 */}

@@ -7,6 +7,7 @@ __pycache__/
 # 忽略migrations文件
 **/migrations/*.py
 !**/migrations/__init__.py
+/Dockerfile/requirements.txt
 
 # 忽略文件
 *.pyc

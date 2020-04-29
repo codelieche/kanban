@@ -4,6 +4,7 @@
  */
 import React, {useState, useCallback, useContext} from "react";
 import { Switch, Route } from "react-router-dom";
+import loadable from '@loadable/component';
 
 import { GlobalContext } from "./Context";
 import Icon from "./Icon";
@@ -12,9 +13,14 @@ import { HeaderSearchButton } from "../Tools/Search/Button";
 import { UserLoginOrInfo } from "./User";
 
 // 底部
-import Footer from "./Footer";
-import UserCenterIndex from "../User/Center/Index";
-import ArticlePage from "../Docs/Article/Detail";
+// import Footer from "./Footer";
+// import UserCenterIndex from "../User/Center/Index";
+// import ArticlePage from "../Docs/Article/Detail";
+
+// 动态加载：也可使用: react-loadable
+const Footer = loadable(() => import("./Footer"));
+const UserCenterIndex = loadable(() => import("../User/Center/Index"));
+const AsyncArticlePage = loadable(() => import("../Docs/Article/Detail"));
 
 function RightContent(props){
     
@@ -79,7 +85,7 @@ function RightContent(props){
                     />
                     <Route
                       path="/docs/article/:id"
-                      component={ArticlePage}
+                      component={AsyncArticlePage}
                       {...props}
                     >
                         

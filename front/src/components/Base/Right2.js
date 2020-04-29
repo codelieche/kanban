@@ -4,6 +4,7 @@
  */
 import React, {useState, useCallback, useContext} from "react";
 import { Switch, Route } from "react-router-dom";
+import loadable from '@loadable/component';
 
 import { GlobalContext } from "./Context";
 import Icon from "./Icon";
@@ -11,14 +12,23 @@ import Breadcrumb from "../Page/Breadcrumb";
 import { HeaderSearchButton } from "../Tools/Search/Button";
 import { UserLoginOrInfo } from "./User";
 
-import Footer from "./Footer";
+// import Footer from "./Footer";
 // import ArticlePage from "../Docs/Article/Detail";
-import DocsIndex from "../Docs/Index";
-import TagsIndex from "../Tags/index";
-import { ToolsIndexPage } from "../Tools/index";
-import UserIndex from "../User/Index";
-import ConfigIndex from "../Config/index";
-import TestIndex from "../Test/Index";
+// import DocsIndex from "../Docs/Index";
+// import TagsIndex from "../Tags/index";
+// import { ToolsIndexPage } from "../Tools/index";
+// import UserIndex from "../User/Index";
+// import ConfigIndex from "../Config/index";
+// import TestIndex from "../Test/Index";
+
+// 动态加载：也可使用: react-loadable
+const Footer = loadable(() => import("./Footer"));
+const DocsIndex = loadable(() => import("../Docs/Index"));
+const TagsIndex = loadable(() => import("../Tags/index"));
+const ToolsIndexPage = loadable(() => import("../Tools/index"));
+const UserIndex = loadable(() => import("../User/Index"));
+const ConfigIndex = loadable(() => import("../Config/index"));
+const TestIndex = loadable(() => import("../Test/Index"));
 
 function RightContent(props){
     
