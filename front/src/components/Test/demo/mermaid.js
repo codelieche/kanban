@@ -28,7 +28,7 @@ export const PreviewDemo = ({code}) => {
           _code = _code.replace(/</g, '&lt;')
           _code = _code.replace(/>/g, '&gt;')
           // Overriding the innerHTML with the updated code string
-          console.log(_code);
+        //   console.log(_code);
 
           containerRef.current.innerHTML = _code
           mermaid.init(undefined, containerRef.current);

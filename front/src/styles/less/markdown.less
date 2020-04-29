@@ -188,7 +188,45 @@ table {
 // 流程图
 .mermaid {
   // padding: 5px;
+  position: relative;
   .preview {
     padding: 5px;
+  }
+
+  .code {
+    padding: 8px 10px;
+    background-color: #eee;
+    white-space: pre-wrap;
+    font-size: 13px;
+  }
+
+  .error {
+    background: darkred;
+    color: white;
+    flex: 1;
+    padding: 10px;
+  }
+
+  .buttons {
+    position: absolute;
+    right: 0;
+    top: 5px;
+    display: none;
+    a, .buttom {
+      padding: 2px 5px;
+      color: #999;
+      cursor: pointer;
+      margin-right: 5px;
+      font-size: 12px;
+      &:hover {
+        background-color: @letf-sider-nav-item-hover-color;
+      }
+    }
+  }
+
+  &:hover{
+    .buttons {
+      display: inline-block;
+    }
   }
 }
