@@ -139,7 +139,7 @@ const LoginForm = (props) => {
             <FormItem>
               <Row>
                 <Col span={12} className="login-form-change">
-                  <Link to="">
+                  <Link to="/user/change/password">
                     修改密码
                   </Link>
                 </Col>

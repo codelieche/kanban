@@ -15,6 +15,7 @@ import Home from "../components/Home";
 import Home2 from "../components/Home2";
 import Login from "../components/User/Login";
 import UserSignUp from "../components/User/SignUp";
+import UserChangePassword from "../components/User/ChangePassword";
 import NoMatch from "../components/Base/NoMatch";
 
 function App(props) {
@@ -25,6 +26,7 @@ function App(props) {
                 <Switch>
                 <Route exact={true} path="/user/login" component={Login} />
                 <Route exact={true} path="/user/signup" component={UserSignUp} />
+                <Route exact={true} path="/user/change/password" component={UserChangePassword} />
 
                 <Route exact path="/" component={Home2} />
 
