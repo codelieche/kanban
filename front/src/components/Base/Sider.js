@@ -25,6 +25,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
     // 刷新导航相关的操作
     const { 
         setRefreshNavTimes, history, 
+        // groupPermissions,
         currentArticleGroupID,   // 是设置了全局的上下文的
         setCurrentArticleGroupID, // 在article详情页会用到
     } = useContext(GlobalContext);
@@ -192,6 +193,9 @@ function LeftSider({showLeftSider, setShowLeftSider}){
           })
             .catch(err => {
                 console.log(err);
+                if(err.status === 403){
+                    message.warn(`您无权限添加文章！`, 5);
+                }
             })
         
     }, [currentGroup.id, history, setRefreshNavTimes])

@@ -107,7 +107,8 @@ export const DiscussionListPage = (props) => {
                             </span>
                         </div>
                     )
-                }
+                },
+                ellipsis: true,
             }
         ]
     }, []);

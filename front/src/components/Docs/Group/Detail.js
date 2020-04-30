@@ -149,7 +149,7 @@ function CategoryDetail(props) {
                     return <Link to={`/docs/article/${text}`}>{text}</Link>;
                 },
                 ellipsis: true,
-                width: 50,
+                width: 85,
             },
 
             {

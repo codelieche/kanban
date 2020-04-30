@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404
 from django.http.response import JsonResponse, HttpResponseForbidden
 
 from tags.models import ObjectTag
+from docs.models.group import Group
 from docs.models.article import Article
 from docs.models.discussion import Discussion
 from docs.models.info import Info
@@ -32,6 +33,16 @@ class ArticleCreateApiView(generics.CreateAPIView):
     serializer_class = ArticleModelSerializer
     permission_classes = (IsAuthenticated,)
 
+    def create(self, request, *args, **kwargs):
+        # 判断当前用户是否有权限
+        group_id = request.data.get("group", 0)
+        group = Group.objects.filter(id=group_id).first()
+        if group:
+            user = request.user
+            if not group.check_user_permission(user, "write"):
+                return HttpResponseForbidden()
+        else:
+            return super().create(request, *args, *kwargs)
 
 class ArticleListApiView(generics.ListAPIView):
     """
