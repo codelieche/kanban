@@ -6,12 +6,13 @@ import React, {useState, useContext, useMemo, useCallback, useEffect} from "reac
 import { Link } from "react-router-dom";
 
 import {
-    Menu, Dropdown,
+    Menu, 
+    Dropdown,
+    Spin,
     message,
 } from "antd";
 import ReactMarkdown from "react-markdown";
 import moment from "moment";
-// import htmlParser from 'react-markdown/plugins/html-parser'
 
 import EditableContent from "../../Base/EditableContent";
 import Icon from "../../Base/Icon";
@@ -21,7 +22,6 @@ import fetchApi from "../../Utils/fetchApi";
 import { patchUpdateArticle } from "./Operation";
 import EditorArticleModel from "./EditorModal";
 import CodeBlock from "../../Editor/Element/Code";
-import LoadingPage from "../../Page/Loading";
 import { CopyIcon, copyTextFunc } from "../../Page/Copy";
 // 上传文章图片
 import { UploadImageTabsModal } from "../../Page/UploadImage";
@@ -51,7 +51,7 @@ export const ArticleDetail = function(props){
     // 是否显示编辑的对话框
     const [showEditorModal, setShowEditorModal] = useState(false);
     // 判断是否加载完毕了
-    const [loaded, setLoaded] = useState(false);
+    const [loading, setLoading] = useState(false);
     // 是否需要渲染错误页
     const [errorCode, setErrorCode] = useState(0);
     // 获取当前分类的权限
@@ -64,6 +64,54 @@ export const ArticleDetail = function(props){
     const [ reFreshTagsTimes, setReFreshTagsTimes] = useState(0);
     // 当前用户所具有的权限
 
+    // 设置新的文章顶部导航
+    // 文章标题修改了，数据加载了的时候，都需要调用这个函数
+    const updateHeaderNavData = useCallback(articleData => {
+        // 传入的数据为空，或者id为空，都直接返回
+        if(!articleData || !articleData.id){
+            return;
+        }
+
+        // 根据parent信息组织顶部导航信息
+        let navData = [
+            {
+                title: articleData.title,
+                icon: articleData.icon
+            }
+          ];
+          let parent = articleData.parent;
+          while(!!parent){
+              let navItem = {
+                  title: parent.title ? parent.title : "无标题",
+                  link: `/docs/article/${parent.id}`,
+                  icon: parent.icon,
+                  id: parent.id
+              }
+              navData.unshift(navItem);
+
+              // 重新赋值parent
+              parent = parent.parent;
+              
+          }  
+          //   记得加入当前文章
+          navData.unshift(
+            {
+                title: "首页",
+                icon: "home",
+                link: "/"
+            })
+          if(typeof setNavData === "function"){
+            // console.log("新的页面导航信息：", navData);
+            setNavData(navData);
+          }else{
+              console.log("不能设置navData")
+          }
+
+          // 修改浏览器当前标签的标题
+          document.title = `看板--${articleData.title}`;  
+
+    }, [setNavData])
+
     // 获取文章数据
     const fetchDetailData = useCallback(id => {
         if(! id){
@@ -73,7 +121,7 @@ export const ArticleDetail = function(props){
         let url = `/api/v1/docs/article/${id}`;
         fetchApi.Get(url, {}, {})
           .then(responseData => {
-             setLoaded(true);
+             setLoading(false);
               if(responseData.id > 0){
                   setData(responseData);
                   setArticleID(id);
@@ -81,50 +129,15 @@ export const ArticleDetail = function(props){
                     // 修改全局的分类id
                     setCurrentArticleGroupID(responseData.group);
                   }
-                  // 根据parent信息组织导航信息
-                  let navData = [
-                    {
-                        title: responseData.title,
-                        icon: responseData.icon
-                    }
-                  ];
-                  let parent = responseData.parent;
-                  while(!!parent){
-                      let navItem = {
-                          title: parent.title ? parent.title : "无标题",
-                          link: `/docs/article/${parent.id}`,
-                          icon: parent.icon,
-                          id: parent.id
-                      }
-                      navData.unshift(navItem);
-
-                      // 重新赋值parent
-                      parent = parent.parent;
-                      
-                  }  
-                  //   记得加入当前文章
-                  navData.unshift(
-                    {
-                        title: "首页",
-                        icon: "home",
-                        link: "/"
-                    })
-                  if(typeof setNavData === "function"){
-                    // console.log("新的页面导航信息：", navData);
-                    setNavData(navData);
-                  }else{
-                      console.log("不能设置navData")
-                  }
-
-                  // 修改浏览器当前标签的标题
-                  document.title = `看板--${responseData.title}`;   
+                  // 设置新的右侧header的导航
+                  updateHeaderNavData(responseData);   
               }else{
                   // 获取文章数据出错
                   message.warn("获取文章数据出错");
               }
           })
             .catch(err => {
-                setLoaded(true);
+                setLoading(false);
                 console.log(err);
                 // 判断错误是不是：404或者403
                 if(err && err.status && (err.status === 403 || err.status === 404)){
@@ -132,14 +145,14 @@ export const ArticleDetail = function(props){
                     setErrorCode(err.status);
                 }
             });
-    }, [currentArticleGroupID, setCurrentArticleGroupID, setNavData])
+    }, [currentArticleGroupID, updateHeaderNavData, setCurrentArticleGroupID])
 
     useEffect(() => {
         // let ac = new AbortController();
         if(props.match.params.id !== articleID || (data.id && props.match.params.id !== data.id.toString())){
             // setArticleID(props.match.params.id);
             // setData({});  // 把文章内容置空
-            setLoaded(false);
+            setLoading(true);
             fetchDetailData(props.match.params.id);      // 获取文章详情数据
             // fetchArticleTagsData(props.match.params.id, 1); // 获取文章的标签
             setReFreshTagsTimes(0);
@@ -168,9 +181,11 @@ export const ArticleDetail = function(props){
     }, [data]);
 
     // 刷新导航: 刷新导航只要增加refreshNavTimes的值即可
-    const handleRefreshNav = useCallback(() => {
+    const handleRefreshNav = useCallback((articleData) => {
         setRefreshNavTimes(prevState => prevState + 1);
-    }, [setRefreshNavTimes]);
+        // 还需要更新一下当前的顶部导航
+        updateHeaderNavData(articleData);
+    }, [setRefreshNavTimes, updateHeaderNavData]);
 
     // 编辑文章按钮
     const handleEditorButtonClick = useCallback(() => {
@@ -417,11 +432,6 @@ export const ArticleDetail = function(props){
         }
     }, [data.id, props.match.params.id, canEditor, reFreshTagsTimes])
 
-    // 判断是否加载完毕
-    if(!loaded){
-        return <LoadingPage size="large"/>
-    }
-
     // 判断是不是渲染错误页：404或者403
     if( !data.id && errorCode > 0){
         // 需要渲染错误页面:
@@ -441,6 +451,7 @@ export const ArticleDetail = function(props){
     // })
 
     return (
+      <Spin spinning={loading}>
         <article>
             {/* 操作按钮:有编辑权限才可显示 */}
             {canEditor ? (
@@ -671,6 +682,7 @@ export const ArticleDetail = function(props){
               handleSubmit={handleAddTagModealSubmit}
             />
         </article>
+      </Spin>
     );
 }
 

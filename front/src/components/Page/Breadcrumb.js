@@ -37,14 +37,14 @@ import Icon from "../Base/Icon";
                 return (
                     <Breadcrumb.Item key={index}>
                         <Link to={item.link}>
-                            {iconElement}{item.title}
+                            {iconElement}{item.title ? item.title : <span className="no-title">无标题</span>}
                         </Link>
                     </Breadcrumb.Item>
                 );
             }else{
                 return (
                     <Breadcrumb.Item key={index}>
-                        {iconElement}{item.title}
+                        {iconElement}{item.title ? item.title : <span className="no-title">无标题</span>}
                     </Breadcrumb.Item>
                 );
             }

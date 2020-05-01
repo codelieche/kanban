@@ -12,7 +12,6 @@ import URLSearchParams from "../Utils/UrlParam";
 const FormItem = Form.Item;
 
 const LoginForm = (props) => {
-
   // 状态
   // const [data, setData] = useState({})
 
@@ -69,7 +68,7 @@ const LoginForm = (props) => {
     })
     .catch(err => {
       console.log(err);
-      if(err.status === 400 || err.status === 403){
+      if( err && (err.status === 400 || err.status === 403) ){
         if(err.data && err.data.message){
           message.warn(err.data.message, 5);
         }else{
