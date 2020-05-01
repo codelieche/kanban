@@ -432,6 +432,21 @@ export const ArticleDetail = function(props){
         }
     }, [data.id, props.match.params.id, canEditor, reFreshTagsTimes])
 
+    // 按键e后，自动弹出编辑
+    useEffect(() => {
+        if(canEditor && !showEditorModal){
+            document.onkeydown = (e) => {
+                var keyNumber = window.envet ? e.keyCode : e.which;
+                // 字符e的keyCode是69
+                if(keyNumber === 69){
+                    setShowEditorModal(true);
+                }
+            }
+        }else{
+            document.onkeydown = null;
+        }
+    }, [canEditor, showEditorModal])
+
     // 判断是不是渲染错误页：404或者403
     if( !data.id && errorCode > 0){
         // 需要渲染错误页面:

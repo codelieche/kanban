@@ -93,7 +93,6 @@ class ArticleListApiView(generics.ListAPIView):
             objecttag_ids = list(objecttag_queryset.values_list("object_id", flat=True))
         
         # print("文章id列表：", objecttag_ids)
-
         # 获取用户的分类的文章
         if user.is_superuser:
             if isinstance(objecttag_ids, list):
@@ -101,8 +100,17 @@ class ArticleListApiView(generics.ListAPIView):
             else:
                 queryset = Article.objects.all()
         else:
-            groups = user.group_set.all().union(user.owner_group_set.all())
+            # groups = user.group_set.all().union(user.owner_group_set.all())
+            
+            # 当用户以前申请过这个group，删除后是不删除GroupUser的，只是设置is_active为False而已
+            groups = user.group_set.filter(
+                id__in=list(user.groupuser_set.all().
+                filter(is_active=True).values_list("group", flat=True))).union(
+                    user.owner_group_set.all()
+                )
             groups_ids = list(groups.values_list("id", flat=True))
+            
+            # print(groups_ids, objecttag_ids)
             if isinstance(objecttag_ids, list):
                 queryset = Article.objects.filter(group_id__in=groups_ids, id__in=objecttag_ids)
             else:

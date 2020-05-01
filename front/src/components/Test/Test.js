@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, message } from "antd";
 
 // import MyEditor from "../Editor";
@@ -10,6 +10,7 @@ import { UploadImageTabsModal, UploadImageTabs } from "../Page/UploadImage";
 import CopyIcon from "../Page/Copy";
 import BaseForm from "../Base/Forms/BaseForm";
 import BaseFormModal from "../Page/BaseForm";
+import onKeyDown from "../Utils/onKeyDown";
 
 const baseFormFieds = [
     {
@@ -138,6 +139,10 @@ export function TestPageFunc() {
     const [ showBaseFormModal, setShowBaseFormModal] = useState(false);
 
     const [fileListData, setFileListData] = useState([]);
+
+    useEffect(() => {
+        document.onkeydown = onKeyDown;
+    })
 
     return (
         <div>
