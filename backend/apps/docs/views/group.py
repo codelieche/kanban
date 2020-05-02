@@ -57,7 +57,7 @@ class GroupListApiView(generics.ListAPIView):
             return Group.objects.all()
 
         # 2. 获取到用户的分类
-        queryset = user.group_set.all()
+        queryset = user.group_set.all().union(user.owner_group_set.all())
 
         # 3. 返回queryset
         return queryset
@@ -84,7 +84,11 @@ class GroupListAllApiView(generics.ListAPIView):
         user = self.request.user
 
         # 2. 获取到用户的分类
-        queryset = user.group_set.all()
+        # queryset = user.group_set.all()
+        queryset = user.group_set.filter(
+            id__in=list(user.groupuser_set.all().
+                        filter(is_active=True).values_list("group", flat=True))). \
+            union(user.owner_group_set.all())
 
         # 3. 返回queryset
         return queryset

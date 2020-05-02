@@ -80,7 +80,26 @@ export const ArticleDetail = function(props){
             }
           ];
           let parent = articleData.parent;
-          while(!!parent){
+
+        //   如果更新article，返回的parent不是数字了，那可去掉下面的代码
+        if(!!parent && !parent.id && Number.isInteger(parent)){
+            // 更新导航
+            setNavData(prevState => {
+                if( Array.isArray(prevState) && prevState.length > 0){
+                let newState = [...prevState];
+                newState[newState.length - 1].title = articleData.title;
+                return newState;
+                }else{
+                    return [];
+                }
+            });
+            // 修改浏览器当前标签的标题
+            document.title = `看板--${articleData.title}`;  
+            return;
+        }
+
+          // 遍历parent
+          while(!!parent && parent.id > 0){
               let navItem = {
                   title: parent.title ? parent.title : "无标题",
                   link: `/docs/article/${parent.id}`,
@@ -184,6 +203,11 @@ export const ArticleDetail = function(props){
     const handleRefreshNav = useCallback((articleData) => {
         setRefreshNavTimes(prevState => prevState + 1);
         // 还需要更新一下当前的顶部导航
+        // setData(prevState => {
+        //     prevState.title = articleData.title;
+        //     updateHeaderNavData(prevState);
+        //     return prevState;
+        // })
         updateHeaderNavData(articleData);
     }, [setRefreshNavTimes, updateHeaderNavData]);
 

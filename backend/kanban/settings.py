@@ -100,7 +100,7 @@ DATABASES = {
     # 这样不同开发人员设置好自己的环境变量，就可以使用不同的数据库开发了
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('KANBAN_DEVELOP_DB', 'kanban_develop'),
+        'NAME': os.environ.get('KANBAN_DEVELOP_DB', 'kanban_develop2'),
         'USER': os.environ.get('MYSQL_USER', 'root'),
         'PASSWORD': os.environ.get('MYSQL_PASSWORD', 'root'),
         'HOST': os.environ.get('MYSQL_HOST', '127.0.0.1'),

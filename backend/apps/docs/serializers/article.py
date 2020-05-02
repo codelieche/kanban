@@ -42,6 +42,10 @@ class ArticleModelSerializer(serializers.ModelSerializer):
 
         return instance
 
+    def update(self, instance, validated_data):
+        instance = super().update(instance=instance, validated_data=validated_data)
+        return instance
+
     def get_fields(self):
         fields = super().get_fields()
         # 如果是获取子页面

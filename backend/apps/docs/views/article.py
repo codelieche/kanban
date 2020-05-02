@@ -41,8 +41,12 @@ class ArticleCreateApiView(generics.CreateAPIView):
             user = request.user
             if not group.check_user_permission(user, "write"):
                 return HttpResponseForbidden()
+            else:
+                # 有权限的话调用create的方法
+                return super().create(request, *args, *kwargs)
         else:
             return super().create(request, *args, *kwargs)
+
 
 class ArticleListApiView(generics.ListAPIView):
     """
@@ -105,9 +109,8 @@ class ArticleListApiView(generics.ListAPIView):
             # 当用户以前申请过这个group，删除后是不删除GroupUser的，只是设置is_active为False而已
             groups = user.group_set.filter(
                 id__in=list(user.groupuser_set.all().
-                filter(is_active=True).values_list("group", flat=True))).union(
-                    user.owner_group_set.all()
-                )
+                            filter(is_active=True).values_list("group", flat=True))).\
+                union(user.owner_group_set.all())
             groups_ids = list(groups.values_list("id", flat=True))
             
             # print(groups_ids, objecttag_ids)

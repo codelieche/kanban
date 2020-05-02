@@ -2,7 +2,7 @@
  * 左右布局右侧的内容：
  * 文章页的右侧
  */
-import React, {useState, useCallback, useContext} from "react";
+import React, {useState, useCallback, useContext, useMemo} from "react";
 import { Switch, Route } from "react-router-dom";
 import loadable from '@loadable/component';
 
@@ -43,6 +43,13 @@ function RightContent(props){
         setLeftSiderToggleIcon("align-justify");
     }
 
+    let headerNavElment = useMemo(() => {
+        // console.log(navData);
+        return (
+            <Breadcrumb data={navData} />
+        );
+    }, [navData])
+
     return (
         <div className="right-content">
             {/* 右侧头部 */}
@@ -54,7 +61,8 @@ function RightContent(props){
                     <Icon type={letfSiderToggleIcon}></Icon>
                 </div>
                 {/* 面包屑开始 */}
-                    <Breadcrumb data={navData} />
+                    {/* <Breadcrumb data={navData} /> */}
+                    {headerNavElment}
                 {/* 面包屑结束 */}
 
                 {/* 顶部右侧 */}

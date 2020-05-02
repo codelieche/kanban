@@ -169,7 +169,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
         // 阻止冒泡
         e.stopPropagation();
         // 添加个新的文章
-        if(currentGroup.id < 0){
+        if(currentGroup.id < 0 || !currentGroup.id){
             message.warn("还未选择分类，不可创建文章", 3);
             return;
         }
