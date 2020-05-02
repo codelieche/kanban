@@ -20,9 +20,12 @@ from django.conf import settings
 from rest_framework.documentation import include_docs_urls
 
 from kanban.views.index import index_page
+from kanban.views.setup import ProjectSetupView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # 初始化
+    path('api/v1/setup', ProjectSetupView.as_view(), name="setup"),
     # api v1 url
     path('api/v1/', include(arg=("kanban.urls.api_v1", "kanban"), namespace="api")),
 
@@ -31,7 +34,6 @@ urlpatterns = [
 
     # 排除media、static、api、admin四个开头的，其它页面调用react的页面
     re_path(r'^(?!media|api|static|admin)[a-z]?', index_page),
-
 
     # 加入media路由配置，生产环境不会用这个来获取静态文件
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

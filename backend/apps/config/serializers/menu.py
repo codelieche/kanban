@@ -31,6 +31,10 @@ class MenuModelSerializer(serializers.ModelSerializer):
             "id", "title", "key", "slug", "icon", "parent", "children", "permission",
             "target", "is_link", "link", "is_deleted", "level", "order"
         )
+        # fields = (
+        #     "order", "title", "key", "slug", "icon", "permission",
+        #     "target", "is_link", "link", "is_deleted", "level", "children"
+        # )
         # validators = [
         #     serializers.UniqueTogetherValidator(
         #         queryset=Menu.objects.all(),
