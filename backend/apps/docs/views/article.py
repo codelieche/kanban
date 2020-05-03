@@ -255,7 +255,7 @@ class ArticleDiscussionListApiView(generics.ListAPIView):
 
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ("content", "article__title", "user__username")
-    filter_fields = ("user", "article", "group", "is_deleted")
+    filter_fields = ("user", "article", "category", "is_deleted")
     ordering_fields = ("id", "article", "user", "time_added", "time_updated", "is_deleted")
     ordering = ("-id",)
 

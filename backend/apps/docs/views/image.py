@@ -5,6 +5,7 @@ from rest_framework import generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django_filters.rest_framework import DjangoFilterBackend
+from django.http.response import HttpResponseForbidden
 
 from tags.models import ObjectTag
 from docs.models.image import Image
@@ -79,11 +80,17 @@ class ImageListApiView(generics.ListAPIView):
         return queryset
 
 
-class ImageDetailApiView(generics.RetrieveDestroyAPIView):
+class ImageDetailApiView(generics.RetrieveUpdateDestroyAPIView):
     """
-    创建图片
+    图片详情api
     """
-
     queryset = Image.objects.all()
     serializer_class = ImageModelSerializer
     permission_classes = (IsAuthenticated,)
+
+    def update(self, request, *args, **kwargs):
+        # 判断权限
+        if request.method != "PATCH":
+            return HttpResponseForbidden()
+
+        return super().update(request, *args, **kwargs)

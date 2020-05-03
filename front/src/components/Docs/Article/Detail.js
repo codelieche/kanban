@@ -83,6 +83,12 @@ export const ArticleDetail = function(props){
 
         //   如果更新article，返回的parent不是数字了，那可去掉下面的代码
         if(!!parent && !parent.id && Number.isInteger(parent)){
+            // 更新文章的标题
+            setData(prevState => {
+                prevState.title = articleData.title;
+                return prevState;
+            })
+
             // 更新导航
             setNavData(prevState => {
                 if( Array.isArray(prevState) && prevState.length > 0){

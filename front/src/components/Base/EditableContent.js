@@ -102,7 +102,6 @@ export const EditableContent = function(props) {
 
     }, [contentUpdated, getElement, latestHtml, props]);
 
-
     const currentElement = useMemo(() => {
         const { tagName, content, contentType, handleContentUpdated, innerRef, ...other} = props;
         if(contentType && contentType !== "text"){

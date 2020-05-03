@@ -22,7 +22,12 @@ class Image(models.Model):
                              on_delete=models.SET_NULL, null=True)
     file = models.ImageField(upload_to="docs/images/%Y/%m", storage=ImageStorage(), help_text="上传图片")
     qiniu = models.CharField(verbose_name="七牛云地址", max_length=200, blank=True, null=True)
-    time_added = models.DateTimeField(verbose_name="上传事件", blank=True, auto_now_add=True)
+    # 图片的宽和高: 第一次创建的时候记录，同时更新的时候也需要记录
+    width = models.IntegerField(verbose_name="宽", blank=True, default=0, null=True)
+    height = models.IntegerField(verbose_name="高", blank=True, default=0, null=True)
+    # 图片大小
+    size = models.BigIntegerField(verbose_name="大小", blank=True, default=0, null=True)
+    time_added = models.DateTimeField(verbose_name="上传时间", blank=True, auto_now_add=True)
     is_active = models.BooleanField(verbose_name="是否有效", blank=True, default=True)
 
     def save(self, *args, **kwargs):
@@ -32,6 +37,10 @@ class Image(models.Model):
             self.file = self.resize_image(self.file)
             if not self.filename:
                 self.filename = self.file.name
+            # 修改图片的尺寸和大小信息
+            self.width = self.file.width
+            self.height = self.file.height
+            self.size = self.file.size
             super().save(*args, **kwargs)
 
             # 这里开始把图片上传到七牛云中

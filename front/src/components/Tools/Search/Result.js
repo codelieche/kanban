@@ -8,7 +8,7 @@ import {
 
 import Icon from "../../Base/Icon";
 import { copyTextFunc } from "../../Page/Copy";
-import { ShowImageModal } from "../../Docs/Image/List2";
+import { ShowImageModal } from "../../Docs/Image/Item";
 
 // 文章的item
 import { ArticleListInfoItem } from "../../Docs/Article/InfoItem";
