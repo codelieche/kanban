@@ -12,6 +12,8 @@ import BaseForm from "../Base/Forms/BaseForm";
 import BaseFormModal from "../Page/BaseForm";
 import onKeyDown from "../Utils/onKeyDown";
 
+import { GroupsTest } from "../Page/Groups";
+
 const baseFormFieds = [
     {
         type: "input",
@@ -147,9 +149,19 @@ export function TestPageFunc() {
     return (
         <div>
             This Is Test Page Function
+
+             {/* 分组导航测试 */}
+             <div>
+                <div>分组导航测试</div>
+                <GroupsTest />
+            </div>
+            
+            <div>
+                <p>Resize</p>
+                <ResizeDemo />
+            </div>
             <br />
-            <p>Resize</p>
-            <ResizeDemo />
+            
             {/* <MyEditor /> */}
             {/* 测试 */}
             {/* <CodePrismDemo /> */}
@@ -205,6 +217,8 @@ export function TestPageFunc() {
                     handleSubmit={values => {setShowBaseFormModal(false); console.log(values); message.success(JSON.stringify(values))}}
                     fields={baseFormFieds}/>
             </div>
+
+           
             
             
         </div>

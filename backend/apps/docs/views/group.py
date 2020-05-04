@@ -87,8 +87,8 @@ class GroupListAllApiView(generics.ListAPIView):
         # queryset = user.group_set.all()
         queryset = user.group_set.filter(
             id__in=list(user.groupuser_set.all().
-                        filter(is_active=True).values_list("group", flat=True))). \
-            union(user.owner_group_set.all())
+                        filter(is_active=True).values_list("group", flat=True)))
+            # union(user.owner_group_set.all())
 
         # 3. 返回queryset
         return queryset

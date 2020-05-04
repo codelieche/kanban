@@ -5,13 +5,14 @@
  */
 import React, {useState, useEffect, useCallback, useMemo, useContext} from "react"
 import { Link } from "react-router-dom";
-import {Layout, Menu, Dropdown, message} from "antd";
+import {Layout, Dropdown, message} from "antd";
 import { Resizable } from 'react-resizable';
 
 import { GlobalContext } from "./Context";
 import Icon from "./Icon";
 import ArticlesNav from "./ArticlesNav";
 import fetchApi from "../Utils/fetchApi";
+import GroupsNav from "../Page/Groups";
 
 // 显示文章相关的左侧Sider
 function LeftSider({showLeftSider, setShowLeftSider}){
@@ -29,6 +30,9 @@ function LeftSider({showLeftSider, setShowLeftSider}){
         currentArticleGroupID,   // 是设置了全局的上下文的
         setCurrentArticleGroupID, // 在article详情页会用到
     } = useContext(GlobalContext);
+
+    // 是否显示分组导航
+    const [groupsNavVisible, setGroupNavVisible] = useState(false);
 
 
     let widthInit = useMemo(() => {
@@ -49,7 +53,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
 
     // 获取分组的列表
     const fetchGroupsData = useCallback(() => {
-        let url = "/api/v1/docs/group/all";
+        let url = "/api/v1/docs/group/all?level=1";
         fetchApi.Get(url)
           .then(responseData => {
               if(Array.isArray(responseData)){
@@ -121,28 +125,28 @@ function LeftSider({showLeftSider, setShowLeftSider}){
       }, [setWidth]);
 
     // namespace的选项
-    let categoriesElements = useMemo(() => {
-        let menuItems = groups.map((item, index) => {
-            return (
-                <Menu.Item key={index} onClick={e => {
-                    // console.log(e);
-                    // 修改浏览器当前标签的标题
-                    document.title = `看板-分类-${item.name}`;
-                    // setCurrentCategory(item);
-                    // 遵循修改全局的分类id，再去触发修改当前分类对象
-                    setCurrentArticleGroupID(item.id);
-                }}>
-                    {item.name}
-                </Menu.Item>
-            );
-        });
+    // let categoriesElements = useMemo(() => {
+    //     let menuItems = groups.map((item, index) => {
+    //         return (
+    //             <Menu.Item key={index} onClick={e => {
+    //                 // console.log(e);
+    //                 // 修改浏览器当前标签的标题
+    //                 document.title = `看板-分类-${item.name}`;
+    //                 // setCurrentCategory(item);
+    //                 // 遵循修改全局的分类id，再去触发修改当前分类对象
+    //                 setCurrentArticleGroupID(item.id);
+    //             }}>
+    //                 {item.name}
+    //             </Menu.Item>
+    //         );
+    //     });
 
-        return (
-            <Menu className="categories-list">
-                {menuItems}
-            </Menu>
-        );
-    }, [groups, setCurrentArticleGroupID]);
+    //     return (
+    //         <Menu className="categories-list">
+    //             {menuItems}
+    //         </Menu>
+    //     );
+    // }, [groups, setCurrentArticleGroupID]);
 
     const toogleLeftSider = useCallback((e) => {
         e.preventDefault();
@@ -200,6 +204,24 @@ function LeftSider({showLeftSider, setShowLeftSider}){
         
     }, [currentGroup.id, history, setRefreshNavTimes])
 
+    // 选择goup
+    const handleSelectGroup = useCallback(group => {
+        if(group.id && group.id > 0){
+            setCurrentGroup(group);
+            setCurrentArticleGroupID(group.id);
+        }
+        setGroupNavVisible(false);
+    }, [setCurrentArticleGroupID])
+
+    const groupsNavElement = useMemo(() => {
+        return (
+            <GroupsNav
+             groups={groups}
+             handleGroupClick={handleSelectGroup}
+            />
+        )
+    }, [groups, handleSelectGroup])
+
     return (
         <Resizable className="box"  
           axis='x' height={0} 
@@ -224,8 +246,12 @@ function LeftSider({showLeftSider, setShowLeftSider}){
                         {/* 分类 */}
                         <div className="clear"></div>
                         <div className="namespace">
-                            <Dropdown overlay={categoriesElements} trigger={["click"]}>
-                                <div>
+                            <Dropdown 
+                              overlay={groupsNavElement} 
+                              trigger={["click"]}
+                              visible={groupsNavVisible}
+                            >
+                                <div onClick={() => setGroupNavVisible(prevState => !prevState)}>
                                     <span style={{color: "red"}}>
                                         <Icon type="flag"  />
                                     </span>
