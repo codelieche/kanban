@@ -6,7 +6,7 @@ REPLACE_FILES=("^main.*.chunk.js$" "^9.*.chunk.js$" "^main.*.chunk.css$" "^9.*.c
 
 # 开始执行构建、替换url、出错就退出
 yarn run build && \
-    gsed -i 's#http://127.0.0.1:9000##g' ../build/static/js/*.js \
+    gsed -i 's#http://127.0.0.1:9000##g' ./build/static/js/*.js \
     || (echo "$(date %"%F %T"): 构建失败！！！" && exit 1);
 
 # 执行替换

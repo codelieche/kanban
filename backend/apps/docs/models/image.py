@@ -55,7 +55,8 @@ class Image(models.Model):
                     # 获取上传的结果
                     if result and "key" in result:
                         # print("上传成功:", result["key"])
-                        qiniu_url = "http://{}/{}".format(settings.QINIU_BUCKET_DOMAIN, filename_key)
+                        # qiniu_url = "http://{}/{}".format(settings.QINIU_BUCKET_DOMAIN, filename_key)
+                        qiniu_url = "http://{}/{}".format(settings.QINIU_BUCKET_DOMAIN, result["key"])
                         self.qiniu = qiniu_url
                         self.save()
                     else:

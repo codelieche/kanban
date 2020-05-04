@@ -120,6 +120,13 @@ def upload_file_to_qiniu(key_path, file_data):
     token = q.upload_token(settings.QINIU_BUCKET, None, 300)
 
     # 第3步：上传文件到七牛
+    # 判断是否需要加个前缀
+    qiniu_key_prefix = settings.QINIU_KEY_PREFIX
+    if qiniu_key_prefix:
+        if key_path.startswith("/"):
+            key_path = "{}{}".format(qiniu_key_prefix, key_path)
+        else:
+            key_path = "{}/{}".format(qiniu_key_prefix, key_path)
     try:
         # 上传的文件已经存在了，或者token过期了，都是会报错的
         result, info = qiniu.put_data(token, key_path, file_data)

@@ -17,10 +17,14 @@ from django.contrib import admin
 from django.urls import path, include, re_path
 
 from kanban.views.index import index_page
+from kanban.views.setup import ProjectSetupView
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # 初始化
+    path('api/v1/setup', ProjectSetupView.as_view(), name="setup"),
+
     # api v1 url
     path('api/v1/', include(arg=("kanban.urls.api_v1", "kanban"), namespace="api")),
 

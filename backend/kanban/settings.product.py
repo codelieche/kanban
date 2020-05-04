@@ -242,6 +242,7 @@ CORS_ALLOW_HEADERS = [
 QINIU_UPLOAD_TOOGLE = os.environ.get("QINIU_UPLOAD_TOOGLE", None)  # 上传开关
 QINIU_ACCESS_KEY = os.environ.get("QINIU_ACCESS_KEY", None)
 QINIU_SECRET_KEY = os.environ.get("QINIU_SECRET_KEY", None)
+QINIU_KEY_PREFIX = os.environ.get("QINIU_KEY_PREFIX", None)        # 七牛文件存储路径的前缀，测试环境可设置为test
 # bucket的名字和bucket绑定的域名
 QINIU_BUCKET = os.environ.get("QINIU_BUCKET", None)
 QINIU_BUCKET_DOMAIN = os.environ.get("QINIU_BUCKET_DOMAIN", None)

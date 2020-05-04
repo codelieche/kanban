@@ -13,6 +13,7 @@ __pycache__/
 *.pyc
 db.sqlite3
 .qiniu_*
+deploy-prod.sh
 
 Pipfile
 Pipfile.lock
