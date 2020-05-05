@@ -466,16 +466,52 @@ export const ArticleDetail = function(props){
     useEffect(() => {
         if(canEditor && !showEditorModal){
             document.onkeydown = (e) => {
+                // console.log(e);
                 var keyNumber = window.envet ? e.keyCode : e.which;
-                // 字符e的keyCode是69
-                if(keyNumber === 69){
-                    setShowEditorModal(true);
+                // console.log(e.path[0].tagName)
+                // 只有当按键的事件源是来自body，才立刻显示编辑窗口
+                if(e.path[0].tagName === "BODY"){
+
+                    // 字符e的keyCode是69
+                    if(keyNumber === 69){
+                        setShowEditorModal(true);
+                        
+                    }else if(keyNumber === 78 || keyNumber === 68){
+                        // 字符n是78，字符d是68
+                        setShowDiscussion(prevState => !prevState);
+                    }else if(keyNumber === 84){
+                        // setShowAddTagModal(prevState => !prevState);
+                    }else{
+                        // console.log(keyNumber);
+                    }
                 }
             }
         }else{
             document.onkeydown = null;
         }
     }, [canEditor, showEditorModal])
+
+    // 文章标题
+    const articleTtitleElement = useMemo(() => {
+        if(canEditor){
+            return (
+                <EditableContent
+                    key={`${data.id}-title`} 
+                    content={data.title ? data.title : "无标题"}
+                    contentType="text" // 类型是html或者text
+                    tagName="h1"
+                    spellCheck="false" // html5的单词拼写检查
+                    //   onChange={e => console.log(e.target.text)}
+                    //  当内容更新了之后，我们需要做点操作
+                    handleContentUpdated={data => patchUpdateArticle(articleID, {title: data.text}, handleRefreshNav)}
+                />
+            )
+        }else{
+            return (
+            <h1>{data.title ? data.title : "无标题"}</h1>
+            )
+        }
+    }, [articleID, canEditor, data.id, data.title, handleRefreshNav])
 
     // 判断是不是渲染错误页：404或者403
     if( !data.id && errorCode > 0){
@@ -571,20 +607,7 @@ export const ArticleDetail = function(props){
                             <Icon type="file-text-o"></Icon>
                         </div>
                         {/* <Icon type="file-text-o"></Icon> */}
-                        {canEditor ? (
-                            <EditableContent
-                                key={`{data.id}-title`} 
-                                content={data.title ? data.title : "无标题"}
-                                contentType="text" // 类型是html或者text
-                                tagName="h1"
-                                spellCheck="false" // html5的单词拼写检查
-                                //   onChange={e => console.log(e.target.text)}
-                                //  当内容更新了之后，我们需要做点操作
-                                handleContentUpdated={data => patchUpdateArticle(articleID, {title: data.text}, handleRefreshNav)}
-                            />
-                        ) : (
-                        <h1>{data.title ? data.title : "无标题"}</h1>
-                        )}
+                        {articleTtitleElement}
                         
                     </div>
                     

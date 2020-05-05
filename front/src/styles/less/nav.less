@@ -70,7 +70,7 @@
   -webkit-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
   box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
   -webkit-transform: translate3d(0, 0, 0);
-  max-width: 900px;
+  max-width: 1024px;
 
   .groups {
     width: 205px;
@@ -102,12 +102,18 @@
 
   }
   .current{
-     min-width: 400px;
+    //  min-width: 400px;
+     width: 45vw;
+     min-width: 260px;
+     max-width: 800px;
      min-height: 260px;
      flex: 1;
      display: flex;
      flex-direction: column;
-     overflow: auto;
+    //  overflow: auto;
+     overflow-x: hidden;
+    //  overflow-x: visible;
+     overflow-y: auto;
      .header {
        position: relative;
        padding: 10px 15px;

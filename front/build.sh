@@ -34,6 +34,13 @@ rm -rf ../backend/static/css/*.chunk.css && echo "    删除老的*.chunk.css文
 cp -rf build/static/js/*.chunk.js ../backend/static/js/ && echo "    复制新的*.chunk.js文件成功"
 cp -rf build/static/css/*.chunk.css ../backend/static/css/ && echo "    复制新的*.chunk.css文件成功"
 
+# 替换index.html中的function
+# gsed -i "s#<script>.*</script>#FUNCTIONSTR#" ../backend/templates/index.html;
+# cat build/index.html | grep -Eo "<script>.*?</script>";
+
+# FUNCTIONSTR=`cat build/index.html | grep -Eo "<script>.*?</script>"`
+# gsed -i "s#FUNCTIONSTR#${FUNCTIONSTR}#"  ../backend/templates/index.html;
+
 echo "$(date +"%F %T"): 打包结束"
 
 exit 0;

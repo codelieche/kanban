@@ -58,6 +58,14 @@ function LeftSider({showLeftSider, setShowLeftSider}){
           .then(responseData => {
               if(Array.isArray(responseData)){
                   setGroups(responseData);
+                //   console.log(currentArticleGroupID);
+                  if(
+                      !currentArticleGroupID && responseData.length > 0 && 
+                      document.location.href.indexOf("article") < 0
+                  ){
+                      setCurrentGroup(responseData[0]);
+                      setCurrentArticleGroupID(responseData[0].id);
+                  }
               }else{
                   message.warn("获取分组列表数据出错", 3);
               }
@@ -65,7 +73,7 @@ function LeftSider({showLeftSider, setShowLeftSider}){
             .catch(err => {
                 console.log(err);
             })
-    }, [setGroups])
+    }, [currentArticleGroupID, setCurrentArticleGroupID])
 
     useEffect(() => {
         // 获取分类数据
@@ -81,32 +89,24 @@ function LeftSider({showLeftSider, setShowLeftSider}){
     // 获取到分组列表了、或者修改了全局分组的id了，都会触发
     useEffect(() => {
         // console.log(currentArticleGroupID, categories);
-        if(!!currentArticleGroupID && currentArticleGroupID > 0){
-            // console.log("设置了分类ID:", currentArticleGroupID, groups);
-            // 需要重新设置一下当前的分类了
-            if(!currentGroup.id  || currentGroup.id !== currentArticleGroupID){
-                for(var i=0; i< groups.length; i++){
-                    // console.log(categories[i]);
-                    if(groups[i].id === currentArticleGroupID){
-                        // setCurrentCategory(categories[i]);
-                        // 先修改当前文章的分类ID: 还要记得设置当前的分类
-                        setCurrentArticleGroupID(groups[i].id);
-                        setCurrentGroup(groups[i])
-                        break;
-                    }
-                }
-            }else{
-                // console.log("未进入循环")
-            }
+        if(!!currentArticleGroupID && currentArticleGroupID !== currentGroup.id){
+            // 通过api获取一下
+            let url = `/api/v1/docs/group/${currentArticleGroupID}`;
+            fetchApi.Get(url)
+              .then(responseData => {
+                //   console.log(responseData);
+                  if(responseData.id > 0){
+                      setCurrentArticleGroupID(responseData.id);
+                      setCurrentGroup(responseData);
+                  }
+              })
+                .catch(err => {
+                    console.log(err);
+                })
         }else{
             // console.log("还没分类ID");
-            // 如果有分类就设置第一个
-            if(groups.length > 0){
-                //   设置列表的第一个为，当前的分类
-                setCurrentGroup(groups[0]);
-            }
         }
-    }, [groups, currentArticleGroupID, currentGroup.id, setCurrentArticleGroupID])
+    }, [currentArticleGroupID, currentGroup.id, setCurrentArticleGroupID])
 
     const onResize = useCallback((event, { element, size }) => {
         // console.log(size.width);
@@ -123,30 +123,6 @@ function LeftSider({showLeftSider, setShowLeftSider}){
             setWidth(460);
         }
       }, [setWidth]);
-
-    // namespace的选项
-    // let categoriesElements = useMemo(() => {
-    //     let menuItems = groups.map((item, index) => {
-    //         return (
-    //             <Menu.Item key={index} onClick={e => {
-    //                 // console.log(e);
-    //                 // 修改浏览器当前标签的标题
-    //                 document.title = `看板-分类-${item.name}`;
-    //                 // setCurrentCategory(item);
-    //                 // 遵循修改全局的分类id，再去触发修改当前分类对象
-    //                 setCurrentArticleGroupID(item.id);
-    //             }}>
-    //                 {item.name}
-    //             </Menu.Item>
-    //         );
-    //     });
-
-    //     return (
-    //         <Menu className="categories-list">
-    //             {menuItems}
-    //         </Menu>
-    //     );
-    // }, [groups, setCurrentArticleGroupID]);
 
     const toogleLeftSider = useCallback((e) => {
         e.preventDefault();
