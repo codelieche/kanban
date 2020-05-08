@@ -110,12 +110,12 @@ export const ImageListPage = (props) => {
                 </div>
             );
         }
-        
+
         return dataSource.map((item,index) => {
             return (
                 <div className="image-item" key={item.id} onClick={() => showImageToogle(item)}>
                     <div className="item-inner">
-                        <img src={item.file} alt="图片" />
+                        <img src={item.qiniu ? item.qiniu : item.file} alt="图片" />
                         <div className="buttons">
                             <Button type="link" size="small" onClick={ (e) => {handleOnCopyClick(e, "图片链接", item.qiniu ? item.qiniu : item.file)}}>
                                 <Icon type="copy" />链接
@@ -123,7 +123,6 @@ export const ImageListPage = (props) => {
                             <Button type="link" size="small" onClick={ (e) => {handleOnCopyClick(e, "Markdown", `![${item.filename}](${item.qiniu ? item.qiniu : item.file})`)}}>
                                 <Icon type="copy" />Markdown
                             </Button>
-                            
                             {/* <Button type="link" size="small" danger>
                                 <Icon type="trash-o" /> 删除
                             </Button> */}

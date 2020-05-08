@@ -33,6 +33,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # 临时
-yarn.lock
-package.json
+# yarn.lock
+# package.json
 

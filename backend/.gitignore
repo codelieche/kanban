@@ -15,6 +15,6 @@ db.sqlite3
 .qiniu_*
 deploy-prod.sh
 
-Pipfile
-Pipfile.lock
+# Pipfile
+# Pipfile.lock
 

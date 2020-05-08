@@ -42,5 +42,7 @@ cp -rf build/static/css/*.chunk.css ../backend/static/css/ && echo "    复制�
 # gsed -i "s#FUNCTIONSTR#${FUNCTIONSTR}#"  ../backend/templates/index.html;
 
 echo "$(date +"%F %T"): 打包结束"
+gsed -i "s#<script>.*</script>#FUNCTIONSTR#" ../backend/templates/index.html;
+cat build/index.html | grep -Eo "<script>.*?</script>";
 
 exit 0;
