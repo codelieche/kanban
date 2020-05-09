@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 // import App from './apps/App';
 import App from './apps/Kanban';
+import * as serviceWorker from './serviceWorker';
 
 // 引入样式文件
 import './styles/main.less';
@@ -14,3 +15,4 @@ ReactDOM.render(<App />, document.getElementById('root'));
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 // serviceWorker.unregister();
+serviceWorker.register();
