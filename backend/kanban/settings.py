@@ -29,7 +29,7 @@ SECRET_KEY = 'm&qi3snhc9mkwrr*o5o-iq-o)=&x-e^dve&g0+s^48*8fim1s='
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["127.0.0.1", "kanban.codelieche.com", "localhost"]
+ALLOWED_HOSTS = ["127.0.0.1", "kanban.codelieche.com", "192.168.6.1"]
 
 
 # Application definition
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     # 自己写的app
     'account.apps.AccountConfig',
     'docs.apps.DocsConfig',
+    'storage.apps.StorageConfig',
     'config.apps.ConfigConfig',
     'modellog.apps.ModellogConfig',
     'tags.apps.TagsConfig',
@@ -166,6 +167,9 @@ STATICFILES_DIRS = (
 # 上传的文件也放在项目代码根目录的上一级media目录中
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, "../media"))
+
+FILE_STORAGE_URL = "/storage"
+FILE_STORAGE_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../storage'))
 
 
 # 注册用户系统使用哪个用户模型

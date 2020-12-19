@@ -7,7 +7,9 @@ urlpatterns = [
     path('account/', include(arg=("account.urls.api", "account"), namespace="account")),
     # Docs相关的api
     path('docs/', include(arg=("docs.urls.api", "docs"), namespace="docs")),
-    
+    # Storage相关的api
+    path('storage/', include(arg=("storage.urls.api", "storage"), namespace="storage")),
+
     # 配置相关的api
     path('config/', include(arg=("config.urls.api", "config"), namespace="config")),
     # Model日志相关的api

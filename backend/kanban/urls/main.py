@@ -21,6 +21,7 @@ from rest_framework.documentation import include_docs_urls
 
 from kanban.views.index import index_page
 from kanban.views.setup import ProjectSetupView
+from storage.views.file import ObjectRetrieveApiView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -31,6 +32,9 @@ urlpatterns = [
 
     # Djago Rest Framework自动api 文档，正式环境会取消
     path('api/docs/', include_docs_urls(title="Kanban API文档")),
+
+    # 文件对象
+    path("object/<str:category>/<int:pk>", ObjectRetrieveApiView.as_view(), name="object"),
 
     # 排除media、static、api、admin四个开头的，其它页面调用react的页面
     re_path(r'^(?!media|api|static|admin)[a-z]?', index_page),

@@ -1,7 +1,7 @@
 # 忽略目录
 .idea/
 .vscode/
-/tmp
+/temp
 __pycache__/
 
 # 忽略migrations文件

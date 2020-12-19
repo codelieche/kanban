@@ -18,6 +18,7 @@ from django.urls import path, include, re_path
 
 from kanban.views.index import index_page
 from kanban.views.setup import ProjectSetupView
+from storage.views.objects import ObjectRetrieveApiView
 
 
 urlpatterns = [
@@ -27,6 +28,8 @@ urlpatterns = [
 
     # api v1 url
     path('api/v1/', include(arg=("kanban.urls.api_v1", "kanban"), namespace="api")),
+    # 文件对象
+    path("object/<str:category>/<int:pk>", ObjectRetrieveApiView.as_view(), name="object"),
 
     # 排除media、static、api、admin四个开头的，其它页面调用react的页面
     re_path(r'^(?!media|api|static|admin)[a-z]?', index_page),

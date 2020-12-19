@@ -46,6 +46,40 @@ class ImageStorage(FileSystemStorage):
         return super(ImageStorage, self)._save(name=name_new, content=content)
 
 
+class FileStorage(FileSystemStorage):
+    """
+    文件上传
+    文件上传的时候自动修改下文件名字
+    """
+
+    def __init__(self, location=settings.FILE_STORAGE_ROOT, base_url=settings.FILE_STORAGE_URL):
+        # 初始化ImageStorage
+        super().__init__(location, base_url)
+
+    def _save(self, name, content):
+        """
+        拓展_save方法
+        :param name: 上传的文件名
+        :param content: 内容
+        :return:
+        """
+        # 先获取文件的拓展名
+        ext = os.path.splitext(name)[1]
+        # 文件目录
+        d = os.path.dirname(name)
+        # 定义文件名：年/月/时分秒随机数
+        # filename = time.strftime('%Y%m%d%H%M%S')
+        filename = time.strftime('%d%H%M%S')
+        # 如果并发人数大，那么这个重命名需要调整
+        filename = '{}_{}'.format(filename, random.randint(0, 100))
+        # 重写合成文件的名字,注意别漏了ext
+        name_new = os.path.join(d, filename + ext)
+        # 设置保存的图片的权限
+        self.file_permissions_mode = 0o644
+        # 调用父类的方法
+        return super()._save(name=name_new, content=content)
+
+
 def file_upload_to(instance, filename):
     """
     文件上传相对路径
