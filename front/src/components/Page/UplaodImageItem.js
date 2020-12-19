@@ -18,7 +18,7 @@
 import React, { useState, useEffect, useCallback} from "react";
 
 import {
-    Upload, message
+    Upload,
 } from "antd";
 
 // 图片上传Item
@@ -99,12 +99,16 @@ function UploadImageItem(props){
         },
 
         beforeUpload: (file) => {
+            // 2020-12-19：也可以上传文件了
             // console.log(file);
             // 选择了文件后，把文件名设置到form中
             if(file.type.indexOf("image") < 0){
-                message.warn("请选择图片文件");
-                // console.log(file, file.type);
-                return false;
+                // message.warn("请选择图片文件");
+                console.log(file, file.type);
+                // return false;
+            }else{
+                // console.log(file, file.type)
+                // 是图片文件
             }
             
             // 修改文件列表的数据
@@ -134,7 +138,7 @@ function UploadImageItem(props){
                 {/* 显示默认的图片，或者上传的图片 */}
                 {imageElement}
                 {/* 文字提示 */}
-                {props.tooltip ? props.tooltip : <div>请选择一张要上传的图片</div>}
+                {props.tooltip ? props.tooltip : <div>请选择一张要上传的图片/文件</div>}
                 
             </div>
         </Upload.Dragger>

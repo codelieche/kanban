@@ -180,14 +180,18 @@ export const ButtonTools = function(props) {
         window.editor = props.editor;
     }
 
-    const afterUploadImageHandle = useCallback((imageUrl) => {
+    const afterUploadImageHandle = useCallback((imageUrl, category="image", filename="") => {
         // 上传图片链接
-        console.log("上传了图片：", imageUrl);
+        console.log("上传了文件：", imageUrl, category, filename);
         // 获取selections
         let selections = props.editor.getSelections();
 
         let selectionsResults = selections.map((item, index) => {
+            if(category === "image"){
                 return `![${item}](${imageUrl})`;
+            }else{
+                return `[${filename}](${imageUrl})`;
+            }
         });
         // 替换结果
         props.editor.replaceSelections(selectionsResults);

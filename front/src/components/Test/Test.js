@@ -187,7 +187,7 @@ export function TestPageFunc() {
             <UploadImageTabsModal 
               visible={modalVisible} 
               handleAfterClose={() => setModalVisible(false)}
-              afterUploadHandle={(imageUrl) => {console.log("上传了图片：", imageUrl); setModalVisible(false)}}
+              afterUploadHandle={(imageUrl, category="image") => {console.log("上传了图片：", imageUrl); setModalVisible(false)}}
             />
 
             {/* 测试复制 */}

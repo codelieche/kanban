@@ -133,7 +133,10 @@ class File(models.Model):
         :param image_file: 图片对象
         :return:
         """
-        if image_file.file.content_type != "image/jpeg" and image_file.size < 6 * 1024:
+        if ["image/svg+xml"].index(image_file.file.content_type) >= 0:
+            return image_file
+
+        if image_file.file.content_type != "image/jpeg" and image_file.size < 200 * 1024:
             try:
                 # 图片信息宽和高
                 info = {}
