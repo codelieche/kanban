@@ -24,6 +24,10 @@ rsync -rltgD ./* --exclude "apps/**/migrations/00*.py" \
 #     --exclude "tmp/*" \
 #     www@test.kanban.codelieche.com:/data/www/kanban.codelieche.com/source/
 
+# 2-3: 推送前端代码
+rsync -rltgD ../front/build \
+    --exclude ../front/build/robots.txt \
+    ${USER}@${HOST}:${TARGET_DIR}/public_html/
 
 ssh $USER@$HOST "ls ${TARGET_DIR}/source"
 

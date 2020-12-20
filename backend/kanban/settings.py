@@ -194,6 +194,14 @@ SESION_SAVE_EVERY_REQUEST = True
 # 设置SESSION COOKIE过期时间 1h
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 60
 
+# Redis相关配置
+REDIS_CONFIG = {
+    "host": "127.0.0.1",
+    "port": "6379",
+    "db": 10,
+    "password": None
+}
+
 # Django Rest Framework的配置
 REST_FRAMEWORK = {
     # 设置分页

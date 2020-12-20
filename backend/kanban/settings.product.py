@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     # 自己写的app
     'account.apps.AccountConfig',
     'docs.apps.DocsConfig',
+    'storage.apps.StorageConfig',
     'config.apps.ConfigConfig',
     'modellog.apps.ModellogConfig',
     'tags.apps.TagsConfig',
@@ -167,6 +168,8 @@ STATIC_ROOT = os.path.abspath(os.path.join(BASE_DIR, "../static"))
 MEDIA_URL = "/media/"
 MEDIA_ROOT = os.path.abspath(os.path.join(BASE_DIR, "../media"))
 
+FILE_STORAGE_URL = "/storage"
+FILE_STORAGE_ROOT = os.path.abspath(os.path.join(BASE_DIR, '../storage'))
 
 # 注册用户系统使用哪个用户模型
 # 不需要加入中间的models
@@ -189,6 +192,13 @@ AUTHENTICATION_BACKENDS = (
 SESION_SAVE_EVERY_REQUEST = True
 # 设置SESSION COOKIE过期时间 1h
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 60
+
+# Redis相关配置
+REDIS_CONFIG = {
+    "host": "127.0.0.1",
+    "port": "6379",
+    "DB": 10
+}
 
 # Django Rest Framework的配置
 REST_FRAMEWORK = {

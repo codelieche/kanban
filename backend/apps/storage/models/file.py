@@ -8,6 +8,7 @@ from django.core.files.uploadedfile import InMemoryUploadedFile
 from PIL import Image as PImage, ExifTags
 
 from utils.store import FileStorage
+from utils.redis import redis_client
 
 from account.models import User
 from storage.models.account import Account
@@ -49,6 +50,9 @@ class File(models.Model):
     info = models.CharField(verbose_name="其它信息", blank=True, null=True, max_length=512)
     # 图片大小
     size = models.BigIntegerField(verbose_name="大小", blank=True, default=0, null=True)
+    # 当设置公开的时候，需要复制到另外的存储桶
+    is_public = models.BooleanField(verbose_name="是否公开", default=False, blank=True)
+    public_url = models.CharField(verbose_name="公开链接", max_length=256, blank=True, null=True)
     time_added = models.DateTimeField(verbose_name="上传时间", blank=True, auto_now_add=True)
     time_updated = models.DateTimeField(verbose_name="更新时间", blank=True, auto_now=True)
     is_active = models.BooleanField(verbose_name="是否有效", blank=True, default=True)
@@ -124,6 +128,50 @@ class File(models.Model):
         """获取云平台的地址"""
         if self.account and self.account.domain and self.objectkey:
             return "{}://{}/{}".format("https" if self.account.is_https else "http", self.account.domain, self.objectkey)
+        else:
+            return ""
+
+    def get_download_url(self, scheme="https"):
+        """
+        获取下载地址
+        """
+        # schememe = request.META['wsgi.url_scheme']
+        if scheme != "http":
+            scheme = "https"
+        if self.account and self.account.platform == "qiniu":
+            # 获取qiniu的下载地址
+            if self.objectkey:
+                api = QiniuApi(self.account.access_key, self.account.secret_key, self.account.bucket)
+                cloud_url = self.cloud_url
+                # 获取对象的下载地址
+                if cloud_url:
+                    # 如果是http的就用http的
+                    # Redis缓存
+                    cache_key = "{}_{}_{}".format(self.category, self.id, scheme)
+                    # 判断是否存在于缓存中
+                    try:
+                        chache_value = redis_client.get(cache_key)
+                        if chache_value:
+                            cache_url = chache_value.decode()
+                            return cache_url
+                    except Exception as e:
+                        print(str(e))
+
+                    # 不存在缓存中,需要重新获取并保存到redis中
+                    if scheme == "http":
+                        cloud_url = cloud_url.replace("https://", "http://")
+                    # 30天的过期时间，后续考虑调整
+                    expires_times = 3600 * 24 * 30
+                    result = api.private_download_url(cloud_url, expires=expires_times)
+                    # print(result)
+                    # result.replace("https://", "http://")
+                    if result:
+                        try:
+                            redis_client.set(cache_key, result)
+                        except Exception as e:
+                            print("缓存图片链接报错：", str(e))
+                        # 返回七牛的下载地址
+                        return result
         else:
             return ""
 

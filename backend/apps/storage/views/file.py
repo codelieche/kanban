@@ -10,7 +10,6 @@ from django.http.response import HttpResponseForbidden, HttpResponseRedirect, Ht
 from tags.models import ObjectTag
 from storage.models.file import File
 from storage.serializers.file import FileModelSerializer
-from storage.tools.qiniu import QiniuApi
 
 
 class FileUploadApiView(generics.CreateAPIView):
@@ -109,21 +108,16 @@ class FileDetailObjectView(generics.RetrieveAPIView):
 
         if instance:
             if instance.account and instance.account.platform == "qiniu":
-                # 获取qiniu的下载地址
-                if instance.objectkey:
-                    api = QiniuApi(instance.account.access_key, instance.account.secret_key, instance.account.bucket)
-                    cloud_url = instance.cloud_url
-                    # 获取对象的下载地址
-                    if cloud_url:
-                        # 如果是http的就用http的
-                        schememe = request.META['wsgi.url_scheme']
-                        if schememe == "http":
-                            cloud_url = cloud_url.replace("https://", "http://")
-                        result = api.private_download_url(cloud_url, expires=3600)
-                        # print(result)
-                        # result.replace("https://", "http://")
-                        if result:
-                            return HttpResponseRedirect(redirect_to=result)
+                # 获取文件的下载地址
+                # http还是https
+                scheme = request.META['wsgi.url_scheme']
+                # Redis缓存
+                file_download_url = instance.get_download_url(scheme=scheme)
+                if file_download_url:
+                    return HttpResponseRedirect(redirect_to=file_download_url, status=301)
+                    # 不存在缓存中
+                    # 竟然没返回图片地址，那么就从自身服务器获取
+
             # 没找到，或者没访问权限
             # 从服务器返回文件
             try:
@@ -149,21 +143,16 @@ class ObjectRetrieveApiView(generics.RetrieveAPIView):
 
         if instance:
             if instance.account and instance.account.platform == "qiniu":
-                # 获取qiniu的下载地址
-                if instance.objectkey:
-                    api = QiniuApi(instance.account.access_key, instance.account.secret_key, instance.account.bucket)
-                    cloud_url = instance.cloud_url
-                    # 获取对象的下载地址
-                    if cloud_url:
-                        # 如果是http的就用http的
-                        schememe = request.META['wsgi.url_scheme']
-                        if schememe == "http":
-                            cloud_url = cloud_url.replace("https://", "http://")
-                        result = api.private_download_url(cloud_url, expires=3600)
-                        # print(result)
-                        # result.replace("https://", "http://")
-                        if result:
-                            return HttpResponseRedirect(redirect_to=result)
+                # 获取文件的下载地址
+                # http还是https
+                scheme = request.META['wsgi.url_scheme']
+                # Redis缓存
+                file_download_url = instance.get_download_url(scheme=scheme)
+                if file_download_url:
+                    return HttpResponseRedirect(redirect_to=file_download_url, status=301)
+                    # 不存在缓存中
+                    # 竟然没返回图片地址，那么就从自身服务器获取
+
             # 没找到，或者没访问权限
             # 从服务器返回文件
             try:
