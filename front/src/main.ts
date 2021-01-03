@@ -2,5 +2,13 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
+import { useElementPlugins } from './plugins/element'
+// import { useAxiosPlugin } from './plugins/fetchApi'
+import './styles/main.less'
+import './styles/font-awesome.min.css'
 
-createApp(App).use(router).mount('#app')
+const app = createApp(App)
+useElementPlugins(app)
+// useAxiosPlugin(app)
+
+app.use(router).mount('#app')

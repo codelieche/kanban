@@ -1,20 +1,36 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import Home from '../views/Home.vue'
+
+// 引入子路曰
+import userRoutes from '@/views/user/routes'
+import testRoutes from '@/views/test/routes'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Home',
-    component: Home
-  },
-  {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
+    // component: Home
+    component: () => import('@/views/home/index.vue'),
+    children: [
+      {
+        path: '',
+        name: 'HomePage',
+        component: () => import('@/views/home/home.vue')
+      },
+      {
+        path: 'user',
+        // name: 'BaseIndex',
+        component: () => import('@/views/user/index.vue'),
+        children: userRoutes
+      },
+      {
+        path: 'test',
+        component: () => import('@/views/test/index.vue'),
+        children: testRoutes
+      }
+    ]
   }
+
+  // 用户相关模块
 ]
 
 const router = createRouter({
