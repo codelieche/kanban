@@ -1,0 +1,36 @@
+.container > .main > .right,
+.container > .main > .content {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  .header {
+    // height: 42px;
+    max-height: 42px;
+    box-sizing: border-box;
+    // background-color: #eee;
+    background-color: #eaedf1;
+    .navs {
+      line-height: 22px;
+      padding: 10px 12px;
+      font-size: 14px;
+      .el-breadcrumb__item {
+        font-weight: 400;
+        color: #82848a;
+        .is-link {
+          color: #666;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+  .content {
+    flex: 1;
+    background-color: #fff;
+    box-sizing: border-box;
+    .main {
+      height: 100%;
+      padding: 10px 20px;
+      box-sizing: border-box;
+    }
+  }
+}

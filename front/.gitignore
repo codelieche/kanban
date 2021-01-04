@@ -23,4 +23,5 @@ pnpm-debug.log*
 *.sw?
 
 src/styles/less/*.css
+src/styles/main.css
 /public/img/icons/

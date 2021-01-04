@@ -79,9 +79,16 @@ export default defineComponent({
     .right,
     .content {
       flex: 1;
-      background-color: #fff;
+      // background-color: #fff;
       overflow: auto;
     }
   }
+}
+</style>
+
+<style lang="less" scoped>
+.right,
+.content {
+  background-color: #fff;
 }
 </style>

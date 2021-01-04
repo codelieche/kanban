@@ -19,3 +19,9 @@ export interface LeftSiderMenu {
     is_deleted: boolean;
     children?: Array<LeftSiderMenu>;
 }
+
+export interface NavBreadcrumbItem {
+    title: string;  // 标题
+    icon?: string;  // 图标
+    link?: string;  // 是否需要跳转
+}

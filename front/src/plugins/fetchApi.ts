@@ -76,9 +76,11 @@ api.interceptors.response.use(
         // http status handler
         case 401:
           // this.props.history.push(next);
-          next = `/user/login?next=${window.location.href}`
-          url = window.location.origin + next
-          window.location.href = url
+          if (window.location.href.indexOf('/user/login') < 0) {
+            next = `/user/login?next=${window.location.href}`
+            url = window.location.origin + next
+            window.location.href = url
+          }
           break
         case 403:
           // message.warn("您无权限访问相关数据", 3);

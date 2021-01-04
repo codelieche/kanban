@@ -9,3 +9,18 @@
     <el-button type="danger">危险按钮</el-button>
   </el-row>
 </template>
+<script lang="ts">
+import { defineComponent } from 'vue'
+import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
+
+export default defineComponent({
+  name: 'HomePage',
+  
+  
+  setup() {
+    // 右侧的导航
+    const items = [{ title: '首页', link: '/', icon: 'home' }]
+    useBreadcrumbItems(items)
+  },
+})
+</script>

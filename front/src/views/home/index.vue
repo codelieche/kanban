@@ -14,9 +14,16 @@
     <!-- 主体内容 -->
     <template v-slot:right>
       <!-- <keep-alive> -->
-      <div class="content">
+      <div class="right">
         <!-- 路由各个区域重点编写的代码 -->
-        <router-view></router-view>
+        <div class="header">
+          <!-- 面包屑导航 -->
+          <Breadcrumb />
+        </div>
+        <!-- 右侧主体内容 -->
+        <div class="content">
+          <router-view></router-view>
+        </div>
         <!-- 路由各个区域重点编写的代码 -->
       </div>
       <!-- </keep-alive> -->
@@ -35,7 +42,7 @@ import BaseLayout from '@/components/layout/layout.vue'
 import Header001 from '@/components/layout/header/001.vue'
 import LeftSider001 from '@/components/layout/leftSider/001.vue'
 import Footer001 from '@/components/layout/footer/001.vue'
-// import useHeaderSlug from '@/hooks/store/useHeaderSlug'
+import Breadcrumb from '@/components/base/breadcrumb.vue'
 import { LeftSiderMenu } from '@/types/base/nav'
 import useFetchData from '@/hooks/utils/useFetchData'
 
@@ -46,6 +53,7 @@ export default defineComponent({
     Header001,
     LeftSider001,
     Footer001,
+    Breadcrumb,
   },
   props: {
     layoutDisplay: {
