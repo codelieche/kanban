@@ -1,7 +1,10 @@
 <template>
-    <div>
-        Hello Test2
+  <div class="top-bar">
+    <div class="title">
+      <h4>Test2 Page</h4>
     </div>
+  </div>
+  <div>Hello Test2</div>
 </template>
 
 <script lang="ts">
@@ -10,8 +13,7 @@ import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 
 export default defineComponent({
   name: 'Test2Page',
-  components: {
-  },
+  components: {},
   setup() {
     const breadcrumbItems = [
       {

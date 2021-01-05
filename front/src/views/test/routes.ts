@@ -1,6 +1,8 @@
 // Vue 图标相关相关的路由
 
-const routes = [
+import { RouteRecordRaw } from 'vue-router'
+
+const routes: Array<RouteRecordRaw> = [
   {
     path: '',
     // name: 'ChartHome',
@@ -16,8 +18,7 @@ const subComponents = [
     path: 'editor',
     filename: 'editor/index'
   },
-  'test2',
-
+  'test2'
 ]
 
 subComponents.forEach(item => {

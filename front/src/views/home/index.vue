@@ -62,7 +62,7 @@ export default defineComponent({
         return {
           showHeader: true,
           showLeft: true,
-          showMain: true,
+          showBody: true,
           showRight: true,
           showFooter: false,
         }

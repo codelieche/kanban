@@ -1,21 +1,25 @@
 // Vue 图标相关相关的路由
 
-const routes = [
+import { RouteRecordRaw } from 'vue-router'
+
+const routes: Array<RouteRecordRaw> = [
   {
     path: '',
     // name: 'ChartHome',
-    component: () => import('./home.vue')
+    component: () => import('./home.vue'),
   }
 ]
 
 const subComponents = [
   {
     path: 'group',
-    filename: 'group/index'
+    filename: 'group/index',
+    redirect: '/user/group/list'
   },
+  'group/list',
   {
     path: 'list',
-    filename: 'list/index'
+    filename: 'list/index',
   },
   {
     path: 'center',
@@ -36,10 +40,18 @@ const subComponents = [
 
 subComponents.forEach(item => {
   if (typeof item === 'object') {
-    routes.push({
-      path: item.path,
-      component: () => import(`./${item.filename}.vue`)
-    })
+    if( item.redirect){
+      routes.push({
+        path: item.path,
+        redirect: item.redirect,
+      })
+    }else{
+      routes.push({
+        path: item.path,
+        component: () => import(`./${item.filename}.vue`)
+      })
+    }
+    
   } else {
     routes.push({
       path: item,

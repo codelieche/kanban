@@ -1,5 +1,10 @@
 <template>
-    <div>Hello Editor Index.page</div>
+  <div class="top-bar">
+    <div class="title">
+      <h4>测试Editor</h4>
+    </div>
+  </div>
+  <div>Hello Editor Index.page</div>
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue'
@@ -7,8 +12,7 @@ import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 
 export default defineComponent({
   name: 'TestEditorPage',
-  components: {
-  },
+  components: {},
   setup() {
     const breadcrumbItems = [
       {

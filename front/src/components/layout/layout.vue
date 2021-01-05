@@ -5,8 +5,8 @@
     <!-- 头部区域结束 -->
 
     <!-- 页面主体内容 -->
-    <slot name="main" v-if="showMain">
-      <div class="main">
+    <slot name="body" v-if="showBody">
+      <div class="body">
         <slot name="left-sider" v-if="showLeft">
           <!-- 左侧内容 -->
         </slot>
@@ -37,7 +37,7 @@ export default defineComponent({
       type: Boolean,
       default: true,
     },
-    showMain: {
+    showBody: {
       type: Boolean,
       default: true,
     },
@@ -65,7 +65,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
 
-  .main {
+  .body {
     flex: 1 1;
     background: #ffffff;
     display: flex;

@@ -1,6 +1,8 @@
 <template>
-    <div>
-        Hello Page
+    <div class="top-bar">
+      <div class="title">
+        <h4>测试Page</h4>
+      </div>
     </div>
 </template>
 

@@ -31,6 +31,7 @@
           <router-link
             v-else-if="!!item.slug"
             :to="item.slug"
+            :class="{active: urlpath.indexOf(item.slug) == 0 && item.children.length < 1}"
             :style="{ paddingLeft: paddingLeftValue }"
           >
             <span
@@ -89,6 +90,7 @@
       <!-- 跳转内部Url的情况 -->
       <router-link
         v-else-if="!!item.slug"
+        :class="{active: urlpath.indexOf(item.slug) == 0 && item.children.length < 1}"
         :to="item.slug"
         :style="{ paddingLeft: paddingLeftValue }"
       >
@@ -152,9 +154,6 @@ export default {
     },
   },
   mounted() {
-    // if(window.location.href.indexOf(this.item.slug) > 0){
-    //   this.openParentChildren();
-    // }
     if (this.$route.path.indexOf(this.item.slug) >= 0) {
       if (this.openParentChildren != null) {
         this.openParentChildren()
@@ -177,6 +176,9 @@ export default {
         return `${this.item.level * 10}px`
       }
     },
+    urlpath(){
+      return this.$route.path
+    }
   },
   methods: {
     onTitleClick() {
@@ -249,7 +251,7 @@ export default {
       box-sizing: border-box;
       text-decoration: none;
       color: #f8f8f8;
-      &.router-link-exact-active {
+      &.router-link-exact-active, &.active {
         background-color: @nav-item-active-background;
       }
     }
