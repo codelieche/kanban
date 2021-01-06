@@ -17,6 +17,15 @@ const subComponents = [
     redirect: '/user/group/list'
   },
   'group/list',
+  'group/add',
+  {
+    path: 'group/:id',
+    filename: 'group/detail',
+  },
+  {
+    path: 'group/:id/editor',
+    filename: 'group/editor',
+  },
   {
     path: 'list',
     filename: 'list/index',

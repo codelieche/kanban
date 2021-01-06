@@ -49,7 +49,7 @@ export const useFetchData = <T>(url: Ref<string> | string, successCode = 200) =>
   }
 }
 
-export const useFetchListData = <T>(url: Ref<string> | string, successCode = 200) => {
+export const useFetchListData = <T>(url: Ref<string> | string, reFreshTimes: Ref<number>, successCode = 200) => {
   const loading = ref<boolean>(true)
   const error = ref<boolean>(false)
   const dataSource = ref<Array<T> | null>(null)
@@ -86,7 +86,7 @@ export const useFetchListData = <T>(url: Ref<string> | string, successCode = 200
   onMounted(() => {
     // console.log('即将发起ajax请求：', url, typeof url)
     if (typeof url === 'object') {
-        watch(url, () => {
+        watch([url, reFreshTimes], () => {
           if (url.value) {
             fetchData(url.value)
           }

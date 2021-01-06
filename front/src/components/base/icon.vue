@@ -1,8 +1,10 @@
 <template>
-  <span :style="{ display: 'inline-block', padding: '0 3px' }" :class="className">
-    <i :class="iconClasses"> </i>
+  <span :class="[className, { danger: danger }]">
+    <span :style="{ display: 'inline-block', padding: '0 3px' }">
+      <i :class="iconClasses"> </i>
+    </span>
+    <slot></slot>
   </span>
-  <slot></slot>
 </template>
 
 <script lang="ts">
@@ -28,7 +30,7 @@ export default defineComponent({
       type: Boolean,
       default: () => false,
     },
-    className: String
+    className: String,
   },
   setup(props) {
     const iconClasses = computed(() => {
