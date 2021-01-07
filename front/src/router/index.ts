@@ -3,6 +3,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 // 引入子路曰
 import userRoutes from '@/views/user/routes'
 import testRoutes from '@/views/test/routes'
+import errorRoutes from '@/views/errors/routes'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -26,11 +27,17 @@ const routes: Array<RouteRecordRaw> = [
         path: 'test',
         component: () => import('@/views/test/index.vue'),
         children: testRoutes
-      }
+      },
+      
     ]
-  }
-
+  },
   // 用户相关模块
+  // 错误页
+  {
+    path: '/errors',
+    component: () => import('@/views/errors/index.vue'),
+    children: errorRoutes
+  }
 ]
 
 const router = createRouter({

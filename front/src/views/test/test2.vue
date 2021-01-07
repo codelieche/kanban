@@ -5,15 +5,18 @@
     </div>
   </div>
   <div>Hello Test2</div>
+  <el-divider></el-divider>
+  <ErrorPage :code="403" />
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
+import ErrorPage from '@/views/errors/index.vue'
 
 export default defineComponent({
   name: 'Test2Page',
-  components: {},
+  components: {ErrorPage},
   setup() {
     const breadcrumbItems = [
       {
