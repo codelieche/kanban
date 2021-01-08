@@ -41,11 +41,6 @@
     </el-col>
 
     <el-col :xs="24" :sm="8">
-      <div class="top-bar">
-        <div class="title">
-          <h4>对象日志</h4>
-        </div>
-      </div>
       <ModelLogs app="auth" model="group" :id="id" />
     </el-col>
   </el-row>

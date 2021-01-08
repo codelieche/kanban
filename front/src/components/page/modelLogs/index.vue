@@ -1,7 +1,12 @@
 <template>
+  <div class="top-bar">
+    <div class="title">
+      <h4>{{ title }}</h4>
+    </div>
+  </div>
   <div class="modellogs">
     <el-timeline v-if="Array.isArray(dataSource)">
-        <!-- :color="item.action_flag !== 3 ? '#1890ff' : '#fc5531'" -->
+      <!-- :color="item.action_flag !== 3 ? '#1890ff' : '#fc5531'" -->
       <el-timeline-item
         v-for="(item, index) in dataSource"
         :key="index"
