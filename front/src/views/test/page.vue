@@ -25,17 +25,16 @@
        :name="formName" 
        title="添加"
        :fields="formFields" 
-       :handleSubmit="handleSubmit"></BaseForm>
+       :handleSubmit="handleSubmit" :props="formProps"></BaseForm>
     </el-col>
     <el-col :sm="4" hidden-xs-only></el-col>
   </el-row>
 
   <el-divider></el-divider>
-  <el-button type="primary" @click="updateFormData" size="small"
+  <!-- <el-button type="primary" @click="updateFormData" size="small"
     >更新Name</el-button
   >
-
-  {{ formData }}
+  {{ formData }} -->
 </template>
 
 <script lang="ts">
@@ -190,6 +189,10 @@ export default defineComponent({
       },
     ])
 
+    const formProps = {
+      
+    }
+
     setTimeout(() => {
       formData.value = { 
         username: 'Good', password: 'okokok', 
@@ -213,6 +216,7 @@ export default defineComponent({
 
     return {
       formName,
+      formProps,
       baseFormRef,
       formData,
       formFields,

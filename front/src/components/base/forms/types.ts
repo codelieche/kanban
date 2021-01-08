@@ -5,6 +5,10 @@ export interface ChoiceItem {
     value: string | number | boolean; // 选项的值
 }
 
+export interface ElementFormRef {
+    validate: Function;
+}
+
 export interface FormItemRule {
     type?: string; // 类型
     message: string; // 提示消息
@@ -23,4 +27,5 @@ export interface FormFieldItem {
     rules?: FormItemRule[]; // 验证规则
     // value: string | number | Array<string | number | object> | null | boolean | object | undefined; // 值
     props?: object | null | undefined;  // 其它属性
+    hiddle?: boolean; // 是否隐藏
 }

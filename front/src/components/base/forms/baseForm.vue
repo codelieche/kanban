@@ -1,9 +1,10 @@
 <template>
-  <el-form :model="data" label-width="100px">
+  <el-form :model="data" label-width="100px" ref="formRef" v-bind="props">
     <el-form-item
       :label="item.label"
       v-for="(item, index) in fields"
       :key="index"
+      :prop="item.name"
       :rules="item.rules"
     >
       <!-- Input类型的 -->
@@ -78,37 +79,53 @@
       </span>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click.stop.prevent="onSubmit" size="small">{{ title }}</el-button>
+      <el-button type="primary" @click.stop.prevent="onSubmit" size="small">{{
+        title
+      }}</el-button>
     </el-form-item>
   </el-form>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, reactive, inject } from 'vue'
-import { FormFieldItem } from '@/components/base/forms/types'
+import { defineComponent, PropType, inject, ref, Ref } from 'vue'
+import { FormFieldItem, ElementFormRef } from '@/components/base/forms/types'
+import { ElMessage } from 'element-plus'
 export default defineComponent({
   name: 'BaseForm',
   props: {
     name: String, // 表格的名字
     fields: Array as PropType<Array<FormFieldItem>>,
     title: {
-        type: String,
-        default: () => "提交"
+      type: String,
+      default: () => '提交',
     },
+    props: Object,
     handleSubmit: Function,
   },
   setup(props) {
+    //   formRef
+    
+    const formRef: Ref<ElementFormRef | null> = ref(null)
     // 上级通过provide提供数据，当前组件通过inject获取数据
     const data =
-      props.name && inject(props.name) ? inject(props.name) : reactive({})
+      props.name && inject(props.name) ? inject(props.name) : ref({})
 
     // 提交函数: 注意上一级处理数据
     const onSubmit = () => {
-        if(props.handleSubmit){
-            props.handleSubmit()
-        }
+      if (formRef.value) {
+        //   console.log(formRef)
+        formRef.value.validate((valid: boolean) => {
+          if (valid) {
+            if (props.handleSubmit) {
+              props.handleSubmit()
+            }
+          }else{
+              ElMessage.warning("请重新填写必要的信息")
+          }
+        })
+      }
     }
-    return { data, onSubmit }
+    return { data, onSubmit, formRef }
   },
 })
 </script>

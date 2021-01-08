@@ -47,10 +47,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, watch } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import { useFetchData } from '@/hooks/utils/useFetchData'
+import { useWatchParamsChange } from '@/hooks/utils/useWatchParamsChange'
 import Loading from '@/components/page/loading.vue'
 import ModelLogs from '@/components/page/modelLogs/index.vue'
 export default defineComponent({
@@ -96,30 +97,39 @@ export default defineComponent({
         console.log('ID为false：', idVal)
       }
     })
+    
+    // 监控路由的变化
+    const handleParamsChange = (value: string) => {
+      if(value && id.value !== value){
+        apiUrl.value = `/api/v1/account/group/${value}`
+        id.value = value
+      }
+    }
+    useWatchParamsChange(router, 'id', handleParamsChange)
 
     // 监控路由的变化
-    const routerMatched = router.currentRoute.value.matched
-    watch([router.currentRoute], () => {
-      const idValue = router.currentRoute.value.params['id']
-      // console.log(routerMatched, router.currentRoute.value.matched)
-      // 如果不判断是否是同一个page，当跳转去其它页面的时候，当匹配到id也会去后台拉取数据
-      let isSameRouter = false
-      const newMatched = router.currentRoute.value.matched
-      if (
-        routerMatched[routerMatched.length - 1].path ===
-        newMatched[newMatched.length - 1].path
-      ) {
-        isSameRouter = true
-      }
-      if (
-        isSameRouter &&
-        idValue &&
-        apiUrl.value !== `/api/v1/account/group/${idValue}`
-      ) {
-        apiUrl.value = `/api/v1/account/group/${idValue}`
-        id.value = idValue as string
-      }
-    })
+    // const routerMatched = router.currentRoute.value.matched
+    // watch([router.currentRoute], () => {
+    //   const idValue = router.currentRoute.value.params['id']
+    //   // console.log(routerMatched, router.currentRoute.value.matched)
+    //   // 如果不判断是否是同一个page，当跳转去其它页面的时候，当匹配到id也会去后台拉取数据
+    //   let isSameRouter = false
+    //   const newMatched = router.currentRoute.value.matched
+    //   if (
+    //     routerMatched[routerMatched.length - 1].path ===
+    //     newMatched[newMatched.length - 1].path
+    //   ) {
+    //     isSameRouter = true
+    //   }
+    //   if (
+    //     isSameRouter &&
+    //     idValue &&
+    //     apiUrl.value !== `/api/v1/account/group/${idValue}`
+    //   ) {
+    //     apiUrl.value = `/api/v1/account/group/${idValue}`
+    //     id.value = idValue as string
+    //   }
+    // })
 
     return {
       id,
