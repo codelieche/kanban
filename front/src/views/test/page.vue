@@ -21,11 +21,13 @@
     </el-col> -->
 
     <el-col :xs="24" :sm="16" :md="16">
-      <BaseForm 
-       :name="formName" 
-       title="添加"
-       :fields="formFields" 
-       :handleSubmit="handleSubmit" :props="formProps"></BaseForm>
+      <BaseForm
+        :name="formName"
+        title="添加"
+        :fields="formFields"
+        :handleSubmit="handleSubmit"
+        :props="formProps"
+      ></BaseForm>
     </el-col>
     <el-col :sm="4" hidden-xs-only></el-col>
   </el-row>
@@ -41,7 +43,8 @@
 import { defineComponent, Ref, ref, provide } from 'vue'
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import BaseForm from '@/components/base/forms/baseForm.vue'
-import { FormFieldItem } from '@/components/base/forms/types'
+import { FormFieldItem, ChoiceItem } from '@/components/base/forms/types'
+import useFetchChoices from '@/hooks/utils/useFetchChoices'
 
 export default defineComponent({
   name: 'TestPagePage',
@@ -68,14 +71,15 @@ export default defineComponent({
       [key: string]:
         | number
         | object
-        | string 
+        | string
         | boolean
         | Array<object | number | string>
         | null;
-    }> = ref({hobby: []})
+    }> = ref({ hobby: [] })
     const baseFormRef = ref(null)
     const formName = 'testForm'
     provide(formName, formData) // provide后，BaseForm通过inject获取数据
+
     const formFields: Ref<Array<FormFieldItem>> = ref([
       {
         name: 'username',
@@ -120,55 +124,47 @@ export default defineComponent({
         type: 'radio',
         name: 'sex',
         label: '性别',
-        rules: [
-          {required: true, message: '请选择性别'},
-        ],
+        rules: [{ required: true, message: '请选择性别' }],
         choices: [
-          {text: '男', value: 'm'},
-          {text: '女', value: 'f'}
-        ]
+          { text: '男', value: 'm' },
+          { text: '女', value: 'f' },
+        ],
       },
       {
         type: 'select',
         name: 'category',
         label: '分组',
-        rules: [
-          {required: true, message: '请选择分组'},
-        ],
+        rules: [{ required: true, message: '请选择分组' }],
         choices: [
-          {text: '运维组', value: 'devops'},
-          {text: '开发组', value: 'develop'}
+          { text: '运维组', value: 'devops' },
+          { text: '开发组', value: 'develop' },
         ],
         props: {
-          size: 'small'
-        }
+          size: 'small',
+        },
       },
       {
         type: 'checkbox',
         name: 'hobby',
         label: '兴趣',
-        rules: [
-          {required: true, message: '请选择兴趣'},
-        ],
+        rules: [{ required: true, message: '请选择兴趣' }],
         choices: [
-          {text: 'Python', value: 'python'},
-          {text: 'Java', value: 'java'},
-          {text: 'Golang', value: 'go'},
-          {text: 'JavaScript', value: 'js'},
-        ]
+          { text: 'Python', value: 'python' },
+          { text: 'Java', value: 'java' },
+          { text: 'Golang', value: 'go' },
+          { text: 'JavaScript', value: 'js' },
+        ],
       },
       {
         type: 'radio-button',
         name: 'active',
         label: '激活',
-        rules: [
-          {required: true, message: '请选择激活状态'},
-        ],
+        rules: [{ required: true, message: '请选择激活状态' }],
         choices: [
-          {text: '有效', value: true},
-          {text: '禁用', value: false}
+          { text: '有效', value: true },
+          { text: '禁用', value: false },
         ],
-        props: {size: 'small'}
+        props: { size: 'small' },
       },
       {
         name: 'description',
@@ -184,26 +180,51 @@ export default defineComponent({
           placeholder: '请输入描述内容',
           size: 'small',
           clearable: true,
-          type: 'textarea'
+          type: 'textarea',
+        },
+      },
+      {
+        type: 'transfer',
+        name: 'user_set',
+        label: '',
+        choices: [],
+        props: {
+          size: 'small',
+          titles: ['所有用户', '组成员'],
         },
       },
     ])
-
-    const formProps = {
-      
+    // 修改user_set的选项
+    // 所有用户
+    const userChoicesFields = [
+      { field: 'key', valueField: 'id' },
+      { field: 'label', valueField: 'username' },
+      { field: 'value', valueField: 'username' },
+    ]
+    const callback = (objs: Array<ChoiceItem>) => {
+      formFields.value.forEach((item) => {
+        if (item['name'] === 'user_set') {
+          item['choices'] = objs
+          return
+        }
+      })
     }
 
+    useFetchChoices('/api/v1/account/user/all', userChoicesFields, callback)
+
+    const formProps = {}
+
     setTimeout(() => {
-      formData.value = { 
-        username: 'Good', password: 'okokok', 
-        status: true, sex: 'm', 
+      formData.value = {
+        username: 'Good',
+        password: 'okokok',
+        status: true,
+        sex: 'm',
         hobby: [],
         active: false,
-        description: '描述内容'
+        description: '描述内容',
       }
     }, 2000)
-
-    
 
     const handleSubmit = () => {
       console.log(formData.value)

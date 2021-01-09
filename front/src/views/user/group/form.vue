@@ -23,8 +23,9 @@ import {
   watch,
 } from 'vue'
 import BaseForm from '@/components/base/forms/baseForm.vue'
-import { FormFieldItem } from '@/components/base/forms/types'
+import { ChoiceItem, FormFieldItem } from '@/components/base/forms/types'
 import { Group } from './types'
+import useFetchChoices from '@/hooks/utils/useFetchChoices'
 
 export default defineComponent({
   name: 'GroupForm',
@@ -63,26 +64,60 @@ export default defineComponent({
         },
       },
       {
+        type: 'transfer',
         name: 'user_set',
-        type: 'checkbox',
-        label: '用户',
-        rules: [
-          {
-            required: true,
-            message: '请选择用户',
-          },
-        ],
-        choices: [
-          { text: '男', value: 1 },
-          { text: '女', value: 2 },
-        ],
+        label: '',
+        choices: [],
         props: {
-          placeholder: '分组名',
-          size: 'small',
-          clearable: true,
+          titles: ['所有用户', '组成员'],
+          filterable: true
+        },
+      },
+      {
+        type: 'transfer',
+        name: 'permissions',
+        label: '',
+        choices: [],
+        props: {
+          titles: ['所有权限', '组权限'],
+          filterable: true
         },
       },
     ])
+    // 修改user_set的选项
+    // 所有用户
+    const userChoicesFields = [
+      { field: 'key', valueField: 'id' },
+      { field: 'label', valueField: 'username' },
+      { field: 'value', valueField: 'username' },
+    ]
+    const callback = (objs: Array<ChoiceItem>) => {
+      formFields.value.forEach((item) => {
+        if (item['name'] === 'user_set') {
+          item['choices'] = objs
+          return
+        }
+      })
+    }
+
+    useFetchChoices('/api/v1/account/user/all', userChoicesFields, callback)
+     // 所有用户
+    const permissionChoicesFields = [
+      { field: 'key', valueField: 'id' },
+      { field: 'label', valueField: 'name' },
+      { field: 'value', valueField: 'username' },
+    ]
+    const callback2 = (objs: Array<ChoiceItem>) => {
+      formFields.value.forEach((item) => {
+        if (item['name'] === 'permissions') {
+          item['choices'] = objs
+          return
+        }
+      })
+    }
+
+    useFetchChoices('/api/v1/account/permission/all', permissionChoicesFields, callback2)
+    
     // 表单提交函数
     const handleFormSubmit = () => {
       if (props.handleSubmit) {

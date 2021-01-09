@@ -1,6 +1,7 @@
 // 基本表单相关的结构体
 
 export interface ChoiceItem {
+    id?: number;  // 唯一ID，穿梭框会会用作为key值
     text: string; // 展示的值
     value: string | number | boolean; // 选项的值
 }

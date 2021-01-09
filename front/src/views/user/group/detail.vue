@@ -26,6 +26,16 @@
             </el-tag>
           </dd>
         </dl>
+        <dl>
+          <dt>所有权限</dt>
+          <dd>
+            <el-tag v-for="(item, index) in data.permissions" :key="index">
+              {{ item.app_model }}
+              <el-divider direction="vertical"></el-divider>
+              {{ item.codename }}
+            </el-tag>
+          </dd>
+        </dl>
       </div>
 
       <div class="test">

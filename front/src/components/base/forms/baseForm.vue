@@ -1,5 +1,5 @@
 <template>
-  <el-form :model="data" label-width="100px" ref="formRef" v-bind="props">
+  <el-form :model="data" label-width="100px" ref="formRef" v-bind="props" class="base-form">
     <el-form-item
       :label="item.label"
       v-for="(item, index) in fields"
@@ -34,6 +34,7 @@
         >
       </el-radio-group>
       <!-- 单选按钮 -->
+
       <!-- 单选框 -->
       <el-radio-group
         v-model="data[item.name]"
@@ -74,11 +75,18 @@
           :key="index"
         ></el-option>
       </el-select>
+      <el-transfer
+        v-model="data[item.name]"
+        :data="item.choices"
+        v-else-if="item.type === 'transfer'"
+        v-bind="item.props"
+      >
+      </el-transfer>
       <span v-else>
         {{ item }}
       </span>
     </el-form-item>
-    <el-form-item>
+    <el-form-item class="buttons">
       <el-button type="primary" @click.stop.prevent="onSubmit" size="small">{{
         title
       }}</el-button>
@@ -104,11 +112,10 @@ export default defineComponent({
   },
   setup(props) {
     //   formRef
-    
+
     const formRef: Ref<ElementFormRef | null> = ref(null)
     // 上级通过provide提供数据，当前组件通过inject获取数据
-    const data =
-      props.name && inject(props.name) ? inject(props.name) : ref({})
+    const data = props.name && inject(props.name) ? inject(props.name) : ref({})
 
     // 提交函数: 注意上一级处理数据
     const onSubmit = () => {
@@ -119,8 +126,8 @@ export default defineComponent({
             if (props.handleSubmit) {
               props.handleSubmit()
             }
-          }else{
-              ElMessage.warning("请重新填写必要的信息")
+          } else {
+            ElMessage.warning('请重新填写必要的信息')
           }
         })
       }
