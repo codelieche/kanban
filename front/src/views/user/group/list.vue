@@ -1,82 +1,90 @@
 <template>
-  <TopBar title="分组列表" />
-  
-  <BaseTable
-    apiUrlPrefix="/api/v1/account/group/list"
-    pageUrlPrefix="/user/group/list"
-    :reFreshTimes="reFreshTimes"
-    :showHeader="true"
-  >
-    <template v-slot:default>
-      <el-table-column prop="id" label="ID" width="80" align="center" sortable>
-      </el-table-column>
-      <el-table-column prop="name" label="名称" width="120" sortable>
-      </el-table-column>
-      <el-table-column label="用户" width="">
-        <template #default="scope">
-          <!-- <el-tag type="info" v-if="scope.row.user_set < 1"> --- </el-tag> -->
-          <el-tag v-for="(item, index) in scope.row.user_set" :key="index">{{
-            item
-          }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" width="">
-        <template #default="scope">
-          <!-- 有编辑Group权限的用户可看到的按钮 -->
-          <span v-if="havePermission">
-            <router-link :to="`/user/group/${scope.row.id}`">
-              <Icon type="link">详情</Icon>
+  <div class="main">
+    <TopBar title="分组列表" />
+
+    <BaseTable
+      apiUrlPrefix="/api/v1/account/group/list"
+      pageUrlPrefix="/user/group/list"
+      :reFreshTimes="reFreshTimes"
+      :showHeader="true"
+    >
+      <template v-slot:default>
+        <el-table-column
+          prop="id"
+          label="ID"
+          width="80"
+          align="center"
+          sortable
+        >
+        </el-table-column>
+        <el-table-column prop="name" label="名称" width="120" sortable>
+        </el-table-column>
+        <el-table-column label="用户" width="">
+          <template #default="scope">
+            <!-- <el-tag type="info" v-if="scope.row.user_set < 1"> --- </el-tag> -->
+            <el-tag v-for="(item, index) in scope.row.user_set" :key="index">{{
+              item
+            }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作" width="">
+          <template #default="scope">
+            <!-- 有编辑Group权限的用户可看到的按钮 -->
+            <span v-if="havePermission">
+              <router-link :to="`/user/group/${scope.row.id}`">
+                  <Icon type="link">详情</Icon>
+              </router-link>
+              <el-divider direction="vertical"></el-divider>
+              <router-link :to="`/user/group/${scope.row.id}/editor`">
+                  <Icon type="edit">编辑</Icon>
+              </router-link>
+              <el-divider direction="vertical"></el-divider>
+
+              <el-popconfirm
+                :title="`确定删除: ${scope.row.name}(id: ${scope.row.id})？`"
+                confirmButtonText="确认"
+                cancelButtonText="取消"
+                cancelButtonType="default"
+                @cancel="handleDeleteCancel"
+                @confirm="handleDeleteConfirm(scope.row.id, scope.row.name)"
+              >
+                <template #reference>
+                  <a>
+                    <Icon type="trash-o" danger>删除</Icon>
+                  </a>
+                </template>
+              </el-popconfirm>
+            </span>
+
+            <!-- 没权限编辑的用户只看到查看详情 -->
+            <router-link :to="`/user/group/${scope.row.id}`" v-else>
+                <Icon type="link"> 查看详情 </Icon>
             </router-link>
-            <el-divider direction="vertical"></el-divider>
-            <router-link :to="`/user/group/${scope.row.id}/editor`">
-              <Icon type="edit">编辑</Icon>
-            </router-link>
-            <el-divider direction="vertical"></el-divider>
+          </template>
+        </el-table-column>
+      </template>
 
-            <el-popconfirm
-              :title="`确定删除: ${scope.row.name}(id: ${scope.row.id})？`"
-              confirmButtonText="确认"
-              cancelButtonText="取消"
-              cancelButtonType="default"
-              @cancel="handleDeleteCancel"
-              @confirm="handleDeleteConfirm(scope.row.id, scope.row.name)"
-            >
-              <template #reference>
-                <a>
-                  <Icon type="trash-o" danger>删除</Icon>
-                </a>
-              </template>
-            </el-popconfirm>
-          </span>
-
-          <!-- 没权限编辑的用户只看到查看详情 -->
-          <router-link :to="`/user/group/${scope.row.id}`" v-else>
-            <Icon type="link"> 查看详情 </Icon>
-          </router-link>
-        </template>
-      </el-table-column>
-    </template>
-
-    <!-- 右侧按钮区域 -->
-    <template v-slot:rightButtons>
-      <!-- 右侧的添加/刷新按钮 -->
-      <el-col
-        :sm="12"
-        :xs="24"
-        :style="{ 'text-align': 'right' }"
-        class="right"
-      >
-        <el-button type="default" @click="reFreshData" size="small">
-          <Icon type="refresh">刷新</Icon>
-        </el-button>
-        <router-link to="/user/group/add">
-          <el-button type="primary" size="small">
-            <Icon type="plus">Add</Icon>
+      <!-- 右侧按钮区域 -->
+      <template v-slot:rightButtons>
+        <!-- 右侧的添加/刷新按钮 -->
+        <el-col
+          :sm="12"
+          :xs="24"
+          :style="{ 'text-align': 'right' }"
+          class="right"
+        >
+          <el-button type="default" @click="reFreshData" size="small">
+            <Icon type="refresh">刷新</Icon>
           </el-button>
-        </router-link>
-      </el-col>
-    </template>
-  </BaseTable>
+          <router-link to="/user/group/add">
+            <el-button type="primary" size="small">
+              <Icon type="plus">Add</Icon>
+            </el-button>
+          </router-link>
+        </el-col>
+      </template>
+    </BaseTable>
+  </div>
 </template>
 
 <script lang="ts">

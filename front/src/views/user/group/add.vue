@@ -1,10 +1,12 @@
 <template>
-  <TopBar title="添加分组" />
-  <GroupForm
-    action="add"
-    :handleSubmit="handleSubmit"
-    :data="{ name: '', user_set: [] }"
-  />
+  <div class="main">
+    <TopBar title="添加分组" />
+    <GroupForm
+      action="add"
+      :handleSubmit="handleSubmit"
+      :data="{ name: '', user_set: [] }"
+    />
+  </div>
 </template>
 
 <script lang="ts">

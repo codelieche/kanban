@@ -1,5 +1,12 @@
 .container {
   font-size: 14px;
+  .fullmain {
+    position: relative;
+    flex: 1;
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+  }
 }
 
 .container > .body > .right,
@@ -7,7 +14,8 @@
   background-color: #fff;
   display: flex;
   flex-direction: column;
-  .header {
+  box-sizing: border-box;
+  & > .header {
     // height: 42px;
     max-height: 42px;
     box-sizing: border-box;
@@ -32,6 +40,7 @@
     background-color: #fff;
     box-sizing: border-box;
     padding: 10px 20px;
+    overflow: auto;
 
     // 工具样式开始
     .tools {

@@ -1,5 +1,6 @@
 <template>
-  <el-row :gutter="16">
+  <div class="main">
+    <el-row :gutter="16">
     <el-col :xs="24" :sm="16">
       <TopBar title="分组详情" />
       <!-- 左侧内容 -->
@@ -50,6 +51,7 @@
       <ModelLogs app="auth" model="group" :id="id" />
     </el-col>
   </el-row>
+  </div>
 </template>
 
 <script lang="ts">

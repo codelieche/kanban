@@ -58,6 +58,7 @@ export default defineComponent({
   name: 'BaseTable',
   props: {
     apiUrlPrefix: String, // 获取数据的接口：/api/v1/account/group/list
+    // apiUrlSuffix: String,  // 获取数据的接口追加的内容，比如： type=default
     pageUrlPrefix: String, // 页面的前缀：eg：/user/group/list
     page: {
       type: Number,
@@ -124,7 +125,15 @@ export default defineComponent({
       }
 
       // 从url中获取相关字段的信息
-      let apiUrl = `${props.apiUrlPrefix}?page=${pageInfo.currentPage}&page_size=${pageInfo.pageSize}`
+      if ( ! props.apiUrlPrefix ){
+        return ''
+      }
+      let apiUrl = `${props.apiUrlPrefix}`
+      if(props.apiUrlPrefix.indexOf('?') > 0) {
+        apiUrl = `${apiUrl}&page=${pageInfo.currentPage}&page_size=${pageInfo.pageSize}`
+      }else{
+        apiUrl = `${apiUrl}?page=${pageInfo.currentPage}&page_size=${pageInfo.pageSize}`
+      }
 
       // 从url中处理字段
       props.paramsFields.forEach((item) => {
@@ -138,6 +147,11 @@ export default defineComponent({
         }
       })
 
+      // 尾部内容
+      // if(props.apiUrlSuffix){
+      //   apiUrl = `${apiUrl}&${props.apiUrlSuffix}`
+      // }
+
       return apiUrl
     }
 
@@ -149,10 +163,10 @@ export default defineComponent({
       reFreshTimes
     )
 
-    const url = computed(() => {
-      const apiUrl = `${props.apiUrlPrefix}?page=${pageInfo.currentPage}&page_size=${pageInfo.pageSize}`
-      return apiUrl
-    })
+    // const url = computed(() => {
+    //   const apiUrl = `${props.apiUrlPrefix}`
+    //   return apiUrl
+    // })
 
     // 页面变更了
     const changePageUrl = () => {
@@ -183,9 +197,16 @@ export default defineComponent({
     watch([props], () => {
       // 需要刷新数据
       if (props.reFreshTimes != reFreshTimes.value) {
+        apiUrl.value = getApiUrl()
         reFreshTimes.value = props.reFreshTimes
       }
     })
+    // watch([props.apiUrlPrefix], () => {
+    //   // apiUrlPrefix变更了
+    //   if (props.apiUrlPrefix) {
+    //     console.log(props.apiUrlPrefix)
+    //   }
+    // })
 
     // 搜索的值变更了
     const handleSearchChange = (value: string) => {
@@ -241,7 +262,6 @@ export default defineComponent({
     }
 
     return {
-      url,
       handlePageChange,
       handleSizeChange,
       searchInputValue,

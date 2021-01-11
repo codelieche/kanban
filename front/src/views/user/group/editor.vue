@@ -1,6 +1,8 @@
 <template>
-  <TopBar title="编辑分组" />
-  <GroupForm action="editor" :handleSubmit="handleSubmit" :data="data" />
+  <div class="main">
+    <TopBar title="编辑分组" />
+    <GroupForm action="editor" :handleSubmit="handleSubmit" :data="data" />
+  </div>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
@@ -30,7 +32,6 @@ export default defineComponent({
         title: '编辑',
       },
     ]
-    useBreadcrumbItems(breadcrumbItems)
     useBreadcrumbItems(breadcrumbItems)
 
     const router = useRouter()
