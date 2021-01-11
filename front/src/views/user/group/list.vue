@@ -1,9 +1,5 @@
 <template>
-  <div class="top-bar">
-    <div class="title" @click="reFreshData">
-      <h4>分组列表</h4>
-    </div>
-  </div>
+  <TopBar title="分组列表" />
   
   <BaseTable
     apiUrlPrefix="/api/v1/account/group/list"
@@ -87,6 +83,7 @@
 import { defineComponent, ref } from 'vue'
 import BaseTable from '@/components/page/baseTable.vue'
 import Icon from '@/components/base/icon.vue'
+import TopBar from '@/components/page/topBar.vue'
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import usePermissionCheck from '@/hooks/utils/usePermissionCheck'
 import { ElMessage } from 'element-plus'
@@ -97,6 +94,7 @@ export default defineComponent({
   components: {
     BaseTable,
     Icon,
+    TopBar,
   },
   setup() {
     // 设置顶部导航

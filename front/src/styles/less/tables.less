@@ -1,0 +1,149 @@
+// 表格相关的样式
+
+// 表单
+.base-form {
+  .ant-form-item.hiddle {
+    // 隐藏的表单字段
+    display: none;
+  }
+}
+
+// 右侧文章列表
+.right-content .ant-table, // 默认的表格
+.right-content .el-table, 
+.content .el-table,
+.right-content .main-table,
+.right-content .articles-table {
+  .tools {
+    padding: 10px 0;
+  }
+
+  position: relative;
+  //   padding: 5px;
+  width: 100%;
+
+  // 第一列一般是ID
+  td:first-child,
+  th:first-child {
+    text-align: center;
+    min-width: 55px;
+    a {
+      display: inline-block;
+      // width: 100%;
+    }
+  }
+
+  // 最后一列
+  th:last-child {
+    min-width: 90px;
+  }
+
+  // 设置th、td最低宽度
+  td:not(:first-child) {
+    min-width: 60px;
+    // max-width: 400px;
+  }
+
+  .ant-table-column-sorters {
+    // 表格排序组件有个填充：默认是16px 16px
+    padding: 5px 16px;
+  }
+
+  .ant-table-container,
+  .el-table__header-wrapper{
+    // 设置表格内容区域太宽的时候，可以左右移动
+    // width: 100%;
+    overflow-x: auto;
+
+    thead {
+      & > tr {
+        th {
+          color: #595959;
+          // padding: 5px 16px;
+          background-color: #eee;
+          border-bottom: 1px solid @border-bottom-line-color;
+          border-right: 1px solid @border-bottom-line-color;
+          &:hover {
+            background-color: #d9d9d9;
+          }
+        }
+        th + th {
+          // border-right: 1px solid @border-bottom-line-color;
+          border-left: 1px solid #f0f0f0;
+        }
+      }
+    }
+
+    tbody.ant-table-tbody {
+      tr.ant-table-row {
+        // 鼠标移动到表格的每一行，显示的背景色
+        // .ant-table tbody > tr.ant-table-row:hover > td# 默认的背景色是#f5f5f5
+        &:hover > td {
+          // 默认的背景色是#f5f5f5
+          background-color: rgba(0, 193, 222, 0.12);
+        }
+        td.ant-table-cell {
+          padding: 12px 16px;
+          border-bottom: 1px solid @border-bottom-line-color;
+          border-right: 1px solid @border-bottom-line-color;
+        }
+      }
+    }
+  }
+
+  // 是状态的列
+  .status {
+    display: inline-block;
+    text-align: center;
+    width: 100%;
+    i {
+      font-size: 16px;
+      // 选中或者是对的样式
+      &.anticon-check-square,
+      &.fa-check {
+        color: green;
+      }
+      // 是非勾选或者是错的样式
+      &.anticon-close-square,
+      &.fa-close {
+        color: #f04134;
+      }
+    }
+  }
+}
+
+// 变更尺寸
+
+.react-resizable {
+  position: relative;
+  background-clip: padding-box;
+}
+
+table .react-resizable-handle {
+  position: absolute;
+  width: 10px;
+  height: 100%;
+  bottom: 0;
+  right: -5px;
+  cursor: col-resize;
+  z-index: 1;
+
+  &:hover {
+    background-color: @left-sider-nav-active-background;
+  }
+}
+
+.react-resizable {
+  position: relative;
+  background-clip: padding-box;
+}
+
+.react-resizable-handle {
+  position: absolute;
+  width: 10px;
+  height: 100%;
+  bottom: 0;
+  right: -5px;
+  cursor: col-resize;
+  z-index: 1;
+}

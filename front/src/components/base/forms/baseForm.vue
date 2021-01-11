@@ -1,5 +1,11 @@
 <template>
-  <el-form :model="data" label-width="100px" ref="formRef" v-bind="props" class="base-form">
+  <el-form
+    :model="data"
+    label-width="100px"
+    ref="formRef"
+    v-bind="props"
+    class="base-form"
+  >
     <el-form-item
       :label="item.label"
       v-for="(item, index) in fields"

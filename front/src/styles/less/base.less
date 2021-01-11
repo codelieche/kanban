@@ -53,14 +53,16 @@ a {
 // }
 
 // 表单
+&.min-width-600 .el-form-item__content {
+  min-width: 600px;
+}
+
 .base-form {
-  .el-form-item__content {
-    min-width: 600px;
-  }
   .buttons {
     .el-form-item__content {
       display: flex;
       text-align: center;
+      justify-content: center;
       button {
         flex: 1;
         margin: 10px 5px;

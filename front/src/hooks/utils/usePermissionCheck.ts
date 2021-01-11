@@ -2,9 +2,11 @@ import { onMounted, ref, Ref, watch } from 'vue'
 import { AxiosResponse } from 'axios'
 
 import fetchApi from '@/plugins/fetchApi'
+import { Router } from 'vue-router'
 
 export const usePermissionCheck = <T>(
   permission: Ref<string> | string,
+  router: Router | null = null,
   successCode = 200
 ) => {
   const havePermission = ref<boolean>(false)
@@ -20,6 +22,10 @@ export const usePermissionCheck = <T>(
             havePermission.value = true
           } else {
             havePermission.value = false
+            // 如果传递了router就跳转到403页面
+            if(router){
+              router.replace('/errors/403')
+            }
           }
         } else {
           havePermission.value = false

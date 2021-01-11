@@ -1,4 +1,5 @@
 <template>
+  <TopBar title="添加分组" />
   <GroupForm
     action="add"
     :handleSubmit="handleSubmit"
@@ -10,12 +11,13 @@
 import { defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
+import TopBar from '@/components/page/topBar.vue'
 import GroupForm from './form.vue'
 import fetchApi from '@/plugins/fetchApi'
 import { ElMessage } from 'element-plus'
 export default defineComponent({
   name: 'UserGroupAdd',
-  components: { GroupForm },
+  components: { GroupForm, TopBar },
   setup() {
     const breadcrumbItems = [
       {

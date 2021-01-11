@@ -1,11 +1,7 @@
 <template>
   <el-row :gutter="16">
     <el-col :xs="24" :sm="16">
-      <div class="top-bar">
-        <div class="title">
-          <h4>分组详情</h4>
-        </div>
-      </div>
+      <TopBar title="分组详情" />
       <!-- 左侧内容 -->
       <!-- Loading的时候显示加载中 -->
       <Loading v-if="loading" />
@@ -63,12 +59,14 @@ import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import { useFetchData } from '@/hooks/utils/useFetchData'
 import { useWatchParamsChange } from '@/hooks/utils/useWatchParamsChange'
 import Loading from '@/components/page/loading.vue'
+import TopBar from '@/components/page/topBar.vue'
 import ModelLogs from '@/components/page/modelLogs/index.vue'
 export default defineComponent({
   name: 'UserGroupDetail',
   components: {
     Loading,
     ModelLogs,
+    TopBar
   },
   setup() {
     // 设置面包屑导航

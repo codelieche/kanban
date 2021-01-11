@@ -1,5 +1,8 @@
 @charset 'UTF-8';
 
+// 引入变量
+@import "./less/variables";
+
 @import "./reset.css";
 // 引入基本样式
 @import "./less/base.less";
@@ -8,6 +11,12 @@
 // 引入右侧内容的样式
 // .main > .content
 @import "./less/content.less";
+
+// 表格样式
+@import "./less/tables";
+
+// 复写element UI的样式
+@import "./less/element.less";
 
 // 参考antd的样式
 @import "./less/antd.less";

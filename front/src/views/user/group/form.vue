@@ -7,6 +7,7 @@
         :fields="formFields"
         :title="action === 'add' ? '添加' : '修改'"
         :handleSubmit="handleFormSubmit"
+        class="min-width-600"
       ></BaseForm>
     </el-col>
   </el-row>
