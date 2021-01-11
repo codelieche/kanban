@@ -7,6 +7,12 @@ import errorRoutes from '@/views/errors/routes'
 
 const routes: Array<RouteRecordRaw> = [
   {
+    path: '/user/login',
+    name: 'UserLogin',
+    // component: Home
+    component: () => import('@/views/user/login/index.vue'),
+  },
+  {
     path: '/',
     name: 'Home',
     // component: Home

@@ -2,12 +2,19 @@
 
 import { RouteRecordRaw } from 'vue-router'
 
+import messageRouter from './message/router'
+
 const routes: Array<RouteRecordRaw> = [
   {
     path: '',
     // name: 'ChartHome',
     component: () => import('./home.vue'),
-  }
+  },
+  {
+    path: 'message',
+    component: () => import('./message/index.vue'),
+    children: messageRouter
+  },
 ]
 
 const subComponents = [
@@ -34,10 +41,7 @@ const subComponents = [
     path: 'center',
     filename: 'center/index'
   },
-  {
-    path: 'message',
-    filename: 'message/index'
-  },
+  
   {
     path: 'login',
     filename: 'login/index'
