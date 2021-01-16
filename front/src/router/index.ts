@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 // 引入子路曰
+import docsRoutes from '@/views/docs/routes'
 import userRoutes from '@/views/user/routes'
 import tagsRoutes from '@/views/tags/routes'
 import testRoutes from '@/views/test/routes'
@@ -24,7 +25,14 @@ const routes: Array<RouteRecordRaw> = [
         name: 'HomePage',
         component: () => import('@/views/home/home.vue')
       },
-      // 错误页
+      // 文档相关管理页面
+      {
+        path: 'docs',
+        component: () => import('@/views/docs/index.vue'),
+        children: docsRoutes
+      },
+
+      // 标签页
       {
         path: 'tags',
         component: () => import('@/views/tags/index.vue'),

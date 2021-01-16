@@ -26,9 +26,11 @@
     style="width: 100%"
     :show-header="showHeader"
     @sort-change="handleSortChange"
+    v-bind="props"
   >
     <slot name="default"></slot>
   </el-table>
+  <!-- <el-empty :description="loading ? '数据加载...' : '无数据'" v-else></el-empty> -->
   <!-- 表格结束 -->
 
   <!-- 分页开始 -->
@@ -88,6 +90,7 @@ export default defineComponent({
       type: Boolean,
       default: () => true,
     },
+    props: Object,
   },
   setup(props) {
     // 获取的数据值
@@ -106,7 +109,7 @@ export default defineComponent({
     const searchValue = ref('')
 
     const getApiUrl = () => {
-      //   console.log(window.location.search)
+      // console.log(window.location.search)
       const locationSearch = window.location.search
       params = getParamsFromLocationSearch(props.paramsFields, locationSearch)
       // 设置搜索框的值
@@ -116,22 +119,26 @@ export default defineComponent({
       //   console.log(params)
       if (params['page'] && isNaN(Number(params['page'])) === false) {
         pageInfo.currentPage = Number(params['page'])
+      } else {
+        pageInfo.currentPage = props.page
       }
 
       // 有个bug：pageSize、pageCount都不可以用变量设置，刷新页面变成默认的值了, 用reactive是可以的
       if (params['page_size'] && isNaN(Number(params['page_size'])) === false) {
         // console.log('从url中获取到了page_size', Number(params['page_size']), pageInfo.pageSize)
         pageInfo.pageSize = Number(params['page_size'])
+      } else {
+        pageInfo.pageSize = props.pageSize
       }
 
       // 从url中获取相关字段的信息
-      if ( ! props.apiUrlPrefix ){
+      if (!props.apiUrlPrefix) {
         return ''
       }
       let apiUrl = `${props.apiUrlPrefix}`
-      if(props.apiUrlPrefix.indexOf('?') > 0) {
+      if (props.apiUrlPrefix.indexOf('?') > 0) {
         apiUrl = `${apiUrl}&page=${pageInfo.currentPage}&page_size=${pageInfo.pageSize}`
-      }else{
+      } else {
         apiUrl = `${apiUrl}?page=${pageInfo.currentPage}&page_size=${pageInfo.pageSize}`
       }
 
@@ -207,6 +214,19 @@ export default defineComponent({
     //     console.log(props.apiUrlPrefix)
     //   }
     // })
+
+    watch([router.currentRoute], () => {
+      // console.log(window.location.search)
+      // console.log("baseTable里监控到router变化：", router)
+      // 获取新的apiUrl
+      if (apiUrl.value !== getApiUrl()) {
+        apiUrl.value = getApiUrl()
+        // console.log("baseTable里监控到router变化: 修改新的apiUrl", apiUrl.value)
+      } else {
+        // console.log(apiUrl.value)
+        // console.log(getApiUrl())
+      }
+    })
 
     // 搜索的值变更了
     const handleSearchChange = (value: string) => {

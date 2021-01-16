@@ -1,50 +1,32 @@
 <template>
-  <TopBar title="对象标签列表" />
+  <TopBar title="列表" />
+
   <BaseTable
-    apiUrlPrefix="/api/v1/tags/objecttag/list"
-    pageUrlPrefix="/tags/objecttag/list"
-    :paramsFields="[
-      'page',
-      'page_size',
-      'ordering',
-      'search',
-      'tagvalue__tag_id',
-      'tagvalue',
-      'tagvalue__key_key',
-      'model',
-    ]"
+    apiUrlPrefix="/api/v1/docs/discussion/list"
+    pageUrlPrefix="/docs/discussion/list"
     :reFreshTimes="reFreshTimes"
     :showHeader="true"
+    :props="tableProps"
   >
     <template v-slot:default>
+      <el-table-column prop="id" label="ID" width="80" sortable />
+      <el-table-column prop="category" label="类型" width="100">
+      </el-table-column>
+      <el-table-column prop="content" label="内容" width="260" />
+
+      <el-table-column prop="user" label="用户" width="130" />
+
       <el-table-column
-        prop="id"
-        label="ID"
-        width="80"
+        prop="time_added"
+        label="添加时间"
+        width="170"
         align="center"
         sortable
       />
-      <el-table-column
-        prop="key"
-        label="Key"
-        width="100"
-        align="center"
-        sortable
-      >
-      </el-table-column>
-      <el-table-column prop="value" label="Value" width="120" align="center">
-      </el-table-column>
 
-      <el-table-column prop="app_label" label="App Label" width="120">
-      </el-table-column>
-      <el-table-column prop="model" label="Model" width="120">
-      </el-table-column>
-      <el-table-column prop="object_id" label="Object ID" width="120" />
-      <el-table-column prop="user" label="添加者" width="120" />
-
-      <!-- 状态 -->
+       <!-- 状态 -->
       <el-table-column
-        prop="is_deleted"
+        prop="is_deleteed"
         label="状态"
         width="100"
         align="center"
@@ -55,26 +37,15 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="">
+
+      <el-table-column label="操作">
         <template #default="scope">
-          <span>
-            <el-popconfirm
-              :title="`确定删除(${scope.row.app_label}-${scope.row.model}-${scope.row.object_id})标签(${scope.row.key}-${scope.row.value})？`"
-              confirmButtonText="确认"
-              cancelButtonText="取消"
-              cancelButtonType="default"
-              @cancel="handleDeleteCancel"
-              @confirm="handleDeleteConfirm(scope.row.id, `${scope.row.key}-${scope.row.value}`)"
-            >
-              <template #reference>
-                <a>
-                  <Icon type="trash-o" danger>删除</Icon>
-                </a>
-              </template>
-            </el-popconfirm>
-            <el-divider direction="vertical"></el-divider>
-            对象信息
-          </span>
+          <router-link
+            v-if="scope.row.article > 0"
+            :to="`/docs/article/${scope.row.article}`"
+          >
+            <Icon type="link"> 查看文章 </Icon>
+          </router-link>
         </template>
       </el-table-column>
     </template>
@@ -91,17 +62,23 @@
         <el-button type="default" @click="reFreshData" size="small">
           <Icon type="refresh">刷新</Icon>
         </el-button>
+        <!-- <router-link to="/docs/group/add">
+          <el-button type="primary" size="small">
+            <Icon type="plus">Add</Icon>
+          </el-button>
+        </router-link> -->
       </el-col>
     </template>
   </BaseTable>
 </template>
+
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import BaseTable from '@/components/page/baseTable.vue'
 import Icon from '@/components/base/icon.vue'
 import TopBar from '@/components/page/topBar.vue'
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
-import usePermissionCheck from '@/hooks/utils/usePermissionCheck'
+// import usePermissionCheck from '@/hooks/utils/usePermissionCheck'
 import { ElMessage } from 'element-plus'
 import fetchApi from '@/plugins/fetchApi'
 
@@ -121,8 +98,8 @@ export default defineComponent({
         link: '/',
       },
       {
-        title: '对象标签',
-        link: '/tags/objecttag',
+        title: '文档评论',
+        link: '/docs/discussion',
       },
       {
         title: '列表',
@@ -131,7 +108,7 @@ export default defineComponent({
     useBreadcrumbItems(breadcrumbItems)
 
     // 检查编辑权限
-    const { havePermission } = usePermissionCheck('tags.change_value')
+    // const { havePermission } = usePermissionCheck('docs.change_discussion')
 
     // 控制刷新的开关
     const reFreshTimes = ref(0)
@@ -142,17 +119,18 @@ export default defineComponent({
 
     // 删除确认事件
     const handleDeleteConfirm = (id: number, name: string): void => {
-      if (!id || id < 0 || !havePermission.value) {
+    //   if (!id || id < 0 || !havePermission.value) {
+      if (!id || id < 0 ) {
         return
       }
       // console.log('我将删除：', id, name)
-      const url = `/api/v1/tags/objecttag/${id}`
+      const url = `/api/v1/docs/discussion/${id}`
       // 发起删除请求
       fetchApi
         .delete(url)
         .then((response) => {
           if (response.status === 204) {
-            ElMessage.success(`删除标对象标签(${name}:${id})成功`)
+            ElMessage.success(`删除讨论(${name}:${id})成功`)
             // 刷新数据
             reFreshData()
           } else {
@@ -161,13 +139,13 @@ export default defineComponent({
             if (result.message) {
               ElMessage.error(`删除失败: ${result.message}`)
             } else {
-              ElMessage.error(`删除对象标签(${name}:${id})失败`)
+              ElMessage.error(`删除讨论(${name}:${id})失败`)
             }
           }
         })
         .catch((err) => {
           console.log(err)
-          ElMessage.error(`删除对象标签(${name}:${id})失败`)
+          ElMessage.error(`删除讨论(${name}:${id})失败`)
         })
     }
     // 取消删除
@@ -180,9 +158,17 @@ export default defineComponent({
       })
     }
 
+    // 表格的选项
+    const tableProps = {
+      //   'row-key': 'id',
+      //   'default-expand-all': false,
+      //   'tree-props': { children: 'children', hasChildren: 'hasChildren' },
+    }
+
     return {
+      tableProps,
       reFreshTimes,
-      havePermission,
+    //   havePermission,
       handleDeleteCancel,
       handleDeleteConfirm,
       reFreshData,

@@ -82,7 +82,8 @@ import {
   ElLoading,
   ElMessage,
   ElMessageBox,
-  ElNotification
+  ElNotification,
+  ElEmpty,
 } from 'element-plus'
 
 const components = [
@@ -163,7 +164,8 @@ const components = [
   ElTooltip,
   ElTransfer,
   ElTree,
-  ElUpload
+  ElUpload,
+  ElEmpty
 ]
 
 const plugins = [

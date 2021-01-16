@@ -90,7 +90,7 @@ export const useFetchListData = <T>(
 ) => {
   const loading = ref<boolean>(true)
   const error = ref<boolean>(false)
-  const dataSource = ref<Array<T> | null>(null)
+  const dataSource = ref<Array<T>>([])
   const count = ref<number>(0)
   const next = ref<string | null>(null)
 
