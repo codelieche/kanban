@@ -2,6 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 
 // 引入子路曰
 import userRoutes from '@/views/user/routes'
+import tagsRoutes from '@/views/tags/routes'
 import testRoutes from '@/views/test/routes'
 import errorRoutes from '@/views/errors/routes'
 
@@ -10,7 +11,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/user/login',
     name: 'UserLogin',
     // component: Home
-    component: () => import('@/views/user/login/index.vue'),
+    component: () => import('@/views/user/login/index.vue')
   },
   {
     path: '/',
@@ -23,6 +24,12 @@ const routes: Array<RouteRecordRaw> = [
         name: 'HomePage',
         component: () => import('@/views/home/home.vue')
       },
+      // 错误页
+      {
+        path: 'tags',
+        component: () => import('@/views/tags/index.vue'),
+        children: tagsRoutes
+      },
       {
         path: 'user',
         // name: 'BaseIndex',
@@ -33,8 +40,7 @@ const routes: Array<RouteRecordRaw> = [
         path: 'test',
         component: () => import('@/views/test/index.vue'),
         children: testRoutes
-      },
-      
+      }
     ]
   },
   // 用户相关模块

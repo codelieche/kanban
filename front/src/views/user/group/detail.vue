@@ -1,56 +1,65 @@
 <template>
   <div class="main">
     <el-row :gutter="16">
-    <el-col :xs="24" :sm="16">
-      <TopBar title="分组详情" />
-      <!-- 左侧内容 -->
-      <!-- Loading的时候显示加载中 -->
-      <Loading v-if="loading" />
-      <div class="info-property" v-else-if="data && data.id > 0">
-        <dl>
-          <dt>ID</dt>
-          <dd>{{ data.id }}</dd>
-        </dl>
-        <dl>
-          <dt>名称</dt>
-          <dd>{{ data.name }}</dd>
-        </dl>
-        <dl>
-          <dt>所有用户</dt>
-          <dd>
-            <el-tag v-for="(item, index) in data.user_set" :key="index">
-              {{ item }}
-            </el-tag>
-          </dd>
-        </dl>
-        <dl>
-          <dt>所有权限</dt>
-          <dd>
-            <el-tag v-for="(item, index) in data.permissions" :key="index">
-              {{ item.app_model }}
-              <el-divider direction="vertical"></el-divider>
-              {{ item.codename }}
-            </el-tag>
-          </dd>
-        </dl>
-      </div>
+      <el-col :xs="24" :sm="16">
+        <TopBar title="分组详情" />
+        <!-- 左侧内容 -->
+        <!-- Loading的时候显示加载中 -->
+        <Loading v-if="loading" />
+        <div class="info-property" v-else-if="data && data.id > 0">
+          <dl>
+            <dt>ID</dt>
+            <dd>{{ data.id }}</dd>
+          </dl>
+          <dl>
+            <dt>名称</dt>
+            <dd>{{ data.name }}</dd>
+          </dl>
+          <dl>
+            <dt>所有用户</dt>
+            <dd>
+              <el-tag
+                v-for="(item, index) in data.user_set"
+                :key="index"
+                size="small"
+              >
+                {{ item }}
+              </el-tag>
+            </dd>
+          </dl>
+          <dl>
+            <dt>所有权限</dt>
+            <dd>
+              <el-tag
+                v-for="(item, index) in data.permissions"
+                :key="index"
+                size="small"
+                type="info"
+              >
+                {{ item.app_model }}
+                <el-divider direction="vertical"></el-divider>
+                {{ item.codename }}
+              </el-tag>
+            </dd>
+          </dl>
+        </div>
 
-      <div class="test">
-        <el-divider></el-divider>
-        <div>
-          <div v-for="item in [1, 2, 3, 4, 5, 6]" :key="item">
-            <router-link :to="`/user/group/${item}`">
-              {{ `/user/group/${item}` }}
-            </router-link>
+        <div class="test">
+          <el-divider></el-divider>
+          <div>
+            <div v-for="item in [1, 2, 3, 4, 5, 6]" :key="item">
+              <router-link :to="`/user/group/${item}`">
+                {{ `/user/group/${item}` }}
+              </router-link>
+            </div>
           </div>
         </div>
-      </div>
-    </el-col>
+      </el-col>
 
-    <el-col :xs="24" :sm="8">
-      <ModelLogs app="auth" model="group" :id="id" />
-    </el-col>
-  </el-row>
+      <el-col :xs="24" :sm="8">
+        <ModelLogs app="auth" model="group" :id="id" />
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -68,7 +77,7 @@ export default defineComponent({
   components: {
     Loading,
     ModelLogs,
-    TopBar
+    TopBar,
   },
   setup() {
     // 设置面包屑导航
@@ -107,10 +116,10 @@ export default defineComponent({
         console.log('ID为false：', idVal)
       }
     })
-    
+
     // 监控路由的变化
     const handleParamsChange = (value: string) => {
-      if(value && id.value !== value){
+      if (value && id.value !== value) {
         apiUrl.value = `/api/v1/account/group/${value}`
         id.value = value
       }

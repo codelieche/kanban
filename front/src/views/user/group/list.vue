@@ -21,10 +21,39 @@
         </el-table-column>
         <el-table-column label="用户" width="">
           <template #default="scope">
-            <!-- <el-tag type="info" v-if="scope.row.user_set < 1"> --- </el-tag> -->
-            <el-tag v-for="(item, index) in scope.row.user_set" :key="index">{{
-              item
-            }}</el-tag>
+            <span v-if="scope.row.user_set.length < 10">
+              <el-tag
+                v-for="(item, index) in scope.row.user_set"
+                :key="index"
+                size="small"
+                >{{ item }}</el-tag
+              >
+            </span>
+            <span v-else>
+              总共有{{ scope.row.user_set.length }}个用户，
+              <router-link :to="`/user/group/${scope.row.id}`">
+                <Icon type="link">去详情页查看</Icon>
+              </router-link>
+            </span>
+          </template>
+        </el-table-column>
+        <el-table-column label="权限" width="">
+          <template #default="scope">
+            <span v-if="scope.row.permissions.length < 10">
+              <el-tag
+                v-for="(item, index) in scope.row.permissions"
+                :key="index"
+                type="info"
+                size="small"
+                >{{ item.name }}</el-tag
+              >
+            </span>
+            <span v-else>
+              总共有{{ scope.row.permissions.length }}条权限，
+              <router-link :to="`/user/group/${scope.row.id}`">
+                <Icon type="link">去详情页查看</Icon>
+              </router-link>
+            </span>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="">
@@ -32,11 +61,11 @@
             <!-- 有编辑Group权限的用户可看到的按钮 -->
             <span v-if="havePermission">
               <router-link :to="`/user/group/${scope.row.id}`">
-                  <Icon type="link">详情</Icon>
+                <Icon type="link">详情</Icon>
               </router-link>
               <el-divider direction="vertical"></el-divider>
               <router-link :to="`/user/group/${scope.row.id}/editor`">
-                  <Icon type="edit">编辑</Icon>
+                <Icon type="edit">编辑</Icon>
               </router-link>
               <el-divider direction="vertical"></el-divider>
 
@@ -58,7 +87,7 @@
 
             <!-- 没权限编辑的用户只看到查看详情 -->
             <router-link :to="`/user/group/${scope.row.id}`" v-else>
-                <Icon type="link"> 查看详情 </Icon>
+              <Icon type="link"> 查看详情 </Icon>
             </router-link>
           </template>
         </el-table-column>
@@ -96,7 +125,7 @@ import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import usePermissionCheck from '@/hooks/utils/usePermissionCheck'
 import { ElMessage } from 'element-plus'
 import fetchApi from '@/plugins/fetchApi'
-// import { Group } from '@/types/models/account'
+
 export default defineComponent({
   name: 'UserGroupList',
   components: {

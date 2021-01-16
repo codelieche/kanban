@@ -19,6 +19,14 @@
         v-if="item.type === 'input'"
         v-bind="item.props"
       ></el-input>
+
+      <!-- Input Number -->
+      <el-input-number
+        v-model="data[item.name]"
+        v-else-if="item.type === 'number'"
+        v-bind="item.props"
+      ></el-input-number>
+      
       <!-- 选择Switch -->
       <el-switch
         v-model="data[item.name]"

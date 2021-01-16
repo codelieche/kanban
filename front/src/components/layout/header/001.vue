@@ -18,6 +18,12 @@
             >{{ item.title }}</router-link
           >
         </li>
+        <!-- 用户登录/用户信息 -->
+        <li>
+          <a>
+            <UserLoginOrInfo />
+          </a>
+        </li>
       </ul>
     </div>
   </div>
@@ -25,13 +31,13 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-// import { mapState } from 'vuex'
-
 import { headerSlug } from '@/hooks/store/useHeaderSlug'
 import { PageHeaderNav } from '@/types/base/nav'
+import UserLoginOrInfo from './userLoginOrInfo.vue'
 
 export default defineComponent({
   name: 'Header001',
+  components: { UserLoginOrInfo },
   props: {
     navs: {
       type: Array,
