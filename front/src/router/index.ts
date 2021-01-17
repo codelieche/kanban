@@ -4,6 +4,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 import docsRoutes from '@/views/docs/routes'
 import userRoutes from '@/views/user/routes'
 import tagsRoutes from '@/views/tags/routes'
+import configRoutes from '@/views/config/routes'
 import testRoutes from '@/views/test/routes'
 import errorRoutes from '@/views/errors/routes'
 
@@ -43,6 +44,11 @@ const routes: Array<RouteRecordRaw> = [
         // name: 'BaseIndex',
         component: () => import('@/views/user/index.vue'),
         children: userRoutes
+      },
+      {
+        path: 'config',
+        component: () => import('@/views/config/index.vue'),
+        children: configRoutes
       },
       {
         path: 'test',

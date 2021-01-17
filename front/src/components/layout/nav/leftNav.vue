@@ -1,6 +1,6 @@
 <template>
   <!-- 文本注释 -->
-  <div class="item" :class="{ collapsed: collapsed }">
+  <div class="item" :class="{ collapsed: collapsed }" v-if="!item.is_deleted">
     <div v-if="collapsed" class="title" @click="onTitleClick">
       <!-- 折叠的情况 -->
       <el-tooltip effect="dark" :content="item.title" placement="right">
@@ -17,12 +17,12 @@
               <span
                 class="icon"
                 :class="
-              item.icon
-                ? item.icon.startsWith('el-')
-                  ? item.icon
-                  : `fa fa-${item.icon}`
-                : 'el-icon-arrow-right'
-            "
+                  item.icon
+                    ? item.icon.startsWith('el-')
+                      ? item.icon
+                      : `fa fa-${item.icon}`
+                    : 'el-icon-arrow-right'
+                "
               ></span>
             </a>
           </span>
@@ -31,18 +31,21 @@
           <router-link
             v-else-if="!!item.slug"
             :to="item.slug"
-            :class="{active: urlpath.indexOf(item.slug) == 0 && item.children.length < 1}"
+            :class="{
+              active:
+                urlpath.indexOf(item.slug) == 0 && item.children.length < 1,
+            }"
             :style="{ paddingLeft: paddingLeftValue }"
           >
             <span
               class="icon"
               :class="
-              item.icon
-                ? item.icon.startsWith('el-')
-                  ? item.icon
-                  : `fa fa-${item.icon}`
-                : 'el-icon-arrow-right'
-            "
+                item.icon
+                  ? item.icon.startsWith('el-')
+                    ? item.icon
+                    : `fa fa-${item.icon}`
+                  : 'el-icon-arrow-right'
+              "
             ></span>
           </router-link>
 
@@ -90,7 +93,9 @@
       <!-- 跳转内部Url的情况 -->
       <router-link
         v-else-if="!!item.slug"
-        :class="{active: urlpath.indexOf(item.slug) == 0 && item.children.length < 1}"
+        :class="{
+          active: urlpath.indexOf(item.slug) == 0 && item.children.length < 1,
+        }"
         :to="item.slug"
         :style="{ paddingLeft: paddingLeftValue }"
       >
@@ -176,9 +181,9 @@ export default {
         return `${this.item.level * 10}px`
       }
     },
-    urlpath(){
+    urlpath() {
       return this.$route.path
-    }
+    },
   },
   methods: {
     onTitleClick() {
@@ -251,7 +256,8 @@ export default {
       box-sizing: border-box;
       text-decoration: none;
       color: #f8f8f8;
-      &.router-link-exact-active, &.active {
+      &.router-link-exact-active,
+      &.active {
         background-color: @nav-item-active-background;
       }
     }

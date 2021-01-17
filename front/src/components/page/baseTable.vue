@@ -48,6 +48,7 @@
     v-if="showPagination"
   >
   </el-pagination>
+  <el-divider v-else></el-divider>
   <!-- 分页结束 -->
 </template>
 
