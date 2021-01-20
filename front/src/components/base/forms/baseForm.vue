@@ -89,6 +89,8 @@
           :key="index"
         ></el-option>
       </el-select>
+
+      <!-- 穿梭框 -->
       <el-transfer
         v-model="data[item.name]"
         :data="item.choices"
@@ -96,6 +98,15 @@
         v-bind="item.props"
       >
       </el-transfer>
+
+      <!-- 层级选择器 -->
+       <el-cascader 
+        v-model="data[item.name]"
+        v-else-if="item.type === 'cascader'"
+        :options="item.choices"
+        v-bind="item.props"
+      >
+      </el-cascader >
       <span v-else>
         {{ item }}
       </span>

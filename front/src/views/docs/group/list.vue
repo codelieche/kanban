@@ -1,5 +1,5 @@
 <template>
-  <TopBar title="列表" />
+  <TopBar title="分组列表" />
 
   <BaseTable
     apiUrlPrefix="/api/v1/docs/group/list"

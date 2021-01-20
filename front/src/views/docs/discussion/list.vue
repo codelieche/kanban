@@ -1,5 +1,5 @@
 <template>
-  <TopBar title="列表" />
+  <TopBar title="评论列表" />
 
   <BaseTable
     apiUrlPrefix="/api/v1/docs/discussion/list"

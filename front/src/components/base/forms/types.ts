@@ -2,8 +2,10 @@
 
 export interface ChoiceItem {
     id?: number;  // 唯一ID，穿梭框会会用作为key值
-    text: string; // 展示的值
+    text?: string; // 展示的值
+    label?: string; // 展示的值
     value: string | number | boolean; // 选项的值
+    children?: Array<ChoiceItem>;  // 子元素
 }
 
 export interface ElementFormRef {
