@@ -112,6 +112,7 @@ export default defineComponent({
     const getApiUrl = () => {
       // console.log(window.location.search)
       const locationSearch = window.location.search
+      // console.log(router.currentRoute.value.fullPath.toString().replace(router.currentRoute.value.path, ''))
       params = getParamsFromLocationSearch(props.paramsFields, locationSearch)
       // 设置搜索框的值
       if (params['search'] && params['search'] !== searchInputValue.value) {
@@ -209,6 +210,7 @@ export default defineComponent({
         reFreshTimes.value = props.reFreshTimes
       }
     })
+
     // watch([props.apiUrlPrefix], () => {
     //   // apiUrlPrefix变更了
     //   if (props.apiUrlPrefix) {
@@ -217,8 +219,6 @@ export default defineComponent({
     // })
 
     watch([router.currentRoute], () => {
-      // console.log(window.location.search)
-      // console.log("baseTable里监控到router变化：", router)
       // 获取新的apiUrl
       if (apiUrl.value !== getApiUrl()) {
         apiUrl.value = getApiUrl()
@@ -231,11 +231,21 @@ export default defineComponent({
 
     // 搜索的值变更了
     const handleSearchChange = (value: string) => {
-      // console.log(value)
       if (searchValue.value !== value) {
         searchValue.value = value
+        params['page'] = '1'
         params['search'] = value
-        changePageUrl()
+        // 跳转页面
+        router
+          .push({
+            path: router.currentRoute.value.path,
+            query: params,
+          })
+          .then((err) => {
+            if (err) {
+              console.log(err)
+            }
+          })
       }
     }
     // 当输入框的值被删除了后，没按回车，也需要粗发一下重新获取数据
