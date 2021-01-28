@@ -15,9 +15,10 @@
 <script lang="ts">
 import { defineComponent, provide, Ref, ref, watch } from 'vue'
 import BaseForm from '@/components/base/forms/baseForm.vue'
-import { FormFieldItem } from '@/components/base/forms/types'
+import { ChoiceItem, FormFieldItem } from '@/components/base/forms/types'
 import fetchApi from '@/plugins/fetchApi'
 import { ElMessage } from 'element-plus'
+import useFetchChoices from '@/hooks/utils/useFetchChoices'
 
 export default defineComponent({
   name: 'EditorForm',
@@ -115,11 +116,20 @@ export default defineComponent({
       },
       {
         name: 'parent',
-        type: 'input',
+        type: 'cascader',
         label: '父级菜单:',
         props: {
           size: 'small',
+          clearable: true,
+          'show-all-levels': false, // 显示所有层级，false的时候只显示最后一级, 但是得到的值依然是个数组
+          filterable: true, // 可搜索
+          props: {
+            multiple: false,
+            expandTrigger: 'hover', // 触发展开下级选项的方式
+            checkStrictly: true, // 可选择任意一级
+          },
         },
+        choices: []
       },
       {
         name: 'order',
@@ -149,6 +159,23 @@ export default defineComponent({
       },
     ])
 
+    // 获取选项
+    // 所有父级选项
+    const userChoicesFields = [
+      // { field: 'key', valueField: 'id' },
+      { field: 'label', valueField: 'slug' },
+      { field: 'value', valueField: 'id' },
+    ]
+    const callback = (objs: Array<ChoiceItem>) => {
+      formFields.value.forEach((item) => {
+        if (item['name'] === 'parent') {
+          item['choices'] = objs
+          return
+        }
+      })
+    }
+    useFetchChoices('/api/v1/config/menu/user', userChoicesFields, callback, true)
+
     // 监控属性的变化
     watch(
       [props],
@@ -166,6 +193,10 @@ export default defineComponent({
       // 发起修改用户的请求
       if (formData.value && formData.value.id < 1) {
         return
+      }
+      // 对parent进行处理
+      if(Array.isArray(formData.value['parent']) && formData.value['parent'].length > 0){
+        formData.value['parent'] = formData.value['parent'][0]
       }
       if (props.isAdd) {
         const url = '/api/v1/config/menu/create'

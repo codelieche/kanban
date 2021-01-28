@@ -13,32 +13,67 @@ const useFetchChoices = (
   url: Ref<string> | string,
   fields: Array<ChoicesConfig>,
   callback: Function | null = null,
+  haveChildren: Boolean = false,
+  childrenField: string = "children",
 ) => {
-//   console.log(url, fields)
+  //   console.log(url, fields)
 
   const choices: Ref<{
-    [key: string]: any;
+    [key: string]: any
   }> = ref([])
+
+  // 从item中提取需要的值
+  const getChoiceItem = (item: any) => {
+    const itemChoice: { [key: string]: any } = {}
+    if (typeof item === 'object') {
+      fields.forEach(field => {
+        if (item && item[field.valueField]) {
+          itemChoice[field.field] = item[field.valueField]
+        }
+      })
+
+      // 有子元素，而且子元素是个数组
+      if ( haveChildren && Array.isArray(item[childrenField])){
+        // console.log(item[childrenField])
+        if(item[childrenField].length > 0){
+          itemChoice[childrenField] = []
+          item[childrenField].forEach((subItem:any) => {
+            itemChoice[childrenField].push(getChoiceItem(subItem))
+          });
+        }
+      }
+
+      // 返回处理完的选项
+      return itemChoice
+    }else{
+      return null
+    }
+    
+  }
+  // console.log(getChoiceItem)
 
   // 不优雅，后续还需调整
   const callbackFunc = (dataSource: Array<{ [key: string]: any }>) => {
     const choicesValue: Array<{ [key: string]: any }> = []
     dataSource.forEach(item => {
       // console.log(item)
-      const itemChoice: { [key: string]: any } = {}
-      if (typeof item === 'object') {
+
+      // 取出列表中没一项的选项值
+      const itemChoice: { [key: string]: any } | null = getChoiceItem(item)
+      if (itemChoice !== null) {
         fields.forEach(field => {
           if (item && item[field.valueField]) {
             itemChoice[field.field] = item[field.valueField]
           }
         })
         choicesValue.push(itemChoice)
-        
       }
     })
+
+    // 遍历处理完毕，对choices赋值
     choices.value = choicesValue
-    if(callback){
-        callback(choicesValue)
+    if (callback) {
+      callback(choicesValue)
     }
   }
 

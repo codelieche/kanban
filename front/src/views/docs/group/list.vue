@@ -18,7 +18,7 @@
         <template #default="scope">
           <div class="status">
             <el-tag type="primary">{{
-              scope.row.level > 1 ? scope.row.name : '一级分组'
+              scope.row.level > 1 ? scope.row.parent.name : '一级分组'
             }}</el-tag>
           </div>
         </template>
