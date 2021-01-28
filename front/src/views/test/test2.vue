@@ -6,17 +6,34 @@
   </div>
   <div>Hello Test2</div>
   <el-divider></el-divider>
-  <ErrorPage :code="403" />
+  <ErrorPage :code="404" />
+  <el-divider></el-divider>
+
+  <!-- 测试上传文件/图片 -->
+  <el-upload
+    drag
+    action=""
+    :auto-upload="false"
+    :on-change="onUploadChange"
+    list-type="picture"
+  >
+    <i class="el-icon-upload"></i>
+    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+    <template #tip>
+      <div class="el-upload__tip">只能上传 jpg/png 文件，且不超过 500kb</div>
+    </template>
+  </el-upload>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import ErrorPage from '@/views/errors/index.vue'
+import { UploadFile } from 'element-plus/lib/el-upload/src/upload.type'
 
 export default defineComponent({
   name: 'Test2Page',
-  components: {ErrorPage},
+  components: { ErrorPage },
   setup() {
     const breadcrumbItems = [
       {
@@ -33,6 +50,14 @@ export default defineComponent({
       },
     ]
     useBreadcrumbItems(breadcrumbItems)
+
+    const onUploadChange = (file: UploadFile, fileList: UploadFile[]) => {
+      console.log(file)
+      console.log(fileList)
+    }
+    return {
+      onUploadChange,
+    }
   },
 })
 </script>

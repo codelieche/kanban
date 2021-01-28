@@ -26,7 +26,7 @@
         v-else-if="item.type === 'number'"
         v-bind="item.props"
       ></el-input-number>
-      
+
       <!-- 选择Switch -->
       <el-switch
         v-model="data[item.name]"
@@ -100,13 +100,32 @@
       </el-transfer>
 
       <!-- 层级选择器 -->
-       <el-cascader 
+      <el-cascader
         v-model="data[item.name]"
         v-else-if="item.type === 'cascader'"
         :options="item.choices"
         v-bind="item.props"
       >
-      </el-cascader >
+      </el-cascader>
+      <el-upload
+        action=""
+        v-else-if="item.type === 'upload'"
+        drag
+        :auto-upload="false"
+        v-bind="item.props"
+        class="full"
+      >
+        <img :src="data[item.name]" v-if="data[item.name] && item.name == 'image'" />
+        <div v-else>
+          <i class="el-icon-upload"></i>
+          <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        </div>
+        <template #tip>
+          <div class="el-upload__tip">
+            {{ item.props.tips ? item.props.tips : '' }}
+          </div>
+        </template>
+      </el-upload>
       <span v-else>
         {{ item }}
       </span>
