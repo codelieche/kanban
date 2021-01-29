@@ -133,7 +133,6 @@ class Group(models.Model):
         else:
             return False
 
-
     def __str__(self):
         return "{}:{}".format(self.code, self.name)
 

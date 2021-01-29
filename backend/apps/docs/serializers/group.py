@@ -11,7 +11,7 @@ class GroupUserAddSerializer(serializers.Serializer):
     给分类添加用户时使用
     """
     group = serializers.SlugRelatedField(slug_field="id", queryset=Group.objects.all(), 
-                                            required=True)
+                                         required=True)
     user = serializers.SlugRelatedField(many=True, slug_field="username", queryset=User.objects.all())
     permission = serializers.CharField(default="R", required=False)
 
@@ -21,7 +21,7 @@ class GroupUserModelSerializer(serializers.ModelSerializer):
     分类用户多对多关系
     """
     group = serializers.SlugRelatedField(slug_field="id", queryset=Group.objects.all(),
-                                           required=True)
+                                         required=True)
     user = serializers.SlugRelatedField(slug_field="username", queryset=User.objects.all())
 
     def create(self, validated_data):
@@ -30,7 +30,7 @@ class GroupUserModelSerializer(serializers.ModelSerializer):
         group = validated_data["group"]
 
         # 2. 判断用户是否有增加用户的权限
-        result = instance.check_user_permission(user, "add_user")
+        result = group.check_user_permission(user, "add_user")
         if not result:
             return serializers.ValidationError("无权限")
 
@@ -40,6 +40,7 @@ class GroupUserModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = GroupUser
         fields = ("id", "group", "user", "permission", "time_added", "is_active")
+
 
 class GroupParentSimpleModelSerializer(serializers.ModelSerializer):
     """
@@ -52,6 +53,7 @@ class GroupParentSimpleModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ("id", "name", "code", "image", "owner")
+
 
 class GroupModelSerializer(serializers.ModelSerializer):
     """

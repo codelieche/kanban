@@ -4,7 +4,7 @@
   <GroupForm
     action="add"
     :handleSubmit="handleSubmit"
-    :data="{ name: '', user_set: [] }"
+    :data="{ name: '', code: '', image: ''}"
   />
 </template>
 
@@ -46,12 +46,7 @@ export default defineComponent({
       // console.log(JSON.stringify(data))
       const url = '/api/v1/docs/group/create'
       fetchApi
-        .post(url, data, {
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-        })
+        .post(url, data, {})
         .then((response) => {
           return response.data
         })

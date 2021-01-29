@@ -65,12 +65,7 @@ export default defineComponent({
       // 发起添加分组的请求
       const url = `/api/v1/docs/group/${id.value}`
       fetchApi
-        .put(url, data, {
-          headers: {
-            'Content-Type': 'application/json',
-            Accept: 'application/json',
-          },
-        })
+        .patch(url, data, {})
         .then((response) => {
           return response.data
         })

@@ -45,7 +45,7 @@ export default defineComponent({
         let arr: Array<PageHeaderNav> = []
         arr = [
           // { slug: '/', title: '首页' },
-          { slug: '/test', title: '文档中心' },
+          { slug: '/docs', title: '文档中心' },
           { slug: '/user', title: '用户中心' },
         ]
         return arr

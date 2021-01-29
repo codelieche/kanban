@@ -15,34 +15,38 @@
   <el-divider></el-divider>
   <loading></loading>
 
-  <div class="modellogs">
-    <ModelLogItem
-      :data="{
-        user: 'code',
-        action_flag: 1,
-        message: '删除',
-        time_added: '2021-01-01',
-      }"
-    ></ModelLogItem>
-    <ModelLogItem
-      :data="{
-        user: 'code',
-        action_flag: 2,
-        message: [
-          { field: 'password', value_old: 'gggg', value_new: 'newnew' },
-        ],
-        time_added: '2021-01-01',
-      }"
-    ></ModelLogItem>
-    <ModelLogItem
-      :data="{
-        user: 'code',
-        action_flag: 3,
-        message: '删除对象',
-        time_added: '2021-01-01',
-      }"
-    ></ModelLogItem>
-  </div>
+  <el-row :gutter="10">
+    <el-col :span="6">
+      <div class="modellogs">
+        <ModelLogItem
+          :data="{
+            user: 'code',
+            action_flag: 1,
+            message: '删除',
+            time_added: '2021-01-01',
+          }"
+        ></ModelLogItem>
+        <ModelLogItem
+          :data="{
+            user: 'code',
+            action_flag: 2,
+            message: [
+              { field: 'password', value_old: 'gggg', value_new: 'newnew' },
+            ],
+            time_added: '2021-01-01',
+          }"
+        ></ModelLogItem>
+        <ModelLogItem
+          :data="{
+            user: 'code',
+            action_flag: 3,
+            message: '删除对象',
+            time_added: '2021-01-01',
+          }"
+        ></ModelLogItem>
+      </div>
+    </el-col>
+  </el-row>
 
   <!-- <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
     <template #append>

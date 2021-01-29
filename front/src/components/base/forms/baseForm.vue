@@ -107,15 +107,27 @@
         v-bind="item.props"
       >
       </el-cascader>
+
+      <!-- 上传图片或者文件 -->
+      <UploadItem
+        v-else-if="item.type === 'upload'"
+        :name="item.name"
+        :value="data[item.name]"
+        v-bind="item.props"
+      >
+      </UploadItem>
       <el-upload
         action=""
-        v-else-if="item.type === 'upload'"
+        v-else-if="item.type === 'upload2'"
         drag
         :auto-upload="false"
         v-bind="item.props"
         class="full"
       >
-        <img :src="data[item.name]" v-if="data[item.name] && item.name == 'image'" />
+        <img
+          :src="data[item.name]"
+          v-if="data[item.name] && item.name == 'image'"
+        />
         <div v-else>
           <i class="el-icon-upload"></i>
           <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -142,6 +154,8 @@
 import { defineComponent, PropType, inject, ref, Ref } from 'vue'
 import { FormFieldItem, ElementFormRef } from '@/components/base/forms/types'
 import { ElMessage } from 'element-plus'
+import UploadItem from './uploadItem.vue'
+
 export default defineComponent({
   name: 'BaseForm',
   props: {
@@ -154,9 +168,9 @@ export default defineComponent({
     props: Object,
     handleSubmit: Function,
   },
+  components: { UploadItem },
   setup(props) {
     //   formRef
-
     const formRef: Ref<ElementFormRef | null> = ref(null)
     // 上级通过provide提供数据，当前组件通过inject获取数据
     const data = props.name && inject(props.name) ? inject(props.name) : ref({})

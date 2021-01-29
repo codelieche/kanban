@@ -10,6 +10,7 @@
         class="min-width-600"
       ></BaseForm>
     </el-col>
+    <!-- {{fileList}} -->
   </el-row>
 </template>
 
@@ -46,20 +47,15 @@ export default defineComponent({
   setup(props) {
     //   表单数据、名字、字段
     // eslint-disable-next-line @typescript-eslint/camelcase
-    const defaultValue = { name: '', code: '' }
+    const defaultValue = { name: '', code: '', image: '' }
     const formData: Ref<Group> = ref(defaultValue)
     const formName = 'groupForm'
     provide(formName, formData)
+
     // 上传的图片数据
     const fileList: Ref<UploadFile[]> = ref([])
-    const onUploadChange = (file: UploadFile, uploadFileList: UploadFile[]) => {
-      console.log(file, uploadFileList)
-      fileList.value = uploadFileList
-      if(uploadFileList.length > 0 && file.raw.type.indexOf('imag') >= 0){
-        const imageUrl = URL.createObjectURL(file.raw);
-        formData.value['image'] = imageUrl
-      }
-    }
+    // 传递给子组件: 用这个来处理
+    provide('upload-' + 'image', fileList)
     const formFields: Ref<Array<FormFieldItem>> = ref([
       {
         name: 'name',
@@ -117,6 +113,14 @@ export default defineComponent({
         },
       },
       {
+        name: 'order',
+        type: 'number',
+        label: '排序:',
+        props: {
+          size: 'small',
+        },
+      },
+      {
         name: 'description',
         type: 'input',
         label: '描述',
@@ -145,8 +149,8 @@ export default defineComponent({
           },
         ],
         props: {
-          'on-change': onUploadChange,
-          // limit: 1,
+          isImage: true,
+          limit: 1,
         },
       },
       {
@@ -204,7 +208,37 @@ export default defineComponent({
           formData.value['parent_id'] = formData.value['parent_id'][0]
           formData.value['parent'] = formData.value['parent_id']
         }
-        props.handleSubmit(formData.value)
+        const requestFormData = new FormData()
+        for (const k in formData.value) {
+          const allowKeys = [
+            'name',
+            'code',
+            'image',
+            'parent_id',
+            'description',
+            'is_deleted',
+            'owner',
+            'description',
+          ]
+          if (allowKeys.indexOf(k) >= 0) {
+            // add的时候，表单初始化，记得加个image
+            if (k === 'image') {
+              if (fileList.value.length > 0) {
+                requestFormData.append('image', fileList.value[0].raw)
+              }
+            } else {
+              requestFormData.append(k, formData.value[k] as string)
+            }
+          }
+        }
+        // Post添加分组的时候记的添加图片
+        if (!requestFormData.get('image') && props.action === 'add') {
+          if (fileList.value.length > 0) {
+            requestFormData.append('image', fileList.value[0].raw)
+          }
+        }
+        // props.handleSubmit(formData.value)
+        props.handleSubmit(requestFormData)
       }
     }
 
@@ -229,6 +263,7 @@ export default defineComponent({
       formName,
       formData,
       formFields,
+      fileList,
       handleFormSubmit,
     }
   },
