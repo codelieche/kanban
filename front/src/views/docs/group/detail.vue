@@ -23,7 +23,7 @@
         <dl>
           <dt>父级分组</dt>
           <dd>
-            <el-tag type="primary">{{
+            <el-tag type="primary" size="small">{{
               data.level > 1 ? data.parent.name : '一级分组'
             }}</el-tag>
           </dd>
@@ -39,11 +39,22 @@
             <el-tag
               type="primary"
               size="small"
-              v-for="(item, index) in data.users"
+              v-for="(item, index) in data.users_permisson"
+              :closable="canDeleteUser"
               :key="index"
+              class="hover-show-close"
+              @close="delteGroupUserPermission(data.code, item.user, reFreshData)"
             >
-              {{ item }}</el-tag
-            >
+              {{ item.user }}
+              <el-divider direction="vertical"></el-divider>
+              {{ item.permission }}
+            </el-tag>
+            <!-- 添加用户按钮 -->
+            <AddGroupUserButton
+              :id="id"
+              :reFreshData="reFreshData"
+              :checkPermission="afterCheckPermission"
+            />
           </dd>
         </dl>
 
@@ -64,7 +75,12 @@
         </dl>
         <dl>
           <dt>状态</dt>
-          <dd><el-switch :value="!data.is_deleted" inactive-color="#fc5531"></el-switch></dd>
+          <dd>
+            <el-switch
+              :value="!data.is_deleted"
+              inactive-color="#fc5531"
+            ></el-switch>
+          </dd>
         </dl>
       </div>
     </el-col>
@@ -83,15 +99,16 @@ import { useRouter } from 'vue-router'
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import useWatchParamsChange from '@/hooks/utils/useWatchParamsChange'
 import useFetchData from '@/hooks/utils/useFetchData'
-
+import { delteGroupUserPermission } from './components/permissions'
 // 引入所需组件
 import Loading from '@/components/page/loading.vue'
 import TopBar from '@/components/page/topBar.vue'
 import ModelLogs from '@/components/page/modelLogs/index.vue'
+import AddGroupUserButton from './components/addGroupUserButton.vue'
 
 export default defineComponent({
   name: 'DocsGroupDetail',
-  components: { Loading, TopBar, ModelLogs },
+  components: { Loading, TopBar, ModelLogs, AddGroupUserButton },
   setup() {
     // 设置面包屑
     const breadcrumbItems = [
@@ -114,10 +131,16 @@ export default defineComponent({
     const router = useRouter()
     const id = ref<string>('')
     const apiUrl = ref<string | null>(null)
+    const reFreshTimes = ref(0)
     // 获取详情数据
-    const { loading, data, error } = useFetchData(apiUrl, router)
+    const { loading, data, error } = useFetchData(apiUrl, router, reFreshTimes)
     // console.log(router)
     // console.log(router.currentRoute.value.params)
+
+    // 刷新详情数据
+    const reFreshData = () => {
+      reFreshTimes.value += 1
+    }
 
     // 组件挂载之后修改api的url
     onMounted(() => {
@@ -140,13 +163,42 @@ export default defineComponent({
     }
     useWatchParamsChange(router, 'id', handleParamsChange)
 
+    // 检查是否可以删除用户
+    const canDeleteUser = ref(false)
+    const afterCheckPermission = (permissions: string[]) => {
+      if (permissions.indexOf('add_user') >= 0) {
+        canDeleteUser.value = true
+      } else {
+        canDeleteUser.value = false
+      }
+    }
+
     return {
       id,
       loading,
       data,
       apiUrl,
       error,
+      reFreshTimes,
+      reFreshData,
+      canDeleteUser,
+      afterCheckPermission,
+      delteGroupUserPermission
     }
   },
 })
 </script>
+
+<style lang="less">
+.hover-show-close{
+  &.el-tag {
+    padding-left: 12px;
+  }
+  .el-tag__close {
+    visibility: hidden;
+  }
+  &:hover .el-tag__close{
+    visibility: visible;
+  }
+}
+</style>

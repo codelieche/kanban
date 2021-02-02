@@ -10,6 +10,7 @@ import fetchApi from '@/plugins/fetchApi'
 export const useFetchData = <T>(
   url: Ref<string | null> | string,
   router: Router | null = null,
+  reFreshTimes: Ref<number> = ref(0),
   successCode = 200
 ) => {
   const loading = ref<boolean>(true)
@@ -56,7 +57,7 @@ export const useFetchData = <T>(
     // console.log('即将发起ajax请求：', url, typeof url)
     if (typeof url === 'object') {
       watch(
-        url,
+        [url, reFreshTimes],
         () => {
           if (url.value) {
             fetchData(url.value)

@@ -26,7 +26,7 @@
 <script lang="ts">
 import { ElMessage } from 'element-plus'
 import { UploadFile } from 'element-plus/lib/el-upload/src/upload.type'
-import { defineComponent, Ref, inject, ref, watch } from 'vue'
+import { defineComponent, Ref, inject, ref, watch, onUnmounted } from 'vue'
 export default defineComponent({
   name: 'UploadItem',
   props: {
@@ -83,13 +83,62 @@ export default defineComponent({
       })
     }
 
+    // 如果是图片的话，需要监听paste事件
+    const listenFlag = ref(false)
+
+    // 监听图片事件
+    const handlePasteEvent = (event: ClipboardEvent) => {
+      // console.log('handlePasteEEvent', event)
+      // 阻止冒泡
+      event.stopPropagation()
+      if(event.clipboardData) {
+        // chrome有些老版本中是：event.originalEvent
+        const clipboardData = event.clipboardData
+
+        // 遍历复制的元素
+        if(clipboardData.items){
+          const items = clipboardData.items
+          for(let i=0; i < items.length; i++){
+            // console.log(items[i])
+            if(items[i].type.indexOf('image') >= 0){
+              // 是复制图片内容
+              const imageFile = items[i].getAsFile()
+              // 生成复制的图片的URL
+              imageUrl.value = URL.createObjectURL(imageFile)
+              // 把图片加入到文件列表中，使用as类型转换
+              const uploadImageFile = {
+                name: imageFile?.name,
+                raw: imageFile,
+                status: 'ready',
+                size: imageFile?.size,
+                uid: Math.round(Math.random() * 1000000000),
+              } as UploadFile
+              fileList.value = [uploadImageFile]
+            }
+          }
+        }
+      }
+    }
+
+    // 监控props.value的变化，设置图片链接
     watch(
       props,
       () => {
         imageUrl.value = props.value ? props.value : ''
+        if (props.isImage && !listenFlag.value) {
+          listenFlag.value = true
+          document.addEventListener('paste', handlePasteEvent)
+        }
       },
       { immediate: true }
     )
+
+    // 组件卸载的时候，取消监听paste事件
+    onUnmounted(() => {
+      if (props.isImage && !listenFlag.value) {
+        document.removeEventListener('paste', handlePasteEvent)
+      }
+    })
 
     return {
       attrs,
