@@ -17,7 +17,7 @@
       <el-table-column prop="parent" label="父级分组" width="115">
         <template #default="scope">
           <div class="status">
-            <el-tag type="primary">{{
+            <el-tag type="primary" size="small">{{
               scope.row.level > 1 ? scope.row.parent.name : '一级分组'
             }}</el-tag>
           </div>

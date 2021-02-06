@@ -68,7 +68,7 @@
                 <Icon type="edit">编辑</Icon>
               </el-button>
             </span>
-            <el-divider direction="vertical"></el-divider>
+            <el-divider direction="vertical" v-if="!scope.row.is_active || showDelete"></el-divider>
             <span v-if="scope.row.is_active">
               <el-popconfirm
                 :title="`确定删除: ${scope.row.username}(id: ${scope.row.id})？`"
@@ -77,6 +77,7 @@
                 cancelButtonType="default"
                 @cancel="handleDeleteCancel"
                 @confirm="handleDeleteConfirm(scope.row.id, scope.row.username)"
+                v-if="showDelete"
               >
                 <template #reference>
                   <el-button type="text">
