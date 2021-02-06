@@ -97,6 +97,7 @@ export default defineComponent({
     urlParams: Object as PropType<{
       [key: string]: string | number | boolean | null;
     }>,
+    rowKey: String,
     props: Object,
   },
   setup(props) {
@@ -219,7 +220,14 @@ export default defineComponent({
             if(apiUrl.value !== ''){
               needRedirect = true
             }
+            if(key == 'page'){
+              pageInfo['currentPage'] = props.urlParams['page'] as number
+            }
             params[key] = props.urlParams[key] as string
+            if(props.urlParams[key] === '' || props.urlParams[key] === null){
+              // console.log('移除key:', key)
+              delete params[key]
+            }
           }
           // 是否需要跳转页面
           if(needRedirect){

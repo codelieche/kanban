@@ -6,6 +6,26 @@
   }
 }
 
+// 表格折叠样式
+
+.el-table {
+  .el-table__row {
+    .cell {
+      position: relative;
+      .el-table__expand-icon {
+        position: absolute;
+        left: 10px;
+        top: 2px;
+        // background-color: #f9f9f9;
+        border-radius: 10px;
+        &:hover {
+          background-color: #eee;
+        }
+      }
+    }
+  }
+}
+
 .el-pagination {
   // text-align: right;
   margin: 5px 0;

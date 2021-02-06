@@ -2,7 +2,7 @@
   <!-- Tools下面的表格 -->
   <BaseList
     v-bind="propsFields"
-    :urlParams="urlParams"
+    :urlParams="params"
   >
     <template v-slot:default="data">
       <el-table
@@ -11,10 +11,24 @@
         style="width: 100%"
         :show-header="showHeader"
         @sort-change="handleSortChange"
+        :row-key="rowKey"
         v-bind="props"
+        v-if="rowKey !== ''"
       >
         <slot name="default"></slot>
       </el-table>
+      <el-table
+        :data="data.dataSource"
+        border
+        style="width: 100%"
+        :show-header="showHeader"
+        @sort-change="handleSortChange"
+        v-bind="props"
+        v-else
+      >
+        <slot name="default"></slot>
+      </el-table>
+      <!-- {{ urlParams }} -->
     </template>
 
     <!-- 右侧的按钮，传递给BaseList -->
@@ -27,7 +41,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, Ref, ref } from 'vue'
+import { defineComponent, PropType, Ref, ref, watch } from 'vue'
 import BaseList from './baseList.vue'
 
 export default defineComponent({
@@ -65,21 +79,42 @@ export default defineComponent({
       type: Boolean,
       default: () => true,
     },
+    // 当调用BaseList的上级组件，想要修改params的时候，就传递这个
+    urlParams: Object as PropType<{
+      [key: string]: string | number | boolean | null;
+    }>,
+    rowKey: {
+      type: String,
+      default: () => '',
+    },
     props: Object,
   },
   setup(props) {
     // 列排序变化
-    const urlParams: Ref<{[key: string]: string|number|boolean|null}> = ref({})
+    const params: Ref<{[key: string]: string|number|boolean|null}> = ref({})
+
+    // 监控props的变化
+    watch([props], () => {
+      if(props.urlParams){
+        for (const key in props.urlParams) {
+          // console.log('baseTable:', key, props.urlParams[key])
+          if(params[key] !== props.urlParams[key] as string){
+            params.value[key] = props.urlParams[key] as string
+          }
+        }
+      }
+    }, {immediate: true})
+
     const handleSortChange = (data: { [key: string]: string }) => {
       const ordering: string | null =
         data.order === 'descending' ? `-${data.prop}` : data.prop
       // console.log('当前排序方式为:', ordering)
-      urlParams.value = {ordering: ordering != null ? ordering : ''}
+      params.value['ordering'] = ordering != null ? ordering : ''
 
     }
     return {
       propsFields: props,
-      urlParams,
+      params,
       handleSortChange,
     }
   },

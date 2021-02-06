@@ -6,9 +6,15 @@
     pageUrlPrefix="/docs/group/list"
     :reFreshTimes="reFreshTimes"
     :showHeader="true"
+    :rowKey="rowKey"
     :props="tableProps"
+    :paramsFields="['page', 'page_size', 'ordering', 'search', 'level']"
   >
     <template v-slot:default>
+      <!-- <el-table-column
+      type="selection"
+      width="50" /> -->
+
       <el-table-column prop="id" label="ID" width="80" sortable />
       <el-table-column prop="name" label="分组组" width="120">
       </el-table-column>
@@ -114,6 +120,19 @@
         <el-button type="default" @click="reFreshData" size="small">
           <Icon type="refresh">刷新</Icon>
         </el-button>
+
+        <router-link :to="`/docs/group/list?page=1&level=${!showTopGroup ? '' : '1'}`">
+          <el-button
+            type="primary"
+            @click="handleShowTopGroupToogle"
+            size="small"
+          >
+            <Icon type="filter">{{
+              !showTopGroup ? '一级分组' : '显示全部'
+            }}</Icon>
+          </el-button>
+        </router-link>
+
         <router-link to="/docs/group/add">
           <el-button type="primary" size="small">
             <Icon type="plus">Add</Icon>
@@ -125,7 +144,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, onMounted, ref } from 'vue'
 import BaseTable from '@/components/page/baseTable.vue'
 import Icon from '@/components/base/icon.vue'
 import TopBar from '@/components/page/topBar.vue'
@@ -133,6 +152,7 @@ import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import usePermissionCheck from '@/hooks/utils/usePermissionCheck'
 import { ElMessage } from 'element-plus'
 import fetchApi from '@/plugins/fetchApi'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   name: 'UserGroupList',
@@ -168,6 +188,24 @@ export default defineComponent({
     const reFreshData = () => {
       reFreshTimes.value += 1
     }
+
+    // 给数据传递的参数：
+    // const urlParams = ref({ level: '' })
+    // 是否显示一级分组
+    const showTopGroup = ref(false)
+    const rowKey = ref('')
+
+    // 路由
+    const router = useRouter()
+
+    onMounted(() => {
+      // console.log(router.currentRoute.value.query)
+      if (router.currentRoute.value.query['level'] === '1') {
+        showTopGroup.value = true
+        // urlParams.value['level'] = '1'
+        rowKey.value = 'id'
+      }
+    })
 
     // 删除确认事件
     const handleDeleteConfirm = (id: number, name: string): void => {
@@ -210,13 +248,30 @@ export default defineComponent({
     }
 
     // 表格的选项
-    const tableProps = {
-      //   'row-key': 'id',
-      //   'default-expand-all': false,
-      //   'tree-props': { children: 'children', hasChildren: 'hasChildren' },
+    const tableProps = ref({
+      // 'row-key': 'id',
+      'default-expand-all': false,
+      'tree-props': { children: 'children', hasChildren: 'hasChildren' },
+    })
+
+    // 修改显示一级分组
+    const handleShowTopGroupToogle = () => {
+      showTopGroup.value = !showTopGroup.value
+      if (showTopGroup.value) {
+        // urlParams.value['level'] = '1'
+        // urlParams.value['page'] = '1'
+        rowKey.value = 'id'
+      } else {
+        // urlParams.value['level'] = ''
+        rowKey.value = ''
+      }
     }
 
     return {
+      rowKey,
+      showTopGroup,
+      // urlParams,
+      handleShowTopGroupToogle,
       tableProps,
       reFreshTimes,
       havePermission,
