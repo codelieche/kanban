@@ -7,14 +7,21 @@
         <el-button
           type="text"
           size="small"
-          @click="copyTextFunc('图片链接', data.qiniu ? data.qiniu : data.file)"
+          @click.stop.prevent="
+            copyTextFunc('图片链接', data.qiniu ? data.qiniu : data.file)
+          "
         >
           <Icon type="copy">链接</Icon>
         </el-button>
         <el-button
           type="text"
           size="small"
-          @click="copyTextFunc('Markdown', `![${data.filename}](${data.qiniu ? data.qiniu : data.file})`)"
+          @click.stop.prevent="
+            copyTextFunc(
+              'Markdown',
+              `![${data.filename}](${data.qiniu ? data.qiniu : data.file})`
+            )
+          "
         >
           <Icon type="copy">Markdown</Icon>
         </el-button>
@@ -25,7 +32,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import Icon from '@/components/base/icon.vue'
-import copyTextFunc from '@/utils/copy'
+import { copyTextFunc } from '@/utils/copy'
 export default defineComponent({
   name: 'ImageListItem',
   components: { Icon },

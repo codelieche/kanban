@@ -190,15 +190,15 @@ export default defineComponent({
 </script>
 
 <style lang="less">
-.hover-show-close{
-  &.el-tag {
-    padding-left: 12px;
-  }
-  .el-tag__close {
-    visibility: hidden;
-  }
-  &:hover .el-tag__close{
-    visibility: visible;
-  }
-}
+// .hover-show-close {
+//   &.el-tag {
+//     padding-left: 12px;
+//   }
+//   .el-tag__close {
+//     visibility: hidden;
+//   }
+//   &:hover .el-tag__close{
+//     visibility: visible;
+//   }
+// }
 </style>

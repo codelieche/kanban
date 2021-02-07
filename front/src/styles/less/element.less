@@ -58,3 +58,16 @@
     height: auto;
   }
 }
+
+// 标签
+.hover-show-close {
+  &.el-tag {
+    padding-left: 12px;
+  }
+  .el-tag__close {
+    visibility: hidden;
+  }
+  &:hover .el-tag__close{
+    visibility: visible;
+  }
+}

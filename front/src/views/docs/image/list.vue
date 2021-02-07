@@ -1,6 +1,6 @@
 <template>
   <TopBar title="图片列表" />
-  <div :style="{'min-height': '90vh'}">
+  <div :style="{ 'min-height': '90vh' }">
     <BaseList
       apiUrlPrefix="/api/v1/docs/image/list"
       pageUrlPrefix="/docs/image/list"
@@ -17,6 +17,7 @@
             v-for="(item, index) in data.dataSource"
             :key="index"
             :data="item"
+            @click="handleImageClick(item)"
           />
         </div>
       </template>
@@ -43,6 +44,13 @@
       </template>
     </BaseList>
   </div>
+
+  <!-- 图片弹出框 -->
+  <ImageDialog
+    :visible="showImageDialog"
+    :data="currentImage"
+    :afterCloseHandle="afterCloseHandle"
+  />
 </template>
 
 <script lang="ts">
@@ -56,12 +64,14 @@ import { ElMessage } from 'element-plus'
 import fetchApi from '@/plugins/fetchApi'
 import BaseList from '@/components/page/baseList.vue'
 import ImageItem from './listItem.vue'
+import ImageDialog from './imageDialog.vue'
 
 export default defineComponent({
   name: 'UserGroupList',
   components: {
     BaseList,
     ImageItem,
+    ImageDialog,
     Icon,
     TopBar,
   },
@@ -94,7 +104,7 @@ export default defineComponent({
         imagesColumnNumber.value = column > 1 ? column : 1
       }
     }
-
+    // 监控listRef的变化
     watch([listRef], () => {
       if (listRef.value) {
         calculateImagesColumnNumber()
@@ -122,6 +132,19 @@ export default defineComponent({
     // onMounted(() => {
     //   console.log(router)
     // })
+
+    // 弹出图片对话框
+    const showImageDialog = ref(false)
+    const currentImage = ref({})
+    const afterCloseHandle = () => {
+      showImageDialog.value = false
+      currentImage.value = {}
+    }
+    const handleImageClick = (data: object) => {
+    //   console.dir(data)
+      showImageDialog.value = true
+      currentImage.value = data
+    }
 
     // 删除确认事件
     const handleDeleteConfirm = (id: number, name: string): void => {
@@ -172,6 +195,10 @@ export default defineComponent({
       handleDeleteCancel,
       handleDeleteConfirm,
       reFreshData,
+      showImageDialog,
+      currentImage,
+      afterCloseHandle,
+      handleImageClick,
     }
   },
 })
