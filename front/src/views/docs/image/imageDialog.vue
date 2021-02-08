@@ -1,7 +1,6 @@
 <template>
   <el-divider></el-divider>
   <el-dialog
-    title=""
     :fullscreen="true"
     :modal="false"
     custom-class="full-dialog"

@@ -35,11 +35,12 @@
             <Icon type="refresh">刷新</Icon>
           </el-button>
 
-          <router-link to="/docs/image/list">
+          <UploadImageButton :reFreshData="reFreshData"/>
+          <!-- <router-link to="/docs/image/list">
             <el-button type="primary" size="small">
               <Icon type="upload">Add</Icon>
             </el-button>
-          </router-link>
+          </router-link> -->
         </el-col>
       </template>
     </BaseList>
@@ -65,6 +66,7 @@ import fetchApi from '@/plugins/fetchApi'
 import BaseList from '@/components/page/baseList.vue'
 import ImageItem from './listItem.vue'
 import ImageDialog from './imageDialog.vue'
+import UploadImageButton from './upload.vue'
 
 export default defineComponent({
   name: 'UserGroupList',
@@ -72,6 +74,7 @@ export default defineComponent({
     BaseList,
     ImageItem,
     ImageDialog,
+    UploadImageButton,
     Icon,
     TopBar,
   },
@@ -141,7 +144,7 @@ export default defineComponent({
       currentImage.value = {}
     }
     const handleImageClick = (data: object) => {
-    //   console.dir(data)
+      //   console.dir(data)
       showImageDialog.value = true
       currentImage.value = data
     }

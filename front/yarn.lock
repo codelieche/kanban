@@ -3553,10 +3553,10 @@ electron-to-chromium@^1.3.621:
   resolved "https://registry.npm.taobao.org/electron-to-chromium/download/electron-to-chromium-1.3.633.tgz?cache=0&sync_timestamp=1608748384027&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Felectron-to-chromium%2Fdownload%2Felectron-to-chromium-1.3.633.tgz#16dd5aec9de03894e8d14a1db4cda8a369b9b7fe"
   integrity sha1-Ft1a7J3gOJTo0UodtM2oo2m5t/4=
 
-element-plus@^1.0.2-beta.30:
-  version "1.0.2-beta.30"
-  resolved "https://registry.npm.taobao.org/element-plus/download/element-plus-1.0.2-beta.30.tgz#9b16882b97169df0b832c8b35c46cf44b256dbcd"
-  integrity sha1-mxaIK5cWnfC4MsizXEbPRLJW280=
+element-plus@^1.0.2-beta.31:
+  version "1.0.2-beta.31"
+  resolved "https://registry.npm.taobao.org/element-plus/download/element-plus-1.0.2-beta.31.tgz#61a96111d9e9dc9d1ea511e213946db681471321"
+  integrity sha1-YalhEdnp3J0epRHiE5RttoFHEyE=
   dependencies:
     "@popperjs/core" "^2.4.4"
     async-validator "^3.4.0"

@@ -1,7 +1,8 @@
 <template>
   <div class="image-item">
     <div class="item-inner">
-      <img :src="data.qiniu ? data.qiqiu : data.file" :alt="data.filename" />
+      <img :src="data.qiniu" :alt="data.filename" v-if="data.qiniu" />
+      <img :src="data.file" :alt="data.filename" v-else />
       <!-- 按钮 -->
       <div class="buttons">
         <el-button

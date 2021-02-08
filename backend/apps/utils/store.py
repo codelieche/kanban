@@ -144,7 +144,8 @@ def upload_file_to_qiniu(key_path, file_data):
         return None
     
     # 判断是否需要上传
-    if not settings.QINIU_UPLOAD_TOOGLE:
+    if not settings.QINIU_UPLOAD_TOOGLE or settings.QINIU_UPLOAD_TOOGLE == '0' \
+       or settings.QINIU_UPLOAD_TOOGLE == 'false':
         return None
 
     # 第2步：获取token
