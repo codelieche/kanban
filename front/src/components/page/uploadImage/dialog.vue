@@ -2,6 +2,7 @@
   <el-dialog
     custom-class="upload-dialog"
     :width="560"
+    title=""
     v-model="visibleDialog"
     @closed="handleDialogClosed"
     :append-to-body="true"
@@ -17,6 +18,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue'
+
 import UploadImage from './uploadImage.vue'
 
 export default defineComponent({
@@ -70,10 +72,15 @@ export default defineComponent({
 
 <style lang="less">
 .upload-dialog {
+  position: relative;
   .el-dialog__header {
     border-bottom: none;
-    // padding: 2px;
-    display: none;
+    padding: 2px;
+    // display: none;
+    // .el-dialog__headerbtn {
+    //   // 要不然点击无效果
+    //   z-index: 100;
+    // }
   }
   .upload {
     min-height: 140px;

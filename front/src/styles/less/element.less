@@ -31,11 +31,18 @@
   margin: 5px 0;
 }
 
+// 对话框样式
 .el-dialog__header {
   border-bottom: 1px solid #eee;
   // background-color: #eee;
+
+  .el-dialog__headerbtn {
+    // 当无title的时候，点击close无效，是因为z-index小了
+    z-index: 10;
+  }
 }
 
+// 对话框的内容
 .el-dialog__body {
   padding: 10px 20px;
 }

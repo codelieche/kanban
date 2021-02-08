@@ -8,11 +8,11 @@
     :destroy-on-close="false"
     @closed="handleDialogClose"
   >
-    <div class="show-image" v-if="data">
-      <img :src="data.qiniu ? data.qiniu : data.file" />
+    <div class="show-image" v-if="data" @click="handleShowImageClick">
+      <img :src="data.qiniu ? data.qiniu : data.file" @click="stopPropagation" />
 
       <!-- 信息 -->
-      <div class="info info-property" v-if="showInfo">
+      <div class="info info-property" v-if="showInfo" @click="stopPropagation">
         <div class="close" @click="showInfo = false">
           <span class="text">隐藏</span><Icon type="close" />
         </div>
@@ -126,11 +126,25 @@ export default defineComponent({
       }
     }
 
+    // 关闭窗口
+    const handleShowImageClick = (evt: MouseEvent) => {
+      // console.log('handleShowImageClick', evt.currentTarget)
+      evt.stopPropagation()
+      evt.preventDefault()
+      handleDialogClose()
+    }
+
+    const stopPropagation = (evt: MouseEvent) => {
+      evt.stopPropagation()
+    }
+
     return {
       showInfo,
       visibleDialog,
       handleDialogClose,
       copyTextFunc,
+      handleShowImageClick,
+      stopPropagation
     }
   },
 })

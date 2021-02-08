@@ -3,7 +3,7 @@
     <Icon type="upload">Add</Icon>
   </el-button>
   <UploadImageDialog
-    title=""
+    title="上传图片"
     :visible="visibleDialog"
     :afterCloseHandle="afterCloseHandle"
     :tabs="['upload']" 
