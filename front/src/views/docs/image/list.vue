@@ -50,6 +50,7 @@
   <ImageDialog
     :visible="showImageDialog"
     :data="currentImage"
+    :reFreshData="reFreshData"
     :afterCloseHandle="afterCloseHandle"
   />
 </template>

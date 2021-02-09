@@ -5,14 +5,17 @@
     </div>
   </div>
   <div>Hello Editor Index.page</div>
+  <el-divider></el-divider>
+  <EditableContent tagName="div" />
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue'
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
+import EditableContent from '@/components/base/editableContent.vue'
 
 export default defineComponent({
   name: 'TestEditorPage',
-  components: {},
+  components: {EditableContent},
   setup() {
     const breadcrumbItems = [
       {

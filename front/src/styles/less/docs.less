@@ -191,6 +191,14 @@
       }
       dd {
         max-width: 320px;
+        [contenteditable='true'] {
+          // 当编辑聚焦的时候，显示边框
+          &:focus {
+            outline-color: #409eff;
+            outline-style: auto;
+            outline-width: 1px;
+          }
+        }
       }
     }
   }
