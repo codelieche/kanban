@@ -1,29 +1,42 @@
 <template>
-  <div class="left-sider" :class="{ collapsed: collapsed }" key="left-sider">
-    <div class="header" @click="handleCollapseedToogle">
-      <div class="collapsed-toogle">
-        <span :class="collapsed ? 'el-icon-s-unfold' : 'el-icon-s-fold'"></span>
+  <Resizable
+    :maxWidth="360"
+    :defaultWidth="defaultWidth"
+    :minWidth="collapsed ? 65 : 156"
+    :disabled="collapsed"
+    :afterSizeChange="afterSizeChange"
+  >
+    <div class="left-sider" :class="{ collapsed: collapsed }" key="left-sider">
+      <div class="header" @click="handleCollapseedToogle">
+        <div class="collapsed-toogle">
+          <span
+            :class="collapsed ? 'el-icon-s-unfold' : 'el-icon-s-fold'"
+          ></span>
+        </div>
       </div>
+      <div class="content">
+        <LeftNavItem
+          v-for="(item, index) in items"
+          :item="item"
+          :index="index"
+          :key="index"
+          :collapsed="collapsed"
+        ></LeftNavItem>
+      </div>
+      <!-- <div class="footer"></div> -->
     </div>
-    <div class="content">
-      <LeftNavItem
-        v-for="(item, index) in items"
-        :item="item"
-        :index="index"
-        :key="index"
-        :collapsed="collapsed"
-      ></LeftNavItem>
-    </div>
-    <!-- <div class="footer"></div> -->
-  </div>
+  </Resizable>
 </template>
 
-<script>
+<script lang="ts">
+import { defineComponent, onMounted, ref } from 'vue'
 import navData from '../nav/NavData.js'
-import LeftNavItem from '../nav/leftNav'
+import LeftNavItem from '../nav/leftNav.vue'
+import Resizable from '@/components/base/resizable.vue'
 
-export default {
+export default defineComponent({
   name: 'LeftSider001',
+  components: { Resizable, LeftNavItem },
   props: {
     items: {
       type: Array,
@@ -32,23 +45,47 @@ export default {
       },
     },
   },
-  components: {
-    LeftNavItem,
-  },
 
-  // 数据
-  data() {
+  setup() {
+    // 是否折叠
+    const collapsed = ref(false)
+    // 默认的宽度
+    const defaultWidth = ref(200)
+
+    // 从localstorage中获取数据
+    onMounted(() => {
+      // 从localStorage中获取宽度
+      const widthValue = localStorage.getItem('leftSiderWidth')
+      if (widthValue) {
+        const result = parseInt(widthValue)
+        // console.log(widthValue, isNaN(widthValue), typeof widthValue, result);
+        if (result) {
+          defaultWidth.value = result >= 156 && result <= 460 ? result : 200
+        } else {
+          defaultWidth.value = 200
+        }
+      }
+    })
+
+    // 修改defaultWidth的值
+    const afterSizeChange = (width: number) => {
+      defaultWidth.value = width
+      localStorage.setItem('leftSiderWidth', width.toString())
+    }
+
+    // 折叠
+    const handleCollapseedToogle = () => {
+      collapsed.value = !collapsed.value
+    }
+
     return {
-      // items: navData,
-      collapsed: false,
+      collapsed,
+      handleCollapseedToogle,
+      defaultWidth,
+      afterSizeChange
     }
   },
-  methods: {
-    handleCollapseedToogle() {
-      this.collapsed = !this.collapsed
-    },
-  },
-}
+})
 </script>
 
 <style lang="less" scoped>
@@ -58,7 +95,7 @@ export default {
 
 .left-sider {
   overflow: auto;
-  width: 200px;
+  // width: 200px;
   &.collapsed {
     width: 65px;
   }

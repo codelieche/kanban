@@ -77,7 +77,7 @@ export default {
 
 .left-sider {
   overflow: auto;
-  width: 200px;
+  // width: 200px;
   &.collapsed {
     width: 65px;
   }
