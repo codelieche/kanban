@@ -44,9 +44,10 @@ export default defineComponent({
     watch(
       props,
       () => {
+        // console.log("props.reFreshTimes:", props.reFreshTimes, props.objectID)
         if (props.objectID) {
           apiUrl.value = `/api/v1/tags/objecttag/list?app_label=${props.appLabel}&model=${props.model}&object_id=${props.objectID}&page=1`
-          reFreshTimes.value += reFreshTimes.value
+          reFreshTimes.value += 1
         } else {
           apiUrl.value = ''
         }

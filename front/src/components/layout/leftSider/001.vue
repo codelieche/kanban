@@ -30,7 +30,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import navData from '../nav/NavData.js'
+// import navData from '../nav/NavData.js'
 import LeftNavItem from '../nav/leftNav.vue'
 import Resizable from '@/components/base/resizable.vue'
 
@@ -41,7 +41,7 @@ export default defineComponent({
     items: {
       type: Array,
       default() {
-        return navData
+        return []
       },
     },
   },

@@ -1,5 +1,4 @@
 <template>
-  <el-divider></el-divider>
   <el-dialog
     :fullscreen="true"
     :modal="false"
@@ -52,6 +51,14 @@
               model="image"
               :objectID="data.id"
               :canDelete="true"
+              :reFreshTimes="reFeshTagsTimes"
+            />
+            <AddObjectTag
+              tagKey="tag"
+              appLabel="docs"
+              model="image"
+              :objectID="data.id"
+              :callback="handleRefreshObjectTags"
             />
           </dd>
         </dl>
@@ -91,6 +98,12 @@
         </dl>
         <!-- {{ data }} -->
       </div>
+      <div class="open-info" @click.stop="showInfo = true" v-else>
+        <span>
+          <Icon type="info"></Icon>
+          信息</span
+        >
+      </div>
     </div>
   </el-dialog>
 </template>
@@ -100,13 +113,14 @@ import { defineComponent, ref, watch } from 'vue'
 import patchUpdateObject from '@/utils/api/patchUpdateObject'
 import Icon from '@/components/base/icon.vue'
 import EditableContent from '@/components/base/editableContent.vue'
-import ObjectTags from '@/components/page/objectTags.vue'
+import ObjectTags from '@/components/page/objectTag/objectTags.vue'
+import AddObjectTag from '@/components/page/objectTag/add.vue'
 import copyTextFunc from '@/utils/copy'
 import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   name: 'ImageDialog',
-  components: { Icon, EditableContent, ObjectTags },
+  components: { Icon, EditableContent, ObjectTags, AddObjectTag },
   props: {
     visible: Boolean,
     data: Object,
@@ -118,6 +132,8 @@ export default defineComponent({
     const visibleDialog = ref(false)
     // 显示图片信息
     const showInfo = ref(true)
+    // 刷新标签
+    const reFeshTagsTimes = ref(0)
 
     watch(
       [props],
@@ -127,9 +143,11 @@ export default defineComponent({
           //   console.log('修改visibleDialog.value:', visibleDialog.value, props.visible)
           visibleDialog.value = props.visible
         }
-        if (props.visible && !showInfo.value) {
-          showInfo.value = true
-        }
+
+        // 重置显示信息
+        // if (props.visible && !showInfo.value) {
+        //   showInfo.value = true
+        // }
       },
       { immediate: true }
     )
@@ -137,7 +155,7 @@ export default defineComponent({
     // 修改文件名
     const handleFilenameUpdate = (html: HTMLElement, text: string) => {
       // console.log(html, text)
-      if(text === null || text === undefined){
+      if (text === null || text === undefined) {
         return
       }
       patchUpdateObject(
@@ -176,6 +194,12 @@ export default defineComponent({
       evt.stopPropagation()
     }
 
+    // 刷新标签
+    const handleRefreshObjectTags = () => {
+      // console.log(reFeshTagsTimes.value)
+      reFeshTagsTimes.value += 1
+    }
+
     return {
       showInfo,
       visibleDialog,
@@ -184,6 +208,8 @@ export default defineComponent({
       handleShowImageClick,
       stopPropagation,
       handleFilenameUpdate,
+      reFeshTagsTimes,
+      handleRefreshObjectTags
     }
   },
 })
