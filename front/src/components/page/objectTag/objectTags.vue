@@ -1,13 +1,19 @@
 <template>
   <el-tag
-    class="hover-show-close"
+    :class="{'hover-show-close': canDelete}"
     v-for="(item, index) in dataSource"
     :key="index"
-    size="small"
+    size="mini"
     :type="type"
     :closable="canDelete"
     @close.stop="deleteObjectTag(item.id, refreshData)"
-    >{{ item.value }}</el-tag
+    >
+    <span v-if="item.key !== 'tag'" :style="{color: '#999'}">
+      {{ item.key }} 
+      <el-divider direction="vertical" />
+    </span>
+    {{ item.value }}
+    </el-tag
   >
 </template>
 

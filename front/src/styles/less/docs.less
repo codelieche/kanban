@@ -220,3 +220,110 @@
     }
   }
 }
+
+// 首页的文章列表
+.latest-articles,
+.articles-list {
+  // margin-top: 25px;
+  margin-bottom: 20px;
+  .articles {
+    padding: 5px 20px;
+    // border: 1px solied #eee;
+    // background-color: #eee;
+    // border: 1px solid #d4d6d8;
+    border-top: 1px solid #d4d6d8;
+    // box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.articles-list {
+  column-gap: 20px;
+  padding: 10px 0;
+  border-top: 1px solid #d4d6d8;
+  border-bottom: 1px solid #d4d6d8;
+}
+
+// 文章列表
+.articles-list .article-item {
+  background-color: #fff;
+  margin-bottom: 10px;
+  padding: 10px 10px;
+  border-bottom: 1px solid @border-bottom-line-color;
+  display: flex;
+  flex-direction: row;
+  // 如果使用了margin可能会造成一个元素显示在两列，改用padding，break-inside为avoid才有效
+  // 故在css里面再加一层：item-inner
+  -webkit-column-break-inside: avoid;
+  break-inside: avoid;
+
+  // 图片
+  .cover {
+    flex-direction: column;
+    min-width: 120px;
+    max-width: 260px;
+    flex: 1;
+    margin-right: 15px;
+    border: 1px solid #d9d9d9;
+    padding: 3px;
+    border-radius: 3px;
+    height: 100%;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+
+    img {
+      max-width: 100%;
+      margin-bottom: 0;
+      border-radius: 3px;
+      max-height: 300px;
+      overflow-y: hidden;
+      margin: auto 0;
+    }
+  }
+  // 内容
+  .content {
+    min-width: 200px;
+    flex: 2;
+    align-self: start;
+  }
+  // 标题
+  .title {
+    font-size: 24px;
+    color: #666;
+    h2 {
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 0;
+      margin-bottom: 0px;
+      line-height: 30px;
+      color: #555555;
+    }
+  }
+
+  .metadata {
+    color: #999;
+    font-size: 13px;
+    .item {
+      display: inline-block;
+      padding: 2px 5px;
+      margin-right: 5px;
+    }
+  }
+  .description {
+    color: #666;
+    margin-top: 5px;
+    padding: 10px 15px;
+    border-top: 1px dashed @border-bottom-line-color;
+    // border-left: 4px solid #eee;
+    outline: none;
+    white-space: pre-wrap;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    background-color: #f9f9f9;
+    border-left: 3px solid #d9d9d9;
+    font-style: italic;
+  }
+}

@@ -271,6 +271,13 @@ export default defineComponent({
         params['page'] = '1'
         params['search'] = value
         // 跳转页面
+        // console.log(router.currentRoute.value.path, params)
+        for(const key in params){
+          // console.log(key)
+          if(params[key] === undefined){
+            delete params[key]
+          }
+        }
         router
           .push({
             path: router.currentRoute.value.path,

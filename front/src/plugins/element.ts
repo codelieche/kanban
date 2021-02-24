@@ -84,6 +84,8 @@ import {
   ElMessageBox,
   ElNotification,
   ElEmpty,
+  ElSkeleton,
+  ElSkeletonItem,
 } from 'element-plus'
 
 const components = [
@@ -165,7 +167,9 @@ const components = [
   ElTransfer,
   ElTree,
   ElUpload,
-  ElEmpty
+  ElEmpty,
+  ElSkeleton,
+  ElSkeletonItem,
 ]
 
 const plugins = [

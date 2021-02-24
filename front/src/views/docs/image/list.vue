@@ -108,12 +108,14 @@ export default defineComponent({
         imagesColumnNumber.value = column > 1 ? column : 1
       }
     }
+
     // 监控listRef的变化
     watch([listRef], () => {
       if (listRef.value) {
         calculateImagesColumnNumber()
       }
     })
+
     onMounted(() => {
       window.onresize = calculateImagesColumnNumber
     })
@@ -144,6 +146,7 @@ export default defineComponent({
       showImageDialog.value = false
       currentImage.value = {}
     }
+
     const handleImageClick = (data: object) => {
       //   console.dir(data)
       showImageDialog.value = true
@@ -180,6 +183,7 @@ export default defineComponent({
           ElMessage.error(`删除图片(${name}:${id})失败`)
         })
     }
+    
     // 取消删除
     const handleDeleteCancel = (): void => {
       // ElMessage.warning("取消哦删除")
