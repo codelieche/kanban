@@ -1,20 +1,48 @@
 <template>
-  <el-tag
-    :class="{'hover-show-close': canDelete}"
-    v-for="(item, index) in dataSource"
-    :key="index"
-    size="mini"
-    :type="type"
-    :closable="canDelete"
-    @close.stop="deleteObjectTag(item.id, refreshData)"
+  <!-- 当传递了filterUrl参数， 注意url不要包含？-->
+  <span v-if="filterUrl">
+    <router-link
+      v-for="(item, index) in dataSource"
+      :key="index"
+      :to="
+        filterUrl
+          ? `${filterUrl}?&tag__keys=${item.key}&tag__values=${item.value}`
+          : ''
+      "
     >
-    <span v-if="item.key !== 'tag'" :style="{color: '#999'}">
-      {{ item.key }} 
-      <el-divider direction="vertical" />
-    </span>
-    {{ item.value }}
-    </el-tag
-  >
+      <el-tag
+        :class="{ 'hover-show-close': canDelete }"
+        size="mini"
+        :type="type"
+        :closable="canDelete"
+        @close.stop.prevent="deleteObjectTag(item.id, refreshData)"
+      >
+        <span v-if="item.key !== 'tag'" :style="{ color: '#999' }">
+          {{ item.key }}
+          <el-divider direction="vertical" />
+        </span>
+        {{ item.value }}
+      </el-tag>
+    </router-link>
+  </span>
+  <!-- 未传递filterUrl那么只展示标签，不用设置跳转连接 -->
+  <span v-else>
+    <el-tag
+      v-for="(item, index) in dataSource"
+      :key="index"
+      :class="{ 'hover-show-close': canDelete }"
+      size="mini"
+      :type="type"
+      :closable="canDelete"
+      @close.stop.prevent="deleteObjectTag(item.id, refreshData)"
+    >
+      <span v-if="item.key !== 'tag'" :style="{ color: '#999' }">
+        {{ item.key }}
+        <el-divider direction="vertical" />
+      </span>
+      {{ item.value }}
+    </el-tag>
+  </span>
 </template>
 
 <script lang="ts">
@@ -25,6 +53,7 @@ import { defineComponent, ref, watch } from 'vue'
 export default defineComponent({
   name: 'ObjectTags',
   props: {
+    filterUrl: String,
     appLabel: String,
     model: String,
     objectID: Number,

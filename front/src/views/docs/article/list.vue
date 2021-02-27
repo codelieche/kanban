@@ -4,7 +4,7 @@
   <BaseList
     apiUrlPrefix="/api/v1/docs/article/list"
     pageUrlPrefix="/docs/article/list"
-    :paramsFields="['search', 'page', 'page_size', 'ordering', 'group_id']"
+    :paramsFields="['search', 'page', 'page_size', 'ordering', 'group_id', 'tag__keys', 'tag__values']"
     :pageSize="20"
     :reFreshTimes="reFreshTimes"
   >

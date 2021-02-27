@@ -47,6 +47,7 @@
           <dt>标签:</dt>
           <dd>
             <ObjectTags
+              filterUrl="/docs/image/list"
               appLabel="docs"
               model="image"
               :objectID="data.id"

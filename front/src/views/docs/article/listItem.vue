@@ -20,7 +20,7 @@
           <span class="data item">作者: {{ data.user }}</span>
           <!-- 显示文章标签 -->
           <div class="tags">
-            <ObjectTags appLabel="docs" model="article" :objectID="data.id" />
+            <ObjectTags appLabel="docs" model="article" :objectID="data.id" filterUrl="/docs/article/list" />
           </div>
         </div>
 

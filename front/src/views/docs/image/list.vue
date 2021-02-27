@@ -6,6 +6,14 @@
       pageUrlPrefix="/docs/image/list"
       :pageSize="20"
       :reFreshTimes="reFreshTimes"
+      :paramsFields="[
+        'search',
+        'page',
+        'page_size',
+        'ordering',
+        'tag__keys',
+        'tag__values',
+      ]"
     >
       <template v-slot:default="data">
         <div
@@ -35,7 +43,7 @@
             <Icon type="refresh">刷新</Icon>
           </el-button>
 
-          <UploadImageButton :reFreshData="reFreshData"/>
+          <UploadImageButton :reFreshData="reFreshData" />
           <!-- <router-link to="/docs/image/list">
             <el-button type="primary" size="small">
               <Icon type="upload">Add</Icon>
@@ -183,7 +191,7 @@ export default defineComponent({
           ElMessage.error(`删除图片(${name}:${id})失败`)
         })
     }
-    
+
     // 取消删除
     const handleDeleteCancel = (): void => {
       // ElMessage.warning("取消哦删除")
