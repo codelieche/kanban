@@ -1,5 +1,10 @@
 // 基本表单相关的结构体
 
+export interface ChoiceField {
+    field: string;
+    valueField: string;
+}
+
 export interface ChoiceItem {
     id?: number;  // 唯一ID，穿梭框会会用作为key值
     text?: string; // 展示的值

@@ -39,6 +39,8 @@
           :style="{ 'text-align': 'right' }"
           class="right"
         >
+          <!-- 过滤按钮 -->
+          <ObjectTagFilterButton pageUrlPrefix="/docs/image/list" />
           <el-button type="default" @click="reFreshData" size="small">
             <Icon type="refresh">刷新</Icon>
           </el-button>
@@ -76,6 +78,7 @@ import BaseList from '@/components/page/baseList.vue'
 import ImageItem from './listItem.vue'
 import ImageDialog from './imageDialog.vue'
 import UploadImageButton from './upload.vue'
+import ObjectTagFilterButton from '@/components/page/objectTag/filterButton.vue'
 
 export default defineComponent({
   name: 'UserGroupList',
@@ -86,6 +89,7 @@ export default defineComponent({
     UploadImageButton,
     Icon,
     TopBar,
+    ObjectTagFilterButton,
   },
   setup() {
     // 设置顶部导航

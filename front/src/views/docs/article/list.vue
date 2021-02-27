@@ -4,7 +4,15 @@
   <BaseList
     apiUrlPrefix="/api/v1/docs/article/list"
     pageUrlPrefix="/docs/article/list"
-    :paramsFields="['search', 'page', 'page_size', 'ordering', 'group_id', 'tag__keys', 'tag__values']"
+    :paramsFields="[
+      'search',
+      'page',
+      'page_size',
+      'ordering',
+      'group_id',
+      'tag__keys',
+      'tag__values',
+    ]"
     :pageSize="20"
     :reFreshTimes="reFreshTimes"
   >
@@ -16,11 +24,11 @@
         :style="{ columnCount: imagesColumnNumber }"
       >
         <!-- <div class="articles"> -->
-          <ArticleItem
-            v-for="(item, index) in data.dataSource"
-            :key="index"
-            :data="item"
-          />
+        <ArticleItem
+          v-for="(item, index) in data.dataSource"
+          :key="`${item.id}-${index}`"
+          :data="item"
+        />
         <!-- </div> -->
       </div>
     </template>
@@ -34,6 +42,7 @@
         :style="{ 'text-align': 'right' }"
         class="right"
       >
+        <ObjectTagFilterButton pageUrlPrefix="/docs/article/list" />
         <el-button type="default" @click="reFreshData" size="small">
           <Icon type="refresh">刷新</Icon>
         </el-button>
@@ -51,6 +60,7 @@ import usePermissionCheck from '@/hooks/utils/usePermissionCheck'
 import BaseList from '@/components/page/baseList.vue'
 import ArticleGroupFilter from './groupsFilter.vue'
 import ArticleItem from './listItem.vue'
+import ObjectTagFilterButton from '@/components/page/objectTag/filterButton.vue'
 
 export default defineComponent({
   name: 'ArticleListPage',
@@ -60,6 +70,7 @@ export default defineComponent({
     BaseList,
     ArticleGroupFilter,
     ArticleItem,
+    ObjectTagFilterButton,
   },
   setup() {
     // 设置顶部导航
@@ -111,7 +122,7 @@ export default defineComponent({
     onMounted(() => {
       window.onresize = calculateColumnNumber
     })
-    
+
     return {
       havePermission,
       reFreshTimes,
