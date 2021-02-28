@@ -50,7 +50,7 @@ class FileListApiView(generics.ListAPIView):
         objecttag_ids = None
         if tag__key_list or tag__value_list:
             if tag__key_list:
-                objecttag_queryset = ObjectTag.objects.filter(app_label="storagee", model="file",
+                objecttag_queryset = ObjectTag.objects.filter(app_label="storage", model="file",
                                                               tagvalue__key__key__in=tag__key_list)
                 if tag__value_list:
                     objecttag_queryset = objecttag_queryset.filter(tagvalue__value__in=tag__value_list)

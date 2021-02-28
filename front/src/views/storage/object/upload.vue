@@ -4,7 +4,7 @@
   </el-button>
   <UploadImageDialog
     title="上传文件"
-    uploadImageUrl="/api/v1/storage/file/upload"
+    uploadUrl="/api/v1/storage/file/upload"
     :visible="visibleDialog"
     :afterCloseHandle="afterCloseHandle"
     :tabs="['upload']" 

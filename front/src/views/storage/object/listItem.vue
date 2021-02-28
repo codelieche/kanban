@@ -1,11 +1,30 @@
 <template>
   <div class="object-item">
     <div class="item-inner">
-      <img v-if="data.category === 'image'" 
-      :src="data.fileurl ? data.fileurl : data.file"
-      :alt="data.filename"/>
+      <img
+        v-if="data.category === 'image'"
+        :src="data.fileurl ? data.fileurl : data.file"
+        :alt="data.filename"
+      />
       <div v-else class="info">
-        {{ data.fileurl }}
+        <div class="info-item">
+          <div class="config">类型:</div>
+          <div class="value">
+            {{ data.category }}
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="config">名字:</div>
+          <div class="value">
+            {{ data.filename }}
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="config">用户:</div>
+          <div class="value">
+            {{ data.user }}
+          </div>
+        </div>
       </div>
 
       <!-- 按钮 -->
@@ -54,13 +73,32 @@ export default defineComponent({
 })
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .info {
   padding: 10px;
-
+  // min-height: 100px;
+  text-align: left;
+  .info-item {
+    display: flex;
+    flex-direction: row;
+    color: #999;
+    border-bottom: 1px dashed #d4d6d8;
+    margin-bottom: 5px;
+    padding: 3px 5px;
+    .config,
+    .value {
+      display: inline-block;
+      flex: 3;
+    }
+    .config {
+      flex: 1;
+      text-align: right;
+      margin-right: 10px;
+    }
+  }
 }
 .item {
   display: inline-block;
-  max-width: 400px;
+  max-width: 60px;
 }
 </style>

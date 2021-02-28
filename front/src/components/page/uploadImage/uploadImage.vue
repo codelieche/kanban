@@ -52,11 +52,11 @@ export default defineComponent({
       type: Array,
       default: () => ['upload', 'link'],
     },
-    uploadImageUrl: {
+    uploadUrl: {
       type: String,
       default: () => '/api/v1/docs/image/upload',
     },
-    uploadImageField: {
+    uploadField: {
       type: String,
       default: () => 'file',
     },
@@ -138,7 +138,7 @@ export default defineComponent({
       for (let i = 0; i < fileList.value.length; i++) {
         const fileData = fileList.value[i]
         const fileType = fileData.raw.type
-        formData.append(props.uploadImageField, fileData.raw)
+        formData.append(props.uploadField, fileData.raw)
         // 判断图片类型格式
         if (fileType.indexOf('image') >= 0) {
           formData.append('category', 'image')
@@ -163,7 +163,7 @@ export default defineComponent({
       }
       // 3. 发起请求
       fetchApi
-        .post(props.uploadImageUrl, formData)
+        .post(props.uploadUrl, formData)
         .then((response) => {
           // if(response.status <= 200 && response.status < 300){
           //     return response.data

@@ -10,8 +10,8 @@
   >
     <UploadImage
       :tabs="tabs"
-      :uploadImageUrl="uploadImageUrl"
-      :uploadImageField="uploadImageField"
+      :uploadUrl="uploadUrl"
+      :uploadField="uploadField"
       :afterUploadHandle="afterUploadHandle"
     />
   </el-dialog>
@@ -34,11 +34,11 @@ export default defineComponent({
       type: Array,
       default: () => ['upload', 'link'],
     },
-    uploadImageUrl: {
+    uploadUrl: {
       type: String,
       default: () => '/api/v1/docs/image/upload',
     },
-    uploadImageField: {
+    uploadField: {
       type: String,
       default: () => 'file',
     },
