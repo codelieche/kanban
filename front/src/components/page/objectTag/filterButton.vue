@@ -1,5 +1,5 @@
 <template>
-  <el-dropdown trigger="click">
+  <!-- <el-dropdown trigger="click">
     <el-button type="default" size="small" :class="{ active: activeTagKeys }">
       <Icon type="filter"></Icon> Filter
     </el-button>
@@ -13,7 +13,24 @@
         />
       </el-dropdown-menu>
     </template>
-  </el-dropdown>
+  </el-dropdown> -->
+
+  <div class="filter-button" :class="{ show: showFilter }">
+    <el-button type="default" size="small" 
+    :class="{ active: activeTagKeys }"
+    @click.stop="showFilter = !showFilter">
+      <Icon type="filter"></Icon> Filter
+    </el-button>
+    <div class="content">
+      <ObjectTagFilter
+        :activeTagKeys="activeTagKeys"
+        :activeTagValues="activeTagValues"
+        :handleTagSelected="handleTagSelected"
+        :handleFilterClear="handleFilterClear"
+        :handleCloseFilter="() => showFilter = false"
+      />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -33,6 +50,9 @@ export default defineComponent({
     // 路由获取到当前选中的tag__keys, tag__values
     const activeTagKeys = ref('')
     const activeTagValues = ref('')
+
+    // 是否显示Filter: 当按钮点击的时候显示filter
+    const showFilter = ref(false)
 
     // 路由
     const router = useRouter()
@@ -64,13 +84,16 @@ export default defineComponent({
         path: router.currentRoute.value.path,
         query: {
           'tag__keys': key,
-          'tag__values': value
-        }
+          'tag__values': value,
+        },
       })
+      // 隐藏filter
+      showFilter.value = false
     }
 
     // 处理清空Tag
     const handleFilterClear = () => {
+      showFilter.value = false
       activeTagKeys.value = ''
       activeTagValues.value = ''
       // 跳转新的页面
@@ -88,6 +111,7 @@ export default defineComponent({
     }
 
     return {
+      showFilter,
       activeTagKeys,
       activeTagValues,
       handleTagSelected,
@@ -102,5 +126,35 @@ export default defineComponent({
   color: #409eff;
   border-color: #c6e2ff;
   background-color: #fff;
+}
+
+.filter-button {
+  display: inline-block;
+  position: relative;
+
+  &.show {
+    .content {
+      display: block;
+    }
+  }
+
+  .content {
+    min-width: 300px;
+    display: none;
+    position: absolute;
+    z-index: 99;
+    // padding: 10px;
+    border: 1px solid #999;
+    text-align: left;
+    // top: 35px;
+    // right: 0;
+    transform: translateX(-40%);
+    // float: right;
+    background-color: #fff;
+    border: 1px solid rgba(55, 55, 50, 0.1);
+    margin-top: 5px;
+    box-shadow: 0 0 0 1px rgb(15 15 15 / 5%), 0 3px 6px rgb(15 15 15 / 10%),
+      0 9px 24px rgb(15 15 15 / 20%);
+  }
 }
 </style>
