@@ -3,6 +3,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
 // 引入子路曰
 import docsRoutes from '@/views/docs/routes'
 import userRoutes from '@/views/user/routes'
+import storageRoutes from '@/views/storage/routes'
 import tagsRoutes from '@/views/tags/routes'
 import configRoutes from '@/views/config/routes'
 import testRoutes from '@/views/test/routes'
@@ -44,6 +45,11 @@ const routes: Array<RouteRecordRaw> = [
         // name: 'BaseIndex',
         component: () => import('@/views/user/index.vue'),
         children: userRoutes
+      },
+      {
+        path: 'storage',
+        component: () => import('@/views/storage/index.vue'),
+        children: storageRoutes
       },
       {
         path: 'config',

@@ -1,9 +1,9 @@
 <template>
-  <TopBar title="图片列表" />
+  <TopBar title="对象列表" />
   <div :style="{ 'min-height': '90vh' }">
     <BaseList
-      apiUrlPrefix="/api/v1/docs/image/list"
-      pageUrlPrefix="/docs/image/list"
+      apiUrlPrefix="/api/v1/storage/file/list"
+      pageUrlPrefix="/storage/object/list"
       :pageSize="20"
       :reFreshTimes="reFreshTimes"
       :paramsFields="[
@@ -15,18 +15,20 @@
         'tag__values',
       ]"
     >
+      <!-- 列表主要内容 -->
       <template v-slot:default="data">
         <div
-          class="images-list"
-          :style="{ columnCount: imagesColumnNumber }"
+          class="objects-list"
+          :style="{ columnCount: columnNumber }"
           ref="listRef"
         >
-          <ImageItem
+          <ObjectItem
             v-for="(item, index) in data.dataSource"
             :key="index"
             :data="item"
-            @click="handleImageClick(item)"
-          />
+            @click="handleObjectClick(item)"
+          >
+          </ObjectItem>
         </div>
       </template>
 
@@ -40,26 +42,21 @@
           class="right"
         >
           <!-- 过滤按钮 -->
-          <ObjectTagFilterButton pageUrlPrefix="/docs/image/list" />
+          <ObjectTagFilterButton pageUrlPrefix="/storage/object/list" />
           <el-button type="default" @click="reFreshData" size="small">
             <Icon type="refresh">刷新</Icon>
           </el-button>
 
-          <UploadImageButton :reFreshData="reFreshData" />
-          <!-- <router-link to="/docs/image/list">
-            <el-button type="primary" size="small">
-              <Icon type="upload">Add</Icon>
-            </el-button>
-          </router-link> -->
+          <UploadObjectButton :reFreshData="reFreshData" />
         </el-col>
       </template>
     </BaseList>
   </div>
 
   <!-- 图片弹出框 -->
-  <ImageDialog
-    :visible="showImageDialog"
-    :data="currentImage"
+  <ObjectDialog
+    :visible="showObjectDialog"
+    :data="currentObject"
     :reFreshData="reFreshData"
     :afterCloseHandle="afterCloseHandle"
   />
@@ -69,28 +66,28 @@
 import { defineComponent, onMounted, Ref, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus'
 
+import fetchApi from '@/plugins/fetchApi'
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import usePermissionCheck from '@/hooks/utils/usePermissionCheck'
-import fetchApi from '@/plugins/fetchApi'
 
 import Icon from '@/components/base/icon.vue'
 import TopBar from '@/components/page/topBar.vue'
 import BaseList from '@/components/page/baseList.vue'
 import ObjectTagFilterButton from '@/components/page/objectTag/filterButton.vue'
-import ImageItem from './listItem.vue'
-import ImageDialog from './imageDialog.vue'
-import UploadImageButton from './upload.vue'
+import ObjectItem from './listItem.vue'
+import ObjectDialog from './objectDialog.vue'
+import UploadObjectButton from './upload.vue'
 
 export default defineComponent({
-  name: 'UserGroupList',
+  name: 'ObjectListPage',
   components: {
-    BaseList,
-    ImageItem,
-    ImageDialog,
-    UploadImageButton,
     Icon,
     TopBar,
+    BaseList,
     ObjectTagFilterButton,
+    ObjectItem,
+    ObjectDialog,
+    UploadObjectButton
   },
   setup() {
     // 设置顶部导航
@@ -101,8 +98,8 @@ export default defineComponent({
         link: '/',
       },
       {
-        title: '文档图片',
-        link: '/docs/image',
+        title: '对象存储',
+        link: '/storage/object',
       },
       {
         title: '列表',
@@ -110,31 +107,32 @@ export default defineComponent({
     ]
     useBreadcrumbItems(breadcrumbItems)
 
-    // 列表div的Ref
+    // 检查编辑权限
+    const { havePermission } = usePermissionCheck('storage.change_object')
+
+    // 列表的div的Ref
     const listRef: Ref<HTMLElement | null> = ref(null)
-    const imagesColumnNumber = ref(1)
+    const columnNumber = ref(1)
 
     // 计算列数
-    const calculateImagesColumnNumber = () => {
+    const calculatecolumnNumber = () => {
       if (listRef.value) {
+        // console.log(listRef.value.clientWidth )
         const column = Math.ceil((listRef.value.clientWidth - 60) / 270)
-        imagesColumnNumber.value = column > 1 ? column : 1
+        columnNumber.value = column > 1 ? column : 1
       }
     }
 
     // 监控listRef的变化
     watch([listRef], () => {
       if (listRef.value) {
-        calculateImagesColumnNumber()
+        calculatecolumnNumber()
       }
     })
 
     onMounted(() => {
-      window.onresize = calculateImagesColumnNumber
+      window.onresize = calculatecolumnNumber
     })
-
-    // 检查编辑权限
-    const { havePermission } = usePermissionCheck('docs.change_image')
 
     // 控制刷新的开关
     const reFreshTimes = ref(0)
@@ -143,27 +141,19 @@ export default defineComponent({
       reFreshTimes.value += 1
     }
 
-    // const urlParams = ref({ level: '' })
-
-    // 路由
-    // const router = useRouter()
-
-    // onMounted(() => {
-    //   console.log(router)
-    // })
-
-    // 弹出图片对话框
-    const showImageDialog = ref(false)
-    const currentImage = ref({})
+    // 弹出对象对话框
+    const showObjectDialog = ref(false)
+    const currentObject = ref({})
     const afterCloseHandle = () => {
-      showImageDialog.value = false
-      currentImage.value = {}
+      showObjectDialog.value = false
+      currentObject.value = {}
     }
 
-    const handleImageClick = (data: object) => {
+    // 点击对象
+    const handleObjectClick = (data: object) => {
       //   console.dir(data)
-      showImageDialog.value = true
-      currentImage.value = data
+      showObjectDialog.value = true
+      currentObject.value = data
     }
 
     // 删除确认事件
@@ -172,13 +162,13 @@ export default defineComponent({
         return
       }
       // console.log('我将删除：', id, name)
-      const url = `/api/v1/docs/image/${id}`
+      const url = `/api/v1/storage/object/${id}`
       // 发起删除请求
       fetchApi
         .delete(url)
         .then((response) => {
           if (response.status === 204) {
-            ElMessage.success(`删除图片(${name}:${id})成功`)
+            ElMessage.success(`删除对象(${name}:${id})成功`)
             // 刷新数据
             reFreshData()
           } else {
@@ -187,13 +177,13 @@ export default defineComponent({
             if (result.message) {
               ElMessage.error(`删除失败: ${result.message}`)
             } else {
-              ElMessage.error(`删除图片(${name}:${id})失败`)
+              ElMessage.error(`删除对象(${name}:${id})失败`)
             }
           }
         })
         .catch((err) => {
           console.log(err)
-          ElMessage.error(`删除图片(${name}:${id})失败`)
+          ElMessage.error(`删除对象(${name}:${id})失败`)
         })
     }
 
@@ -208,18 +198,17 @@ export default defineComponent({
     }
 
     return {
-      imagesColumnNumber,
       listRef,
-      // urlParams,
-      reFreshTimes,
+      columnNumber,
       havePermission,
-      handleDeleteCancel,
-      handleDeleteConfirm,
+      reFreshTimes,
       reFreshData,
-      showImageDialog,
-      currentImage,
+      currentObject, // 当前对象数据
+      showObjectDialog, // 显示对象对话框
       afterCloseHandle,
-      handleImageClick,
+      handleObjectClick, // 对象点击的时候触发
+      handleDeleteConfirm,
+      handleDeleteCancel,
     }
   },
 })

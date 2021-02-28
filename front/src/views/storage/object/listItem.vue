@@ -1,15 +1,20 @@
 <template>
-  <div class="image-item">
+  <div class="object-item">
     <div class="item-inner">
-      <img :src="data.qiniu" :alt="data.filename" v-if="data.qiniu" />
-      <img :src="data.file" :alt="data.filename" v-else />
+      <img v-if="data.category === 'image'" 
+      :src="data.fileurl ? data.fileurl : data.file"
+      :alt="data.filename"/>
+      <div v-else class="info">
+        {{ data.fileurl }}
+      </div>
+
       <!-- 按钮 -->
       <div class="buttons">
         <el-button
           type="text"
           size="small"
           @click.stop.prevent="
-            copyTextFunc('图片链接', data.qiniu ? data.qiniu : data.file)
+            copyTextFunc('图片链接', data.fileurl ? data.fileurl : data.file)
           "
         >
           <Icon type="copy">链接</Icon>
@@ -20,7 +25,7 @@
           @click.stop.prevent="
             copyTextFunc(
               'Markdown',
-              `![${data.filename}](${data.qiniu ? data.qiniu : data.file})`
+              `![${data.filename}](${data.fileurl ? data.fileurl : data.file})`
             )
           "
         >
@@ -36,7 +41,7 @@ import Icon from '@/components/base/icon.vue'
 import { copyTextFunc } from '@/utils/copy'
 
 export default defineComponent({
-  name: 'ImageListItem',
+  name: 'ObjectListItem',
   components: { Icon },
   props: {
     data: Object,
@@ -50,6 +55,10 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.info {
+  padding: 10px;
+
+}
 .item {
   display: inline-block;
   max-width: 400px;

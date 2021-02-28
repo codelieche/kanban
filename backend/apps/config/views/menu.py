@@ -72,7 +72,7 @@ class ListUserMenuListApiView(generics.ListAPIView):
             item["children"] = subs_new
 
             # 判断是否加入到menu_data中
-            if len(subs_new) > 0:
+            if len(subs_new) >= 0:
                 menu_data.append(item)
         # print(data)
         # 对结果重新复制

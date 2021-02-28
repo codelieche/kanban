@@ -151,7 +151,8 @@ export default defineComponent({
     transform: translateX(-40%);
     // float: right;
     background-color: #fff;
-    border: 1px solid rgba(55, 55, 50, 0.1);
+    border: 1px solid rgba(55, 55, 50, 0.18);
+    border-radius: 3px;
     margin-top: 5px;
     box-shadow: 0 0 0 1px rgb(15 15 15 / 5%), 0 3px 6px rgb(15 15 15 / 10%),
       0 9px 24px rgb(15 15 15 / 20%);

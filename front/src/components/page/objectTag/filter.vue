@@ -137,21 +137,22 @@ export default defineComponent({
     watch(
       [props],
       () => {
-        if (props.activeTagKeys) {
-          if (props.activeTagKeys !== currentTagKey.value) {
-            currentTagKey.value = props.activeTagKeys
-            handleTagKeyChange(props.activeTagKeys)
-          }
-        } else {
-          currentTagKey.value = ''
-        }
-
         if (props.activeTagValues) {
           if (props.activeTagValues !== currentTagValue.value) {
             currentTagValue.value = props.activeTagValues
           }
         } else {
           currentTagValue.value = ''
+        }
+
+        if (props.activeTagKeys) {
+          if (props.activeTagKeys !== currentTagKey.value) {
+            currentTagKey.value = props.activeTagKeys
+            handleTagKeyChange(props.activeTagKeys)
+            currentTagValue.value = ''
+          }
+        } else {
+          currentTagKey.value = ''
         }
       },
       { immediate: true }
