@@ -1,23 +1,7 @@
 <template>
-  <!-- <el-dropdown trigger="click">
-    <el-button type="default" size="small" :class="{ active: activeTagKeys }">
-      <Icon type="filter"></Icon> Filter
-    </el-button>
-    <template v-slot:dropdown>
-      <el-dropdown-menu>
-        <ObjectTagFilter
-          :activeTagKeys="activeTagKeys"
-          :activeTagValues="activeTagValues"
-          :handleTagSelected="handleTagSelected"
-          :handleFilterClear="handleFilterClear"
-        />
-      </el-dropdown-menu>
-    </template>
-  </el-dropdown> -->
-
   <div class="filter-button" :class="{ show: showFilter }">
     <el-button type="default" size="small" 
-    :class="{ active: activeTagKeys }"
+    :class="['white', { active: activeTagKeys }]"
     @click.stop="showFilter = !showFilter">
       <Icon type="filter"></Icon> Filter
     </el-button>

@@ -26,7 +26,7 @@ const subComponents = [
     filename: 'account/detail'
   },
   {
-    path: 'account/:id(\\d+)/account',
+    path: 'account/:id(\\d+)/editor',
     filename: 'account/editor'
   },
 

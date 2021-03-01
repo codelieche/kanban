@@ -161,14 +161,14 @@ export default defineComponent({
         return
       }
       patchUpdateObject(
-        'docs',
-        'image',
+        'storage',
+        'file',
         props.data?.id,
         { filename: text },
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (d: any) => {
           if (d && d?.id > 0) {
-            ElMessage.success('修改图片名称成功')
+            ElMessage.success('修改文件名称成功')
             if (props.reFreshData) {
               props.reFreshData()
             }

@@ -124,7 +124,7 @@
 // 主体内容中的信息展示属性样式：详情页用的居多
 .container .main .info-property {
   // 详情页 属性信息样式
-  margin: 0 auto 20px;
+  // margin: 0 auto 20px;
   padding: 10px 20px 5px 20px;
   // padding-right: 10px;
   // border: 1px solid #e6e6e6;
@@ -190,6 +190,52 @@
           }
         }
       }
+    }
+  }
+}
+
+// 隐藏的按钮
+.hover-buttons {
+  break-inside: avoid;
+  box-sizing: border-box;
+  position: relative;
+  .buttons-wrap {
+    display: none;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #fff;
+    border-top: 1px solid #d4d6d8;
+    // transition: transform 0.8s;
+    z-index: 2;
+
+    .buttons {
+      display: flex;
+      flex-direction: row;
+      .btn + .btn {
+        border-left: 1px solid #d4d6d8;
+      }
+
+      .btn,
+      .button {
+        padding: 6px 0;
+        display: block;
+        line-height: 24px;
+        flex: 1;
+        display: inline-block;
+        cursor: pointer;
+        text-align: center;
+        
+        &:hover {
+          background-color: #eee;
+        }
+      }
+    }
+  }
+  &:hover {
+    .buttons-wrap {
+      display: block;
     }
   }
 }

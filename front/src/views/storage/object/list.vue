@@ -17,19 +17,16 @@
     >
       <!-- 列表主要内容 -->
       <template v-slot:default="data">
-        <div
-          class="objects-list"
-          :style="{ columnCount: columnNumber }"
-          ref="listRef"
-        >
+        <!-- 用ColumnWrap包裹 -->
+        <ColumnWrap class="objects-list" :width="270">
           <ObjectItem
             v-for="(item, index) in data.dataSource"
-            :key="index"
+            :key="`${item.id}-${index}`"
             :data="item"
             @click="handleObjectClick(item)"
           >
           </ObjectItem>
-        </div>
+        </ColumnWrap>
       </template>
 
       <!-- 右侧按钮区域 -->
@@ -63,7 +60,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, Ref, ref, watch } from 'vue'
+import { defineComponent, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 
 import fetchApi from '@/plugins/fetchApi'
@@ -73,6 +70,7 @@ import usePermissionCheck from '@/hooks/utils/usePermissionCheck'
 import Icon from '@/components/base/icon.vue'
 import TopBar from '@/components/page/topBar.vue'
 import BaseList from '@/components/page/baseList.vue'
+import ColumnWrap from '@/components/page/base/columnWrap.vue'
 import ObjectTagFilterButton from '@/components/page/objectTag/filterButton.vue'
 import ObjectItem from './listItem.vue'
 import ObjectDialog from './objectDialog.vue'
@@ -84,10 +82,11 @@ export default defineComponent({
     Icon,
     TopBar,
     BaseList,
+    ColumnWrap,
     ObjectTagFilterButton,
     ObjectItem,
     ObjectDialog,
-    UploadObjectButton
+    UploadObjectButton,
   },
   setup() {
     // 设置顶部导航
@@ -109,30 +108,6 @@ export default defineComponent({
 
     // 检查编辑权限
     const { havePermission } = usePermissionCheck('storage.change_object')
-
-    // 列表的div的Ref
-    const listRef: Ref<HTMLElement | null> = ref(null)
-    const columnNumber = ref(1)
-
-    // 计算列数
-    const calculatecolumnNumber = () => {
-      if (listRef.value) {
-        // console.log(listRef.value.clientWidth )
-        const column = Math.ceil((listRef.value.clientWidth - 60) / 270)
-        columnNumber.value = column > 1 ? column : 1
-      }
-    }
-
-    // 监控listRef的变化
-    watch([listRef], () => {
-      if (listRef.value) {
-        calculatecolumnNumber()
-      }
-    })
-
-    onMounted(() => {
-      window.onresize = calculatecolumnNumber
-    })
 
     // 控制刷新的开关
     const reFreshTimes = ref(0)
@@ -198,8 +173,6 @@ export default defineComponent({
     }
 
     return {
-      listRef,
-      columnNumber,
       havePermission,
       reFreshTimes,
       reFreshData,
