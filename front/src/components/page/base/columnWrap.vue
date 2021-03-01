@@ -84,7 +84,7 @@ export default defineComponent({
 <style lang="less" scoped>
 .column-wrap {
   // column-count: 5; // 在代码中根据元素的宽度计算设置
-  column-gap: 5px;
+  column-gap: 10px;
   padding: 10px 0;
 
   box-sizing: border-box;
@@ -102,6 +102,7 @@ export default defineComponent({
     break-inside: avoid;
     width: 100%;
     box-sizing: border-box;
+    margin-bottom: 15px;
   }
 }
 </style>

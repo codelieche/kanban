@@ -44,7 +44,7 @@
           </dl>
         </div>
 
-        <div class="test">
+        <!-- <div class="test">
           <el-divider></el-divider>
           <div>
             <div v-for="item in [1, 2, 3, 4, 5, 6]" :key="item">
@@ -53,7 +53,7 @@
               </router-link>
             </div>
           </div>
-        </div>
+        </div> -->
       </el-col>
 
       <el-col :xs="24" :sm="8">

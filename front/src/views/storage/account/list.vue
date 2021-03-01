@@ -29,10 +29,16 @@
         :style="{ 'text-align': 'right' }"
         class="right"
       >
-        <!-- 过滤按钮 -->
+        <!-- 刷新按钮 -->
         <el-button type="default" @click="reFreshData" size="small">
           <Icon type="refresh">刷新</Icon>
         </el-button>
+        <!-- 添加按钮 -->
+        <router-link to="/storage/account/add" v-if="havePermission">
+          <el-button type="primary" @click="reFreshData" size="small">
+            <Icon type="plus">Add</Icon>
+          </el-button>
+        </router-link>
       </el-col>
     </template>
     <!-- 右侧按钮结束 -->

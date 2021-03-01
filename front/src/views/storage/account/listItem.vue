@@ -18,7 +18,7 @@
     </dl>
     <dl>
       <dt>Access Key:</dt>
-      <dd>{{ data.access_key }}</dd>
+      <dd class="one-line">{{ data.access_key }}</dd>
     </dl>
     <dl>
       <dt>添加时间:</dt>

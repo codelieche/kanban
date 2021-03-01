@@ -4,7 +4,7 @@
     <el-col :xs="24" :sm="16" :md="18">
       <TopBar title="分组详情" />
 
-      <loading v-if="loading" />
+      <Loading v-if="loading" />
       <div class="info-property" v-else-if="data && data.id > 0">
         <!-- <dl>
           <dt>ID</dt>
