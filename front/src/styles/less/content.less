@@ -200,6 +200,31 @@
   }
 }
 
+// 无内容的样式
+.no-content {
+  text-align: center;
+  padding: 50px 20px;
+  font-size: 13px;
+  line-height: 24px;
+  // font-weight: 300;
+  // color: #9B9B9B;
+  color: #999;
+  background-color: #fff;
+  &.shadow { // 阴影
+    box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.1);
+  }
+  &.border { // 边框
+    border: 1px solid #d4d6d8;
+    border-radius: 8px;
+  }
+  &.no-background {
+    background: none;
+  }
+  button {
+    margin: 0 10px;
+  }
+}
+
 // 隐藏的按钮: 当鼠标进入这个区域的时候，才显示按钮
 .hover-buttons {
   break-inside: avoid;

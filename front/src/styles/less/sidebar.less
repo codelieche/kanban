@@ -1,0 +1,107 @@
+.sidebar {
+  // padding-top: 10px;
+  box-sizing: border-box;
+  padding-right: 20px;
+  .panel {
+    // 面板：一般是右侧
+    margin-bottom: 15px;
+
+    &.border {
+      //   border-radius: 8px 8px 0 0;
+      border: 1px solid #d4d6d8;
+      box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.1);
+    }
+
+    .header {
+      // 头部样式
+      background: #eee;
+      font-weight: 500;
+      color: rgba(0, 0, 0, 0.85);
+      font-size: 14px;
+      line-height: 35px;
+      height: 35px;
+      padding-left: 15px;
+      // padding: 0px 10px 0px 20px;
+      //   border-radius: 8px 8px 0 0;
+      // margin-left: 20px;
+      border-bottom: solid 1px #d4d6d8;
+    }
+
+    .inner {
+      // 面板的内容
+      background: #fff;
+      // padding: 10px;
+      font-size: 13px;
+      min-height: 100px;
+      .list {
+        padding: 5px 10px 5px 10px;
+        min-height: 150px;
+        .item {
+          padding-left: 10px;
+          cursor: pointer;
+          line-height: 30px;
+          color: #666;
+          border-bottom: 1px dashed #eee;
+          text-overflow: ellipsis;
+          -webkit-line-clamp: 1;
+          white-space: nowrap;
+          overflow: hidden;
+        }
+      }
+
+      // 查看更多
+      .more {
+        display: block;
+        text-align: center;
+        margin: 10px 5px;
+        text-align: center;
+        border: 1px solid #eee;
+        color: #999;
+        background-color: #eee;
+        border-radius: 10px;
+        font-size: 13px;
+        line-height: 30px;
+        border-radius: 5px;
+        border: 1px solid #eee;
+
+        cursor: pointer;
+        a {
+          display: block;
+          color: #999;
+        }
+      }
+    }
+  }
+}
+
+// sidebar innter info
+.sidebar .panel .inner .info {
+  padding: 10px;
+  .row {
+    display: flex;
+    span {
+      display: inline-block;
+      font-size: 13px;
+      margin-bottom: 5px;
+      &.unit {
+        // font-size: 14px;
+        // line-height: 35px;
+        // font-weight: 500;
+        margin-left: 5px;
+      }
+    }
+    .config {
+      width: 85px;
+      text-align: inherit;
+      color: #999;
+    }
+    .config-value {
+      flex: 1;
+      color: #666;
+      // 有时候信息太长，要设置下自动换行
+      display: inline-block;
+      word-wrap: break-word;
+      word-break: break-all;
+    }
+  }
+}

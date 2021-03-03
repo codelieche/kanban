@@ -34,35 +34,28 @@ export default defineComponent({
     const formData: Ref<any> = ref({ id: 0, username: '' })
     provide(formName, formData)
     const formFields: Ref<Array<FormFieldItem>> = ref([
-      {
-        name: 'id',
-        type: 'input',
-        label: 'ID:',
-        props: {
-          size: 'small',
-          disabled: true,
-        },
-      },
-      {
-        name: 'key',
-        type: 'input',
-        label: 'Key:',
-        props: {
-          size: 'small',
-        },
-      },
+      // {
+      //   name: 'id',
+      //   type: 'input',
+      //   label: 'ID:',
+      //   props: {
+      //     size: 'small',
+      //     disabled: true,
+      //   },
+      // },
+      // {
+      //   name: 'key',
+      //   type: 'input',
+      //   label: 'Key:',
+      //   props: {
+      //     size: 'small',
+      //   },
+      // },
       {
         name: 'title',
         type: 'input',
         label: '菜单标题:',
-        props: {
-          size: 'small',
-        },
-      },
-      {
-        name: 'icon',
-        type: 'input',
-        label: '图标',
+        rules: [{ required: true, message: '请输入标题' }],
         props: {
           size: 'small',
         },
@@ -71,10 +64,21 @@ export default defineComponent({
         name: 'slug',
         type: 'input',
         label: '网址',
+        rules: [{ required: true, message: '请输入网址' }],
         props: {
           size: 'small',
         },
       },
+
+      {
+        name: 'icon',
+        type: 'input',
+        label: '图标',
+        props: {
+          size: 'small',
+        },
+      },
+
       {
         name: 'is_link',
         type: 'radio-button',
@@ -129,7 +133,7 @@ export default defineComponent({
             checkStrictly: true, // 可选择任意一级
           },
         },
-        choices: []
+        choices: [],
       },
       {
         name: 'order',
@@ -174,7 +178,12 @@ export default defineComponent({
         }
       })
     }
-    useFetchChoices('/api/v1/config/menu/user', userChoicesFields, callback, true)
+    useFetchChoices(
+      '/api/v1/config/menu/user',
+      userChoicesFields,
+      callback,
+      true
+    )
 
     // 监控属性的变化
     watch(
@@ -188,14 +197,17 @@ export default defineComponent({
       { immediate: true }
     )
 
-    // 提交编辑用户
+    // 提交编辑
     const handleFormSubmit = () => {
-      // 发起修改用户的请求
+      // 发起修改请求
       if (formData.value && formData.value.id < 1) {
         return
       }
       // 对parent进行处理
-      if(Array.isArray(formData.value['parent']) && formData.value['parent'].length > 0){
+      if (
+        Array.isArray(formData.value['parent']) &&
+        formData.value['parent'].length > 0
+      ) {
         formData.value['parent'] = formData.value['parent'][0]
       }
       if (props.isAdd) {

@@ -29,7 +29,9 @@
 
           <!-- 跳转内部Url的情况 -->
           <router-link
-            v-else-if="!!item.slug"
+            v-else-if="
+              (!!item.slug && item.level > 1) || (!item.children && item.slug)
+            "
             :to="item.slug"
             :class="{
               active:
@@ -65,8 +67,8 @@
       <!-- 折叠情况结束 -->
     </div>
 
+    <!-- 非折叠的情况 -->
     <div class="title" @click="onTitleClick" v-else>
-      <!-- 非折叠的情况 -->
       <!-- 判断是不是外链 -->
       <span v-if="item.is_link && item.link">
         <!-- 是a连接 -->
@@ -90,9 +92,13 @@
         </a>
       </span>
 
+      <!-- 不是a链接的情况 -->
       <!-- 跳转内部Url的情况 -->
+      <!-- 一级菜单无子菜单的可跳转slug：非定义菜单有slug的可跳转 -->
       <router-link
-        v-else-if="!!item.slug"
+        v-else-if="
+          (!!item.slug && item.level > 1) || (!item.children && item.slug)
+        "
         :class="{
           active: urlpath.indexOf(item.slug) == 0 && item.children.length < 1,
         }"
@@ -113,15 +119,22 @@
       </router-link>
 
       <span v-else>
-        <!-- 不是a连接 -->
+        <!-- slug不可跳转/slug为空的情况 -->
         <span
           class="icon"
-          :class="item.icon ? item.icon : 'el-icon-arrow-right'"
+          :class="
+            item.icon
+              ? item.icon.startsWith('el-')
+                ? item.icon
+                : `fa fa-${item.icon}`
+              : 'el-icon-arrow-right'
+          "
           :style="{ paddingLeft: paddingLeftValue }"
         ></span>
         {{ item.title }}
       </span>
 
+      <!-- 有子菜单的，右侧显示个icon -->
       <div class="right" v-if="hasChildren">
         <span
           :class="openChildren ? 'el-icon-caret-bottom' : 'el-icon-caret-left'"

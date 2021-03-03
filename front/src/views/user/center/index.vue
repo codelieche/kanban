@@ -8,8 +8,8 @@
 
         <!-- 文章列表 -->
       </el-col>
-      <el-col :xs="24" :sm="24" :md="8" :lg="6">
-        右侧区域
+      <el-col :xs="24" :sm="24" :md="8" :lg="6" class="sidebar">
+        <MessageList />
       </el-col>
     </el-row>
   </div>
@@ -21,11 +21,12 @@ import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 
 // import TopBar from '@/components/page/topBar.vue'
 import GroupList from './groupList.vue'
+import MessageList from './messageList.vue'
 
 export default defineComponent({
   name: 'UserCenterIndex',
   components: {
-    GroupList,
+    GroupList, MessageList
   },
   setup() {
         const breadcrumbItems = [

@@ -29,7 +29,7 @@
           <router-link :to="`/docs/group/${data.id}`">查看详情</router-link>
         </div>
         <div class="button">
-          <router-link :to="`/docs/group/${data.id}`">查看文章</router-link>
+          <router-link :to="`/docs/article/list?group_id=${data.id}`">查看文章</router-link>
         </div>
       </div>
     </el-card>

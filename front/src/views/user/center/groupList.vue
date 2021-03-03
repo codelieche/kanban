@@ -14,7 +14,7 @@
     <el-row class="groups" :gutter="16" v-else>
       <GroupListItem v-for="item in dataSource" :key="item.id" :data="item" />
     </el-row>
-    <el-tooltip content="添加工作组" placement="bottom">
+    <el-tooltip content="添加工作组" placement="bottom" v-if="!loading">
       <div class="add bottom-right">
         <router-link to="/docs/group/add">
           <Icon type="plus" />
