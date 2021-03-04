@@ -25,7 +25,10 @@ import { defineComponent, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 export default defineComponent({
   name: 'ArticleGroupFilter',
-  setup() {
+  props: {
+    handleGroupChange: Function,
+  },
+  setup(props) {
     const url = '/api/v1/docs/group/all'
     const { dataSource } = useFetchListData(url)
 
@@ -48,7 +51,8 @@ export default defineComponent({
       { immediate: true }
     )
 
-    const handleGroupOnChange = (id: number | string) => {
+    // Group变更默认的处理函数
+    const onGroupChange = (id: number | string) => {
       if (currentGroupID.value == id) {
         return
       } else {
@@ -68,6 +72,17 @@ export default defineComponent({
         })
       }
     }
+
+    const handleGroupOnChange = (id: number | string) => {
+      // 判断是否传递了handleGroupChange：
+      if (props.handleGroupChange) {
+        currentGroupID.value = id.toString()
+        props.handleGroupChange(id)
+      } else {
+        onGroupChange(id)
+      }
+    }
+
     return {
       dataSource,
       currentGroupID,
@@ -87,6 +102,7 @@ export default defineComponent({
     padding: 4px 10px;
     border-radius: 3px;
     margin-right: 5px;
+    margin-bottom: 10px;
     cursor: pointer;
     &:hover {
       color: #1890ff;

@@ -22,6 +22,7 @@
         class="articles-list"
         ref="listRef"
         :style="{ columnCount: imagesColumnNumber }"
+        v-if="data.dataSource && data.dataSource.length > 0"
       >
         <!-- <div class="articles"> -->
         <ArticleItem
@@ -31,6 +32,7 @@
         />
         <!-- </div> -->
       </div>
+      <div class="no-content articles-list" v-else>无文章数据...</div>
     </template>
 
     <!-- 右侧按钮区域 -->

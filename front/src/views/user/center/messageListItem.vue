@@ -55,6 +55,7 @@ export default defineComponent({
           // message: props.data.content,
           dangerouslyUseHTMLString: true,
           message: content,
+          offset: 40,
           duration: 0,
         })
 
@@ -69,7 +70,7 @@ export default defineComponent({
         }
       }
     }
-    
+
     return {
       unread,
       handleClick,
