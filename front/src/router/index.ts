@@ -6,6 +6,7 @@ import userRoutes from '@/views/user/routes'
 import storageRoutes from '@/views/storage/routes'
 import tagsRoutes from '@/views/tags/routes'
 import configRoutes from '@/views/config/routes'
+import toolsRoutes from '@/views/tools/routes'
 import testRoutes from '@/views/test/routes'
 import errorRoutes from '@/views/errors/routes'
 
@@ -55,6 +56,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'config',
         component: () => import('@/views/config/index.vue'),
         children: configRoutes
+      },
+      {
+        path: 'tools',
+        component: () => import('@/views/tools/index.vue'),
+        children: toolsRoutes
       },
       {
         path: 'test',

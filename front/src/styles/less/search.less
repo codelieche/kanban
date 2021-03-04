@@ -1,0 +1,107 @@
+// 搜索相关的页面
+
+.base-layout > .search {
+  padding-top: 100px;
+  &.results {
+    padding-top: 10px;
+    .form {
+      display: flex;
+      flex-direction: row;
+      text-align: left;
+      .logo {
+        display: inline-block;
+        margin-right: 20px;
+        img {
+          padding: 3px 5px;
+          height: 30px;
+        }
+      }
+      .input {
+        flex: 1;
+        .ant-input-search {
+          max-width: 450px;
+        }
+      }
+    }
+  }
+
+  .form {
+    text-align: center;
+    .logo {
+      text-align: center;
+      margin-bottom: 10px;
+      img {
+        padding: 15px 20px;
+        // background-color: #1890ff;
+        background-color: #fff;
+        // border-radius: 5px 5px 0 0;
+      }
+    }
+    .input {
+      width: 40%;
+      // max-width: 450px;
+      min-width: 320px;
+      margin: 0 auto;
+      .ant-select-selector {
+        color: #999;
+      }
+    }
+  }
+}
+
+.base-layout .main .results {
+  .item {
+    padding: 5px;
+    margin: 5px;
+    // max-width: 600px;
+  }
+
+  .images {
+    .item {
+      display: inline-block;
+      max-width: 500px;
+    }
+    // img {
+    //     max-height: 230px;
+    //     width: auto;
+    // }
+  }
+
+  .articles {
+    max-width: 750px;
+    padding-right: 10px;
+    border-right: 1px solid @border-bottom-line-color;
+    .item {
+      img {
+        max-height: 90px;
+        width: auto;
+      }
+    }
+  }
+}
+
+.main > .search + .results {
+  padding-top: 10px;
+}
+
+// 搜索图片
+.results .images {
+  // border: 1px solid #d9d9d9;
+  // column-count: 5; // 在代码中根据元素的宽度计算设置
+  min-height: 450px;
+  // column-gap: 1em;
+  column-gap: 5px;
+  padding: 10px 15px;
+  padding-left: 5px;
+  padding-right: 18px;
+  // text-align: left;
+  text-align: center;
+  align-self: flex-start;
+  // border: 1px solid #d4d6d8;
+  // box-shadow: 0 4px 18px -4px rgba(0, 0, 0, 0.1);
+  // background-color: #eee;
+  // -webkit-column-break-inside:avoid;
+  // break-inside:avoid;
+  box-sizing: border-box;
+  margin-bottom: 15px;
+}
