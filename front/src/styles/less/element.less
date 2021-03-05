@@ -1,7 +1,8 @@
 // 复写Element的样式
 
 // 按钮
-.el-button.white:focus, .el-button.white:hover {
+.el-button.white:focus,
+.el-button.white:hover {
   // color: #409EFF;
   border-color: #c6e2ff;
   background-color: #fff;
@@ -81,16 +82,17 @@
   .el-tag__close {
     visibility: hidden;
   }
-  &:hover .el-tag__close{
+  &:hover .el-tag__close {
     visibility: visible;
   }
 }
 
-.el-badge__content--info{
+.el-badge__content--info {
   background-color: rgb(217, 217, 217);
 }
 
-.ant-notification-notice, .el-notification {
+.ant-notification-notice,
+.el-notification {
   // position: relative;
   width: 384px;
   // max-width: calc(100vw - 48px);
@@ -100,9 +102,11 @@
   word-wrap: break-word;
   background: #fff;
   border-radius: 2px;
-  -webkit-box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%);
-  box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%);
-  .el-notification__group{
+  -webkit-box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%),
+    0 6px 16px 0 rgb(0 0 0 / 8%), 0 9px 28px 8px rgb(0 0 0 / 5%);
+  box-shadow: 0 3px 6px -4px rgb(0 0 0 / 12%), 0 6px 16px 0 rgb(0 0 0 / 8%),
+    0 9px 28px 8px rgb(0 0 0 / 5%);
+  .el-notification__group {
     width: 100%;
   }
   .el-notification__title {
@@ -115,5 +119,37 @@
   &::after {
     height: 1px;
     background: #d4d6d8;
+  }
+}
+
+// 搜索
+.el-input {
+  // BaseList的头部按钮，和搜索页会用到
+  &.primary {
+    .el-input__inner {
+      border-right: none;
+    }
+    .el-input-group__append {
+      // background-color: #F5F7FA;
+      // color: #909399;
+      // vertical-align: middle;
+      // display: table-cell;
+      // position: relative;
+      // border: 1px solid #DCDFE6;
+      // border-radius: 4px;
+      // padding: 0 20px;
+      // width: 1px;
+      // white-space: nowrap;
+
+      // antd的配色
+      // background-color: #1890ff;
+      // border: 1px solid #1890ff;
+
+      background-color: #409eff;
+      border: 1px solid#409EFF;
+
+      // width: 0;
+      color: #fff;
+    }
   }
 }

@@ -4,7 +4,7 @@
     <!-- 左侧搜索输入框 -->
     <el-col :sm="12" :xs="24">
       <el-input
-        class="search"
+        class="search primary"
         v-model="searchInputValue"
         placeholder="search"
         size="small"

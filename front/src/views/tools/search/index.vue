@@ -1,6 +1,6 @@
 <template>
   <div class="main base-layout">
-    <div class="search results">
+    <div :class="['search', { results: searchType !== '' }]">
       <!-- 搜索表单 -->
       <div class="form">
         <div class="logo">
@@ -14,13 +14,20 @@
           <el-input
             v-model="inputValue"
             :placeholder="searchValue ? searchValue : ''"
+            clearable
+            size="small"
+            class="primary"
             @change="handleSearch"
-          ></el-input>
+          >
+            <template #append>
+              <el-button size="small" type="primary">搜索一下</el-button>
+            </template>
+          </el-input>
         </div>
       </div>
 
       <!-- 类型选择 -->
-      <el-tabs v-model="searchType">
+      <el-tabs v-model="searchType" v-if="searchType !== ''">
         <el-tab-pane label="文章" name="article"></el-tab-pane>
         <el-tab-pane label="图片" name="image"></el-tab-pane>
       </el-tabs>
@@ -29,9 +36,11 @@
       <BaseList
         :pageUrlPrefix="pageUrlPrefix"
         :apiUrlPrefix="apiUrlPrefix"
+        :paramsFields="['page', 'page_size', 'searchType', 'search']"
         :showHeader="false"
         :showTools="false"
         :pageSize="20"
+        v-if="searchType == 'article'"
       >
         <template v-slot:default="data">
           <!-- 文章的结果 -->
@@ -59,12 +68,33 @@
           </ColumnWrap>
         </template>
       </BaseList>
+
+      <BaseList
+        :pageUrlPrefix="pageUrlPrefix"
+        :apiUrlPrefix="apiUrlPrefix"
+        :paramsFields="['page', 'page_size', 'searchType', 'search']"
+        :showHeader="false"
+        :showTools="false"
+        :pageSize="20"
+        v-if="searchType == 'image'"
+      >
+        <template v-slot:default="data">
+          <!-- 文章的结果 -->
+          <ColumnWrap class="images-list" :width="270">
+            <ImageItem
+              v-for="(item, index) in data.dataSource"
+              :key="`image-${item.id}-${index}`"
+              :data="item"
+            />
+          </ColumnWrap>
+        </template>
+      </BaseList>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 
 import { useRouter } from 'vue-router'
 
@@ -79,12 +109,12 @@ export default defineComponent({
   components: { BaseList, ColumnWrap, ArticleItem, ImageItem },
   setup() {
     // 搜索的类型
-    const searchType = ref('article')
+    const searchType = ref('')
     // 搜索的值
     const searchValue = ref('')
     const inputValue = ref('')
     // 搜索相关的数据
-    const apiUrlPrefix = ref('/api/v1/docs/article/list')
+    const apiUrlPrefix = ref('')
     const pageUrlPrefix = ref('/tools/search')
 
     // 路由
@@ -92,29 +122,50 @@ export default defineComponent({
 
     // 搜索处理函数
     const handleSearch = (value: string) => {
-      console.log('value:', value)
+      // console.log('value:', value)
       searchValue.value = value
     }
 
+    // 组件加载的时候获取searchType
+    onMounted(() => {
+      const query = router.currentRoute.value.query
+      if (query['searchType']) {
+        searchType.value = query['searchType'] as string
+      }
+      if (query['search']) {
+        searchValue.value = query['search'] as string
+      }
+    })
+
     // 监控值的变化
     watch([searchType, searchValue], () => {
-      if (searchType.value == 'image') {
-        apiUrlPrefix.value = '/api/v1/docs/image/list'
+      //   pageUrlPrefix.value = `/tools/search?searchType=${searchType.value}`
+      if (searchValue.value == '') {
+        apiUrlPrefix.value = ''
+        searchType.value === ''
       } else {
-        apiUrlPrefix.value = '/api/v1/docs/article/list'
+        if (searchType.value === '') {
+          // 默认使用article
+          searchType.value = 'article'
+        }
+        if (searchType.value == 'image') {
+          apiUrlPrefix.value =
+            '/api/v1/docs/image/list?search=' + searchValue.value
+        } else {
+          apiUrlPrefix.value =
+            '/api/v1/docs/article/list?search=' + searchValue.value
+        }
       }
 
-      if (searchValue.value) {
-        // 推送
-        router.push({
-          path: '/tools/search',
-          query: {
-            searchType: searchType.value,
-            search: searchValue.value,
-            page: 1,
-          },
-        })
-      }
+      // 使用新的路由
+      router.push({
+        path: '/tools/search',
+        query: {
+          searchType: searchType.value,
+          search: searchValue.value,
+          page: 1,
+        },
+      })
     })
 
     return {
