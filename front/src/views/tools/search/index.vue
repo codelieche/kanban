@@ -1,6 +1,6 @@
 <template>
-  <div class="main base-layout">
-    <div :class="['search', { results: searchValue !== '' }]">
+  <div class="main full">
+    <div :class="['search', { 'with-results': searchValue !== '' }]">
       <!-- 搜索表单 -->
       <div class="form">
         <div class="logo">
@@ -36,6 +36,11 @@
         <el-tab-pane label="图片" name="image">
           <template #label>
             <span><Icon type="image" /> 图片</span>
+          </template>
+        </el-tab-pane>
+        <el-tab-pane label="对象" name="object">
+          <template #label>
+            <span><Icon type="cubes" /> 对象</span>
           </template>
         </el-tab-pane>
       </el-tabs>
@@ -83,6 +88,22 @@ export default defineComponent({
       if (query['search']) {
         searchValue.value = query['search'] as string
         inputValue.value = query['search'] as string
+      }
+    })
+
+    // 监控路由的变化
+    watch([router.currentRoute], () => {
+      const query = router.currentRoute.value.query
+    //   console.log(query)
+      if (query['searchType']) {
+        searchType.value = query['searchType'] as string
+      }
+      if (query['search']) {
+        searchValue.value = query['search'] as string
+        inputValue.value = query['search'] as string
+      } else {
+        searchValue.value = ''
+        inputValue.value = ''
       }
     })
 

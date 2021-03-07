@@ -1,6 +1,6 @@
 <template>
   <TopBar title="图片列表" />
-  <div :style="{ 'min-height': '90vh' }">
+  <div :style="{ 'min-height': '10vh', flex: 1 }">
     <BaseList
       apiUrlPrefix="/api/v1/docs/image/list"
       pageUrlPrefix="/docs/image/list"

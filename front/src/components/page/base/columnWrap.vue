@@ -86,9 +86,10 @@ export default defineComponent({
   // column-count: 5; // 在代码中根据元素的宽度计算设置
   column-gap: 10px;
   padding: 10px 0;
-
   box-sizing: border-box;
   margin-bottom: 15px;
+  // flex: 1;
+  width: 100%;
 
   &.border {
     // 设置边框

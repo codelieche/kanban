@@ -23,6 +23,7 @@
       </template>
     </BaseList>
 
+    <!-- 搜索图片结果 -->
     <BaseList
       :pageUrlPrefix="pageUrlPrefix"
       :apiUrlPrefix="apiUrlPrefix"
@@ -53,6 +54,38 @@
         />
       </template>
     </BaseList>
+
+    <!-- 搜索对象文件 -->
+    <BaseList
+      :pageUrlPrefix="pageUrlPrefix"
+      :apiUrlPrefix="apiUrlPrefix"
+      :paramsFields="['page', 'page_size', 'searchType', 'search']"
+      :showHeader="false"
+      :showTools="false"
+      :pageSize="20"
+      :reFreshTimes="reFreshTimes"
+      v-if="searchValue.value !== '' && searchType == 'object'"
+    >
+      <template v-slot:default="data">
+        <!-- 图片的结果 -->
+        <div class="no-content" v-if="data.dataSource < 1">无搜索结果</div>
+        <ColumnWrap class="objects-list" :width="270" v-else>
+          <ObjectItem
+            v-for="(item, index) in data.dataSource"
+            :key="`object-${item.id}-${index}`"
+            :data="item"
+            @click="handleObjectClick(item)"
+          />
+        </ColumnWrap>
+        <!-- 对象弹出框 -->
+        <ObjectDialog
+          :visible="showObjectDialog"
+          :data="currentObject"
+          :reFreshData="reFreshData"
+          :afterCloseHandle="afterObjectCloseHandle"
+        />
+      </template>
+    </BaseList>
   </div>
 </template>
 
@@ -64,6 +97,8 @@ import ColumnWrap from '@/components/page/base/columnWrap.vue'
 import ArticleItem from '@/views/docs/article/listItem.vue'
 import ImageItem from '@/views/docs/image/listItem.vue'
 import ImageDialog from '@/views/docs/image/imageDialog.vue'
+import ObjectItem from '@/views/storage/object/listItem.vue'
+import ObjectDialog from '@/views/storage/object/objectDialog.vue'
 
 export default defineComponent({
   name: 'SearchResults',
@@ -71,7 +106,15 @@ export default defineComponent({
     searchType: { type: String, default: () => 'article' },
     searchValue: { type: String, default: () => '' },
   },
-  components: { BaseList, ColumnWrap, ArticleItem, ImageItem, ImageDialog },
+  components: {
+    BaseList,
+    ColumnWrap,
+    ArticleItem,
+    ImageItem,
+    ImageDialog,
+    ObjectItem,
+    ObjectDialog,
+  },
   setup(props) {
     // 是否显示结果内容
     const display = ref(false)
@@ -102,9 +145,12 @@ export default defineComponent({
           if (props.searchType == 'image') {
             apiUrlPrefix.value =
               '/api/v1/docs/image/list?search=' + props.searchValue
-          } else {
+          } else if(props.searchType === 'article') {
             apiUrlPrefix.value =
               '/api/v1/docs/article/list?search=' + props.searchValue
+          }else if(props.searchType === 'object'){
+            apiUrlPrefix.value =
+              '/api/v1/storage/file/list?search=' + props.searchValue
           }
         }
       },
@@ -127,6 +173,21 @@ export default defineComponent({
       currentImage.value = data
     }
 
+    // 对象对话框
+    // 弹出对象对话框
+    const showObjectDialog = ref(false)
+    const currentObject = ref({})
+    const afterObjectCloseHandle = () => {
+      showObjectDialog.value = false
+      currentObject.value = {}
+    }
+
+    const handleObjectClick = (data: object) => {
+      //   console.dir(data)
+      showObjectDialog.value = true
+      currentObject.value = data
+    }
+
     return {
       display,
       apiUrlPrefix,
@@ -139,6 +200,11 @@ export default defineComponent({
       currentImage,
       afterImageCloseHandle,
       handleImageClick,
+      // 对象
+      showObjectDialog,
+      currentObject,
+      afterObjectCloseHandle,
+      handleObjectClick,
     }
   },
 })

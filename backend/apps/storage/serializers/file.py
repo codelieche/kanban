@@ -10,7 +10,7 @@ class FileModelSerializer(serializers.ModelSerializer):
     File Model Serializer
     """
     user = serializers.SlugRelatedField(required=False, queryset=User.objects.all(), slug_field="username")
-    file = serializers.FileField(required=True, help_text="上传文件")
+    file = serializers.FileField(required=True, help_text="上传文件", )
     fileurl = serializers.SerializerMethodField()
 
     def get_fileurl(self, obj):
@@ -19,7 +19,7 @@ class FileModelSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if self.context["request"].method == "POST":
             attrs["user"] = self.context["request"].user
-            return attrs
+        return attrs
 
     class Meta:
         model = File
