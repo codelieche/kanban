@@ -29,7 +29,7 @@ export default defineComponent({
 
     // 消息点击事件
     const handleClick = () => {
-      console.log(props.data)
+      // console.log(props.data)
       if (!props.data) {
         return
       } else {

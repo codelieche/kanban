@@ -21,6 +21,7 @@ stats = 127.0.0.1:8090
 
 static-map = /static=/data/www/static
 static-map = /media=/data/www/media
+static-index = index.html
 buffer-size = 32768
 master = true
 

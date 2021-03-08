@@ -31,6 +31,7 @@
               :spellCheck="false"
               :content="data.filename ? data.filename : '无文件名'"
               :handleContentUpdated="handleFilenameUpdate"
+              :enterCommitUpdate="true"
             />
           </dd>
         </dl>

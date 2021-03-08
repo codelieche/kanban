@@ -35,6 +35,16 @@ export default defineComponent({
         link: '/user/center',
       },
       {
+        icon: 'folder-o',
+        title: '文档分组',
+        link: '/docs/group/list',
+      },
+      {
+        icon: 'file-text-o',
+        title: '文章列表',
+        link: '/docs/article/list',
+      },
+      {
         icon: 'envelope-o',
         title: '消息中心',
         link: '/user/message',

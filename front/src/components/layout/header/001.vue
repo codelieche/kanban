@@ -8,6 +8,7 @@
     </router-link>
 
     <div class="nav">
+      <HeaderSearchButton />
       <ul>
         <li v-for="(item, index) in navs" :key="index">
           <router-link
@@ -33,11 +34,12 @@
 import { defineComponent } from 'vue'
 import { headerSlug } from '@/hooks/store/useHeaderSlug'
 import { PageHeaderNav } from '@/types/base/nav'
+import HeaderSearchButton from './searchButton.vue'
 import UserLoginOrInfo from './userLoginOrInfo.vue'
 
 export default defineComponent({
   name: 'Header001',
-  components: { UserLoginOrInfo },
+  components: { HeaderSearchButton, UserLoginOrInfo },
   props: {
     navs: {
       type: Array,
@@ -123,7 +125,7 @@ export default defineComponent({
     ul {
       list-style: none;
       margin-block-start: none;
-      display: block;
+      display: inline-block;
       color: #f8f8f8;
       margin-block-start: 0em; // 浏览器自动填充了
       margin-block-end: 0em;

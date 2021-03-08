@@ -17,10 +17,26 @@
             clearable
             size="small"
             class="primary"
+            focus
             @change="handleSearch"
           >
+            <template #prepend v-if="searchValue === ''">
+              <el-select
+                v-model="selectType"
+                placeholder="请选择"
+                class="hiddle-icon"
+                :style="{ width: '60px' }"
+                @change="onSelectChange"
+              >
+                <el-option label="文章" value="article"></el-option>
+                <el-option label="图片" value="image"></el-option>
+                <el-option label="对象" value="object"></el-option>
+              </el-select>
+            </template>
             <template #append>
-              <el-button size="small" type="primary">搜索一下</el-button>
+              <el-button size="small" type="primary"
+                >搜索一下</el-button
+              >
             </template>
           </el-input>
         </div>
@@ -66,6 +82,9 @@ export default defineComponent({
   setup() {
     // 搜索的类型
     const searchType = ref('')
+    // select
+    const selectType = ref('')
+
     // 搜索的值
     const searchValue = ref('')
     const inputValue = ref('')
@@ -84,6 +103,9 @@ export default defineComponent({
       const query = router.currentRoute.value.query
       if (query['searchType']) {
         searchType.value = query['searchType'] as string
+        selectType.value = query['searchType'] as string
+      } else {
+        selectType.value = 'article'
       }
       if (query['search']) {
         searchValue.value = query['search'] as string
@@ -94,7 +116,7 @@ export default defineComponent({
     // 监控路由的变化
     watch([router.currentRoute], () => {
       const query = router.currentRoute.value.query
-    //   console.log(query)
+      //   console.log(query)
       if (query['searchType']) {
         searchType.value = query['searchType'] as string
       }
@@ -109,15 +131,15 @@ export default defineComponent({
 
     // 监控值的变化
     watch([searchType, searchValue], () => {
+      // console.log('searchType:', searchType.value)
       //   pageUrlPrefix.value = `/tools/search?searchType=${searchType.value}`
-      if (searchValue.value == '') {
-        searchType.value === ''
-        searchType.value = ''
-      } else {
-        if (searchType.value === '') {
-          // 默认使用article
-          searchType.value = 'article'
-        }
+      if (searchType.value === '') {
+        // 默认使用article
+        searchType.value = 'article'
+      }
+
+      if(selectType.value !== searchType.value){
+        selectType.value = searchType.value
       }
 
       // 使用新的路由
@@ -131,11 +153,19 @@ export default defineComponent({
       })
     })
 
+    // select变更的时候
+    const onSelectChange = (value: string) => {
+      // console.log(value)
+      searchType.value = value
+    }
+
     return {
       searchType,
+      selectType,
       inputValue,
       searchValue,
       handleSearch,
+      onSelectChange,
     }
   },
 })

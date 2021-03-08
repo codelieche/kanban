@@ -18,6 +18,7 @@
 <script lang="ts">
 /**
  * EditableContent: 可编辑的组件
+ * 好像升级了vue之后有点问题，后续注意一下
  */
 import { defineComponent, onMounted, onUnmounted, Ref, ref } from 'vue'
 export default defineComponent({
@@ -33,7 +34,10 @@ export default defineComponent({
     onMouseLeave: Function,
     onKeyUp: Function,
     onKeyDown: Function,
+    onKeyDownEnter: Function,
     handleContentUpdated: Function,
+    // 回车的时候是否提交更新
+    enterCommitUpdate: {type: Boolean, default: ()=> false}
   },
 
   setup(props) {
@@ -56,6 +60,7 @@ export default defineComponent({
     })
 
     const handleContentUpdateFunc = () => {
+      // console.log('handleContentUpdateFunc')
       // 处理组件内容变更后续的操作
       // 当组件鼠标移开，失去焦点的时候，组件卸载的时候，都需要执行一下
       // 当组页面要跳转到其它爷儿们的时候，也会触发 onBlur 事件的
@@ -80,6 +85,7 @@ export default defineComponent({
     }
 
     const emitChange = (originEvt: MouseEvent) => {
+      // console.log('emitChange:', originEvt)
       // 获取当前元素
       const element = getElement()
       if (!element) {
@@ -106,6 +112,11 @@ export default defineComponent({
       }
       // 设置最新的html
       latestHtml.value = html
+
+      if(originEvt['key'] == 'Enter' && props.enterCommitUpdate){
+        originEvt.preventDefault()
+        handleContentUpdateFunc()
+      }
     }
 
     // onMounted(() => {
