@@ -130,7 +130,7 @@ export default defineComponent({
 .resizable {
   position: relative;
   height: 100%;
-  display: inline-block;
+  // display: inline-block;
   .react-resizable-handle {
     // background-color: #444;
     position: absolute;
