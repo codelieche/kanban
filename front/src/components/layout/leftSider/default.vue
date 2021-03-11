@@ -35,7 +35,7 @@ import LeftNavItem from '../nav/leftNav.vue'
 import Resizable from '@/components/base/resizable.vue'
 
 export default defineComponent({
-  name: 'LeftSider001',
+  name: 'LeftSiderDefault',
   components: { Resizable, LeftNavItem },
   props: {
     items: {

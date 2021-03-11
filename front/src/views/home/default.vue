@@ -2,13 +2,13 @@
   <!-- 采用基础布局 -->
   <base-layout v-bind="layoutDisplay">
     <template v-slot:header>
-      <Header001></Header001>
+      <HeaderDefault></HeaderDefault>
       <!-- <Header001></Header001> -->
     </template>
 
     <!-- 左侧内容 -->
     <template v-slot:left-sider>
-      <LeftSider001 :items="data"></LeftSider001>
+      <LeftSiderDefault :items="data"></LeftSiderDefault>
     </template>
 
     <!-- 主体内容 -->
@@ -31,28 +31,34 @@
 
     <!-- 底部内容 -->
     <template v-slot:footer>
-      <Footer001></Footer001>
+      <FooterDefault></FooterDefault>
     </template>
   </base-layout>
 </template>
 
 <script lang="ts">
+/**
+ * 默认页面的入口
+ * 1. 上下布局：有Header和Body
+ * 2. 左右布局：Body有left sider和Right区域
+ * 3. Body中的底部Footer不显示
+ */
 import { defineComponent, ref } from 'vue'
 import BaseLayout from '@/components/layout/layout.vue'
-import Header001 from '@/components/layout/header/001.vue'
-import LeftSider001 from '@/components/layout/leftSider/001.vue'
-import Footer001 from '@/components/layout/footer/001.vue'
+import HeaderDefault from '@/components/layout/header/default.vue'
+import LeftSiderDefault from '@/components/layout/leftSider/default.vue'
+import FooterDefault from '@/components/layout/footer/default.vue'
 import Breadcrumb from '@/components/base/breadcrumb.vue'
 import { LeftSiderMenu } from '@/types/base/nav'
 import useFetchData from '@/hooks/utils/useFetchData'
 
 export default defineComponent({
-  name: 'HomeIndex',
+  name: 'DefaultHomeIndex',
   components: {
     BaseLayout,
-    Header001,
-    LeftSider001,
-    Footer001,
+    HeaderDefault,
+    LeftSiderDefault,
+    FooterDefault,
     Breadcrumb,
   },
   props: {

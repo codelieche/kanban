@@ -48,10 +48,10 @@ const subComponents = [
     path: 'article/list',
     filename: 'article/list'
   },
-  {
-    path: 'article/:id(\\d+)',
-    filename: 'article/detail'
-  },
+  // {
+  //   path: 'article/:id(\\d+)',
+  //   filename: 'article/detail'
+  // },
 
   // 讨论/评论
   {

@@ -38,7 +38,7 @@ import HeaderSearchButton from './searchButton.vue'
 import UserLoginOrInfo from './userLoginOrInfo.vue'
 
 export default defineComponent({
-  name: 'Header001',
+  name: 'HeaderDefault',
   components: { HeaderSearchButton, UserLoginOrInfo },
   props: {
     navs: {

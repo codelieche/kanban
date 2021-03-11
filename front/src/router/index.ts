@@ -19,9 +19,9 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/',
-    name: 'Home',
+    name: 'DefaultHome',
     // component: Home
-    component: () => import('@/views/home/index.vue'),
+    component: () => import('@/views/home/default.vue'),
     children: [
       {
         path: '',
@@ -69,7 +69,21 @@ const routes: Array<RouteRecordRaw> = [
       }
     ]
   },
-  // 用户相关模块
+
+  // 文章详情页
+  {
+    path: '/docs/article',
+    name: 'ArticleHome',
+    component: () => import('@/views/home/article.vue'),
+    children: [
+      // 文章详情页
+      {
+        path: ':id(\\d+)',
+        component: () => import('@/views/docs/article/detail.vue')
+      }
+    ]
+  },
+
   // 错误页
   {
     path: '/errors',

@@ -1,10 +1,5 @@
 <template>
-  <!-- <div class="main">
-    <div>Hello Home Page</div>
-    <el-row>
-      <el-button size="small">默认按钮</el-button>
-    </el-row>
-  </div> -->
+  <!-- 直接展示用户中心页 -->
   <UserCenterIndex />
 </template>
 <script lang="ts">

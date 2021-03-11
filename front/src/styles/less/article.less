@@ -1,0 +1,76 @@
+// 文章页相关的样式
+.container > .body .right.article {
+  display: flex;
+  flex-direction: column;
+
+  // 头部
+  & > .header {
+    position: relative;
+    background-color: #fff;
+    height: 50px;
+    max-height: 50px;
+    overflow: hidden;
+    box-sizing: border-box;
+    border-bottom: 1px solid #eee;
+    padding: 4px 5px;
+
+    // 控制左侧的开关
+    .toogle {
+      //   padding: 5px;
+    //   display: inline-block;
+      float: left;
+      // line-height: 40px;
+      font-size: 20px;
+      width: 40px;
+      text-align: center;
+      cursor: pointer;
+      color: #555;
+      i {
+        line-height: 42px;
+        font-size: 24px;
+      }
+    }
+
+    // 面包屑导航
+    .el-breadcrumb.navs {
+      display: inline-block;
+      // line-height: 50px;
+      // line-height: 28px;
+      font-size: 15px;
+      .el-breadcrumb__item {
+        color: #333;
+      }
+    }
+    .right {
+      float: right;
+      color: #888;
+      overflow: hidden;
+
+      // 搜索
+      .search {
+        display: inline-block;
+        height: 40px;
+        // line-height: 40px;
+      }
+      .userinfo {
+        padding: 5px;
+        margin-left: 5px;
+        line-height: 30px;
+        min-width: 70px;
+        cursor: pointer;
+        display: inline-block;
+
+        .el-dropdown.header-dropdown span {
+          color: #666;
+          &:hover {
+            color: #555;
+          }
+        }
+      }
+    }
+  }
+  .content {
+    flex: 1;
+    overflow: auto;
+  }
+}
