@@ -40,10 +40,10 @@ const subComponents = [
     filename: 'image/list'
   },
   // 文章
-  {
-    path: 'article',
-    redirect: '/docs/article/list'
-  },
+  // {
+  //   path: 'article',
+  //   redirect: '/docs/article/list'
+  // },
   {
     path: 'article/list',
     filename: 'article/list'

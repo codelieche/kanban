@@ -2,7 +2,7 @@
   <BaseLayout v-bind="layoutDisplay">
     <!-- 左侧内容 -->
     <template v-slot:left-sider>
-      <LeftSiderArticle> </LeftSiderArticle>
+      <LeftSiderArticle />
     </template>
 
     <!-- 右侧主体内容 -->
@@ -56,7 +56,6 @@ export default defineComponent({
   },
   setup() {
     
-
     return {
     }
   },

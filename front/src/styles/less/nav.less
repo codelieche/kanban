@@ -1,49 +1,182 @@
-
 .right-nav-ul {
-    list-style: none;
-    padding: 0;
-  }
-  
-  // 内嵌页面样式
-  .container .right-nav {
-    // 右侧导航样式
-    background-color: #eaedf1;
-    // background-color: rgba(112, 119, 143, 0.16);
-    min-height: 100%;
-    max-height: 100%;
-    // overflow: scroll;
-    // overflow-x: hidden;
-    width: 180px;
-    max-width: 180px;
-    display: inline-block;
-    border-left: 1px solid rgba(112, 119, 143, 0.16);
-  
-    .nav-title {
-      // 头部title的样式
-      padding: 10px 10px;
-      background-color: #d9dee4;
-      h3 {
-        line-height: 50px;
-        color: #444;
-      }
+  list-style: none;
+  padding: 0;
+}
+
+// 内嵌页面样式
+.container .right-nav {
+  // 右侧导航样式
+  background-color: #eaedf1;
+  // background-color: rgba(112, 119, 143, 0.16);
+  min-height: 100%;
+  max-height: 100%;
+  // overflow: scroll;
+  // overflow-x: hidden;
+  width: 180px;
+  max-width: 180px;
+  display: inline-block;
+  border-left: 1px solid rgba(112, 119, 143, 0.16);
+
+  .nav-title {
+    // 头部title的样式
+    padding: 10px 10px;
+    background-color: #d9dee4;
+    h3 {
+      line-height: 50px;
+      color: #444;
     }
-    // 右侧导航的ul列表样式
-    ul {
-      li {
-        color: #333;
-        //   右侧导航的a链接样式
-        a {
-          display: inline-block;
-          padding-left: 15px;
-          line-height: 40px;
-          color: #666;
-          font-size: 13px;
-          width: 180px;
-          text-decoration: None;
-          &.active, &.router-link-exact-active {
-            background-color: #fff;
-          }
+  }
+  // 右侧导航的ul列表样式
+  ul {
+    li {
+      color: #333;
+      //   右侧导航的a链接样式
+      a {
+        display: inline-block;
+        padding-left: 15px;
+        line-height: 40px;
+        color: #666;
+        font-size: 13px;
+        width: 180px;
+        text-decoration: None;
+        &.active,
+        &.router-link-exact-active {
+          background-color: #fff;
         }
       }
     }
   }
+}
+
+// 文章页左侧的导航
+.left-sider.article {
+  .content .articles,
+  .content .nav-list {
+    .item {
+      line-height: 35px;
+      font-size: 14px;
+      user-select: none;
+      -webkit-user-select: none;
+      cursor: pointer;
+      position: relative;
+
+      a.router-link-exact-active {
+        .title {
+          // color: #f8f8f8;
+          color: @left-sider-nav-active-color;
+          // background-color: #00c1de;
+          background-color: @left-sider-nav-active-background;
+          // background-color: rgba(112, 119, 143, 0.30);
+          // background: linear-gradient(270deg,#40a9ff,#00c1de);
+          // background: linear-gradient(100deg,#40a9ff,#1890ff);
+          &:hover {
+            background-color: @left-sider-nav-active-background;
+          }
+        }
+      }
+
+      .title {
+        // 功能菜单的标题【文章标题】
+        overflow: hidden;
+        text-overflow: ellipsis; // 标题太长的时候截断
+        white-space: nowrap;
+        // 左侧导航的延时
+        color: #595959;
+        font-weight: 500; // 标题加粗显示
+        .no-title {
+          display: inline-block;
+        }
+        i {
+          margin-right: 3px;
+        }
+
+        &:hover {
+          // 鼠标放上来的时候，让底纹醒目一下
+          // background-color: #eee;
+          background-color: @letf-sider-nav-item-hover-color;
+          .add {
+            // 文章标题：右侧有个add，鼠标放上来的时候应该显示它
+            visibility: visible;
+          }
+        }
+      }
+      .add {
+        // 文章导航右侧的添加子文章，默认不显示，鼠标放上来的时候显示
+        visibility: hidden;
+        font-size: 16px;
+        &:hover {
+          font-size: 20px;
+        }
+      }
+      .add,
+      .right {
+        // 当有children的菜单，它的右侧会有标识
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        padding: 0 5px;
+        i {
+          padding: 5px;
+        }
+      }
+
+      .right {
+        // 右侧标识的大小：功能菜单导航，有子菜单的会有个right
+        font-size: 10px;
+      }
+
+      a {
+        // 导航菜单的a连接
+        color: @left-sider-nav-a-color;
+        &.active {
+          // color: #f8f8f8;
+          color: @left-sider-nav-active-color;
+          // background-color: #00c1de;
+          background-color: @left-sider-nav-active-background;
+          // background-color: rgba(112, 119, 143, 0.30);
+          // background: linear-gradient(270deg,#40a9ff,#00c1de);
+          // background: linear-gradient(100deg,#40a9ff,#1890ff);
+        }
+      }
+    }
+  }
+
+  // 没一级缩进10px：代码里面控制padding-lef: x level
+  .children {
+    // padding-left: 15px;
+    // border-top: 1px solid rgb(175, 130, 130);
+    display: none; // 最开始子菜单是不显示的，当是 .children.active的时候才显示
+    &.active {
+      display: block;
+    }
+  }
+}
+
+// 文章左侧底部
+.left-sider.article {
+  .footer {
+    // 左侧的底部：导航菜单下面
+    // height: 50px;
+    padding: 10px 15px;
+    cursor: pointer;
+    display: block;
+    flex: 0 0 auto;
+    margin-top: auto;
+    border-top: 1px solid rgba(55, 53, 47, 0.12);
+
+    &:hover {
+      // background-color: rgba(55, 53, 47, 0.09);
+      background-color: @letf-sider-nav-item-hover-color;
+      .add i {
+        font-size: 18px;
+      }
+    }
+
+    // 收缩开关：点击控制左侧导航是否收缩
+    .collapsed-toogle {
+      text-align: center;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  }
+}

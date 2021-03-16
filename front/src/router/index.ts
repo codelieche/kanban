@@ -79,7 +79,7 @@ const routes: Array<RouteRecordRaw> = [
       // 文章详情页
       {
         path: ':id(\\d+)',
-        component: () => import('@/views/docs/article/detail.vue')
+        component: () => import('@/views/docs/article/detail/index.vue')
       }
     ]
   },

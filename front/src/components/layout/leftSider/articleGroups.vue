@@ -1,10 +1,10 @@
 <template>
   <div class="namespace">
-    <div class="current" @mouseenter="() => (showGroups = true)">
+    <div class="current">
       <span :style="{ color: 'red' }">
         <Icon type="flag" />
       </span>
-      <span class="name">
+      <span class="name"  @mouseenter="() => (showGroups = true)">
         {{ globalGroup && globalGroup.name ? globalGroup.name : '' }}
         <Icon type="arrows-v" />
       </span>
@@ -95,7 +95,7 @@ export default defineComponent({
     // 全部的一级分组数据
     const { loading, dataSource } = useFetchListData(
       apiUrl,
-      undefined,
+      ref(0),
       callback
     )
 

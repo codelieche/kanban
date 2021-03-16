@@ -24,7 +24,9 @@
         <template #default="scope">
           <div class="status">
             <el-tag type="primary" size="small">{{
-              scope.row.level > 1 ? scope.row.parent.name : '一级分组'
+              scope && scope.row && scope.row.level > 1 && scope.row.parent
+                ? scope.row.parent.name
+                : '一级分组'
             }}</el-tag>
           </div>
         </template>
@@ -121,7 +123,9 @@
           <Icon type="refresh">刷新</Icon>
         </el-button>
 
-        <router-link :to="`/docs/group/list?page=1&level=${!showTopGroup ? '' : '1'}`">
+        <router-link
+          :to="`/docs/group/list?page=1&level=${!showTopGroup ? '' : '1'}`"
+        >
           <el-button
             type="primary"
             @click="handleShowTopGroupToogle"
