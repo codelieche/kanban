@@ -36,13 +36,16 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 
 import Icon from '@/components/base/icon.vue'
 import { useRouter } from 'vue-router'
 
 import fetchApi from '@/plugins/fetchApi'
-import { reFreshArticlesTimes } from '@/hooks/store/useArticleLeftSiderData'
+import {
+  activeArticeIDs,
+  reFreshArticlesTimes,
+} from '@/hooks/store/useArticleLeftSiderData'
 
 export default defineComponent({
   name: 'HelloPage',
@@ -55,9 +58,21 @@ export default defineComponent({
     // 是否是激活的，比如鼠标点击啊，它的child被显示了啊，都是active的状态
     const isActive = ref(false)
 
+    watch([activeArticeIDs], () => {
+      if (props.data) {
+        if (
+          activeArticeIDs.value &&
+          activeArticeIDs.value.indexOf(props.data['id']) >= 0 &&
+          !isActive.value
+        ) {
+          isActive.value = true
+        }
+      }
+    }, {immediate: true})
+
     // 路由
     const router = useRouter()
-    
+
     // 点击添加文章
     const handleAddClick = (e: MouseEvent) => {
       // 阻止冒泡和默认事件
@@ -68,28 +83,29 @@ export default defineComponent({
         const url = '/api/v1/docs/article/create'
         const data = {
           parent: props.data['id'],
-          group: props.data['group']
+          group: props.data['group'],
         }
         // 发起创建文章请求
         // console.log(data)
-        fetchApi.post(url, data)
-          .then(response => response.data)
-            .then(responseData => {
-              if(responseData.id > 0){
-                // 创建文章成功
-                // 刷新左侧导航
-                reFreshArticlesTimes.value += 1
+        fetchApi
+          .post(url, data)
+          .then((response) => response.data)
+          .then((responseData) => {
+            if (responseData.id > 0) {
+              // 创建文章成功
+              // 刷新左侧导航
+              reFreshArticlesTimes.value += 1
 
-                // 跳转新的文章页面
-                router.push(`/docs/article/${responseData.id}`)
-              }else{
-                // 创建文章失败
-                console.log(responseData)
-              }
-            })
-              .catch(err => {
-                console.log(err)
-              })
+              // 跳转新的文章页面
+              router.push(`/docs/article/${responseData.id}`)
+            } else {
+              // 创建文章失败
+              console.log(responseData)
+            }
+          })
+          .catch((err) => {
+            console.log(err)
+          })
       }
     }
     return {

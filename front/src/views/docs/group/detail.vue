@@ -118,8 +118,8 @@ export default defineComponent({
         link: '/',
       },
       {
-        title: '用户分组',
-        link: '/user/group',
+        title: '文档分组',
+        link: '/docs/group',
       },
       {
         title: '详情',

@@ -191,6 +191,9 @@
     .groups-nav {
       &.active {
         visibility: visible;
+        .children {
+          display: block;
+        }
       }
       visibility: hidden;
       // 父元素设置了overflow:hiddle 这里用fixed 超出的区域才不会被隐藏

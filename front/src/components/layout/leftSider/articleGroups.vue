@@ -86,7 +86,7 @@ export default defineComponent({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const callback = (groups: Array<Record<string, any>>) => {
       if (groups && groups.length > 0) {
-        if (!(globalGroup && globalGroup['id'])) {
+        if (!(globalGroup.value && globalGroup.value['id'])) {
           globalGroup.value = groups[0]
         }
       }

@@ -10,7 +10,8 @@ import fetchApi from '@/plugins/fetchApi'
 export const useFetchData = <T>(
   url: Ref<string | null> | string,
   router: Router | null = null,
-  reFreshTimes: Ref<number> = ref(0),
+  reFreshTimes: Ref<number> | null = null,
+  callback: Function | null = null,
   successCode = 200
 ) => {
   const loading = ref<boolean>(true)
@@ -25,6 +26,10 @@ export const useFetchData = <T>(
         if (response.status == successCode) {
           // console.log(response.data)
           data.value = response.data
+          // 判断是否需要有回调函数
+          if (callback) {
+            callback(response.data)
+          }
           if (error.value) {
             error.value = null
           }
@@ -56,15 +61,27 @@ export const useFetchData = <T>(
   onMounted(() => {
     // console.log('即将发起ajax请求：', url, typeof url)
     if (typeof url === 'object') {
-      watch(
-        [url, reFreshTimes],
-        () => {
-          if (url.value) {
-            fetchData(url.value)
-          }
-        },
-        { immediate: true }
-      )
+      if (reFreshTimes) {
+        watch(
+          [url, reFreshTimes],
+          () => {
+            if (url.value) {
+              fetchData(url.value)
+            }
+          },
+          { immediate: true }
+        )
+      } else {
+        watch(
+          [url],
+          () => {
+            if (url.value) {
+              fetchData(url.value)
+            }
+          },
+          { immediate: true }
+        )
+      }
     } else {
       fetchData(url)
     }
@@ -159,6 +176,66 @@ export const useFetchListData = <T>(
     dataSource,
     count,
     next
+  }
+}
+
+// 获取一次数据
+export const useFetchDataOneTimes = <T>(
+  url: string,
+  router: Router | null = null,
+  callback: Function | null = null,
+  successCode = 200
+) => {
+  const loading = ref<boolean>(true)
+  const error = ref<AxiosResponse | null>(null)
+  const data = ref<T | null>(null)
+
+  const fetchData = (url: string) => {
+    loading.value = true
+    fetchApi
+      .get(url)
+      .then((response: AxiosResponse) => {
+        if (response.status == successCode) {
+          // console.log(response.data)
+          data.value = response.data
+          // 判断是否需要有回调函数
+          if (callback) {
+            callback(response.data)
+          }
+          if (error.value) {
+            error.value = null
+          }
+        }
+        loading.value = false
+        //   console.log(response)
+      })
+      .catch(err => {
+        // console.log(err)
+        loading.value = false
+        error.value = err
+        data.value = null
+
+        // 是否跳转错误页
+        if (router) {
+          if (err.status == 403) {
+            router.replace('/errors/403')
+          } else if (err.status == 404) {
+            router.replace('/errors/404')
+          } else if (err.status >= 500) {
+            router.replace('/errors/500')
+          } else {
+            console.log('我将跳转错误页')
+          }
+        }
+      })
+  }
+  // 发起获取数据请求
+  fetchData(url)
+
+  return {
+    loading,
+    error,
+    data
   }
 }
 

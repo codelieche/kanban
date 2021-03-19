@@ -1,13 +1,19 @@
 <template>
-  <div >{{ data?.id }} -- {{ data?.title }}} </div>
+  <div>{{ data?.id }} -- {{ data?.title }}}</div>
   {{ data?.description }}
 </template>
 
 <script lang="ts">
 import useFetchData from '@/hooks/utils/useFetchData'
 import useWatchParamsChange from '@/hooks/utils/useWatchParamsChange'
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+
+import {
+  updateGlobalGroup,
+  updateLeftSiderActiveItems,
+  updateHeaderNavData,
+} from './watch'
 
 export default defineComponent({
   name: 'ArticleDetail',
@@ -19,7 +25,21 @@ export default defineComponent({
     // 刷新数据
     const reFreshTimes = ref(0)
     // 获取详情数据
-    const { loading, data, error } = useFetchData(apiUrl, router, reFreshTimes)
+    const { loading, data, error } = useFetchData<object>(apiUrl, router, reFreshTimes)
+
+    // 每次文章数据变化了，就需要判断当前分组、导航标题、左侧文章
+    watch([data], () => {
+      
+      if (data.value) {
+        // 判断是否需要修改全局的分组
+        updateGlobalGroup(data.value)
+        // 设置左侧展开的文章item
+        updateLeftSiderActiveItems(data.value)
+        // 设置右侧的文章导航
+        updateHeaderNavData(data.value)
+      }
+    })
+
     // 组件挂载之后修改api的url
     onMounted(() => {
       const idVal = router.currentRoute.value.params['id']

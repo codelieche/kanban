@@ -7,7 +7,7 @@
       :canWhite="canWhite"
     />
   </div>
-  <div v-else>Loading</div>
+  <!-- <div v-else>Loading</div> -->
 </template>
 
 <script lang="ts">
