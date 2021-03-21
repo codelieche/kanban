@@ -49,7 +49,7 @@ export default defineComponent({
     // 当前选中的分组
     const currentGroupID = ref('')
     // 获取文章列表的api
-    const apiUrl = ref('/api/v1/docs/article/list')
+    const apiUrl = ref('/api/v1/docs/article/list?ordering=-time_added')
 
     // 获取文章数据
     const { loading, dataSource } = useFetchListData(apiUrl)
@@ -61,7 +61,7 @@ export default defineComponent({
 
     // 监控变化
     watch([currentGroupID], () => {
-      apiUrl.value = `/api/v1/docs/article/list?group=${currentGroupID.value}`
+      apiUrl.value = `/api/v1/docs/article/list?ordering=-time_added&group=${currentGroupID.value}`
     })
 
     return {

@@ -82,6 +82,7 @@ export default defineComponent({
   setup() {
     // 获取分组列表
     const apiUrl = ref('/api/v1/docs/group/all?level=1')
+    
     // 回调函数
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const callback = (groups: Array<Record<string, any>>) => {

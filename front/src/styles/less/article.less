@@ -75,3 +75,333 @@
     overflow: auto;
   }
 }
+
+// 右侧文章的样式
+.right-content article,
+.main > article {
+  font-size: 14px;
+  position: relative;
+  // 右侧的操作按钮
+  .tools {
+    position: absolute;
+    right: 10px;
+    top: -10px;
+    .toogle {
+      font-size: 20px;
+      padding: 2px 5px;
+      cursor: pointer;
+      &:hover {
+        background-color: #eee;
+      }
+    }
+  }
+
+  .middle {
+    padding-left: calc((100% - 780px) / 2);
+    padding-right: calc((100% - 780px) / 2);
+    padding-bottom: 0px;
+  }
+
+  // 每个section都需设置padding
+  section {
+    padding-left: calc((100% - 780px) / 2);
+    padding-right: calc((100% - 780px) / 2);
+    padding-bottom: 0px;
+  }
+
+  // h1 div p span出现编辑时
+  [contenteditable='true'] {
+    // background-color: #eee;
+    outline: none;
+    // white-space: pre-wrap;
+    padding: 3px 5px;
+  }
+
+  header {
+    margin-bottom: 1em;
+    .title {
+      margin-left: 10px;
+      // padding: 4px 12px;
+      margin-bottom: 0.25em;
+      line-height: 1.5em;
+      // border-bottom: 1px solid #d1d1d1;
+      // border-bottom: 1px solid rgba(55, 55, 50, 0.10);
+      border-bottom: 1px solid @border-bottom-line-color;
+
+      &:hover {
+        .toogle {
+          visibility: visible;
+        }
+      }
+
+      .toogle {
+        padding: 5px 15px 2px 15px;
+        visibility: hidden;
+        // color: #989898;
+        color: rgba(55, 53, 47, 0.5);
+        font-size: 12px;
+        .button {
+          display: inline-block;
+          margin-right: 5px;
+          padding: 2px 5px;
+          background-color: rgba(238, 238, 238, 0.4);
+          cursor: pointer;
+          border-radius: 3px;
+          user-select: none; // 取消选择
+          &:hover {
+            background-color: rgba(218, 218, 218, 0.8);
+          }
+          &.active {
+            background-color: rgba(218, 218, 218, 0.8);
+          }
+        }
+      }
+
+      .row {
+        padding: 4px 12px;
+        display: flex;
+        font-size: 2.2em;
+        color: #555555;
+        font-weight: bold;
+        padding-bottom: 5px;
+      }
+
+      .icon {
+        max-width: 100px;
+        padding-top: 5px;
+        // display: block;
+      }
+
+      h1 {
+        flex: 1;
+        // display: inline-block;
+        // width: 100%;
+        font-size: 28px;
+        color: #262626;
+        line-height: 1.389;
+        margin-bottom: 2px;
+        padding-bottom: 10px;
+        // border-bottom: 1px solid #d1d1d1;
+
+        // span {
+        //     display: block;
+        // }
+      }
+
+      div.ant-typography {
+        // display: inline-block;
+        border: 1px solid #fff;
+
+        textarea {
+          // display: block;
+          // width: 100%;
+          border: 1px solid #fff;
+        }
+
+        .ant-input {
+          border: 1px solid #fff;
+        }
+      }
+    }
+
+    .metadata {
+      .infos,
+      .tags {
+        display: inline-block;
+      }
+
+      .tags {
+        // 标签
+        .ant-tag {
+          cursor: pointer;
+          transition: display 0.3s, width 0.5s;
+          span[role='img'] {
+            display: none; // 标签的关闭按钮，默认不显示，鼠标移上去了才显示
+            // visibility: hidden;
+          }
+
+          &:hover {
+            span[role='img'] {
+              // visibility: visible;
+              display: inline;
+            }
+          }
+        }
+      }
+
+      .infos {
+        .item {
+          color: #999;
+          font-size: 12px;
+          display: inline-block;
+          padding: 2px 5px;
+        }
+        .item + .item {
+          margin-left: 3px;
+        }
+      }
+    }
+
+    .description {
+      margin-left: 10px;
+      padding: 10px 15px;
+      line-height: 1.5em;
+      margin-top: 0.5em;
+      color: #777;
+      font-size: 14px;
+      // border-left: 4px solid #989898;
+      border-left: 5px solid #d9d9d9;
+      padding: 10px 20px;
+    }
+
+    .cover {
+      text-align: center;
+      border-radius: 8px;
+      img {
+        max-width: 100%;
+        max-height: 550px;
+        border-radius: 8px;
+        // border: 1px solid @border-bottom-line-color;
+      }
+      margin-bottom: 10px;
+      border-bottom: 1px solid @border-bottom-line-color;
+    }
+  }
+  // header结束
+
+  // 文章内容开始
+  .content {
+    position: relative;
+    // border-top: 1px solid #999;
+    margin-bottom: 15px;
+    margin-top: 20px;
+    padding: 5px;
+    overflow-x: auto;
+    width: 100%;
+    min-height: 100px;
+
+    .editor-button {
+      visibility: hidden;
+      position: absolute;
+      right: 20px;
+      top: 10px;
+    }
+
+    &:hover {
+      .editor-button {
+        visibility: visible;
+      }
+    }
+  }
+  // 文章内容结束
+
+  // 编辑器
+  .editor {
+    display: block;
+    // padding: 10px 20px;
+    .App {
+      padding: 2px 0px;
+    }
+  }
+
+  // 子文章列表
+  .children {
+    margin: 10px;
+    // border-top: 1px solid #999;
+    h2 {
+      padding: 5px 10px;
+      // border-bottom: 1px solid #999;
+      // border-bottom: 1px solid rgba(55, 55, 50, 0.10);
+      border-bottom: 1px solid @border-bottom-line-color;
+    }
+    ul {
+      padding-bottom: 45px;
+      li {
+        &:hover {
+          background-color: #eee;
+        }
+        a {
+          padding: 3px 5px;
+          display: block;
+          font-size: 14px;
+          color: #666;
+          cursor: pointer;
+          line-height: 24px;
+          .no-title {
+            color: #999;
+          }
+        }
+      }
+    }
+  }
+}
+
+article {
+  section {
+    .title {
+      border-bottom: 1px solid @border-bottom-line-color;
+    }
+  }
+  .discussions {
+    .add {
+      margin-top: 15px;
+      margin-bottom: 15px;
+      background-color: #f9f9f9;
+      border: 1px solid @border-bottom-line-color;
+      border-radius: 5px;
+      textarea {
+        margin-bottom: 5px;
+      }
+      .buttons {
+        padding: 5px 10px;
+        margin-top: 5px;
+      }
+    }
+
+    // background-color: #eee;
+    .list > .ant-comment {
+      margin: 10px 0;
+      // border: 1px solid @border-bottom-line-color;
+      box-shadow: 0 2px 4px 0 rgba(7, 17, 27, 0.2);
+      border-radius: 5px;
+      position: relative;
+      min-height: 32px;
+      margin-bottom: 16px;
+      transition: 0.3s all linear;
+
+      &:hover {
+        box-shadow: 0 8px 16px 0 rgba(7, 17, 27, 0.3);
+      }
+    }
+    .ant-comment {
+      padding: 5px;
+      padding-left: 10px;
+      border: 1px solid @border-bottom-line-color;
+      // background-color: #f9f9f9;
+      margin-bottom: 10px;
+
+      .comment {
+        // display: none;
+        // visibility: hidden;
+        margin-bottom: 10px;
+      }
+
+      &:hover {
+        & > .ant-comment-nested > .comment {
+          display: block;
+          visibility: visible;
+        }
+      }
+    }
+
+    // 更多
+    .more {
+      text-align: center;
+      background-color: #eee;
+      padding: 4px 15px;
+      cursor: pointer;
+      font-size: 13px;
+      color: #999;
+    }
+  }
+}
