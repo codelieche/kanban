@@ -83,9 +83,12 @@
   position: relative;
   // 右侧的操作按钮
   .tools {
-    position: absolute;
-    right: 10px;
-    top: -10px;
+    // position: absolute;
+    // right: 10px;
+    // top: -10px;
+    position: fixed;
+    top: 50px;
+    right: 20px;
     .toogle {
       font-size: 20px;
       padding: 2px 5px;
@@ -120,6 +123,8 @@
   header {
     margin-bottom: 1em;
     .title {
+      // position: relative;
+      // top: -15px;
       margin-left: 10px;
       // padding: 4px 12px;
       margin-bottom: 0.25em;
@@ -180,7 +185,7 @@
         color: #262626;
         line-height: 1.389;
         margin-bottom: 2px;
-        padding-bottom: 10px;
+        padding-bottom: 5px;
         // border-bottom: 1px solid #d1d1d1;
 
         // span {
@@ -235,6 +240,7 @@
           font-size: 12px;
           display: inline-block;
           padding: 2px 5px;
+          line-height: 20px;
         }
         .item + .item {
           margin-left: 3px;
@@ -306,14 +312,14 @@
 
   // 子文章列表
   .children {
-    margin: 10px;
+    margin: 10px 0;
     // border-top: 1px solid #999;
-    h2 {
-      padding: 5px 10px;
-      // border-bottom: 1px solid #999;
-      // border-bottom: 1px solid rgba(55, 55, 50, 0.10);
-      border-bottom: 1px solid @border-bottom-line-color;
-    }
+    // h2 {
+    //   padding: 5px 10px;
+    //   // border-bottom: 1px solid #999;
+    //   // border-bottom: 1px solid rgba(55, 55, 50, 0.10);
+    //   border-bottom: 1px solid @border-bottom-line-color;
+    // }
     ul {
       padding-bottom: 45px;
       li {
@@ -383,6 +389,7 @@ article {
       .comment {
         // display: none;
         // visibility: hidden;
+        margin-top: 6px;
         margin-bottom: 10px;
       }
 

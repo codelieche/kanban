@@ -1,94 +1,53 @@
 <template>
   <article v-if="data && data.id > 0">
     <!-- 右上角的菜单 -->
-    <div class="tools" v-if="canEditor">
-      <el-dropdown>
-        <div class="toogle">
-          <Icon type="ellipsis-h" />
-        </div>
-      </el-dropdown>
-    </div>
+    <ArticleDetailTools :id="id" :data="data" :canEditor="canEditor" />
+
     <!-- 文章头部 -->
-    <header class="middle">
+    <ArticleDetailHeader
+      :id="id"
+      :data="data"
+      :canEditor="canEditor"
+      :reFreshData="reFreshData"
+    />
+
+    <!-- 文章主体内容 -->
+
+    <!-- 文章评论 -->
+    <ArticleDetailDiscussions :id="data.id" v-if="showDiscussion" />
+
+    <!-- 子文章列表 -->
+    <section class="children" v-if="data.children && data.children.length > 0">
       <div class="title">
-        <!-- 显示描述等的开关 -->
-        <div class="toogle">
-          <span
-            :class="['button', { active: showDescription }]"
-            @click="() => (showDescription = !showDescription)"
-          >
-            <Icon type="info-circle" />
-            {{ showDescription ? '隐藏描述' : '显示描述' }}
-          </span>
-
-          <span
-            :class="['button', { active: showDiscussion }]"
-            @click="() => (showDiscussion = !showDiscussion)"
-          >
-            <Icon type="commenting" />
-            {{ showDiscussion ? '隐藏讨论' : '显示讨论' }}
-          </span>
-
-          <span class="button" v-if="canEditor">
-            <Icon type="image" />
-            {{ data && data.cover ? '修改封面' : '添加封面' }}
-          </span>
-
-          <span
-            class="button"
-            v-if="data && data.cover"
-            :class="['button', { active: showCover }]"
-            @click="() => (showCover = !showCover)"
-          >
-            <Icon type="image" />
-            {{ showCover ? '隐藏封面' : '显示封面' }}
-          </span>
-
-          <span
-            class="button"
-            v-if="canEditor"
-            :class="['button', { active: showAddTagModal }]"
-          >
-            <Icon type="tag" />
-            添加标签
-          </span>
-        </div>
-
-        <!-- 文章的标题 -->
-        <div class="row">
-          <div class="icon">
-            <Icon type="file-text-o" />
-          </div>
-          <EditableContent
-            :key="`${data.id}-title`"
-            :content="data.title ? data.title : '无标题'"
-            contentType="text"
-            tagName="h1"
-            :spellCheck="false"
-            :handleContentUpdated="(data) => patchUpdateArticle(id, {title: data}, reFreshData)"
-            v-if="canEditor"
-          />
-          <h1 v-else>
-            {{ data.title ? data.title : '无标题' }}
-          </h1>
-        </div>
+        <h3>文章列表</h3>
       </div>
-    </header>
+      <ul>
+        <li v-for="item in data.children" :key="item.id">
+          <router-link :to="`/docs/article/${item.id}`">
+            <Icon type="file-text-o" />
+            {{ item.title ? item.title : '无标题' }}
+          </router-link>
+        </li>
+      </ul>
+    </section>
   </article>
   <el-divider></el-divider>
   {{ data }}
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue'
+import { defineComponent, provide, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
 import useFetchData from '@/hooks/utils/useFetchData'
 import { globalGroup, canWrite } from '@/hooks/store/useArticleLeftSiderData'
 import Icon from '@/components/base/icon.vue'
 // import Loading from '@/components/page/loading.vue'
-import EditableContent from '@/components/base/editableContent.vue'
+// import EditableContent from '@/components/base/editableContent.vue'
+// import ObjectTags from '@/components/page/objectTag/objectTags.vue'
 import { patchUpdateArticle } from './utils'
-
+import ArticleDetailTools from './tools.vue'
+import ArticleDetailHeader from './header.vue'
+import ArticleDetailDiscussions from './discussions.vue'
 import {
   updateGlobalGroup,
   updateLeftSiderActiveItems,
@@ -103,7 +62,11 @@ export default defineComponent({
   components: {
     Icon,
     // Loading,
-    EditableContent,
+    // EditableContent,
+    // ObjectTags,
+    ArticleDetailTools,
+    ArticleDetailHeader,
+    ArticleDetailDiscussions,
   },
 
   setup(props) {
@@ -122,11 +85,10 @@ export default defineComponent({
 
     // 用户能否编辑
     const canEditor = ref(false)
-    // 开关
-    const showDescription = ref(false)
+    // 显示评论的开关
     const showDiscussion = ref(false)
-    const showCover = ref(false)
-    const showAddTagModal = ref(false)
+    // 把显示Discussion传递给子组件
+    provide('showDiscussion', showDiscussion)
 
     // 每次文章数据变化了，就需要判断当前分组、导航标题、左侧文章
     watch([data], () => {
@@ -138,6 +100,11 @@ export default defineComponent({
         // 设置右侧的文章导航
         updateHeaderNavData(data.value)
       }
+    })
+
+    watch([canWrite], () => {
+      // 其实是还需要判断分组是否是文章的分组的，后续再修复这个
+      canEditor.value = canWrite.value
     })
 
     // 组件挂载之后修改api的url
@@ -160,10 +127,7 @@ export default defineComponent({
     return {
       globalGroup,
       canEditor,
-      showDescription,
       showDiscussion,
-      showCover,
-      showAddTagModal,
       loading,
       data,
       error,

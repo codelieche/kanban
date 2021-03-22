@@ -10,6 +10,7 @@
     :onKeyUp="onKeyUp || emitChange"
     :onKeyDown="onKeyDown || emitChange"
     :onMouseLeave="onMouseLeave || handleContentUpdateFunc"
+    :style="{'white-space': 'pre-wrap'}"
   >
     {{ content }}
   </component>

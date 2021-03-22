@@ -26,3 +26,48 @@
     text-align: center;
   }
 }
+
+.ant-comment {
+  .ant-comment-inner {
+    display: flex;
+    padding: 16px 0;
+
+    .ant-comment-avater {
+      position: relative;
+      -ms-flex-negative: 0;
+      flex-shrink: 0;
+      margin-right: 12px;
+      cursor: pointer;
+    }
+
+    .ant-comment-content {
+      position: relative;
+      -ms-flex: 1 1 auto;
+      flex: 1 1 auto;
+      min-width: 1px;
+      font-size: 13px;
+      word-wrap: break-word;
+      .ant-comment-content-author {
+        display: -ms-flexbox;
+        display: flex;
+        -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+        -ms-flex-pack: start;
+        justify-content: flex-start;
+        margin-bottom: 4px;
+        font-size: 13px;
+        & > a,
+        & > span {
+          padding-right: 8px;
+          font-size: 12px;
+          line-height: 18px;
+        }
+      }
+      .ant-comment-content-author-time {
+        color: #ccc;
+        white-space: nowrap;
+        cursor: auto;
+      }
+    }
+  }
+}
