@@ -20,7 +20,7 @@
           {{ showDiscussion ? '隐藏讨论' : '显示讨论' }}
         </span>
 
-        <span class="button" v-if="canEditor">
+        <span class="button" v-if="canEditor" @click="() => (showAddCover = !showAddCover)">
           <Icon type="image" />
           {{ data && data.cover ? '修改封面' : '添加封面' }}
         </span>
@@ -131,6 +131,17 @@
     :afterCloseHandle="afterAddTagCloseHandle"
     :reFreshTags="reFreshTags"
   />
+
+  <!-- 上传图片 -->
+  <UploadImageDialog
+    title="上传图片"
+    :visible="showAddCover"
+    uploadUrl="/api/v1/storage/file/upload"
+    :afterCloseHandle="afterCloseAddCoverHandle"
+    :tabs="['upload', 'link']" 
+    :afterUploadHandle="afterCoverUploadHandle"
+  />
+
 </template>
 <script lang="ts">
 import { defineComponent, inject, ref } from 'vue'
@@ -141,6 +152,7 @@ import Icon from '@/components/base/icon.vue'
 // import Loading from '@/components/page/loading.vue'
 import EditableContent from '@/components/base/editableContent.vue'
 import ObjectTags from '@/components/page/objectTag/objectTags.vue'
+import UploadImageDialog from '@/components/page/uploadImage/dialog.vue'
 import { patchUpdateArticle } from './utils'
 import ArticleAddTagDialog from './addTag.vue'
 
@@ -157,14 +169,16 @@ export default defineComponent({
     // Loading,
     EditableContent,
     ObjectTags,
+    UploadImageDialog,
     ArticleAddTagDialog,
   },
 
-  setup() {
+  setup(props) {
     // 开关
     const showDescription = ref(false)
     const showDiscussion = inject('showDiscussion')
     const showCover = ref(false)
+    const showAddCover = ref(false)
     const showAddTagDialog = ref(false)
 
     // 关闭添加标签对话框
@@ -178,18 +192,63 @@ export default defineComponent({
       reFreshTagsTimes.value += 1
     }
 
+    // 显示上传cover
+    const afterCloseAddCoverHandle = () => {
+      showAddCover.value = false
+    }
+
+    // 封面上传完毕后的操作
+    const afterCoverUploadHandle = (data: object | string) => {
+      // console.log(data)
+      let coverUrl = ''
+      if(typeof data === 'string'){
+        coverUrl = data
+      }
+
+      if(data && data['id'] > 0){
+        const keys = ['qiniu', 'fileurl', 'file']
+
+        for(let i=0; i < keys.length; i++){
+          const item = keys[i]
+          if(data[item]){
+            coverUrl = data[item]
+          }
+        }
+      }
+
+      if(coverUrl == ''){
+        console.log('封面链接为空')
+        return
+      }
+
+      // 设置url
+      if(props.id){
+        patchUpdateArticle(props.id, {cover: coverUrl}, () => {
+          if(props.reFreshData){
+            props.reFreshData()
+            showCover.value = true
+            showAddCover.value = false
+          }
+
+        })
+      }
+    }
     return {
       moment,
       globalGroup,
       showDescription,
       showDiscussion,
       showCover,
+      showAddCover,
       showAddTagDialog,
       patchUpdateArticle,
       afterAddTagCloseHandle,
       // 刷新标签
       reFreshTagsTimes,
       reFreshTags,
+      // 上传cover
+      afterCloseAddCoverHandle,
+      afterCoverUploadHandle,
     }
   },
 })

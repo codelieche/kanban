@@ -33,6 +33,6 @@ urlpatterns = [
     path("object/<str:category>/<int:pk>", ObjectRetrieveApiView.as_view(), name="object"),
 
     # 排除media、static、api、admin四个开头的，其它页面调用react的页面
-    re_path(r'^(?!media|api|static|admin)[a-z]?', index_page),
+    re_path(r'^(?!media|api|storage|static|admin)[a-z]?', index_page),
 ]
 

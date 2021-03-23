@@ -3,7 +3,7 @@ import fetchApi from '@/plugins/fetchApi'
 export const patchUpdateArticle = (
   articleID: string | number,
   data: object,
-  callback: Function
+  callback: Function | null = null
 ) => {
   // 1. 文章URL
   const url = `/api/v1/docs/article/${articleID}`
