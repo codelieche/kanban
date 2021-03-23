@@ -38,7 +38,8 @@
         <span
           class="button"
           v-if="canEditor"
-          :class="['button', { active: showAddTagModal }]"
+          :class="['button', { active: showAddTagDialog }]"
+          @click="() => (showAddTagDialog = !showAddTagDialog)"
         >
           <Icon type="tag" />
           添加标签
@@ -76,6 +77,7 @@
         model="article"
         :objectID="data.id"
         :canDelete="canEditor"
+        :reFreshTimes="reFreshTagsTimes"
       />
 
       <div class="infos">
@@ -106,18 +108,29 @@
 
     <!-- 文章描述 -->
     <div class="description" v-if="showDescription">
-      <EditableContent :key="`${data.id}-description`" 
-       :content="data.description ? data.description : '请填写描述信息'"
-       contextType="text"
-       tagName="div"
-       :handleContentUpdated="(html, text) => patchUpdateArticle(id, { description: text })"
-       v-if="canEditor"
+      <EditableContent
+        :key="`${data.id}-description`"
+        :content="data.description ? data.description : '请填写描述信息'"
+        contextType="text"
+        tagName="div"
+        :handleContentUpdated="
+          (html, text) => patchUpdateArticle(id, { description: text })
+        "
+        v-if="canEditor"
       />
       <div v-else>
         {{ data.description ? data.description : '无描述信息' }}
       </div>
     </div>
   </header>
+
+  <!-- 添加标签 -->
+  <ArticleAddTagDialog
+    :articleID="data.id"
+    :visible="showAddTagDialog"
+    :afterCloseHandle="afterAddTagCloseHandle"
+    :reFreshTags="reFreshTags"
+  />
 </template>
 <script lang="ts">
 import { defineComponent, inject, ref } from 'vue'
@@ -129,6 +142,7 @@ import Icon from '@/components/base/icon.vue'
 import EditableContent from '@/components/base/editableContent.vue'
 import ObjectTags from '@/components/page/objectTag/objectTags.vue'
 import { patchUpdateArticle } from './utils'
+import ArticleAddTagDialog from './addTag.vue'
 
 export default defineComponent({
   name: 'ArticleDetailHeader',
@@ -143,6 +157,7 @@ export default defineComponent({
     // Loading,
     EditableContent,
     ObjectTags,
+    ArticleAddTagDialog,
   },
 
   setup() {
@@ -150,7 +165,18 @@ export default defineComponent({
     const showDescription = ref(false)
     const showDiscussion = inject('showDiscussion')
     const showCover = ref(false)
-    const showAddTagModal = ref(false)
+    const showAddTagDialog = ref(false)
+
+    // 关闭添加标签对话框
+    const afterAddTagCloseHandle = () => {
+      showAddTagDialog.value = false
+    }
+
+    // 刷新文章标签
+    const reFreshTagsTimes = ref(0)
+    const reFreshTags = () => {
+      reFreshTagsTimes.value += 1
+    }
 
     return {
       moment,
@@ -158,8 +184,12 @@ export default defineComponent({
       showDescription,
       showDiscussion,
       showCover,
-      showAddTagModal,
+      showAddTagDialog,
       patchUpdateArticle,
+      afterAddTagCloseHandle,
+      // 刷新标签
+      reFreshTagsTimes,
+      reFreshTags,
     }
   },
 })

@@ -95,7 +95,7 @@ export default defineComponent({
     },
     // 当调用BaseList的上级组件，想要修改params的时候，就传递这个
     urlParams: Object as PropType<{
-      [key: string]: string | number | boolean | null;
+      [key: string]: string | number | boolean | null
     }>,
     rowKey: String,
     props: Object,
@@ -118,7 +118,15 @@ export default defineComponent({
 
     const getApiUrl = () => {
       // console.log(window.location.search)
-      const locationSearch = window.location.search
+      // locationSearch: 这里是有差异的，
+      // 当路由使用的是createWebHashHistory那么获取不到location.search
+      // 当路由使用的是createWebHistory window.location.search是可以获取到正确的值
+      let locationSearch = window.location.search
+      if (window.location.href.indexOf('/#/') > 0) {
+        locationSearch = router.currentRoute.value.fullPath
+          .toString()
+          .replace(router.currentRoute.value.path, '')
+      }
       // console.log(router.currentRoute.value.fullPath.toString().replace(router.currentRoute.value.path, ''))
       params = getParamsFromLocationSearch(props.paramsFields, locationSearch)
       // 设置搜索框的值
@@ -216,21 +224,21 @@ export default defineComponent({
         let needRedirect = false
         for (const key in props.urlParams) {
           // console.log(key, props.urlParams[key])
-          if(params[key] !== props.urlParams[key] as string){
-            if(apiUrl.value !== ''){
+          if (params[key] !== (props.urlParams[key] as string)) {
+            if (apiUrl.value !== '') {
               needRedirect = true
             }
-            if(key == 'page'){
+            if (key == 'page') {
               pageInfo['currentPage'] = props.urlParams['page'] as number
             }
             params[key] = props.urlParams[key] as string
-            if(props.urlParams[key] === '' || props.urlParams[key] === null){
+            if (props.urlParams[key] === '' || props.urlParams[key] === null) {
               // console.log('移除key:', key)
               delete params[key]
             }
           }
           // 是否需要跳转页面
-          if(needRedirect){
+          if (needRedirect) {
             changePageUrl()
           }
         }
@@ -242,7 +250,6 @@ export default defineComponent({
         reFreshTimes.value = props.reFreshTimes
       }
 
-      
       // console.log(props)
     })
 
@@ -272,9 +279,9 @@ export default defineComponent({
         params['search'] = value
         // 跳转页面
         // console.log(router.currentRoute.value.path, params)
-        for(const key in params){
+        for (const key in params) {
           // console.log(key)
-          if(params[key] === undefined){
+          if (params[key] === undefined) {
             delete params[key]
           }
         }

@@ -48,6 +48,7 @@ import { patchUpdateArticle } from './utils'
 import ArticleDetailTools from './tools.vue'
 import ArticleDetailHeader from './header.vue'
 import ArticleDetailDiscussions from './discussions.vue'
+
 import {
   updateGlobalGroup,
   updateLeftSiderActiveItems,
