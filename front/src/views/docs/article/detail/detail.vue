@@ -12,6 +12,11 @@
     />
 
     <!-- 文章主体内容 -->
+    <div class="content">
+      <section>
+        <VueMarkdown :source="data.content ? data.content : '请输入文字内容'" />
+      </section>
+    </div>
 
     <!-- 文章评论 -->
     <ArticleDetailDiscussions :id="data.id" v-if="showDiscussion" />
@@ -31,12 +36,12 @@
       </ul>
     </section>
   </article>
-  <el-divider></el-divider>
-  {{ data }}
 </template>
 <script lang="ts">
 import { defineComponent, provide, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
+
+import VueMarkdown from '@/components/page/vue-markdown/markdown'
 
 import useFetchData from '@/hooks/utils/useFetchData'
 import { globalGroup, canWrite } from '@/hooks/store/useArticleLeftSiderData'
@@ -61,6 +66,7 @@ export default defineComponent({
     id: String,
   },
   components: {
+    VueMarkdown,
     Icon,
     // Loading,
     // EditableContent,
@@ -68,6 +74,7 @@ export default defineComponent({
     ArticleDetailTools,
     ArticleDetailHeader,
     ArticleDetailDiscussions,
+    // VueMarkdown,
   },
 
   setup(props) {

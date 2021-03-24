@@ -95,7 +95,7 @@ export default defineComponent({
     },
     // 当调用BaseList的上级组件，想要修改params的时候，就传递这个
     urlParams: Object as PropType<{
-      [key: string]: string | number | boolean | null
+      [key: string]: string | number | boolean | null;
     }>,
     rowKey: String,
     props: Object,
