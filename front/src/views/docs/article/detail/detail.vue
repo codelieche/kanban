@@ -41,7 +41,7 @@
 import { defineComponent, provide, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 
-import VueMarkdown from '@/components/page/vue-markdown/markdown'
+import VueMarkdown from '@/components/page/vue-markdown/markdown.vue'
 
 import useFetchData from '@/hooks/utils/useFetchData'
 import { globalGroup, canWrite } from '@/hooks/store/useArticleLeftSiderData'

@@ -34,9 +34,7 @@
               </el-select>
             </template>
             <template #append>
-              <el-button size="small" type="primary"
-                >搜索一下</el-button
-              >
+              <el-button size="small" type="primary">搜索一下</el-button>
             </template>
           </el-input>
         </div>
@@ -129,6 +127,10 @@ export default defineComponent({
       }
     })
 
+    // onUnmounted(() => {
+    //   console.log('我要卸载了')
+    // })
+
     // 监控值的变化
     watch([searchType, searchValue], () => {
       // console.log('searchType:', searchType.value)
@@ -138,19 +140,21 @@ export default defineComponent({
         searchType.value = 'article'
       }
 
-      if(selectType.value !== searchType.value){
+      if (selectType.value !== searchType.value) {
         selectType.value = searchType.value
       }
 
       // 使用新的路由
-      router.push({
-        path: '/tools/search',
-        query: {
-          searchType: searchType.value,
-          search: searchValue.value,
-          page: 1,
-        },
-      })
+      if (searchValue.value) {
+        router.push({
+          path: '/tools/search',
+          query: {
+            searchType: searchType.value,
+            search: searchValue.value,
+            page: 1,
+          },
+        })
+      }
     })
 
     // select变更的时候

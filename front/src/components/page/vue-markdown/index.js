@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import VueMarkdown from './markdown'
+import VueMarkdown from './markdown.vue'
 
 const install = (Vue) => {
     Vue.component(VueMarkdown.name, VueMarkdown)
