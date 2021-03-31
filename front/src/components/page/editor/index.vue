@@ -1,7 +1,7 @@
 <template>
   <div class="editor">
     <!-- 头部按钮 -->
-
+    <EditorToolbar :editor="editor" />
     <!-- 主体内容 -->
     <div class="content">
       <!-- 左侧内容 -->
@@ -23,10 +23,13 @@ import 'codemirror/mode/markdown/markdown' // markdown的语法高亮，自行�
 import 'codemirror/mode/javascript/javascript' // markdown的语法高亮，自行替换为你需要的语言
 
 import VueMarkdown from '@/components/page/vue-markdown/index'
+import EditorToolbar from './toolbar/index.vue'
+
 export default defineComponent({
   name: 'Editor',
   components: {
     VueMarkdown,
+    EditorToolbar,
   },
 
   data() {
@@ -51,6 +54,8 @@ export default defineComponent({
             lineWrapping: true, //是否自动换行
             mode: 'markdown', //实现javascript代码高亮
             readOnly: false, //只读
+            autofocus: true,
+            autocorrect: true,
           }
         )
         // 捕获事件
