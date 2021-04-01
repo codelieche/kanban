@@ -6,7 +6,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { defineComponent, inject, PropType, Ref } from 'vue'
 import CodeMirror from 'codemirror'
 
 import Icon from '@/components/base/icon.vue'
@@ -21,6 +21,9 @@ export default defineComponent({
     editor: Object as PropType<CodeMirror.Editor>,
   },
   setup(props) {
+    // 上传图片
+    const showUploadImage: Ref<boolean> | undefined = inject('showUploadImage')
+
     const handleButtonClick = () => {
       if (!props.type || !props.editor) {
         return
@@ -30,7 +33,10 @@ export default defineComponent({
       // 根据type来做不同的处理
       if (props.type === 'image') {
         // 显示图片上传Modal
-        console.log('上传图片')
+        // console.log('上传图片')
+        if (showUploadImage) {
+          showUploadImage.value = true
+        }
         return
       }
 
@@ -78,20 +84,19 @@ export default defineComponent({
           case 'blockquote':
             // return '\n```\n' + item + '\n```\n'
             return '```' + item
-//           case 'table':
-//             // eslint-disable-next-line no-case-declarations
-//             const tableStr = ` | Title1   | Title2 | Title3 | Title4 |
-// | ---- | --- | --- | --- |
-// | 1    | - | - | - |
-// | 2    | - | - | - |\n`
-//             return '\n\n' + tableStr
+          //           case 'table':
+          //             // eslint-disable-next-line no-case-declarations
+          //             const tableStr = ` | Title1   | Title2 | Title3 | Title4 |
+          // | ---- | --- | --- | --- |
+          // | 1    | - | - | - |
+          // | 2    | - | - | - |\n`
+          //             return '\n\n' + tableStr
           default:
             return item
         }
       })
       // 替换结果
       props.editor?.replaceSelections(selectionsResults)
-
     }
 
     return {
