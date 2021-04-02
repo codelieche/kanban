@@ -5,6 +5,14 @@
       <div class="toogle">
         <Icon type="ellipsis-h" />
       </div>
+      <template #dropdown>
+        <el-dropdown-menu>
+          <el-dropdown-item 
+            :disabled="!canEditor" 
+            @click="handleEditorClick">编辑</el-dropdown-item
+          >
+        </el-dropdown-menu>
+      </template>
     </el-dropdown>
   </div>
 </template>
@@ -12,7 +20,7 @@
 <script lang="ts">
 // 文章右上角的工具按钮
 
-import { defineComponent } from 'vue'
+import { defineComponent, inject, Ref } from 'vue'
 import Icon from '@/components/base/icon.vue'
 
 export default defineComponent({
@@ -24,6 +32,19 @@ export default defineComponent({
   },
   components: {
     Icon,
+  },
+  setup(props) {
+    const showArticleEditor: Ref<boolean> | undefined = inject(
+      'showArticleEditor'
+    )
+    const handleEditorClick = () => {
+      if (props.canEditor && showArticleEditor) {
+        showArticleEditor.value = true
+      }
+    }
+    return {
+      handleEditorClick,
+    }
   },
 })
 </script>

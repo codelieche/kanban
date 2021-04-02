@@ -35,6 +35,11 @@
         </li>
       </ul>
     </section>
+    <!-- 编辑文章对话框 -->
+    <EditorDialog 
+      :id="data.id"
+      :content="data.content ? data.content : ''" 
+      :afterDialogCloseHandle="reFreshData" />
   </article>
 </template>
 <script lang="ts">
@@ -53,6 +58,7 @@ import { patchUpdateArticle } from './utils'
 import ArticleDetailTools from './tools.vue'
 import ArticleDetailHeader from './header.vue'
 import ArticleDetailDiscussions from './discussions.vue'
+import EditorDialog from './ediatorDialog.vue'
 
 import {
   updateGlobalGroup,
@@ -74,6 +80,7 @@ export default defineComponent({
     ArticleDetailTools,
     ArticleDetailHeader,
     ArticleDetailDiscussions,
+    EditorDialog,
     // VueMarkdown,
   },
 
@@ -131,6 +138,10 @@ export default defineComponent({
     const reFreshData = () => {
       reFreshTimes.value += 1
     }
+
+    // 文章编辑
+    const showArticleEditor = ref(false)
+    provide('showArticleEditor', showArticleEditor)
 
     return {
       globalGroup,

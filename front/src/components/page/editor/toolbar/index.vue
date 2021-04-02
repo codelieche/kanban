@@ -1,5 +1,5 @@
 <template>
-  <div class="tools">
+  <div class="toolbar">
     <el-row :style="{ width: '100%' }">
       <!-- 左侧的功能按钮 -->
       <el-col :xs="24" :sm="24" :md="20" class="left">

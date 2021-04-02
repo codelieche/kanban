@@ -212,6 +212,7 @@ export default defineComponent({
           const item = keys[i]
           if(data[item]){
             coverUrl = data[item]
+            break
           }
         }
       }

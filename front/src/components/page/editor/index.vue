@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, provide, Ref, ref } from 'vue'
+import { defineComponent, onMounted, provide, Ref, ref, watch } from 'vue'
 import CodeMirror from 'codemirror' // CodeMirror，必要
 import 'codemirror/lib/codemirror.css' // css，必要
 import 'codemirror/mode/markdown/markdown' // markdown的语法高亮，自行替换为你需要的语言
@@ -46,10 +46,13 @@ export default defineComponent({
     EditorToolbar,
     UploadImageDialog,
   },
-
-  data() {
+  props: {
+    content: { type: String, default: () => '' },
+    onChange: Function,
+  },
+  setup(props) {
     // 编辑器的值
-    const value = ref('# Hello World\n> goood')
+    const value = ref('')
     const display = ref({
       markdown: true,
       html: true,
@@ -59,6 +62,8 @@ export default defineComponent({
     // 上传图片
     const showUploadImage = ref(false)
     provide('showUploadImage', showUploadImage)
+
+    // 编辑器对象
     const editor: Ref<CodeMirror.Editor | null> = ref(null)
 
     const initEditor = () => {
@@ -81,13 +86,52 @@ export default defineComponent({
         // 捕获事件
         editor.value.on('change', (e: CodeMirror.Editor) => {
           value.value = e.getValue()
+          // 每次数据变更，都调用props的onChange方法
+          if (props.onChange && typeof props.onChange === 'function') {
+            props.onChange(value.value)
+          }
         })
+        // 获取焦点
+        // setTimeout(() => {
+        //   if (editor.value) {
+        //     editor.value.focus()
+        //   }
+        // }, 50)
       }
     }
 
     onMounted(() => {
       initEditor()
     })
+
+    // 修改value，当父级传递的content变更的时候，修改
+    watch(
+      [props],
+      () => {
+        if (props.content && value.value !== props.content) {
+          value.value = props.content
+          // 获取焦点
+          // setTimeout(() => {
+          //   if (editor.value) {
+          //     // editor.value.refresh()
+          //     editor.value.setCursor(1, 1)
+          //     // editor.value.focus()
+          //   }
+          // }, 50)
+          // editor.value?.setValue(props.content)
+          // 采用setValue会出问题
+          if (value.value !== '') {
+            const ele = document.getElementsByClassName('CodeMirror-wrap')
+            if (ele.length === 1) {
+              ele[0].remove()
+              // initEditor()
+              setTimeout(initEditor, 50)
+            }
+          }
+        }
+      },
+      { immediate: true }
+    )
 
     // 显示上传cover
     const afterCloseUploadImageHandle = () => {
@@ -108,6 +152,7 @@ export default defineComponent({
           const item = keys[i]
           if (data[item]) {
             imageUrl = data[item]
+            break
           }
         }
       }
