@@ -16,8 +16,8 @@ export default defineComponent({
 
   setup() {
     // 右侧的导航
-    // const items = [{ title: '首页', link: '/', icon: 'home' }]
-    useBreadcrumbItems([])
+    const items = [{ title: '首页', link: '/', icon: 'home' }]
+    useBreadcrumbItems(items)
   },
 })
 </script>

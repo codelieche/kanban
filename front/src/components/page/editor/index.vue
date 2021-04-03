@@ -111,13 +111,14 @@ export default defineComponent({
         if (props.content && value.value !== props.content) {
           value.value = props.content
           // 获取焦点
-          // setTimeout(() => {
-          //   if (editor.value) {
-          //     // editor.value.refresh()
-          //     editor.value.setCursor(1, 1)
-          //     // editor.value.focus()
-          //   }
-          // }, 50)
+          setTimeout(() => {
+            if (editor.value) {
+              // editor.value.refresh()
+              // editor.value.setCursor(1, 1)
+              editor.value.getSelection()
+              // editor.value.focus()
+            }
+          }, 50)
           // editor.value?.setValue(props.content)
           // 采用setValue会出问题
           if (value.value !== '') {

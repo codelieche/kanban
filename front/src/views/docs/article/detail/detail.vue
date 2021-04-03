@@ -38,7 +38,7 @@
     <!-- 编辑文章对话框 -->
     <EditorDialog 
       :id="data.id"
-      :content="data.content ? data.content : ''" 
+      :content="data.content ? data.content : '请输入文章内容'" 
       :afterDialogCloseHandle="reFreshData" />
   </article>
 </template>

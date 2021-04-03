@@ -19,15 +19,28 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/',
-    name: 'DefaultHome',
+    name: 'Home',
     // component: Home
-    component: () => import('@/views/home/default.vue'),
+    component: () => import('@/views/home/article.vue'),
     children: [
       {
         path: '',
         name: 'HomePage',
         component: () => import('@/views/home/home.vue')
       },
+    ]
+  },
+  {
+    path: '/',
+    name: 'DefaultHome',
+    // component: Home
+    component: () => import('@/views/home/default.vue'),
+    children: [
+      // {
+      //   path: '',
+      //   name: 'HomePage',
+      //   component: () => import('@/views/home/home.vue')
+      // },
       // 文档相关管理页面
       {
         path: 'docs',
@@ -76,6 +89,11 @@ const routes: Array<RouteRecordRaw> = [
     name: 'ArticleHome',
     component: () => import('@/views/home/article.vue'),
     children: [
+      {
+        path: '',
+        // name: 'HomePage',
+        component: () => import('@/views/home/home.vue')
+      },
       // 文章详情页
       {
         path: ':id(\\d+)',

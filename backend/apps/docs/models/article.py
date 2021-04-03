@@ -103,7 +103,7 @@ class Article(models.Model):
         self.level = level
         
         return super().save(force_insert=force_insert, force_update=force_update, 
-                           using=using, update_fields=update_fields)
+                            using=using, update_fields=update_fields)
 
     def delete(self):
         if self.is_active:
