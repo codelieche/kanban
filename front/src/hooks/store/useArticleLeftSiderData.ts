@@ -8,6 +8,7 @@ export const canWrite = ref(false)
 export const globalGroupPermissions: Ref<Array<string>> = ref([])
 // 设置全局分组
 export const setGlobalGroup = (data: object) => {
+  // console.log('setGlobalGroup:', data)
   globalGroup.value = data
   
   // 在这里获取权限数据
