@@ -55,16 +55,24 @@ export default defineComponent({
     // 监控按键
     onMounted(() => {
       document.onkeydown = (e: KeyboardEvent) => {
-        if (props.canEditor) {
-          const key = e.key
-          if (key === 'e' || key === 'E') {
-            // console.log(e)
-            if (showArticleEditor) {
-              showArticleEditor.value = true
+        // console.log('e:', e, e['path'])
+        // 比如是标题、描述等在修改的时候按了字母e是不需要弹出编辑框的
+        if (
+          e &&
+          Array.isArray(e['path']) &&
+          e['path'][0]['tagName'] === 'BODY'
+        ) {
+          if (props.canEditor) {
+            const key = e.key
+            if (key === 'e' || key === 'E') {
+              // console.log(e)
+              if (showArticleEditor) {
+                showArticleEditor.value = true
+              }
             }
+          } else {
+            return
           }
-        } else {
-          return
         }
       }
     })

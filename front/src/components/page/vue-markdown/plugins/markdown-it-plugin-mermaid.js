@@ -3,6 +3,7 @@ import mermaid from 'mermaid'
 const mermaidChart = (code) => {
   try {
     mermaid.parse(code)
+    // return `<div class="can-copy"><div class="mermaid">${code}</div><div class="source code">${code}</div></div>`
     return `<div class="mermaid">${code}</div>`
   } catch ({ str, hash }) {
     return `<pre>${str}</pre>`

@@ -58,7 +58,7 @@
           tagName="h1"
           :spellCheck="false"
           :handleContentUpdated="
-            (html, text) => patchUpdateArticle(id, { title: text }, reFreshData)
+            (html, text) => patchUpdateArticle(id, { title: text }, afterTitleUpdateHandle)
           "
           v-if="canEditor"
         />
@@ -147,7 +147,7 @@
 import { defineComponent, inject, ref } from 'vue'
 import moment from 'moment'
 
-import { globalGroup } from '@/hooks/store/useArticleLeftSiderData'
+import { globalGroup, reFreshArticlesTimes } from '@/hooks/store/useArticleLeftSiderData'
 import Icon from '@/components/base/icon.vue'
 // import Loading from '@/components/page/loading.vue'
 import EditableContent from '@/components/base/editableContent.vue'
@@ -197,6 +197,15 @@ export default defineComponent({
       showAddCover.value = false
     }
 
+    // 标题更新之后的函数
+    const afterTitleUpdateHandle = () => {
+      if(props.reFreshData){
+        props.reFreshData()
+      }
+      // 左侧文章列表更新
+      reFreshArticlesTimes.value += 1
+    }
+
     // 封面上传完毕后的操作
     const afterCoverUploadHandle = (data: object | string) => {
       // console.log(data)
@@ -244,6 +253,7 @@ export default defineComponent({
       showAddTagDialog,
       patchUpdateArticle,
       afterAddTagCloseHandle,
+      afterTitleUpdateHandle,
       // 刷新标签
       reFreshTagsTimes,
       reFreshTags,

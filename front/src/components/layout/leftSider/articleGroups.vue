@@ -88,7 +88,8 @@ export default defineComponent({
     const callback = (groups: Array<Record<string, any>>) => {
       if (groups && groups.length > 0) {
         if (!(globalGroup.value && globalGroup.value['id'])) {
-          globalGroup.value = groups[0]
+          // globalGroup.value = groups[0]
+          setGlobalGroup(groups[0])
         }
       }
     }

@@ -116,8 +116,12 @@ export default (md, options) => {
       max = state.posMax
     // console.log('state.src:', state.src)
     // 图片大小用 &/?size=wxh
-    state.src = state.src.replace('?size=', ' =')
-    state.src = state.src.replace('&size=', ' =')
+    if (state.src.indexOf('?size=') > 0) {
+      state.src = state.src.replace('?size=', ' =')
+    } else if (state.src.indexOf('&size=') > 0) {
+      state.src = state.src.replace('&size=', ' =')
+    }
+
     if (state.src.charCodeAt(state.pos) !== 0x21 /* ! */) {
       return false
     }
@@ -275,7 +279,20 @@ export default (md, options) => {
 
       const div = state.push('image-container-open', 'div', 1)
       div.block = true
-      div.attrs = [['style', `text-align: ${options.hAlign}`]]
+      // 判断图片对齐方式：是left/center/right
+      let textAlignValue = options.hAlign
+
+      // eslint-disable-next-line no-useless-escape
+      // eslint-disable-next-line no-invalid-regexp
+      const rAlign = new RegExp('(\\?|\\&)align\\=(left|center|right)')
+      // 获取对齐方式
+      const rAlignResult = rAlign.exec(state.src)
+      if ( Array.isArray(rAlignResult) && rAlignResult.length === 3 ) {
+        textAlignValue = rAlignResult[2]
+        // state.src = state.src.replace(rAlignResult[0], '')
+        href = href.replace(rAlignResult[0], '')
+      }
+      div.attrs = [['style', `text-align: ${textAlignValue}`]]
 
       token = state.push('image', 'img', 0)
       token.attrs = attrs = [
