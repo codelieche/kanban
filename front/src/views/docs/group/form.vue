@@ -199,6 +199,8 @@ export default defineComponent({
 
     // 表单提交函数
     const handleFormSubmit = () => {
+      // console.log('formData:', formData.value)
+
       if (props.handleSubmit) {
         // 对parent进行处理
         if (
@@ -206,15 +208,21 @@ export default defineComponent({
           formData.value['parent_id'].length > 0
         ) {
           formData.value['parent_id'] = formData.value['parent_id'][0]
-          formData.value['parent'] = formData.value['parent_id']
         }
+
+        formData.value['parent'] = formData.value['parent_id']
+        // console.log('formData:', formData.value)
+
+        // if (formData.value['parent_id'] !== 123) {
+        //   return
+        // }
         const requestFormData = new FormData()
         for (const k in formData.value) {
           const allowKeys = [
             'name',
             'code',
             'image',
-            'parent_id',
+            'parent',
             'description',
             'is_deleted',
             'owner',

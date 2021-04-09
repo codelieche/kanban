@@ -292,12 +292,32 @@ export default (md, options) => {
         // state.src = state.src.replace(rAlignResult[0], '')
         href = href.replace(rAlignResult[0], '')
       }
-      div.attrs = [['style', `text-align: ${textAlignValue}`]]
+      // 判断图片链接的样式
+      let classNames = ""
+      const rClass = new RegExp('(\\?|\\&)class\\=([0-9a-zA-Z\\-_,]+)')
+      const rClassResult = rClass.exec(href)
+      if(Array.isArray(rClassResult) && rClassResult.length == 3){
+        classNames = rClassResult[2]
+        href = href.replace(rClassResult[0], '')
+      }
+      if (classNames !== "") {
+        classNames = classNames.replace(',', ' ')
+        div.attrs = [
+          ['style', `text-align: ${textAlignValue}`],
+          ['class', classNames]
+        ]
+      } else {
+        div.attrs = [
+          ['style', `text-align: ${textAlignValue}`],
+        ]
+      }
+      
+
 
       token = state.push('image', 'img', 0)
       token.attrs = attrs = [
         ['src', href],
-        ['alt', '']
+        ['alt', ''],
       ]
       token.children = tokens
       token.content = content

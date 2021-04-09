@@ -45,6 +45,11 @@ export default defineComponent({
         link: '/docs/article/list',
       },
       {
+        icon: 'cubes',
+        title: '对象列表',
+        link: '/storage/object/list',
+      },
+      {
         icon: 'envelope-o',
         title: '消息中心',
         link: '/user/message',

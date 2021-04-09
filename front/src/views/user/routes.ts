@@ -7,8 +7,9 @@ import messageRouter from './message/router'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '',
-    // name: 'ChartHome',
-    component: () => import('./home.vue'),
+    // name: 'UserHome',
+    // component: () => import('./home.vue'),
+    redirect: '/user/center'
   },
   {
     path: 'message',

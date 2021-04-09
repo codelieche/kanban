@@ -14,7 +14,7 @@
     <!-- 文章主体内容 -->
     <div class="content">
       <section>
-        <VueMarkdown :source="data.content ? data.content : '请输入文字内容'" />
+        <VueMarkdown :source="data.content ? data.content : '请编辑文章内容'" />
       </section>
     </div>
 
@@ -38,7 +38,7 @@
     <!-- 编辑文章对话框 -->
     <EditorDialog 
       :id="data.id"
-      :content="data.content ? data.content : '请输入文章内容'" 
+      :content="data.content ? data.content : '请编辑文章内容'" 
       :afterDialogCloseHandle="reFreshData" />
   </article>
 </template>

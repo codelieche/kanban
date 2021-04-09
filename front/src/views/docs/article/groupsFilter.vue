@@ -97,12 +97,13 @@ export default defineComponent({
   margin: 15px 0 10px 0;
   .item {
     font-size: 13px;
+    line-height: 1.4;
     color: rgba(0, 0, 0, 0.65);
     display: inline-block;
-    padding: 4px 10px;
+    padding: 3px 10px;
     border-radius: 3px;
     margin-right: 5px;
-    margin-bottom: 10px;
+    margin-bottom: 2px;
     cursor: pointer;
     &:hover {
       color: #1890ff;

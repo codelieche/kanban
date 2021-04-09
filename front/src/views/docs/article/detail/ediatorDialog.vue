@@ -45,8 +45,10 @@ export default defineComponent({
     //   showEditor.value = true
     // }, 4000)
 
-    const editorValue = ref('编辑文章')
+    const editorValue = ref('') // 编辑器对象的值
+    // localStorage中保存的当前文章内容【未提交成功才会有相关数据】
     const lastContent = ref({ key: '', content: '', time: '' })
+    // 每次编辑器内容变更的时候，修改一下editorValue
     const handleEditorValueOnChange = (value: string) => {
       editorValue.value = value
     }

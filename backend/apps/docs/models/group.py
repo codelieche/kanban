@@ -215,5 +215,6 @@ class Group(models.Model):
     class Meta:
         verbose_name = "文档分组"
         verbose_name_plural = verbose_name
+        ordering = ('parent_id', 'order', 'id')
 
 
