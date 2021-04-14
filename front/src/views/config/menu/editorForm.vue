@@ -31,7 +31,7 @@ export default defineComponent({
   setup(props) {
     const formName = 'menuEditorForm'
     // eslint-disable-next-line
-    const formData: Ref<any> = ref({ id: 0, username: '' })
+    const formData: Ref<any> = ref({ id: 0, username: '', order: 1, })
     provide(formName, formData)
     const formFields: Ref<Array<FormFieldItem>> = ref([
       // {
@@ -134,6 +134,15 @@ export default defineComponent({
           },
         },
         choices: [],
+      },
+      {
+        name: 'permission',
+        type: 'input',
+        label: '权限',
+        rules: [{ required: false, message: '请设置权限' }],
+        props: {
+          size: 'small',
+        },
       },
       {
         name: 'order',

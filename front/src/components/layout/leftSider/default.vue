@@ -50,7 +50,7 @@ export default defineComponent({
     // 是否折叠
     const collapsed = ref(false)
     // 默认的宽度
-    const defaultWidth = ref(200)
+    const defaultWidth = ref(240)
 
     // 从localstorage中获取数据
     onMounted(() => {

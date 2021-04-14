@@ -1,7 +1,12 @@
 <template>
   <article v-if="data && data.id > 0">
     <!-- 右上角的菜单 -->
-    <ArticleDetailTools :id="id" :data="data" :canEditor="canEditor" />
+    <ArticleDetailTools 
+      :id="id" 
+      :data="data" 
+      :canEditor="canEditor" 
+      :reFreshData="reFreshData"
+    />
 
     <!-- 文章头部 -->
     <ArticleDetailHeader

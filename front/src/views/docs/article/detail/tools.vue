@@ -17,6 +17,9 @@
           >
             <Icon type="copy">复制内容</Icon>
           </el-dropdown-item>
+          <el-dropdown-item @click="reFreshData">
+            <Icon type="refresh" />刷新内容
+          </el-dropdown-item>
           <el-dropdown-item disabled>
             <Icon type="trash-o">删除文章</Icon>
           </el-dropdown-item>
@@ -39,6 +42,7 @@ export default defineComponent({
     id: String,
     data: Object,
     canEditor: Boolean,
+    reFreshData: Function,
   },
   components: {
     Icon,
@@ -55,7 +59,22 @@ export default defineComponent({
     // 监控按键
     onMounted(() => {
       document.onkeydown = (e: KeyboardEvent) => {
-        // console.log('e:', e, e['path'])
+        // console.log('e:', e, e['path'], e['path'][0]['tagName'])
+
+        // 刷新
+        if (
+          e &&
+          Array.isArray(e['path']) &&
+          (e['path'][0]['tagName'] === 'BODY' ||
+            e['path'][0]['tagName'] === 'A')
+        ) {
+          const key = e.key
+          if ((key === 'r' || key === 'R') && props.reFreshData) {
+            props.reFreshData()
+            return
+          }
+        }
+
         // 比如是标题、描述等在修改的时候按了字母e是不需要弹出编辑框的
         if (
           e &&

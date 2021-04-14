@@ -12,8 +12,13 @@ class QiniuApi:
         self.q = qiniu.Auth(acces_key, secret_key)
         # 1-2: 生成token: 300秒有效
         self.token = self.q.upload_token(bucket, None, 300)
+        self.bucket = bucket
+        self.bucket_api = qiniu.BucketManager(self.q)
 
     def upload_file(self, key_path, file_data):
+        """
+        上传文件
+        """
         try:
             # 上传的文件已经存在了，或者token过期了，都是会报错的
             result, info = qiniu.put_data(self.token, key_path, file_data)
@@ -22,6 +27,27 @@ class QiniuApi:
         except Exception as e:
             print(e)
             return None
+
+    def delete_file(self, key_path):
+        """删除文件"""
+        try:
+            # 删除
+            result, info = self.bucket_api.delete(bucket=self.bucket, key=key_path)
+            return (result, info)
+        except Exception as e:
+            print(e)
+            return None
+
+    def replace_file_data(self, key_path, file_data):
+        """
+        替换文件
+        """
+        # 先删除文件
+        results = self.delete_file(key_path)
+
+        if results and results[0] == {}:
+            # 再重新上传
+            return self.upload_file(key_path, file_data)
 
     def private_download_url(self, base_url, expires=3600):
         # base_url = domain + / + objectkey

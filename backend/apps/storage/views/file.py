@@ -91,7 +91,32 @@ class FileDetailApiView(generics.RetrieveUpdateDestroyAPIView):
         if request.method != "PATCH":
             return HttpResponseForbidden()
 
-        return super().update(request, *args, **kwargs)
+        # 判断权限
+        instance = self.get_object()
+        user = request.user
+        if instance and (instance.user != request.user or user.has_perm('storage.change_file')):
+            # 普通用户只可修改自己上传的图片
+            # 有storage.change_file权限的用户也可修改文件
+            return HttpResponseForbidden()
+
+        # 判断是否需要替换图片内容到七牛云
+        file = request.FILES.get('file')
+
+        # 调用父类的方法
+        response = super().update(request, *args, **kwargs)
+
+        # 有图片需要替换图片
+        if file:
+            # print('需要替换图片')
+            instance = self.get_object()
+            # 上传图片去七牛云
+            instance.upload_to_cloud()
+
+            # 刷新获取图片链接,并且不使用缓存
+            scheme = request.META['wsgi.url_scheme']
+            instance.get_download_url(scheme=scheme, fresh=True)
+
+        return response
 
 
 class FileDetailObjectView(generics.RetrieveAPIView):

@@ -58,6 +58,57 @@ class File(models.Model):
     is_active = models.BooleanField(verbose_name="是否有效", blank=True, default=True)
     description = models.CharField(verbose_name="描述", max_length=256, blank=True, null=True)
 
+    def upload_to_cloud(self):
+        """
+        替换云端的文件
+        """
+        if self.file:
+            # 图片存在才上传
+            # print('开始推送新的文件去云端')
+            storage_account = self.account if self.account else Account.objects.filter(user=self.user).first()
+
+            if not storage_account:
+                print('没有存储账号，直接退出')
+                return
+
+            objectkey = self.objectkey
+            if not objectkey:
+                filename_key = self.file.url
+                objectkey = filename_key.replace("/storage/files/", "files/{}/{}/".format(self.user_id, self.category))
+
+            # 开始上传文件到云端
+            if storage_account.platform == "qiniu":
+                data = self.file.read()
+                try:
+                    # 实例化七牛api
+                    api = QiniuApi(storage_account.access_key, storage_account.secret_key, storage_account.bucket)
+                    # 判断是上传还是替换
+                    if self.objectkey:
+                        results = api.replace_file_data(key_path=objectkey, file_data=data)
+                    else:
+                        # 是新上传
+                        results = api.upload_file(objectkey, data)
+                    if results:
+                        result, info = results
+                        if result and "key" in result:
+                            # 需要删除缓存
+                            # 如果当前对象还没objectkey的那么记得保存一下
+                            if not self.objectkey:
+                                self.objectkey = objectkey
+                                self.account = storage_account
+                                self.hashcode = result['hash']
+                                self.save()
+                            else:
+                                print('替换图片成功：', objectkey, result)
+
+                        else:
+                            print('替换图片失败：', objectkey)
+
+                except Exception as e:
+                    print('上传文件到七牛出错：', str(e))
+        else:
+            return
+
     def save(self, force_insert=False, force_update=False, using=None,
              update_fields=None):
 
@@ -79,36 +130,8 @@ class File(models.Model):
                          using=using, update_fields=update_fields)
 
             # 这里开始处理把文件上传到七牛云
-            # 先简单处理
-            storage_account = Account.objects.filter(user=self.user).first()
+            self.upload_to_cloud()
 
-            if storage_account:
-                if storage_account.platform == "qiniu":
-                    # 把文件上传到七牛云
-                    # 这里开始把图片上传到七牛云中
-                    data = self.file.read()
-                    filename_key = self.file.url
-                    filename_key = filename_key.replace("/storage/files/", "files/{}/{}/".format(self.user_id, self.category))
-
-                    try:
-                        api = QiniuApi(storage_account.access_key, storage_account.secret_key, storage_account.bucket)
-                        results = api.upload_file(filename_key, data)
-                        # 获取上传的结果
-                        if results:
-                            result, info = results
-                            if result and "key" in result:
-                                # print("上传成功:", result["key"])
-                                # qiniu_url = "http://{}/{}".format(settings.QINIU_BUCKET_DOMAIN, filename_key)
-                                # qiniu_url = "http://{}/{}".format(storage_account.domain, result["key"])
-                                # print(qiniu_url)
-                                # 保存存储的文件
-                                self.account = storage_account
-                                self.objectkey = result["key"]
-                                self.save()
-                            else:
-                                print("上传失败：", info)
-                    except Exception as e:
-                        print("上传图片到qiniu失败：", str(e))
         else:
             # 修改操作
             super().save(force_insert=force_insert, force_update=force_update,
@@ -131,7 +154,7 @@ class File(models.Model):
         else:
             return ""
 
-    def get_download_url(self, scheme="https"):
+    def get_download_url(self, scheme="https", fresh=False):
         """
         获取下载地址
         """
@@ -150,10 +173,11 @@ class File(models.Model):
                     cache_key = "{}_{}_{}".format(self.category, self.id, scheme)
                     # 判断是否存在于缓存中
                     try:
-                        chache_value = redis_client.get(cache_key)
-                        if chache_value:
-                            cache_url = chache_value.decode()
-                            return cache_url
+                        if not fresh:
+                            chache_value = redis_client.get(cache_key)
+                            if chache_value:
+                                cache_url = chache_value.decode()
+                                return cache_url
                     except Exception as e:
                         print(str(e))
 
@@ -242,6 +266,7 @@ class File(models.Model):
             self.info = json.dumps(info)
         except Exception as e:
             print(str(e))
+
         try:
             image_resize.save(output_io_stream, format='JPEG', quality=80)
         except OSError as e:

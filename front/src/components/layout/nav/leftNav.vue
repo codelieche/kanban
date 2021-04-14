@@ -191,7 +191,7 @@ export default {
       if (this.collapsed) {
         return 0
       } else {
-        return `${this.item.level * 10}px`
+        return this.item.level < 2 ? "15px" : `${this.item.level * 18}px`
       }
     },
     urlpath() {
@@ -216,6 +216,7 @@ export default {
 // 当行Item的标题鼠标悬放时候的背景色
 @nav-tiem-title-hove-backgroud: rgba(112, 119, 143, 0.16);
 @nav-item-active-background: #1890ff;
+@nav-item-line-height: 38px;
 
 .item {
   &.collapsed {
@@ -241,7 +242,7 @@ export default {
   position: relative;
   .title {
     position: relative;
-    line-height: 35px;
+    line-height: @nav-item-line-height;
     text-align: left;
     cursor: pointer;
     font-size: 15px;
@@ -251,7 +252,7 @@ export default {
     }
     .icon {
       display: inline-block;
-      margin-right: 4px;
+      margin-right: 5px;
     }
     .right {
       display: inline-block;
@@ -259,11 +260,11 @@ export default {
       right: 8px;
       span {
         font-size: 10px;
-        line-height: 35px;
+        line-height: @nav-item-line-height;
       }
     }
     a {
-      line-height: 35px;
+      line-height: @nav-item-line-height;
       display: inline-block;
       width: 100%;
       box-sizing: border-box;
