@@ -199,7 +199,8 @@ export default defineComponent({
 
     // 表单提交函数
     const handleFormSubmit = () => {
-      // console.log('formData:', formData.value)
+      // console.log('formData:', formData.value, formData.value['parent_id'])
+      // console.log('parent_id:', formData.value['parent_id'])
 
       if (props.handleSubmit) {
         // 对parent进行处理
@@ -207,7 +208,8 @@ export default defineComponent({
           Array.isArray(formData.value['parent_id']) &&
           formData.value['parent_id'].length > 0
         ) {
-          formData.value['parent_id'] = formData.value['parent_id'][0]
+          const index = formData.value['parent_id'].length - 1
+          formData.value['parent_id'] = formData.value['parent_id'][index]
         }
 
         formData.value['parent'] = formData.value['parent_id']

@@ -259,3 +259,7 @@ QINIU_KEY_PREFIX = os.environ.get("QINIU_KEY_PREFIX", None)        # 七牛文�
 # bucket的名字和bucket绑定的域名
 QINIU_BUCKET = os.environ.get("QINIU_BUCKET", None)
 QINIU_BUCKET_DOMAIN = os.environ.get("QINIU_BUCKET_DOMAIN", None)
+
+# 对称加密秘钥(16位)
+PASSWORD_KEY = 'abcdefghijklmopq'
+

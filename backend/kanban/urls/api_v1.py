@@ -16,4 +16,6 @@ urlpatterns = [
     path('modellog/', include(arg=('modellog.urls', 'modellog'), namespace='modellog')),
     # Model标签相关api
     path('tags/', include(arg=('tags.urls.api', 'tags'), namespace='tags')),
+    # Utils相关的api
+    path('utils/', include(arg=('utils.urls.api', 'utils'), namespace='utils')),
 ]

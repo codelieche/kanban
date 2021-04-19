@@ -34,7 +34,14 @@ class Cryptography:
     """
     # def __init__(self, key):
     def __init__(self, key=settings.PASSWORD_KEY):
+        # key必须是字符串格式的
+        key = str(key)
         self.key = key
+        # 注意秘钥是需要16位的，如果大于16位就截取前面十六位
+        if len(key) > 16:
+            self.key = key[0:16]
+        if len(key) < 16:
+            self.key = key + (16 - len(key)) * '.'
         self.mode = AES.MODE_CBC
 
     def encrypt(self, text):
@@ -53,9 +60,23 @@ class Cryptography:
         return b2a_hex(ciphertext).decode()
 
     def decrypt(self, text):
+        """解密操作"""
         cryptor = AES.new(self.key, self.mode, "0000000000000000")
         plain_text = cryptor.decrypt(a2b_hex(text)).decode()
         return plain_text.strip(' ')
+
+    def check_can_decrypt(self, value):
+        """
+        判断value是否是加密后的值
+        """
+        try:
+            de_p = self.decrypt(value)
+            return True, de_p
+        except ValueError:
+            return False, None
+        except Exception as e:
+            print('解密错误：', e)
+            return False, None
 
 
 if __name__ == '__main__':
