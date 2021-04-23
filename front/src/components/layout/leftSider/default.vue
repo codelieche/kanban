@@ -92,7 +92,7 @@ export default defineComponent({
 // 导航的背景色
 @left-sider-backgroud: #333744;
 @left-sider-collapsed-toogle-background: #4a5064;
-@left-sider-collapsed-toogle-height: 38px;
+@left-sider-collapsed-toogle-height: 35px;
 
 .left-sider {
   overflow: auto;
@@ -110,7 +110,7 @@ export default defineComponent({
     // height: 50px;
     min-height: 35px;
     .collapsed-toogle {
-      height: 38px;
+      height: 35px;
       background: @left-sider-collapsed-toogle-background;
       line-height: @left-sider-collapsed-toogle-height;
       cursor: pointer;

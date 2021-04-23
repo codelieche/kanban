@@ -2,7 +2,6 @@
 from rest_framework import generics
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from rest_framework.filters import SearchFilter, OrderingFilter
-# from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 
 from modellog.mixins import LoggingViewSetMixin
@@ -17,6 +16,14 @@ class ConfigCreateApiView(LoggingViewSetMixin, generics.CreateAPIView):
     queryset = Config.objects.all()
     serializer_class = ConfigModelSerializer
     permission_classes = (DjangoModelPermissionsOrAnonReadOnly,)
+
+    @property
+    def secret_fields(self):
+        # 判断是否是保密字段
+        if self.request.data.get('is_secret') in ['true', 1, '1']:
+            return ['value']
+        else:
+            return []
 
 
 class ConfigListApiView(generics.ListAPIView):
@@ -40,3 +47,12 @@ class ConfigDetailApiView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyAPI
     queryset = Config.objects.all()
     serializer_class = ConfigModelSerializer
     permission_classes = (DjangoModelPermissionsOrAnonReadOnly,)
+
+    @property
+    def secret_fields(self):
+        # 记录日志的中间件会获取secret_fields的值
+        instance = self.get_object()
+        if instance.is_secret:
+            return ['value']
+        else:
+            return []

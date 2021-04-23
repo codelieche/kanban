@@ -7,7 +7,7 @@
     <template v-slot:default="data">
       <el-table
         :data="data.dataSource"
-        border
+        :border="false"
         style="width: 100%"
         :show-header="showHeader"
         @sort-change="handleSortChange"
@@ -19,7 +19,7 @@
       </el-table>
       <el-table
         :data="data.dataSource"
-        border
+        :border="false"
         style="width: 100%"
         :show-header="showHeader"
         @sort-change="handleSortChange"

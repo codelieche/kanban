@@ -216,7 +216,7 @@ export default {
 // 当行Item的标题鼠标悬放时候的背景色
 @nav-tiem-title-hove-backgroud: rgba(112, 119, 143, 0.16);
 @nav-item-active-background: #1890ff;
-@nav-item-line-height: 38px;
+@nav-item-line-height: 35px;
 
 .item {
   &.collapsed {

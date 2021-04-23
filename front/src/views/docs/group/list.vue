@@ -20,7 +20,7 @@
       </el-table-column>
       <el-table-column prop="code" label="代码" width="120" />
 
-      <el-table-column prop="parent" label="父级分组" width="115">
+      <el-table-column prop="parent" label="父级分组" width="115" align="center">
         <template #default="scope">
           <div class="status">
             <el-tag type="primary" size="small">{{
@@ -34,7 +34,7 @@
 
       <el-table-column prop="owner" label="所有者" width="100" />
 
-      <el-table-column prop="description" label="描述" width="200" />
+      <el-table-column prop="description" label="描述" width="" align="center"/>
       <!-- 状态 -->
       <el-table-column
         prop="is_deleteed"
@@ -57,7 +57,7 @@
         sortable
       /> -->
 
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="200" align="center">
         <template #default="scope">
           <!-- 有编辑Group权限的用户可看到的按钮 -->
           <span v-if="havePermission">

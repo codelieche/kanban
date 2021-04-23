@@ -7,7 +7,7 @@ from .models import LogsEntry
 
 # Create your views here.
 
-SECRET_FIELDS = ('password', 'admin_pwd')
+# SECRET_FIELDS = ('password', 'admin_pwd')
 # 另外注意action_flag: 1. 添加；2. 修改；3. 删除
 
 
@@ -15,6 +15,7 @@ class LoggingBaseMethodMixin:
     """
     添加日志基本的中间件
     """
+
     def log_action(self, action_flag, message):
         """
         执行添加日志的操作
@@ -29,6 +30,7 @@ class LoggingViewSetMixin:
     """
     日志记录的中间件
     """
+    secret_fields = ('password', 'admin_pwd')
 
     def perform_create(self, serializer):
         super().perform_create(serializer)
@@ -42,7 +44,7 @@ class LoggingViewSetMixin:
             # 消息从data中提取
             data = json.loads(json.dumps(serializer.data))
             for field in data:
-                if field in SECRET_FIELDS: data[field] = "保密字段"
+                if self.secret_fields and field in self.secret_fields: data[field] = "保密字段"
             obj = model.objects.get(pk=data['id'])
 
             LogsEntry.objects.create(
@@ -105,6 +107,7 @@ class LoggingViewSetMixin:
 
         try:
             # 第5步：迭代每个校验过的字段
+            secret_fields = self.secret_fields if self.secret_fields else []
             for field in validated_data:
                 # 5-1：获取老的字段值和新的字段值
                 # obj_old_dic：老对象的值，而且多对关系的数据已经改成了pk列表
@@ -123,8 +126,8 @@ class LoggingViewSetMixin:
                         message_i = {
                             'action': 'changed',
                             'field': field,
-                            'value_new': '值修改了' if field in SECRET_FIELDS else data[field],
-                            'value_old': '值修改了' if field in SECRET_FIELDS else field_v_old
+                            'value_new': '值修改了' if field in secret_fields else data[field],
+                            'value_old': '值修改了' if field in secret_fields else field_v_old
                         }
                         message.append(message_i)
                     # else:
@@ -136,9 +139,9 @@ class LoggingViewSetMixin:
                         message_i = {
                             'action': 'changed',
                             'field': field,
-                            'value_new': '保密字段(new)' if field in SECRET_FIELDS else data[field],
+                            'value_new': '保密字段(new)' if field in secret_fields else data[field],
                             'value_old':
-                                '保密字段(old)' if field in SECRET_FIELDS else field_v_old.__repr__()
+                                '保密字段(old)' if field in secret_fields else field_v_old.__repr__()
                         }
                         message.append(message_i)
                         # print({'field': field, 'value': data[field]})
