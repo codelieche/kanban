@@ -8,7 +8,19 @@
         :title="action === 'add' ? '添加' : '修改'"
         :handleSubmit="handleFormSubmit"
         class="min-width-600"
-      ></BaseForm>
+      >
+        <template #footer="scope">
+          <div class="buttons">
+            <el-button
+              type="primary"
+              @click.stop.prevent="scope.onSubmit"
+              size="small"
+            >
+              {{ scope.title }}
+            </el-button>
+          </div>
+        </template>
+      </BaseForm>
     </el-col>
   </el-row>
 </template>
@@ -71,7 +83,7 @@ export default defineComponent({
         choices: [],
         props: {
           titles: ['所有用户', '组成员'],
-          filterable: true
+          filterable: true,
         },
       },
       {
@@ -81,9 +93,62 @@ export default defineComponent({
         choices: [],
         props: {
           titles: ['所有权限', '组权限'],
-          filterable: true
+          filterable: true,
         },
       },
+      // siblings 字段测试
+      // {
+      //   name: 'sibling-key',
+      //   type: 'input',
+      //   label: '多个选项',
+      //   rules: [
+      //     {required: true, message: '请设置值'}
+      //   ],
+      //   props: {
+      //     size: 'small',
+      //     placeholder: '测试',
+      //     class: 'width-150'
+      //   },
+      //   siblings: [
+      //     {
+      //       type: 'text',
+      //       label: 'sibling-01:',
+      //     },
+      //     {
+      //       name: 'sibling-value',
+      //       type: 'input',
+      //       label: '目标端口:',
+      //       props: {
+      //         size: 'mini',
+      //         placeholder: '测试2',
+      //         class: 'width-150'
+      //       },
+      //     },
+      //      {
+      //       name: 'sibling-select',
+      //       type: 'select',
+      //       label: '类型:',
+      //       choices: [
+      //         {text: '分类1', value: 1},
+      //         {text: '分类2', value: 2},
+      //       ],
+      //       props: {
+      //         size: 'mini',
+      //         placeholder: '类型',
+      //         class: 'width-100'
+      //       },
+      //     },
+      //     {
+      //       name: 'sibling-btn',
+      //       type: 'button',
+      //       label: '移除',
+      //       props: {
+      //         size: 'mini',
+      //         type: 'danger',
+      //       },
+      //     },
+      //   ],
+      // }
     ])
     // 修改user_set的选项
     // 所有用户
@@ -102,7 +167,7 @@ export default defineComponent({
     }
 
     useFetchChoices('/api/v1/account/user/all', userChoicesFields, callback)
-     // 所有用户
+    // 所有用户
     const permissionChoicesFields = [
       { field: 'key', valueField: 'id' },
       { field: 'label', valueField: 'name' },
@@ -117,8 +182,12 @@ export default defineComponent({
       })
     }
 
-    useFetchChoices('/api/v1/account/permission/all', permissionChoicesFields, callback2)
-    
+    useFetchChoices(
+      '/api/v1/account/permission/all',
+      permissionChoicesFields,
+      callback2
+    )
+
     // 表单提交函数
     const handleFormSubmit = () => {
       if (props.handleSubmit) {

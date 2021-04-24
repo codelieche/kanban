@@ -36,4 +36,5 @@ export interface FormFieldItem {
     // value: string | number | Array<string | number | object> | null | boolean | object | undefined; // 值
     props?: object | null | undefined;  // 其它属性
     hiddle?: boolean; // 是否隐藏
+    siblings?: Array<object>;  // 兄弟节点，列表
 }

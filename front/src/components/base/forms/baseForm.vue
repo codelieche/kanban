@@ -141,22 +141,122 @@
       <span v-else>
         {{ item }}
       </span>
+
+      <!-- 有时候表单一行想显示多个FormItem，那么传入siblings即可，它是个列表 -->
+      <!-- siblings开始 -->
+      <div
+        v-if="Array.isArray(item.siblings) && item.siblings.length > 0"
+        class="siblings"
+      >
+        <span
+          v-for="(sliblingItem, sliblingIndex) in item.siblings"
+          :key="sliblingIndex"
+        >
+          <!-- text类型的就当label使用 -->
+          <div class="label-text" v-if="sliblingItem.type === 'text'">
+            {{ sliblingItem.label }}
+          </div>
+          <!-- Input -->
+          <el-input
+            v-model="data[sliblingItem.name]"
+            v-if="sliblingItem.type === 'input'"
+            v-bind="sliblingItem.props"
+          ></el-input>
+
+          <!-- Number -->
+          <el-input-number
+            v-model="data[sliblingItem.name]"
+            v-else-if="sliblingItem.type === 'number'"
+            v-bind="sliblingItem.props"
+          ></el-input-number>
+
+          <!-- 选择Switch -->
+          <el-switch
+            v-model="data[sliblingItem.name]"
+            v-else-if="sliblingItem.type === 'switch'"
+            v-bind="sliblingItem.props"
+          ></el-switch>
+
+          <!-- 单选框 -->
+          <el-radio-group
+            v-model="data[sliblingItem.name]"
+            v-else-if="sliblingItem.type === 'radio'"
+            v-bind="sliblingItem.props"
+          >
+            <el-radio
+              :label="choice.value"
+              v-for="(choice, index) in item.choices"
+              :key="index"
+              >{{ choice.text }}</el-radio
+            >
+          </el-radio-group>
+          <!-- 单选按钮 -->
+
+          <!-- 单选按钮 -->
+          <el-radio-group
+            v-model="data[sliblingItem.name]"
+            v-else-if="sliblingItem.type === 'radio-button'"
+            v-bind="sliblingItem.props"
+          >
+            <el-radio-button
+              :label="choice.value"
+              v-for="(choice, index) in sliblingItem.choices"
+              :key="index"
+              >{{ choice.text }}</el-radio-button
+            >
+          </el-radio-group>
+
+          <!-- 多选框 -->
+          <el-checkbox-group
+            v-model="data[sliblingItem.name]"
+            v-else-if="item.type === 'checkbox'"
+            v-bind="item.props"
+          >
+            <el-checkbox
+              :label="choice.value"
+              v-for="(choice, index) in sliblingItem.choices"
+              :name="sliblingItem.name"
+              :key="index"
+              >{{ choice.text }}</el-checkbox
+            >
+          </el-checkbox-group>
+
+          <!-- Select -->
+          <el-select
+            v-model="data[sliblingItem.name]"
+            v-else-if="sliblingItem.type === 'select'"
+            v-bind="sliblingItem.props"
+          >
+            <el-option
+              :label="choice.text"
+              :value="choice.value"
+              v-for="(choice, index) in sliblingItem.choices"
+              :key="index"
+            ></el-option>
+          </el-select>
+
+          <!-- 按钮 -->
+          <el-button
+            v-else-if="sliblingItem.type === 'button'"
+            v-bind="sliblingItem.props"
+            >{{ sliblingItem.label }}
+          </el-button>
+          
+          <!-- 其它的就不显示了 -->
+        </span>
+      </div>
+      <!-- siblings结束 -->
     </el-form-item>
 
     <!-- 底部按钮 -->
     <slot name="footer" :onSubmit="onSubmit" :title="title">
       <div class="buttons">
-        <el-button
-          type="primary"
-          @click.stop.prevent="onSubmit"
-          size="small"
-        >
+        <el-button type="primary" @click.stop.prevent="onSubmit" size="small">
           {{ title }}
         </el-button>
       </div>
     </slot>
     <!-- 底部按钮结束 -->
-
   </el-form>
 </template>
 

@@ -104,8 +104,8 @@
   border-radius: 2px;
   -webkit-box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
     0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
-  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 6px 16px 0 rgba(0, 0, 0, 0.08),
-    0 9px 28px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 9px 28px 8px rgba(0, 0, 0, 0.05);
   .el-notification__group {
     width: 100%;
   }
@@ -167,6 +167,35 @@
 }
 
 .base-form.el-form {
+  .width-100 {
+    width: 100px;
+  }
+  .width-120 {
+    width: 120px;
+  }
+  .width-150 {
+    width: 150px;
+  }
+  // 兄弟节点元素样式
+  .siblings {
+    display: inline-block;
+    span {
+      display: inline-block;
+    }
+    .label-text {
+      min-width: 80px;
+      text-align: right;
+      display: inline-block;
+      padding-left: 15px;
+      padding-right: 5px;
+    }
+    .el-button {
+      margin-left: 15px;
+    }
+    .el-select {
+      width: 120px;
+    }
+  }
   .el-select {
     width: 100%;
   }
