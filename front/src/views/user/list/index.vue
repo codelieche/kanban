@@ -57,6 +57,7 @@
           </template>
         </el-table-column>
         <!-- 手机号 -->
+        <el-table-column prop="email" label="邮箱" />
         <el-table-column prop="mobile" label="手机号" />
         <!-- 加入时间 -->
         <el-table-column prop="date_joined" label="加入时间" sortable />

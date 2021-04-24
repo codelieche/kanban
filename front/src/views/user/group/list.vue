@@ -63,6 +63,15 @@
               <router-link :to="`/user/group/${scope.row.id}`">
                 <Icon type="link">详情</Icon>
               </router-link>
+
+              <!-- <el-button
+                @click="handleShowDrawer(scope.row.id, 'detail')"
+                size="mini"
+                icon="el-icon-link"
+              >
+                查看
+              </el-button> -->
+
               <el-divider direction="vertical"></el-divider>
               <router-link :to="`/user/group/${scope.row.id}/editor`">
                 <Icon type="edit">编辑</Icon>
@@ -113,17 +122,29 @@
         </el-col>
       </template>
     </BaseTable>
+
+    <!-- 抽屉开始 -->
+    <BaseDrawer
+      :title="drawerTitle"
+      :visible="showDrawer"
+      :handleDrawBeforeClose="handleDrawBeforeClose"
+    >
+      <div>goodddd</div>
+    </BaseDrawer>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import BaseTable from '@/components/page/baseTable.vue'
+import { ElMessage } from 'element-plus'
+
 import Icon from '@/components/base/icon.vue'
 import TopBar from '@/components/page/topBar.vue'
+import BaseTable from '@/components/page/baseTable.vue'
+import BaseDrawer from '@/components/page/baseDrawer/index.vue'
+
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import usePermissionCheck from '@/hooks/utils/usePermissionCheck'
-import { ElMessage } from 'element-plus'
 import fetchApi from '@/plugins/fetchApi'
 
 export default defineComponent({
@@ -132,6 +153,7 @@ export default defineComponent({
     BaseTable,
     Icon,
     TopBar,
+    BaseDrawer,
   },
   setup() {
     // 设置顶部导航
@@ -159,6 +181,34 @@ export default defineComponent({
     // 增加刷新次数的值，然后就会刷新数据
     const reFreshData = () => {
       reFreshTimes.value += 1
+    }
+
+    // 显示抽屉
+    const showDrawer = ref(false)
+    const drawerTitle = ref('')
+    const currentAction = ref('')
+    const currentID = ref(0)
+
+    // 抽底关闭之前操作
+    const handleDrawBeforeClose = () => {
+      showDrawer.value = false
+    }
+
+    // 显示抽屉函数
+    const handleShowDrawer = (id: number, action: string) => {
+      showDrawer.value = true
+      currentAction.value = action
+      currentID.value = id
+
+      if (action === 'detail') {
+        drawerTitle.value = '分组详情'
+      } else if (action === 'editor') {
+        drawerTitle.value = '编辑分组'
+      } else if (action === 'add') {
+        drawerTitle.value = '添加分组'
+      } else {
+        drawerTitle.value = ''
+      }
     }
 
     // 删除确认事件
@@ -191,6 +241,7 @@ export default defineComponent({
           ElMessage.error(`删除分组(${name}:${id})失败`)
         })
     }
+
     // 取消删除
     const handleDeleteCancel = (): void => {
       // ElMessage.warning("取消哦删除")
@@ -207,6 +258,13 @@ export default defineComponent({
       handleDeleteCancel,
       handleDeleteConfirm,
       reFreshData,
+      // 抽屉相关
+      showDrawer,
+      drawerTitle,
+      handleShowDrawer,
+      handleDrawBeforeClose,
+      currentAction,
+      currentID,
     }
   },
 })

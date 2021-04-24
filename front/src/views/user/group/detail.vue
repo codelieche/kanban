@@ -66,12 +66,15 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
-import { useFetchData } from '@/hooks/utils/useFetchData'
-import { useWatchParamsChange } from '@/hooks/utils/useWatchParamsChange'
+
 import Loading from '@/components/page/loading.vue'
 import TopBar from '@/components/page/topBar.vue'
 import ModelLogs from '@/components/page/modelLogs/index.vue'
+
+import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
+import { useFetchData } from '@/hooks/utils/useFetchData'
+import { useWatchParamsChange } from '@/hooks/utils/useWatchParamsChange'
+
 export default defineComponent({
   name: 'UserGroupDetail',
   components: {

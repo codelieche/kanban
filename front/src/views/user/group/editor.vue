@@ -1,22 +1,34 @@
 <template>
   <div class="main">
     <TopBar title="编辑分组" />
-    <GroupForm action="editor" :handleSubmit="handleSubmit" :data="data" />
+    <el-row :gutter="16">
+      <el-col :xs="24" :sm="18" :md="18">
+        <GroupForm action="editor" :handleSubmit="handleSubmit" :data="data" />
+      </el-col>
+      <el-col :xs="24" :sm="6">
+        <ModelLogs app="auth" model="group" :id="data.id" v-if="data && data.id"/>
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
+import { ElMessage } from 'element-plus'
+
 import TopBar from '@/components/page/topBar.vue'
-import GroupForm from './form.vue'
+import ModelLogs from '@/components/page/modelLogs/index.vue'
+
 import fetchApi from '@/plugins/fetchApi'
 import { useFetchData } from '@/hooks/utils/useFetchData'
+import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import useWatchParamsChange from '@/hooks/utils/useWatchParamsChange'
-import { ElMessage } from 'element-plus'
+
+import GroupForm from './form.vue'
+
 export default defineComponent({
   name: 'UserGroupEditor',
-  components: { GroupForm, TopBar },
+  components: { GroupForm, TopBar, ModelLogs },
   setup() {
     const breadcrumbItems = [
       {

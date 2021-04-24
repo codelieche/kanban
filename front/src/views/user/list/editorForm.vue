@@ -53,11 +53,10 @@ export default defineComponent({
           {
             required: true,
             message: '请选择状态',
-            size: 'small',
           },
         ],
         props: {
-          size: 'small',
+          size: 'mini',
         },
       },
       {
@@ -75,7 +74,7 @@ export default defineComponent({
           },
         ],
         props: {
-          size: 'small',
+          size: 'mini',
         },
       },
       {
@@ -93,13 +92,21 @@ export default defineComponent({
           },
         ],
         props: {
-          size: 'small',
+          size: 'mini',
         },
       },
       {
         name: 'mobile',
         type: 'input',
         label: '手机号:',
+        props: {
+          size: 'small',
+        },
+      },
+       {
+        name: 'email',
+        type: 'input',
+        label: '邮箱:',
         props: {
           size: 'small',
         },

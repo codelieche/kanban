@@ -39,7 +39,7 @@ export default defineComponent({
     app: String,
     model: String,
     id: {
-      type: String,
+      type: [String, Number],
       default: () => '',
     },
   },
