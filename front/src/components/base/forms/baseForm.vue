@@ -142,11 +142,21 @@
         {{ item }}
       </span>
     </el-form-item>
-    <el-form-item class="buttons">
-      <el-button type="primary" @click.stop.prevent="onSubmit" size="small">{{
-        title
-      }}</el-button>
-    </el-form-item>
+
+    <!-- 底部按钮 -->
+    <slot name="footer" :onSubmit="onSubmit" :title="title">
+      <div class="buttons">
+        <el-button
+          type="primary"
+          @click.stop.prevent="onSubmit"
+          size="small"
+        >
+          {{ title }}
+        </el-button>
+      </div>
+    </slot>
+    <!-- 底部按钮结束 -->
+
   </el-form>
 </template>
 

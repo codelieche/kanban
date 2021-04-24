@@ -46,7 +46,14 @@ const useFetchChoices = (
       // 返回处理完的选项
       return itemChoice
     }else{
-      return null
+      // 不是object的数据，那么一般就是number/string咯
+      fields.forEach(field => {
+        if (item) {
+          itemChoice[field.field] = item
+        }
+      })
+      return itemChoice
+      // return null
     }
     
   }
