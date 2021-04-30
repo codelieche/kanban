@@ -28,6 +28,16 @@ class UserModelSerializer(serializers.ModelSerializer):
         instance.nick_name = instance.username
         # 注册的用户都需要管理员，手动设置其是否可访问本系统
         instance.can_view = False
+
+        # 如果当前登录了用户，且是超级管理员，那么是可以设置其它字段
+        user = request.user
+        if user.is_superuser:
+            for item in ['is_active', 'is_superuser', 'can_view']:
+                value = request.data.get(item)
+                if value:
+                    setattr(instance, item, value)
+            instance.can_view = True
+
         instance.save()
         return instance
 

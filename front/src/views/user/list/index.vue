@@ -69,7 +69,10 @@
                 <Icon type="edit">编辑</Icon>
               </el-button>
             </span>
-            <el-divider direction="vertical" v-if="!scope.row.is_active || showDelete"></el-divider>
+            <el-divider
+              direction="vertical"
+              v-if="!scope.row.is_active || showDelete"
+            ></el-divider>
             <span v-if="scope.row.is_active">
               <el-popconfirm
                 :title="`确定删除: ${scope.row.username}(id: ${scope.row.id})？`"
@@ -112,32 +115,56 @@
           <el-button type="default" @click="reFreshData" size="small">
             <Icon type="refresh">刷新</Icon>
           </el-button>
+
+          <!-- 添加按钮 -->
+          <el-button
+            type="primary"
+            @click="handleShowDialog(0, 'add')"
+            size="small"
+          >
+            <Icon type="plus">Add</Icon>
+          </el-button>
         </el-col>
       </template>
     </BaseTable>
+
+    <!-- 老的编辑对话框 -->
     <UserEditorDialog
       :visible="showEditDialog"
       :data="currentUser"
       :afterCloseHandle="afterDialogClose"
     ></UserEditorDialog>
+
+    <!-- 对话框开始 -->
+    <UserDialog
+      :visible="showDialog"
+      :title="dialogTitle"
+      :afterCloseHandle="handleDialogClose"
+    >
+    </UserDialog>
+    <!-- 对话框结束 -->
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
+import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
+
 import TopBar from '@/components/page/topBar.vue'
 import Icon from '@/components/base/icon.vue'
 import BaseTable from '@/components/page/baseTable.vue'
-import { usePermissionCheck } from '@/hooks/utils/usePermissionCheck'
-import { ElMessage } from 'element-plus'
+
 import fetchApi from '@/plugins/fetchApi'
+import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
+import { usePermissionCheck } from '@/hooks/utils/usePermissionCheck'
+
 import UserEditorDialog from './editorDialog.vue'
-import { useRouter } from 'vue-router'
+import UserDialog from './userDialog.vue'
 
 export default defineComponent({
   name: 'UserListIndex',
-  components: { TopBar, Icon, BaseTable, UserEditorDialog },
+  components: { TopBar, Icon, BaseTable, UserEditorDialog, UserDialog },
   setup() {
     const breadcrumbItems = [
       {
@@ -181,6 +208,33 @@ export default defineComponent({
         reFreshData()
       }
       showEditDialog.value = false
+    }
+
+    // 显示对话框开关：add or editor
+    const showDialog = ref(false)
+    const dialogTitle = ref('')
+    const currentID = ref(0)
+    const currentAction = ref('')
+
+    // 对话框关闭操作
+    const handleDialogClose = (freshData = false) => {
+      showDialog.value = false
+      // 刷新数据
+      if (freshData) {
+        reFreshData()
+      }
+    }
+
+    // 显示对话框
+    const handleShowDialog = (id: number, action: string) => {
+      showDialog.value = true
+      currentID.value = id
+      currentAction.value = action
+      if (action === 'add') {
+        dialogTitle.value = '添加用户'
+      } else if (action === 'editor') {
+        dialogTitle.value = '编辑用户'
+      }
     }
 
     // 显示删除
@@ -257,6 +311,12 @@ export default defineComponent({
       handleDeleteCancel,
       handleDeleteConfirm,
       editorOnClick,
+      // 用户对话框
+      showDialog,
+      dialogTitle,
+      currentID,
+      handleDialogClose,
+      handleShowDialog,
     }
   },
 })
