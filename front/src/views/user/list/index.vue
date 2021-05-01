@@ -65,7 +65,8 @@
         <el-table-column label="操作">
           <template #default="scope">
             <span type="link">
-              <el-button type="text" @click="editorOnClick(scope.row)">
+              <!-- <el-button type="text" @click="editorOnClick(scope.row)"> -->
+              <el-button type="text" @click="handleShowDialog(scope.row.id, 'editor')">
                 <Icon type="edit">编辑</Icon>
               </el-button>
             </span>
@@ -129,24 +130,49 @@
     </BaseTable>
 
     <!-- 老的编辑对话框 -->
-    <UserEditorDialog
+    <!-- <UserEditorDialog
       :visible="showEditDialog"
       :data="currentUser"
       :afterCloseHandle="afterDialogClose"
-    ></UserEditorDialog>
+    ></UserEditorDialog> -->
 
-    <!-- 对话框开始 -->
-    <UserDialog
+    <!-- 对话框开始：v1 -->
+    <!-- <UserDialog
       :visible="showDialog"
       :title="dialogTitle"
       :afterCloseHandle="handleDialogClose"
     >
-    </UserDialog>
+    </UserDialog> -->
     <!-- 对话框结束 -->
+
+    <!-- 对话框v2 -->
+    <BaseDialog
+      :title="dialogTitle"
+      :visible="showDialog"
+      width="460px"
+      :handleDialogClose="handleDialogClose"
+    >
+      <UserAdd
+        :handleAfterCommit="handleDialogClose"
+        v-if="currentAction === 'add'"
+      />
+      <UserEditor
+        :id="currentID"
+        :handleAfterCommit="handleDialogClose"
+        v-else-if="currentAction === 'editor'"
+      />
+      <div v-else>
+        对话框
+      </div>
+    </BaseDialog>
   </div>
 </template>
 
 <script lang="ts">
+/**
+ * 这个页面用户编辑和用户添加分别有两种写法
+ * 最终都偏向于使用后面一种：BaseDialog的写法
+ */
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
@@ -154,17 +180,25 @@ import { ElMessage } from 'element-plus'
 import TopBar from '@/components/page/topBar.vue'
 import Icon from '@/components/base/icon.vue'
 import BaseTable from '@/components/page/baseTable.vue'
+import BaseDialog from '@/components/page/baseDialog/index.vue'
 
 import fetchApi from '@/plugins/fetchApi'
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import { usePermissionCheck } from '@/hooks/utils/usePermissionCheck'
 
-import UserEditorDialog from './editorDialog.vue'
-import UserDialog from './userDialog.vue'
+import UserAdd from './userAdd.vue'
+import UserEditor from './userEditor.vue'
 
 export default defineComponent({
   name: 'UserListIndex',
-  components: { TopBar, Icon, BaseTable, UserEditorDialog, UserDialog },
+  components: {
+    TopBar,
+    Icon,
+    BaseTable,
+    BaseDialog,
+    UserAdd,
+    UserEditor,
+  },
   setup() {
     const breadcrumbItems = [
       {
@@ -187,14 +221,16 @@ export default defineComponent({
       'account.chang_userprofile',
       router
     )
-    // 显示编辑对话框
-    const showEditDialog = ref(false)
-    const currentUser = ref({})
-    // 编辑按钮点击
-    const editorOnClick = (data: object) => {
-      showEditDialog.value = true
-      currentUser.value = data
-    }
+
+    // // 显示编辑对话框
+    // const showEditDialog = ref(false)
+    // const currentUser = ref({})
+    // // 编辑按钮点击
+    // const editorOnClick = (data: object) => {
+    //   showEditDialog.value = true
+    //   currentUser.value = data
+    // }
+
     // 控制刷新的开关
     const reFreshTimes = ref(0)
     // 增加刷新次数的值，然后就会刷新数据
@@ -202,17 +238,17 @@ export default defineComponent({
       reFreshTimes.value += 1
     }
 
-    // 编辑对话框关闭
-    const afterDialogClose = (freshData = false) => {
-      if (freshData) {
-        reFreshData()
-      }
-      showEditDialog.value = false
-    }
+    // // 对话框关闭
+    // const afterDialogClose = (freshData = false) => {
+    //   if (freshData) {
+    //     reFreshData()
+    //   }
+    //   showEditDialog.value = false
+    // }
 
     // 显示对话框开关：add or editor
     const showDialog = ref(false)
-    const dialogTitle = ref('')
+    const dialogTitle = ref('对话框')
     const currentID = ref(0)
     const currentAction = ref('')
 
@@ -300,9 +336,11 @@ export default defineComponent({
 
     // 返回
     return {
-      currentUser,
-      showEditDialog,
-      afterDialogClose,
+      // currentUser,
+      // showEditDialog,
+      // afterDialogClose,
+      // editorOnClick,
+
       havePermission,
       reFreshTimes,
       reFreshData,
@@ -310,8 +348,8 @@ export default defineComponent({
       changeShowDelete,
       handleDeleteCancel,
       handleDeleteConfirm,
-      editorOnClick,
       // 用户对话框
+      currentAction,
       showDialog,
       dialogTitle,
       currentID,
