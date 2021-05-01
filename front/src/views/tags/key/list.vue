@@ -73,7 +73,7 @@
               <Icon type="edit">编辑</Icon>
             </a> -->
             <span type="link">
-              <el-button type="text" @click="editorOnClick(scope.row)">
+              <el-button type="text" @click="handleShowDialog(scope.row.id, 'editor')">
                 <Icon type="edit">编辑</Icon>
               </el-button>
             </span>
@@ -110,27 +110,52 @@
         <el-button type="default" @click="reFreshData" size="small">
           <Icon type="refresh">刷新</Icon>
         </el-button>
+
+        <!-- 添加按钮 -->
+        <el-button type="primary" @click="handleShowDialog(0, 'add')" size="small">
+          <Icon type="plus">Add</Icon>
+        </el-button>
+
       </el-col>
     </template>
   </BaseTable>
 
-  <TagEditorDialog
-      :visible="showEditDialog"
-      :data="currentTagKey"
-      :afterCloseHandle="afterDialogClose"
-    ></TagEditorDialog>
+    <!-- 对话框开始 -->
+    <BaseDialog
+      :title="dialogTitle"
+      :visible="showDialog"
+      width="460px"
+      :handleDialogClose="handleDialogClose"
+    >
+      <TagAdd
+        :handleAfterCommit="handleDialogClose"
+        v-if="currentAction === 'add'"
+      />
+      <TagEditor
+        :id="currentID"
+        :handleAfterCommit="handleDialogClose"
+        v-else-if="currentAction === 'editor'"
+      />
+    </BaseDialog>
+    <!-- 对话框结束 -->
+
 </template>
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import BaseTable from '@/components/page/baseTable.vue'
+import { ElMessage } from 'element-plus'
+
 import Icon from '@/components/base/icon.vue'
 import TopBar from '@/components/page/topBar.vue'
+import BaseTable from '@/components/page/baseTable.vue'
+import BaseDialog from '@/components/page/baseDialog/index.vue'
+
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import usePermissionCheck from '@/hooks/utils/usePermissionCheck'
-import { ElMessage } from 'element-plus'
 import fetchApi from '@/plugins/fetchApi'
-import TagEditorDialog from './editorDialog.vue'
+// import TagEditorDialog from './editorDialog.vue'
 
+import TagAdd from './add.vue'
+import TagEditor from './editor.vue'
 
 export default defineComponent({
   name: 'UserGroupList',
@@ -138,7 +163,10 @@ export default defineComponent({
     BaseTable,
     Icon,
     TopBar,
-    TagEditorDialog
+    // TagEditorDialog,
+    BaseDialog,
+    TagAdd,
+    TagEditor,
   },
   setup() {
     // 设置顶部导航
@@ -208,22 +236,31 @@ export default defineComponent({
       })
     }
 
-    // 显示编辑对话框
-    const showEditDialog = ref(false)
-    const currentTagKey = ref({})
-    // 编辑按钮点击
+    // 显示对话框开关：add or editor
+    const showDialog = ref(false)
+    const dialogTitle = ref('')
+    const currentID = ref(0)
+    const currentAction = ref('')
 
-    const editorOnClick = (data: object) => {
-      showEditDialog.value = true
-      currentTagKey.value = data
-    }
-
-    // 编辑对话框关闭
-    const afterDialogClose = (freshData = false) => {
+    // 对话框关闭操作
+    const handleDialogClose = (freshData = false) => {
+      showDialog.value = false
+      // 刷新数据
       if (freshData) {
         reFreshData()
       }
-      showEditDialog.value = false
+    }
+
+    // 显示对话框
+    const handleShowDialog = (id: number, action: string) => {
+      showDialog.value = true
+      currentID.value = id
+      currentAction.value = action
+      if (action === 'add') {
+        dialogTitle.value = '添加标签'
+      } else if (action === 'editor') {
+        dialogTitle.value = '编辑标签'
+      }
     }
 
     return {
@@ -232,10 +269,14 @@ export default defineComponent({
       handleDeleteCancel,
       handleDeleteConfirm,
       reFreshData,
-      currentTagKey,
-      editorOnClick,
-      showEditDialog,
-      afterDialogClose
+      
+      // 对话框相关
+      currentAction,
+      showDialog,
+      dialogTitle,
+      currentID,
+      handleDialogClose,
+      handleShowDialog,
     }
   },
 })

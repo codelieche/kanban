@@ -14,10 +14,12 @@
 </template>
 <script lang="ts">
 import { defineComponent, provide, Ref, ref, watch } from 'vue'
+import { ElMessage } from 'element-plus'
+
+import fetchApi from '@/plugins/fetchApi'
+
 import BaseForm from '@/components/base/forms/baseForm.vue'
 import { FormFieldItem } from '@/components/base/forms/types'
-import fetchApi from '@/plugins/fetchApi'
-import { ElMessage } from 'element-plus'
 
 export default defineComponent({
   name: 'EditorForm',
