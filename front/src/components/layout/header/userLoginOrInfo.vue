@@ -19,15 +19,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { useFetchData } from '@/hooks/utils/useFetchData'
+import { defineComponent, watch } from 'vue'
+
 import Icon from '@/components/base/icon.vue'
+
+import { useFetchData } from '@/hooks/utils/useFetchData'
+import UserInfo from '@/types/base/user'
+import {setUserInfo} from '@/hooks/store/useUserInfo'
 
 export default defineComponent({
   name: 'UserLoginOrInfo',
   components: { Icon },
   setup() {
-    const { loading, data } = useFetchData('/api/v1/account/login')
+    const { loading, data } = useFetchData<UserInfo>('/api/v1/account/login')
+
+    watch([data], () => {
+      if(data.value){
+        setUserInfo(data.value)
+      }
+    })
+    
     const dropdowmItems = [
       {
         icon: 'user-circle',
@@ -53,6 +64,11 @@ export default defineComponent({
         icon: 'envelope-o',
         title: '消息中心',
         link: '/user/message',
+      },
+      {
+        icon: 'eye',
+        title: '修改密码',
+        link: '/user/password/change',
       },
       {
         icon: 'sign-out',

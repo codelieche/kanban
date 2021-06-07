@@ -161,9 +161,6 @@
         :handleAfterCommit="handleDialogClose"
         v-else-if="currentAction === 'editor'"
       />
-      <div v-else>
-        对话框
-      </div>
     </BaseDialog>
   </div>
 </template>

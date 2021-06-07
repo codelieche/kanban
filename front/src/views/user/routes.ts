@@ -42,6 +42,12 @@ const subComponents = [
     path: 'center',
     filename: 'center/index'
   },
+
+  // 修改密码
+  {
+    path: 'password/change',
+    filename: 'password/change',
+  },
   
   {
     path: 'login',
