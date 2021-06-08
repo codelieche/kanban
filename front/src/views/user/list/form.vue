@@ -59,6 +59,16 @@ export default defineComponent({
             },
           },
           {
+            name: 'nick_name',
+            type: 'input',
+            label: '昵称:',
+            props: {
+              size: 'small',
+              placeholder: '昵称',
+            },
+            hiddle: action === 'add',
+          },
+          {
             name: 'password',
             type: 'input',
             label: '密码:',

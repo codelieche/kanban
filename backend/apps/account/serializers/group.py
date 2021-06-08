@@ -6,7 +6,7 @@ from account.models import User
 from account.serializers.permission import PermissionInfoSerializer
 
 
-class GroupSerializer(serializers.ModelSerializer):
+class GroupModelSerializer(serializers.ModelSerializer):
     """
     账号分组 Model Serializer
     """

@@ -3,7 +3,7 @@
     <TopBar title="分组列表" />
 
     <BaseTable
-      apiUrlPrefix="/api/v1/account/group/list"
+      apiUrlPrefix="/api/v1/account/group/?detail=1"
       pageUrlPrefix="/user/group/list"
       :reFreshTimes="reFreshTimes"
       :showHeader="true"
@@ -217,7 +217,7 @@ export default defineComponent({
         return
       }
       // console.log('我将删除：', id, name)
-      const url = `/api/v1/account/group/${id}`
+      const url = `/api/v1/account/group/${id}/`
       // 发起删除请求
       fetchApi
         .delete(url)

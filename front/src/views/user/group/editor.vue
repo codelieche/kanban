@@ -57,7 +57,7 @@ export default defineComponent({
       id.value = idVal as string
 
       if (idVal) {
-        apiUrl.value = `/api/v1/account/group/${idVal}/editor`
+        apiUrl.value = `/api/v1/account/group/${idVal}/`
       } else {
         console.log('ID为false：', idVal)
       }
@@ -66,7 +66,7 @@ export default defineComponent({
     // 监控路由的变化
     const handleParamsChange = (value: string) => {
       if (value && id.value !== value) {
-        apiUrl.value = `/api/v1/account/group/${value}/editor`
+        apiUrl.value = `/api/v1/account/group/${value}/`
         id.value = value
       }
     }
@@ -75,7 +75,7 @@ export default defineComponent({
     // 表单提交函数
     const handleSubmit = (data: object) => {
       // 发起添加分组的请求
-      const url = `/api/v1/account/group/${id.value}`
+      const url = `/api/v1/account/group/${id.value}/`
       fetchApi
         .put(url, data, {
           headers: {

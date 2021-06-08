@@ -43,7 +43,8 @@ class LoginView(APIView):
             content = {
                 "logined": True,
                 "username": user.username,
-                # "is_superuser": user.is_superuser
+                "nick_name": user.nick_name,
+                "is_superuser": user.is_superuser
             }
         else:
             content = {

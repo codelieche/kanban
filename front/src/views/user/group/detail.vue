@@ -114,7 +114,7 @@ export default defineComponent({
       id.value = idVal as string
 
       if (idVal) {
-        apiUrl.value = `/api/v1/account/group/${idVal}`
+        apiUrl.value = `/api/v1/account/group/${idVal}/?detail=1`
       } else {
         console.log('ID为false：', idVal)
       }
@@ -123,7 +123,7 @@ export default defineComponent({
     // 监控路由的变化
     const handleParamsChange = (value: string) => {
       if (value && id.value !== value) {
-        apiUrl.value = `/api/v1/account/group/${value}`
+        apiUrl.value = `/api/v1/account/group/${value}/detail=1`
         id.value = value
       }
     }

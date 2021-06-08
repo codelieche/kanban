@@ -10,9 +10,24 @@ from django.contrib.auth.models import Group
 from django.shortcuts import get_object_or_404
 from django.http import JsonResponse
 
-from account.serializers.group import GroupSerializer, GroupInfoSerializer
+from codelieche.views.viewset import ModelViewSet
+from account.serializers.group import GroupModelSerializer, GroupInfoSerializer
 from utils.permissions import IsSuperUser
 from modellog.mixins import LoggingViewSetMixin
+
+
+class GroupModelViewSet(ModelViewSet):
+    """
+    分组相关API
+    """
+    queryset = Group.objects.all()
+    serializer_class = GroupModelSerializer
+    serializer_class_set = (GroupModelSerializer, GroupInfoSerializer)
+    permission_classes = (IsAuthenticated,)
+    search_fields = ('name',)
+    filter_fields = ("name",)
+    ordering_fields = ("id",)
+    ordering = ("id",)
 
 
 class GroupListAllView(generics.ListAPIView):
@@ -50,7 +65,7 @@ class GroupCreateView(LoggingViewSetMixin, generics.CreateAPIView):
     Group Create
     """
     queryset = Group.objects.all()
-    serializer_class = GroupSerializer
+    serializer_class = GroupModelSerializer
     permission_classes = (IsSuperUser,)
 
 
@@ -64,7 +79,7 @@ class GroupDetailView(LoggingViewSetMixin, generics.RetrieveUpdateDestroyAPIView
     permission_classes = (IsAuthenticated,)
 
     def update(self, request, *args, **kwargs):
-        self.serializer_class = GroupSerializer
+        self.serializer_class = GroupModelSerializer
         self.permission_classes = (IsSuperUser, )
         return super().update(request, *args, **kwargs)
 
@@ -81,6 +96,6 @@ class GroupEditorView(generics.RetrieveAPIView):
     用户分组，获取编辑时候要用到的信息时视图函数
     """
     queryset = Group.objects.all()
-    serializer_class = GroupSerializer
+    serializer_class = GroupModelSerializer
     permission_classes = (IsSuperUser,)
 
