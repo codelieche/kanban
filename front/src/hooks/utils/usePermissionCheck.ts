@@ -12,7 +12,7 @@ export const usePermissionCheck = <T>(
   const havePermission = ref<boolean>(false)
 
   const fetchData = (permission: string) => {
-    const url = '/api/v1/account/permission/check'
+    const url = '/api/v1/account/permission/check/'
     fetchApi
       .post(url, { permission: permission })
       .then((response: AxiosResponse) => {

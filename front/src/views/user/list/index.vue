@@ -3,7 +3,7 @@
     <TopBar title="用户列表" />
     <!-- 基础表格 -->
     <BaseTable
-      apiUrlPrefix="/api/v1/account/user/list"
+      apiUrlPrefix="/api/v1/account/user/"
       pageUrlPrefix="/user/list"
       :reFreshTimes="reFreshTimes"
       :showHeader="true"
@@ -288,7 +288,7 @@ export default defineComponent({
     // 删除操作
     const handleDeleteConfirm = (id: number, username: string) => {
       // 开始删除
-      const url = `/api/v1/account/user/${id}`
+      const url = `/api/v1/account/user/${id}/`
       // 通过delete删除用户
       fetchApi
         .delete(url)

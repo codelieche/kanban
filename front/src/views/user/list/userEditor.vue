@@ -45,7 +45,7 @@ export default defineComponent({
       [props],
       () => {
         if (props.id && props.id > 0) {
-          apiUrl.value = `/api/v1/account/user/${props.id}`
+          apiUrl.value = `/api/v1/account/user/${props.id}/`
         }
       },
       { immediate: true }
@@ -53,7 +53,7 @@ export default defineComponent({
 
     const handleSubmit = (data: Record<string, unknown>) => {
       //   console.log(data)
-      const url = `/api/v1/account/user/${props.id}`
+      const url = `/api/v1/account/user/${props.id}/`
       fetchApi
         .put(url, data, {})
         .then((response) => {

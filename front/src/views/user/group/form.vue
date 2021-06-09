@@ -183,7 +183,7 @@ export default defineComponent({
     }
 
     useFetchChoices(
-      '/api/v1/account/permission/all',
+      '/api/v1/account/permission/all/',
       permissionChoicesFields,
       callback2
     )

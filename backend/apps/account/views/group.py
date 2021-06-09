@@ -16,7 +16,7 @@ from utils.permissions import IsSuperUser
 from modellog.mixins import LoggingViewSetMixin
 
 
-class GroupModelViewSet(ModelViewSet):
+class GroupApiModelViewSet(ModelViewSet):
     """
     分组相关API
     """
@@ -30,6 +30,7 @@ class GroupModelViewSet(ModelViewSet):
     ordering = ("id",)
 
 
+# 下面的是老的写法，后续逐渐废弃掉，尽量使用ModelViewSet的写法
 class GroupListAllView(generics.ListAPIView):
     """
     Group List All

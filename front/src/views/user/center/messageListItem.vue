@@ -1,6 +1,6 @@
 <template>
   <li class="item" @click="handleClick">
-    <el-badge is-dot :type="unread ? 'primary' : 'info'"></el-badge>
+    <el-badge class="small" is-dot :type="unread ? 'primary' : 'info'"></el-badge>
     {{ data.title }}
   </li>
 </template>
@@ -64,7 +64,7 @@ export default defineComponent({
           unread.value = false
           // 发起读取消息的请求，从而触发后台把未读变成已读
           fetchApi
-            .get(`/api/v1/account/message/${props.data.id}`)
+            .get(`/api/v1/account/message/${props.data.id}/`)
             .then((response) => response.data)
             .catch((err) => console.log(err))
         }

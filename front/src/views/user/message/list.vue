@@ -1,7 +1,7 @@
 <template>
   <TopBar title="消息列表" />
   <BaseTable
-    apiUrlPrefix="/api/v1/account/message/list"
+    apiUrlPrefix="/api/v1/account/message/"
     :pageUrlPrefix="`/user/message/${type}`"
     :paramsFields="['page', 'page_size', 'ordering', 'search', 'unread']"
     :reFreshTimes="reFreshTimes"
@@ -10,6 +10,7 @@
     <template v-slot:default>
       <el-table-column prop="id" label="ID" width="80" align="center" sortable>
       </el-table-column>
+      <!-- <el-table-column prop="user" label="用户" width="100" align="center" sortable /> -->
       <el-table-column prop="title" label="标题" width="200">
         <template #default="scope">
           <router-link
@@ -18,27 +19,29 @@
           >
             <el-badge
               is-dot
-              :style="{ visibility: scope.row.unread ? 'visible' : 'hidden' }"
+              class="small"
+              :style="{ visibility: scope.row.unread ? 'visible' : 'hidden'}"
             ></el-badge>
             {{ scope.row.title }}
           </router-link>
         </template>
       </el-table-column>
-      <el-table-column prop="time_added" label="时间" width="180" sortable />
+      <el-table-column prop="time_added" label="时间" align="center" width="180" sortable />
+      <el-table-column prop="sender" label="发送者" width="100" align="center" sortable />
       <el-table-column
         prop="scope"
         label="消息分类"
         align="center"
         width="90"
       />
-      <el-table-column prop="unread" label="已读" width="80">
+      <el-table-column prop="unread" label="已读" align="center" width="80">
         <template #default="scope">
           <div class="status">
             <Icon :type="scope.row.unread ? 'close' : 'check'" />
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作"  align="left" width="">
         <template #default="scope">
           <span>
             <router-link
@@ -140,7 +143,7 @@ export default defineComponent({
       type.value = typeVal as string
 
       if (typeVal) {
-        apiUrl.value = `/api/v1/account/message/list?type=${typeVal}`
+        apiUrl.value = `/api/v1/account/message/?type=${typeVal}`
       } else {
         console.log('ID为false：', typeVal)
       }
@@ -170,7 +173,7 @@ export default defineComponent({
         return
       }
       // console.log('我将删除：', id, name)
-      const url = `/api/v1/account/message/${id}`
+      const url = `/api/v1/account/message/${id}/`
       // 发起删除请求
       fetchApi
         .delete(url)

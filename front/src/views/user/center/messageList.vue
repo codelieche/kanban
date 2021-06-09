@@ -38,7 +38,7 @@ export default defineComponent({
   },
   setup() {
     //  获取消息的api
-    const apiUrl = ref('/api/v1/account/message/list')
+    const apiUrl = ref('/api/v1/account/message/')
 
     // 获取数据
     const { loading, dataSource } = useFetchListData(apiUrl)

@@ -147,7 +147,7 @@ export default defineComponent({
       if(formData.value && formData.value.id < 1){
           return
       }
-      const url = `/api/v1/account/user/${formData.value.id}`
+      const url = `/api/v1/account/user/${formData.value.id}/`
       fetchApi
         .put(url, formData.value, {
           headers: {

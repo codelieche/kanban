@@ -132,7 +132,7 @@ export default defineComponent({
       }
 
       // 开始提交修改
-      const url = '/api/v1/account/user/password/change'
+      const url = '/api/v1/account/user/password/change/'
       const data = formData.value
       fetchApi
         .put(url, data, {})

@@ -203,7 +203,7 @@ export default defineComponent({
     }
 
     const handleAddUser = (data: Record<string, unknown>) => {
-      const url = '/api/v1/account/user/create'
+      const url = '/api/v1/account/user/'
       fetchApi
         .post(url, data, {})
         .then((response) => {

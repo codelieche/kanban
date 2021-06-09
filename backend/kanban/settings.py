@@ -224,6 +224,8 @@ REST_FRAMEWORK = {
     )
 }
 
+APPEND_SLASH = False
+
 # 跨域访问相关配置
 CORS_ORIGIN_ALLOW_ALL = True
 CORS_URLS_REGEX = r'^/api/.*$'

@@ -25,7 +25,7 @@ export default defineComponent({
   setup(props) {
     const handleSubmit = (data: Record<string, unknown>) => {
       // console.log(data)
-      const url = '/api/v1/account/user/create'
+      const url = '/api/v1/account/user/'
       fetchApi
         .post(url, data, {})
         .then((response) => {
