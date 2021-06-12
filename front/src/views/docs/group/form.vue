@@ -213,11 +213,13 @@ export default defineComponent({
         }
 
         formData.value['parent'] = formData.value['parent_id']
+
+        if(formData.value['parent'] === null) {
+          formData.value['parent'] = ''
+        }
+
         // console.log('formData:', formData.value)
 
-        // if (formData.value['parent_id'] !== 123) {
-        //   return
-        // }
         const requestFormData = new FormData()
         for (const k in formData.value) {
           const allowKeys = [

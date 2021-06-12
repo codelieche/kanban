@@ -41,7 +41,7 @@ export default defineComponent({
     const handleSubmit = (data: object) => {
       // 发起添加分组的请求
       // console.log(JSON.stringify(data))
-      const url = '/api/v1/account/group/create'
+      const url = '/api/v1/account/group/'
       fetchApi
         .post(url, data, {
           headers: {

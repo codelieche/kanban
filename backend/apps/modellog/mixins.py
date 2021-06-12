@@ -3,7 +3,7 @@ import json
 
 from django.contrib.contenttypes.models import ContentType
 
-from .models import LogsEntry
+from .models import ModelLog
 
 # Create your views here.
 
@@ -32,6 +32,57 @@ class LoggingViewSetMixin:
     """
     secret_fields = ('password', 'admin_pwd')
 
+    # 查看对象日志开关
+    retrieve_log_toogle = False
+
+    def get_ip_address(self):
+        try:
+            ip_address_keys = ['HTTP_X_FORWARDED_FOR', 'REMOTE_ADDR']
+            for k in ip_address_keys:
+                if self.request.META.get(k):
+                    return self.request.META.get(k)
+            return None
+        except Exception:
+            return None
+
+    def retrieve(self, request, *args, **kwargs):
+        # 查看对象、记录日志
+        result = super().retrieve(request, *args, **kwargs)
+
+        # 如果设置了记录retrieve，那么则记录查询IP
+        if self.retrieve_log_toogle:
+            # 第1步：获取信息
+            # 发起请求的用户
+            user = self.request.user
+            # 获取到实例对象
+            instance = self.get_object()
+            # 对象model对应的ContentType
+            content_type = ContentType.objects.get_for_model(instance)
+            object_id = instance.pk
+            object_repr = repr(instance)
+
+            try:
+                # 第3步：写入日志
+                # message = "查看对象:{}".format(instance.__class__)
+                message = "查看对象:{}".format(instance)
+                ModelLog.objects.create(
+                    user=user,
+                    action=1,
+                    package=content_type.app_label,
+                    model=content_type.model,
+                    object_id=object_id,
+                    object_repr=object_repr,
+                    content_type="text",
+                    content=message,
+                    address=self.get_ip_address(),
+                )
+            except Exception as e:
+                # print(e)
+                pass
+
+        # 返回结果
+        return result
+
     def perform_create(self, serializer):
         super().perform_create(serializer)
         try:
@@ -47,13 +98,16 @@ class LoggingViewSetMixin:
                 if self.secret_fields and field in self.secret_fields: data[field] = "保密字段"
             obj = model.objects.get(pk=data['id'])
 
-            LogsEntry.objects.create(
+            ModelLog.objects.create(
                 user=user,
-                action_flag=1,
-                content_type=content_type,
+                action=2,
+                package=content_type.app_label,
+                model=content_type.model,
                 object_id=obj.id,
                 object_repr=repr(obj),
-                message=json.dumps(data),
+                content_type='json',
+                content=json.dumps(data),
+                address=self.get_ip_address()
             )
         except Exception:
             pass
@@ -87,25 +141,28 @@ class LoggingViewSetMixin:
         # 第2步：执行父类的方法, 出错直接会返回不执行后续步骤了的
         super().perform_update(serializer)
 
-        # 第3步：获取新的对象和其它需要用到的数据
-        obj_new = self.get_object()
-
-        # 发起请求的用户
-        user = self.request.user
-        # 这个对象的Model
-        model = serializer.Meta.model
-        # model对应的ContentType
-        content_type = ContentType.objects.get_for_model(model)
-        # 消息从data中提取
-        data = json.loads(json.dumps(serializer.data))
-
-        # 第4步：判断哪些字段变更了
-        # 4-1: validated_data
-        validated_data = serializer.validated_data
-
-        message = []
-
         try:
+            # 第3步：获取新的对象和其它需要用到的数据
+            obj_new = self.get_object()
+
+            # 发起请求的用户
+            user = self.request.user
+            # 这个对象的Model
+            model = serializer.Meta.model
+            # model对应的ContentType
+            content_type = ContentType.objects.get_for_model(model)
+            # 消息从data中提取
+            try:
+                data = json.loads(json.dumps(serializer.data))
+            except:
+                data = serializer.data
+
+            # 第4步：判断哪些字段变更了
+            # 4-1: validated_data
+            validated_data = serializer.validated_data
+
+            message = []
+
             # 第5步：迭代每个校验过的字段
             secret_fields = self.secret_fields if self.secret_fields else []
             for field in validated_data:
@@ -148,16 +205,20 @@ class LoggingViewSetMixin:
 
             # 第6步：写入日志
             if message:
-                LogsEntry.objects.create(
+                ModelLog.objects.create(
                     user=user,
-                    action_flag=2,
-                    content_type=content_type,
+                    action=3,
+                    package=content_type.app_label,
+                    model=content_type.model,
                     object_id=obj_new.pk,
                     object_repr=repr(obj_new),
-                    message=json.dumps(message),
+                    content_type='json',
+                    content=json.dumps(message),
+                    address=self.get_ip_address(),
                 )
-        except Exception:
-                pass
+        except Exception as e:
+            # print(e)
+            pass
 
     def perform_destroy(self, instance):
         """删除对象"""
@@ -175,13 +236,16 @@ class LoggingViewSetMixin:
         try:
             # 第3步：写入日志
             message = "删除对象:{}".format(instance.__class__)
-            LogsEntry.objects.create(
+            ModelLog.objects.create(
                 user=user,
-                action_flag=3,
-                content_type=content_type,
+                action=4,
+                package=content_type.app_label,
+                model=content_type.model,
                 object_id=object_id,
                 object_repr=object_repr,
-                message=json.dumps(message),
+                content_type='text',
+                content=json.dumps(message),
+                address=self.get_ip_address(),
             )
         except Exception:
             pass

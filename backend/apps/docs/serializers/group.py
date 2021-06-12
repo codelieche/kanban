@@ -24,6 +24,9 @@ class GroupUserModelSerializer(serializers.ModelSerializer):
                                          required=True)
     user = serializers.SlugRelatedField(slug_field="username", queryset=User.objects.all())
 
+    def validate(self, attrs):
+        return attrs
+
     def create(self, validated_data):
         # 1. 获取到请求的用户
         user = self.context["request"].user

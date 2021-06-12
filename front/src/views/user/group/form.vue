@@ -166,7 +166,7 @@ export default defineComponent({
       })
     }
 
-    useFetchChoices('/api/v1/account/user/all', userChoicesFields, callback)
+    useFetchChoices('/api/v1/account/user/all/', userChoicesFields, callback)
     // 所有用户
     const permissionChoicesFields = [
       { field: 'key', valueField: 'id' },

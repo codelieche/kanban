@@ -70,7 +70,7 @@ export default defineComponent({
         if (props.app && props.model && props.id) {
           // 初始化dataSource
           dataSource.value = []
-          const newUrl = `/api/v1/modellog/${props.app}/${props.model}/${props.id}/list`
+          const newUrl = `/api/v1/modellog/modellog/?package=${props.app}&model=${props.model}&object_id=${props.id}`
           apiUrl.value = newUrl
           page.value = 1
         }
@@ -81,7 +81,7 @@ export default defineComponent({
     const fetchNextPageData = () => {
       if (next) {
         page.value += 1
-        const newUrl = `/api/v1/modellog/${props.app}/${props.model}/${props.id}/list?page=${page.value}`
+        const newUrl = `/api/v1/modellog/modellog/?package=${props.app}&model=${props.model}&object_id=${props.id}&page=${page.value}`
         apiUrl.value = newUrl
       }
     }

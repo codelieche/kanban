@@ -25,10 +25,15 @@
         </div>
       </span>
       <span className="value" v-else>
-        {{ messages }}
+        {{ messages ? messages : data.content }}
       </span>
     </div>
-
+    <div className="row info">
+      <span className="config">IP:</span>
+      <span className="value time">{{
+        data.address ? data.address : '---'
+      }}</span>
+    </div>
     <div className="row info">
       <span className="config">时间:</span>
       <span className="value time">{{ data.time_added }}</span>
@@ -47,27 +52,38 @@ export default defineComponent({
   setup(props) {
     //   操作标题
     const actionText = computed(() => {
-      if (props.data?.action_flag === 1) {
-        return '添加'
-      } else if (props.data?.action_flag === 2) {
-        return '修改'
-      } else if (props.data?.action_flag === 3) {
-        return '删除'
+      const action = props.data?.action
+      if (typeof action === 'number') {
+        if (action === 0) {
+          return '日志'
+        } else if (action === 1) {
+          return '查看'
+        } else if (action === 2) {
+          return '添加'
+        } else if (action === 3) {
+          return '修改'
+        } else if (action === 4) {
+          return '删除'
+        }
       }
     })
 
     // 消息
     const messages = computed(() => {
-      if (props.data?.action_flag === 1) {
-        return '添加对象'
-      } else if (props.data?.action_flag === 2) {
-        if (Array.isArray(props.data.message)) {
-          return props.data.message
-        } else {
-          return '修改对象'
+      const action = props.data?.action
+      if (typeof action === 'number') {
+        if (action === 2) {
+          return '添加对象'
+        } else if (action === 3) {
+          // console.log(props.data?.content)
+          if (props.data && Array.isArray(props.data?.content)) {
+            return props.data?.content
+          } else {
+            return '修改对象'
+          }
+        } else if (action === 4) {
+          return '删除对象'
         }
-      } else if (props.data?.action_flag === 3) {
-        return '删除对象'
       }
     })
 

@@ -28,6 +28,8 @@ class GroupApiModelViewSet(ModelViewSet):
     filter_fields = ("name",)
     ordering_fields = ("id",)
     ordering = ("id",)
+    # 控制查看对象详情是否记录日志
+    # retrieve_log_toogle = True
 
 
 # 下面的是老的写法，后续逐渐废弃掉，尽量使用ModelViewSet的写法

@@ -26,7 +26,7 @@ class ObjectRetrieveApiView(generics.RetrieveAPIView):
                 # Redis缓存
                 file_download_url = instance.get_download_url(scheme=scheme)
                 if file_download_url:
-                    return HttpResponseRedirect(redirect_to=file_download_url, status=301)
+                    return HttpResponseRedirect(redirect_to=file_download_url, status=302)
                     # 不存在缓存中
                     # 竟然没返回图片地址，那么就从自身服务器获取
 
