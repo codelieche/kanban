@@ -63,7 +63,7 @@
 import { defineComponent, ref } from 'vue'
 import { ElMessage } from 'element-plus'
 
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import usePermissionCheck from '@/hooks/utils/usePermissionCheck'
 

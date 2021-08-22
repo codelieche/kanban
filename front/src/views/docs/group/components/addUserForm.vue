@@ -16,7 +16,7 @@
 import { defineComponent, provide, Ref, ref, watch } from 'vue'
 import BaseForm from '@/components/base/forms/baseForm.vue'
 import { FormFieldItem } from '@/components/base/forms/types'
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 import { ElMessage } from 'element-plus'
 
 export default defineComponent({

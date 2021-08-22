@@ -41,7 +41,7 @@ import { defineComponent, ref, watch } from 'vue'
 import Icon from '@/components/base/icon.vue'
 import { useRouter } from 'vue-router'
 
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 import {
   activeArticeIDs,
   reFreshArticlesTimes,

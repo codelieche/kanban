@@ -122,7 +122,7 @@ class UserApiModelViewSet(ModelViewSet):
     filter_backends = (DjangoFilterBackend, SearchFilter, OrderingFilter)
     search_fields = ("username", "mobile")
     filter_fields = ("is_active", "is_superuser", "is_deleted", "can_view")
-    ordering_fields = ("id", "mobile")
+    ordering_fields = ("id", "mobile", "username")
     orderint = ("id",)
 
     def destroy(self, request, *args, **kwargs):

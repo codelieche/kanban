@@ -98,7 +98,7 @@ import BaseTable from '@/components/page/baseTable.vue'
 import Icon from '@/components/base/icon.vue'
 import TopBar from '@/components/page/topBar.vue'
 import { ElMessage } from 'element-plus'
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 
 export default defineComponent({
   name: 'UserGroupDetail',

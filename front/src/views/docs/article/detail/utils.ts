@@ -1,4 +1,4 @@
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 import moment from 'moment'
 
 export const patchUpdateArticle = (

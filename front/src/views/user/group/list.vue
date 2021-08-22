@@ -145,7 +145,7 @@ import BaseDrawer from '@/components/page/baseDrawer/index.vue'
 
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import usePermissionCheck from '@/hooks/utils/usePermissionCheck'
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 
 export default defineComponent({
   name: 'UserGroupList',

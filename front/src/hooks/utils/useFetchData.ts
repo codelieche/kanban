@@ -2,7 +2,7 @@
 import { onBeforeUnmount, onMounted, ref, Ref, watch } from 'vue'
 import { Router } from 'vue-router'
 import { AxiosResponse } from 'axios'
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 
 // 传入url，发起ajax请求获取数据
 // url可以是字符类型，或者Ref<string>类型，当传递的是Ref类型的时候，会监控url的变化

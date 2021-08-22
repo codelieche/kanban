@@ -25,3 +25,4 @@ pnpm-debug.log*
 src/styles/less/*.css
 src/styles/main.css
 /public/img/icons/
+yarn.lock

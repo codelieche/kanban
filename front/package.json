@@ -11,7 +11,7 @@
     "axios": "^0.21.1",
     "codemirror": "^5.60.0",
     "core-js": "^3.6.5",
-    "element-plus": "^1.0.2-beta.35",
+    "element-plus": "^1.0.2-beta.71",
     "highlight.js": "^10.7.1",
     "markdown-it": "^12.0.4",
     "mermaid": "^8.9.2",

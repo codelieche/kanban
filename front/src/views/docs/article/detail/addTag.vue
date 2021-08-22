@@ -13,7 +13,7 @@
 
 <script lang="ts">
 import { defineComponent, provide, Ref, ref } from 'vue'
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 
 import BaseFormDialog from '@/components/base/forms/baseFormDialog.vue'
 import { FormFieldItem } from '@/components/base/forms/types'

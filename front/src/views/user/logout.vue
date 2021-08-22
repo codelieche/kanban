@@ -3,7 +3,7 @@
 </template>
  
 <script lang="ts">
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 import { ElMessage } from 'element-plus'
 import { defineComponent, onMounted } from 'vue'
 import { useRouter } from 'vue-router'

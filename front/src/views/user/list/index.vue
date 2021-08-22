@@ -179,7 +179,7 @@ import Icon from '@/components/base/icon.vue'
 import BaseTable from '@/components/page/baseTable.vue'
 import BaseDialog from '@/components/page/baseDialog/index.vue'
 
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import { usePermissionCheck } from '@/hooks/utils/usePermissionCheck'
 

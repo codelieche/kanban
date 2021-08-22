@@ -151,7 +151,7 @@ import BaseDialog from '@/components/page/baseDialog/index.vue'
 
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import usePermissionCheck from '@/hooks/utils/usePermissionCheck'
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 // import TagEditorDialog from './editorDialog.vue'
 
 import TagAdd from './add.vue'

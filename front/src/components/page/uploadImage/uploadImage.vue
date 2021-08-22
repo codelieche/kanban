@@ -43,7 +43,7 @@ import { defineComponent, onMounted, provide, Ref, ref, watch } from 'vue'
 import { UploadFile } from 'element-plus/lib/el-upload/src/upload.type'
 import UploadItem from '@/components/base/forms/uploadItem.vue'
 import { ElMessage } from 'element-plus'
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 
 export default defineComponent({
   name: 'UploadImage',

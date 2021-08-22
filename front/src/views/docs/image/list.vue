@@ -71,7 +71,7 @@ import { ElMessage } from 'element-plus'
 
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import usePermissionCheck from '@/hooks/utils/usePermissionCheck'
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 
 import Icon from '@/components/base/icon.vue'
 import TopBar from '@/components/page/topBar.vue'

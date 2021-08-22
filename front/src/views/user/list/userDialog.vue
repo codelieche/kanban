@@ -24,11 +24,11 @@
 
 import { defineComponent, provide, ref, Ref, watch } from 'vue'
 
-// import fetchApi from '@/plugins/fetchApi'
+// import fetchApi from '@/api/fetchApi'
 
 import { FormFieldItem } from '@/components/base/forms/types'
 import BaseFormDialog from '@/components/base/forms/baseFormDialog.vue'
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 import { ElMessage } from 'element-plus'
 
 export default defineComponent({

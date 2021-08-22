@@ -1,7 +1,7 @@
 import { onMounted, ref, Ref, watch } from 'vue'
 import { AxiosResponse } from 'axios'
 
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 import { Router } from 'vue-router'
 
 export const usePermissionCheck = <T>(

@@ -97,7 +97,7 @@ import TopBar from '@/components/page/topBar.vue'
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import usePermissionCheck from '@/hooks/utils/usePermissionCheck'
 import { ElMessage } from 'element-plus'
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 import TagEditorDialog from './editorDialog.vue'
 
 export default defineComponent({

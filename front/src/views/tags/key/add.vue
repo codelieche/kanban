@@ -13,7 +13,7 @@ import { defineComponent } from 'vue'
 
 import { ElMessage } from 'element-plus'
 
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 
 import TagForm from './form.vue'
 

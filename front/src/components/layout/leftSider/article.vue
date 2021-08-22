@@ -13,7 +13,7 @@
         <router-link to="/">
           <img
             alt="log"
-            src="http://127.0.0.1:9000/static/image/logo-kanban.svg"
+            :src="`${apiBaseUrl}/static/image/logo-kanban.svg`"
           />
         </router-link>
       </div>
@@ -43,6 +43,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
+import {apiBaseUrl} from '@/api/config'
 
 import {
   globalGroup,
@@ -53,7 +54,7 @@ import Icon from '@/components/base/icon.vue'
 import Resizable from '@/components/base/resizable.vue'
 import ArticleGroups from './articleGroups.vue'
 import LeftArticleNav from '@/components/layout/nav/leftArticleNav.vue'
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 import { useRouter } from 'vue-router'
 
 export default defineComponent({
@@ -133,6 +134,7 @@ export default defineComponent({
     }
 
     return {
+      apiBaseUrl,
       showLeftSider,
       defaultWidth,
       afterSizeChange,

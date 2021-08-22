@@ -15,7 +15,7 @@ import { useRouter } from 'vue-router'
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import TopBar from '@/components/page/topBar.vue'
 import GroupForm from './form.vue'
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 import { ElMessage } from 'element-plus'
 export default defineComponent({
   name: 'UserGroupAdd',

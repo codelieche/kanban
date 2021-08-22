@@ -17,7 +17,7 @@ import { ElMessage } from 'element-plus'
 
 import Loading from '@/components/page/loading.vue'
 
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 import useFetchData from '@/hooks/utils/useFetchData'
 
 import TagForm from './form.vue'

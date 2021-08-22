@@ -9,7 +9,7 @@
 import { defineComponent, onMounted, ref } from 'vue'
 import { ElNotification } from 'element-plus'
 
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 
 export default defineComponent({
   name: 'MessageListItem',

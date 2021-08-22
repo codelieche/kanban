@@ -19,7 +19,7 @@ import { ElMessage } from 'element-plus'
 import TopBar from '@/components/page/topBar.vue'
 import ModelLogs from '@/components/page/modelLogs/index.vue'
 
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 import { useFetchData } from '@/hooks/utils/useFetchData'
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
 import useWatchParamsChange from '@/hooks/utils/useWatchParamsChange'

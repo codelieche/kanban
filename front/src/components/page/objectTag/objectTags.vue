@@ -47,7 +47,7 @@
 
 <script lang="ts">
 import { useFetchListData } from '@/hooks/utils/useFetchData'
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 import { ElMessage } from 'element-plus'
 import { defineComponent, ref, watch } from 'vue'
 export default defineComponent({

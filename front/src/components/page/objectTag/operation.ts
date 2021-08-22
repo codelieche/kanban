@@ -1,4 +1,4 @@
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 import { ElMessage } from 'element-plus'
 
 // 添加对象标签操作

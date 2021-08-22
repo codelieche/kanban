@@ -13,7 +13,7 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 
 import TopBar from '@/components/page/topBar.vue'
 import AccountForm from './form.vue'

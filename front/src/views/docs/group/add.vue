@@ -13,7 +13,7 @@ import { defineComponent } from 'vue'
 import { useRouter } from 'vue-router'
 
 import useBreadcrumbItems from '@/hooks/store/useBreadcrumbItems'
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 
 import { ElMessage } from 'element-plus'
 // 基础组件

@@ -11,7 +11,7 @@
 import { defineComponent } from 'vue'
 import { ElMessage } from 'element-plus'
 
-import fetchApi from '@/plugins/fetchApi'
+import fetchApi from '@/api/fetchApi'
 import UserForm from './form.vue'
 
 export default defineComponent({

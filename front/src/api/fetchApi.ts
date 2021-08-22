@@ -1,13 +1,13 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios'
 // import qs from 'qs';
 
-import env from '../config/env'
+import config from './config'
 
 const api: AxiosInstance = axios.create({
   // baseURL: "http://127.0.0.1:9000/",
-  baseURL: env.apiBaseUrl,
+  baseURL: config.apiBaseUrl,
   // timeout: 20000,
-  timeout: env.apiFetchTimeout
+  timeout: config.apiTimeout
 })
 
 // axios实例默认配置
